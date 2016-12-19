@@ -15,30 +15,25 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
-/**
- * The enumeration for abilities, their names, and the method to use them.
- * 
- * @author Andrew Yunt
- */
-public enum Skill implements Upgradable {
+import org.bukkit.block.Chest;
+
+public class LootChest {
 	
-	RESISTANCE("Resistance"),
-	JUGGERNAUT("Juggernaut"),
-	CONSUMPTION("Consumption"),
-	HEAD_START("Head Start"),
-	GUARD("Guard"),
-	FLAME("Flame");
+	private Chest bukkitChest;
+	private byte tier;
 	
-	final String name;
-	
-	Skill(String name) {
+	public Chest getBukkitChest() {
 		
-		this.name = name;
+		return bukkitChest;
 	}
 	
-	@Override
-	public String getName() {
+	public byte getTier() {
 		
-		return name;
+		return tier;
+	}
+	
+	public void fill() {
+		
+		
 	}
 }

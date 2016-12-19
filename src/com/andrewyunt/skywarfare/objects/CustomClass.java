@@ -23,13 +23,16 @@ public class CustomClass {
 	private Skill skillOne;
 	private Skill skillTwo;
 	
-	public CustomClass(String name) {
+	public CustomClass() {
 		
-		this.name = name;
-		
-		ultimate = Ultimate.EXPLODE;
+		ultimate = Ultimate.HEAL;
 		skillOne = Skill.POWERFUL_WEAKNESS;
 		skillTwo = Skill.FLURRY;
+	}
+	
+	public void setName(String name) {
+		
+		this.name = name;
 	}
 	
 	public String getName() {
@@ -37,9 +40,19 @@ public class CustomClass {
 		return name;
 	}
 	
+	public void setKit(Kit kit) {
+		
+		this.kit = kit;
+	}
+	
 	public Kit getKit() {
 		
 		return kit;
+	}
+	
+	public void setUltimate(Ultimate ultimate) {
+		
+		this.ultimate = ultimate;
 	}
 	
 	public Ultimate getUltimate() {
@@ -47,9 +60,19 @@ public class CustomClass {
 		return ultimate;
 	}
 	
+	public void setSkillOne(Skill skillOne) {
+		
+		this.skillOne = skillOne;
+	}
+	
 	public Skill getSkillOne() {
 		
 		return skillOne;
+	}
+	
+	public void setSkillTwo(Skill skillTwo) {
+		
+		this.skillTwo = skillTwo;
 	}
 	
 	public Skill getSkillTwo() {

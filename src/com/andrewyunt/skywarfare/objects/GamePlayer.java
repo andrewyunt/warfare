@@ -75,9 +75,14 @@ public class GamePlayer {
 		return Bukkit.getServer().getPlayer(uuid);
 	}
 	
+	public void setCustomClass(CustomClass customClass) {
+		
+		this.customClass = customClass;
+	}
+	
 	public CustomClass getCustomClass() {
 		
-		return new CustomClass("test");
+		return new CustomClass();
 		//return customClass;
 	}
 	

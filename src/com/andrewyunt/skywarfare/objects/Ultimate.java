@@ -22,13 +22,14 @@ package com.andrewyunt.skywarfare.objects;
  */
 public enum Ultimate implements Upgradable {
 
-	HEAL("Heal", 0),
-	EXPLOSIVE_ARROW("Explosive Arrow", 0),
-	LIGHTNING("Lightning", 0),
-	EXPLODE("Explode", 0),
-	TORNADO("Tornado", 0),
-	WITHER_HEADS("Master's Attack", 0);
-
+	HEAL("Heal", 4),
+	WRATH("Weath", 6),
+	HELL_SPAWNING("Hell's Spawning", 2),
+	LEAP("Leap", 4),
+	SONIC("Sonic", 3),
+	WITHERING("Withering", 5),
+	FLAMING_FEET("Flaming Feet", 4);
+	
 	private String name;
 	private int energyPerClick;
 
@@ -49,7 +50,10 @@ public enum Ultimate implements Upgradable {
 		return energyPerClick;
 	}
 	
-	public void use() {
+	public void use(GamePlayer player) {
 		
+		if (this == HEAL) {
+			
+		}
 	}
 }
