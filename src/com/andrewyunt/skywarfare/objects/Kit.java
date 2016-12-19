@@ -15,6 +15,18 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 public enum Kit {
 	
 	ARMORER("Armorer"),
@@ -42,8 +54,117 @@ public enum Kit {
 	
 	public void giveItems(GamePlayer player) {
 		
+		PlayerInventory inv = player.getBukkitPlayer().getInventory();
+		
 		if (this == ARMORER) {
 			
+			inv.setHelmet(new ItemStack(Material.GOLD_HELMET));
+			inv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
+			inv.setLeggings(new ItemStack(Material.GOLD_LEGGINGS, 1));
+			
+		} else if (this == ARCHER) {
+			
+			ItemStack bow = new ItemStack(Material.BOW, 1);
+			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+			inv.addItem(bow);
+			inv.addItem(new ItemStack(Material.ARROW, 32));
+			
+		} else if (this == SWORDSMAN) {
+			
+			ItemStack sword = new ItemStack(Material.STONE_SWORD, 1);
+			sword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+			inv.addItem(sword);
+			inv.setHelmet(new ItemStack(Material.IRON_HELMET, 1));
+			
+		} else if (this == BOOSTER) {
+			
+			ItemStack bow = new ItemStack(Material.BOW);
+			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
+			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+			inv.addItem(bow);
+			inv.addItem(new ItemStack(Material.ARROW, 1));
+			
+		} else if (this == CANNONER) {
+			
+			ItemStack boots = new ItemStack(Material.IRON_BOOTS);
+			boots.addEnchantment(Enchantment.PROTECTION_FALL, 3);
+			inv.addItem(boots);
+			inv.addItem(new ItemStack(Material.TNT, 16));
+			inv.addItem(new ItemStack(Material.WOOD_PLATE, 1));
+			inv.addItem(new ItemStack(Material.BUCKET, 1));
+			
+		} else if (this == HEALER) {
+			
+			ItemStack healingPotion = new ItemStack(Material.POTION, 1);
+			PotionMeta healingPotionMeta = (PotionMeta) healingPotion.getItemMeta();
+			PotionEffect healingEffect = new PotionEffect(PotionEffectType.HEAL, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "HEAL 2" + ChatColor.RED + "\u2764");
+			healingPotionMeta.setLore(lore);
+			healingPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Health Potion");
+			healingPotionMeta.setMainEffect(PotionEffectType.HEAL);
+			healingPotionMeta.addCustomEffect(healingEffect, true);
+			healingPotion.setItemMeta(healingPotionMeta);
+			inv.addItem(healingPotion);
+			
+			ItemStack regenPotion = new ItemStack(Material.POTION, 1);
+			PotionMeta regenPotionMeta = (PotionMeta) regenPotion.getItemMeta();
+			PotionEffect regenEffect = new PotionEffect(PotionEffectType.REGENERATION, 660, 2, false);
+			lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "REGENERATION 2" + ChatColor.RED + "\u2764");
+			regenPotionMeta.setLore(lore);
+			regenPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Regeneration Potion");
+			regenPotionMeta.setMainEffect(PotionEffectType.REGENERATION);
+			regenPotionMeta.addCustomEffect(regenEffect, true);
+			regenPotion.setItemMeta(regenPotionMeta);
+			inv.addItem(regenPotion);
+			
+		} else if (this == ENCHANTER) {
+			
+			inv.addItem(new ItemStack(Material.DIAMOND_SPADE, 1));
+			inv.addItem(new ItemStack(Material.ENCHANTMENT_TABLE, 1));
+			inv.addItem(new ItemStack(Material.EXP_BOTTLE, 32));
+		
+		} else if (this == FISHERMAN) {
+			
+			inv.setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
+			inv.addItem(new ItemStack(Material.FISHING_ROD, 1));
+			inv.addItem(new ItemStack(Material.COOKED_FISH, 16));
+			
+		} else if (this == SCOUT) {
+			
+			ItemStack speedPotion = new ItemStack(Material.POTION, 3);
+			PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
+			PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
+			speedPotionMeta.setLore(lore);
+			speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
+			speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
+			speedPotionMeta.addCustomEffect(speedEffect, true);
+			speedPotion.setItemMeta(speedPotionMeta);
+			inv.addItem(speedPotion);
+			
+			inv.addItem(new ItemStack(Material.STONE_SWORD, 1));
+		} else if (this == PYROMANIAC) {
+			
+			ItemStack sword = new ItemStack(Material.WOOD_SWORD, 1);
+			sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+			inv.addItem(sword);
+			inv.addItem(new ItemStack(Material.LAVA_BUCKET, 5));
+			inv.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
+			
+			ItemStack frPotion = new ItemStack(Material.POTION, 3);
+			PotionMeta frMeta = (PotionMeta) frPotion.getItemMeta();
+			PotionEffect frEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "Fire Resistance 2" + ChatColor.RED + "\u2764");
+			frMeta.setLore(lore);
+			frMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Fire Resistance Potion");
+			frMeta.setMainEffect(PotionEffectType.FIRE_RESISTANCE);
+			frMeta.addCustomEffect(frEffect, true);
+			frPotion.setItemMeta(frMeta);
+			inv.addItem(frPotion);
 		}
 	}
 }
