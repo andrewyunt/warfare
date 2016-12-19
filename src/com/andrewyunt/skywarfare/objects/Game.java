@@ -25,6 +25,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
@@ -159,9 +161,13 @@ public class Game {
 			if (entity.getType() != EntityType.PLAYER)
 				entity.remove();
 		
-		// Update player name colors
-		for (GamePlayer player : players)
+		for (GamePlayer player : players) {
+			// Update player's name color
 			Utils.colorPlayerName(player, SkyWarfare.getInstance().getGame().getPlayers());
+			
+			// Give player speed 2 for 10 seconds if they have HEAD_START Skill
+			player.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
+		}
 		
 		for (Cage cage : cages)
 			cage.destroy();
