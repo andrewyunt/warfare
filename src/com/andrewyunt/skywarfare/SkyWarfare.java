@@ -3,6 +3,7 @@ package com.andrewyunt.skywarfare;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.andrewyunt.skywarfare.command.SWCommand;
 import com.andrewyunt.skywarfare.configuration.ArenaConfiguration;
 import com.andrewyunt.skywarfare.db.DataSource;
 import com.andrewyunt.skywarfare.db.MySQLSource;
@@ -43,6 +44,8 @@ public class SkyWarfare extends JavaPlugin {
 		pm.registerEvents(new PlayerUltimateListener(), this);
 		pm.registerEvents(new PlayerSkillListener(), this);
 		pm.registerEvents(new SpectatorsInteractionsListener(), this);
+		
+		getCommand("sw").setExecutor(new SWCommand());
 	}
 	
 	public static SkyWarfare getInstance() {

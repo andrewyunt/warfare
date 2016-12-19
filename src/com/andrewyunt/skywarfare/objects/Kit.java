@@ -17,14 +17,33 @@ package com.andrewyunt.skywarfare.objects;
 
 public enum Kit {
 	
-	ARMORER,
-	ARCHER,
-	SWORDSMAN,
-	BOOSTED,
-	CANNONER,
-	HEALER,
-	ENCHANTER,
-	FISHERMAN,
-	SCOUT,
-	PYROMANIAC;
+	ARMORER("Armorer"),
+	ARCHER("Archer"),
+	SWORDSMAN("Swordsman"),
+	BOOSTER("Booster"),
+	CANNONER("Cannoner"),
+	HEALER("Healer"),
+	ENCHANTER("Enchanter"),
+	FISHERMAN("Fisherman"),
+	SCOUT("Scout"),
+	PYROMANIAC("Pyromaniac");
+	
+	private String name;
+	
+	Kit(String name) {
+		
+		this.name = name;
+	}
+	
+	public String getName() {
+		
+		return name;
+	}
+	
+	public void giveItems(GamePlayer player) {
+		
+		if (this == ARMORER) {
+			
+		}
+	}
 }

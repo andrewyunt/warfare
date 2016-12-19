@@ -15,16 +15,21 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public class Cage {
 	
 	private String name;
 	private Location location;
 	private GamePlayer player;
+	private Set<Block> blocks = new HashSet<Block>();
 	
 	public Cage(String name, Location location) {
 		
@@ -35,29 +40,32 @@ public class Cage {
 		double Y = location.getY();
 		double Z = location.getZ();
 		
-		// Set bottom block
-		world.getBlockAt(new Location(world, X, Y, Z)).setType(Material.GLASS);
+		// bottom block
+		blocks.add(world.getBlockAt(new Location(world, X, Y, Z)));
 		
-		// Set side bottom blocks
-		world.getBlockAt(new Location(world, X - 1, Y + 1, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X + 1, Y + 1, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 1, Z - 1)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 1, Z + 1)).setType(Material.GLASS);
+		// side bottom blocks
+		blocks.add(world.getBlockAt(new Location(world, X - 1, Y + 1, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X + 1, Y + 1, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 1, Z - 1)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 1, Z + 1)));
 		
-		// Set side middle blocks
-		world.getBlockAt(new Location(world, X - 1, Y + 2, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X + 1, Y + 2, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 2, Z - 1)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 2, Z + 1)).setType(Material.GLASS);
+		// side middle blocks
+		blocks.add(world.getBlockAt(new Location(world, X - 1, Y + 2, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X + 1, Y + 2, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 2, Z - 1)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 2, Z + 1)));
 		
-		// Set side top blocks
-		world.getBlockAt(new Location(world, X - 1, Y + 3, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X + 1, Y + 3, Z)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 3, Z - 1)).setType(Material.GLASS);
-		world.getBlockAt(new Location(world, X, Y + 3, Z + 1)).setType(Material.GLASS);
+		// side top blocks
+		blocks.add(world.getBlockAt(new Location(world, X - 1, Y + 3, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X + 1, Y + 3, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z - 1)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z + 1)));
 		
-		// Set top block
-		world.getBlockAt(new Location(world, X, Y + 4, Z)).setType(Material.GLASS);
+		// top block
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 4, Z)));
+		
+		for (Block block : blocks)
+			block.setType(Material.GLASS);
 	}
 	
 	public String getName() {
@@ -75,7 +83,7 @@ public class Cage {
 		if (!chunk.isLoaded())
 			chunk.load();
 		
-		location.setY(location.getY() + 2);
+		location.setY(location.getY() + 1);
 		
 		player.getBukkitPlayer().teleport(location);
 		
@@ -94,5 +102,7 @@ public class Cage {
 	
 	public void destroy() {
 		
+		for (Block block : blocks)
+			block.setType(Material.AIR);
 	}
 }
