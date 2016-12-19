@@ -227,7 +227,7 @@ public class SWCommand implements CommandExecutor {
 			
 			Game game = SkyWarfare.getInstance().getGame();
 			
-			game.setStage(Game.Stage.WAITING);
+			game.setStage(Game.Stage.BATTLE);
 			
 		} else if (args[0].equalsIgnoreCase("restart")) {
 			
