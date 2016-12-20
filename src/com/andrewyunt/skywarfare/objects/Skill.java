@@ -30,7 +30,7 @@ import org.bukkit.potion.PotionEffectType;
  * 
  * @author Andrew Yunt
  */
-public enum Skill implements Upgradable {
+public enum Skill implements Purchasable {
 	
 	RESISTANCE("Resistance"),
 	JUGGERNAUT("Juggernaut"),
@@ -51,7 +51,8 @@ public enum Skill implements Upgradable {
 		
 		return name;
 	}
-
+	
+	@Override
 	public ItemStack getDisplayItem() {
 		
 		if (this == RESISTANCE) {

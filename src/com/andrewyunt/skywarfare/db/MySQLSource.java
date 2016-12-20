@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
-import com.andrewyunt.skywarfare.objects.Upgradable;
+import com.andrewyunt.skywarfare.objects.Purchasable;
 
 public class MySQLSource extends DataSource {
 	
@@ -85,8 +85,8 @@ public class MySQLSource extends DataSource {
 			scheduler.runTaskAsynchronously(SkyWarfare.getInstance(), () -> {
 				savePlayer(player, uuid);
 				
-				for (Map.Entry<Upgradable, Integer> entry : player.getUpgradeLevels().entrySet()) {
-					Upgradable upgradable = entry.getKey();
+				for (Map.Entry<Purchasable, Integer> entry : player.getUpgradeLevels().entrySet()) {
+					Purchasable upgradable = entry.getKey();
 					int level = entry.getValue();
 					
 					setLevel(player, upgradable, level);
@@ -95,8 +95,8 @@ public class MySQLSource extends DataSource {
 		} else {
 			savePlayer(player, uuid);
 			
-			for (Map.Entry<Upgradable, Integer> entry : player.getUpgradeLevels().entrySet()) {
-				Upgradable upgradable = entry.getKey();
+			for (Map.Entry<Purchasable, Integer> entry : player.getUpgradeLevels().entrySet()) {
+				Purchasable upgradable = entry.getKey();
 				int level = entry.getValue();
 				
 				setLevel(player, upgradable, level);
@@ -270,7 +270,7 @@ public class MySQLSource extends DataSource {
 	}
 	
 	@Override
-	public void setLevel(GamePlayer player, Upgradable upgradable, int level) {
+	public void setLevel(GamePlayer player, Purchasable upgradable, int level) {
 		
 		String uuid = player.getUUID().toString();
 		
@@ -300,7 +300,7 @@ public class MySQLSource extends DataSource {
 	}
 	
 	@Override
-	public int getLevel(GamePlayer player, Upgradable upgradable) {
+	public int getLevel(GamePlayer player, Purchasable upgradable) {
 		
 		String uuid = player.getUUID().toString();
 		

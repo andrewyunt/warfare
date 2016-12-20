@@ -16,15 +16,20 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
+import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
@@ -34,42 +39,49 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		
-		final Player bp = event.getPlayer();
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
 		
-		bp.setMaximumNoDamageTicks(0); // Part of the EPC
+		// Create the player's GamePlayer object
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		final GamePlayer finalGP = gp;
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
-			GamePlayer player = null;
-			
-			// Get the player's GamePlayer object and if it doesn't exist, add it
-			try {
-				player = SkyWarfare.getInstance().getPlayerManager().createPlayer(bp.getUniqueId());
-			} catch (PlayerException e) {
-				e.printStackTrace();
+			if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby")) {
+				finalGP.updateHotbar();
+			} else {
+				Player bp = event.getPlayer();
+				
+				bp.setMaximumNoDamageTicks(0); // Part of the EPC
+				
+				Game game = SkyWarfare.getInstance().getGame();
+				
+				if (SkyWarfare.getInstance().getArena().isEdit()) {
+					bp.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
+					return;
+				}
+				
+				if (game.getStage() == Stage.WAITING) {
+					player.sendMessage(ChatColor.GREEN + "You can use " + ChatColor.AQUA + "/lobby"
+							+ ChatColor.GREEN + " to return to the lobby.");
+					game.addPlayer(finalGP);
+					return;
+				} else if (game.getStage() == Stage.RESTART) {
+					player.kickPlayer("You may not join during a restart.");
+					return;
+				}
+				
+				if (game.getStage() != Stage.WAITING && !bp.hasPermission("skywarfare.spectatorjoin"))
+					bp.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
+				else
+					finalGP.setSpectating(true);
 			}
-			
-			Game game = SkyWarfare.getInstance().getGame();
-			
-			if (SkyWarfare.getInstance().getArena().isEdit()) {
-				bp.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
-				return;
-			}
-			
-			if (game.getStage() == Stage.WAITING) {
-				player.getBukkitPlayer().sendMessage(ChatColor.GREEN + "You can use " + ChatColor.AQUA + "/lobby"
-						+ ChatColor.GREEN + " to return to the lobby.");
-				game.addPlayer(player);
-				return;
-			} else if (game.getStage() == Stage.RESTART) {
-				player.getBukkitPlayer().kickPlayer("You may not join during a restart.");
-				return;
-			}
-			
-			if (game.getStage() != Stage.WAITING && !bp.hasPermission("skywarfare.spectatorjoin"))
-				bp.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
-			else
-				player.setSpectating(true);
 		}, 1L);
 	}
 
@@ -92,5 +104,34 @@ public class PlayerListener implements Listener {
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		
+		if (!SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
+		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+		
+		ItemStack item = event.getItem();
+		
+		if (item == null || !item.hasItemMeta())
+			return;
+		
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(player.getName());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		Material type = item.getType();
+		
+		if (type == Material.EMERALD)
+			SkyWarfare.getInstance().getShopMenu().open(gp, ShopMenu.Type.MAIN);
 	}
 }

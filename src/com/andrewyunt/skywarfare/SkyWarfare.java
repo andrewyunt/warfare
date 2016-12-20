@@ -12,6 +12,8 @@ import com.andrewyunt.skywarfare.listeners.PlayerSkillListener;
 import com.andrewyunt.skywarfare.listeners.PlayerUltimateListener;
 import com.andrewyunt.skywarfare.listeners.SpectatorsInteractionsListener;
 import com.andrewyunt.skywarfare.managers.PlayerManager;
+import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
+import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Arena;
 import com.andrewyunt.skywarfare.objects.Game;
 
@@ -22,6 +24,8 @@ public class SkyWarfare extends JavaPlugin {
 	private final DataSource dataSource = new MySQLSource();
 	private PlayerManager playerManager = new PlayerManager();
 	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
+	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
+	private ShopMenu shopMenu = new ShopMenu();
 	private Arena arena;
 	private Game game;
 	
@@ -41,9 +45,15 @@ public class SkyWarfare extends JavaPlugin {
 		
 		// Register events
 		pm.registerEvents(new PlayerListener(), this);
-		pm.registerEvents(new PlayerUltimateListener(), this);
-		pm.registerEvents(new PlayerSkillListener(), this);
-		pm.registerEvents(new SpectatorsInteractionsListener(), this);
+		
+		if (getConfig().getBoolean("is-lobby")) {
+			pm.registerEvents(classCreatorMenu, this);
+			pm.registerEvents(shopMenu, this);
+		} else {
+			pm.registerEvents(new PlayerUltimateListener(), this);
+			pm.registerEvents(new PlayerSkillListener(), this);
+			pm.registerEvents(new SpectatorsInteractionsListener(), this);
+		}
 		
 		getCommand("sw").setExecutor(new SWCommand());
 	}
@@ -81,5 +91,15 @@ public class SkyWarfare extends JavaPlugin {
 	public void setGame(Game game) {
 		
 		this.game = game;
+	}
+	
+	public ClassCreatorMenu getClassCreatorMenu() {
+		
+		return classCreatorMenu;
+	}
+	
+	public ShopMenu getShopMenu() {
+		
+		return shopMenu;
 	}
 }

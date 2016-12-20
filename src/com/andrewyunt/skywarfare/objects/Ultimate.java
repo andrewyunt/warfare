@@ -31,7 +31,7 @@ import org.bukkit.potion.PotionEffectType;
  * 
  * @author Andrew Yunt
  */
-public enum Ultimate implements Upgradable {
+public enum Ultimate implements Purchasable {
 
 	HEAL("Heal", 4),
 	WRATH("Weath", 6),
@@ -61,6 +61,7 @@ public enum Ultimate implements Upgradable {
 		return energyPerClick;
 	}
 	
+	@Override
 	public ItemStack getDisplayItem() {
 		
 		if (this == HEAL) {

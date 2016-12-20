@@ -23,8 +23,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -36,7 +39,7 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private CustomClass customClass;
-	private Map<Upgradable, Integer> upgradeLevels = new HashMap<Upgradable, Integer>();
+	private Map<Purchasable, Integer> upgradeLevels = new HashMap<Purchasable, Integer>();
 	private int coins, wins, energy;
 	private boolean cooldown, hasSpeed, loaded, spectating;
 	private DynamicScoreboard dynamicScoreboard;
@@ -86,7 +89,7 @@ public class GamePlayer {
 		//return customClass;
 	}
 	
-	public int getLevel(Upgradable upgradable) {
+	public int getLevel(Purchasable upgradable) {
 		
 		if (upgradeLevels.containsKey(upgradable))
 			return upgradeLevels.get(upgradable);
@@ -94,7 +97,7 @@ public class GamePlayer {
 		return 1;
 	}
 	
-	public Map<Upgradable, Integer> getUpgradeLevels() {
+	public Map<Purchasable, Integer> getUpgradeLevels() {
 		
 		return upgradeLevels;
 	}
@@ -207,5 +210,16 @@ public class GamePlayer {
 	public void updateDynamicScoreboard() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void updateHotbar() {
+		
+		Player bp = getBukkitPlayer();
+		
+		ItemStack shop = new ItemStack(Material.EMERALD, 1);
+		ItemMeta shopMeta = shop.getItemMeta();
+		shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
+		shop.setItemMeta(shopMeta);
+		bp.getInventory().setItem(0, shop);
 	}
 }

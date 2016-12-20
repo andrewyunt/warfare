@@ -13,48 +13,26 @@
  * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
  * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
  */
-package com.andrewyunt.skywarfare.db;
+package com.andrewyunt.skywarfare.objects;
 
-import java.util.Map;
+import org.bukkit.inventory.ItemStack;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.Inventory;
-
-import com.andrewyunt.skywarfare.objects.CustomClass;
-import com.andrewyunt.skywarfare.objects.GamePlayer;
-import com.andrewyunt.skywarfare.objects.Purchasable;
-
-public abstract class DataSource {
+/**
+ * The Purchasable interface is used to guarantee that the classes / enums
+ * implementing it will have the same methods and will be able to be used
+ * for the methods that use Purchasable as a parameter.
+ * 
+ * @author Andrew Yunt
+ */
+public interface Purchasable {
 	
-	public abstract boolean connect();
+	/**
+	 * @return The display name for the Purchasable.
+	 */
+	public String getName();
 	
-	public abstract void disconnect();
-	
-	public abstract void savePlayer(GamePlayer player);
-	
-	public abstract void loadPlayer(GamePlayer player);
-	
-	public abstract void saveLayout(GamePlayer player, CustomClass customClass, Inventory inv);
-	
-	public abstract Inventory loadLayout(GamePlayer player, CustomClass customClass);
-
-	public abstract void setLevel(GamePlayer player, Purchasable upgradable, int level);
-	
-	public abstract int getLevel(GamePlayer player, Purchasable upgradable);
-	
-	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills(boolean weekly,
-			boolean finalKill, CustomClass classType);
-	
-	public void updateDB() {
-		
-		createPlayersTable();
-		createLayoutsTable();
-		createUpgradesTable();
-	}
-	
-	public abstract void createPlayersTable();
-
-	public abstract void createLayoutsTable();
-	
-	public abstract void createUpgradesTable();
+	/**
+	 * @return The display item for the Purchasable.
+	 */
+	public ItemStack getDisplayItem();
 }

@@ -27,7 +27,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public enum Kit {
+public enum Kit implements Purchasable{
 	
 	ARMORER("Armorer"),
 	ARCHER("Archer"),
@@ -47,9 +47,67 @@ public enum Kit {
 		this.name = name;
 	}
 	
+	@Override
 	public String getName() {
 		
 		return name;
+	}
+	
+	@Override
+	public ItemStack getDisplayItem() {
+		
+		if (this == ARMORER) {
+			return new ItemStack(Material.IRON_CHESTPLATE, 1);
+		} else if (this == ARCHER) {
+			ItemStack bow = new ItemStack(Material.BOW, 1);
+			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+			return bow;
+		} else if (this == SWORDSMAN) {
+			ItemStack sword = new ItemStack(Material.STONE_SWORD, 1);
+			sword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+			return sword;
+		} else if (this == BOOSTER) {
+			ItemStack bow = new ItemStack(Material.BOW);
+			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
+			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+			return bow;
+		} else if (this == CANNONER) {
+			ItemStack boots = new ItemStack(Material.IRON_BOOTS);
+			boots.addEnchantment(Enchantment.PROTECTION_FALL, 3);
+			return boots;
+		} else if (this == HEALER) {
+			ItemStack healingPotion = new ItemStack(Material.POTION, 1);
+			PotionMeta healingPotionMeta = (PotionMeta) healingPotion.getItemMeta();
+			PotionEffect healingEffect = new PotionEffect(PotionEffectType.HEAL, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "HEAL 2" + ChatColor.RED + "\u2764");
+			healingPotionMeta.setLore(lore);
+			healingPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Health Potion");
+			healingPotionMeta.setMainEffect(PotionEffectType.HEAL);
+			healingPotionMeta.addCustomEffect(healingEffect, true);
+			healingPotion.setItemMeta(healingPotionMeta);
+			return healingPotion;
+		} else if (this == ENCHANTER) {
+			return new ItemStack(Material.ENCHANTMENT_TABLE, 1);
+		} else if (this == FISHERMAN) {
+			return new ItemStack(Material.FISHING_ROD, 1);
+		} else if (this == SCOUT) {
+			ItemStack speedPotion = new ItemStack(Material.POTION, 3);
+			PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
+			PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
+			speedPotionMeta.setLore(lore);
+			speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
+			speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
+			speedPotionMeta.addCustomEffect(speedEffect, true);
+			speedPotion.setItemMeta(speedPotionMeta);
+			return speedPotion;
+		} else if (this == PYROMANIAC) {
+			return new ItemStack(Material.LAVA_BUCKET, 1);
+		}
+		
+		return null;
 	}
 	
 	public void giveItems(GamePlayer player) {
@@ -118,61 +176,5 @@ public enum Kit {
 			frPotion.setItemMeta(frMeta);
 			inv.addItem(frPotion);
 		}
-	}
-
-	public ItemStack getDisplayItem() {
-		
-		if (this == ARMORER) {
-			return new ItemStack(Material.IRON_CHESTPLATE, 1);
-		} else if (this == ARCHER) {
-			ItemStack bow = new ItemStack(Material.BOW, 1);
-			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-			return bow;
-		} else if (this == SWORDSMAN) {
-			ItemStack sword = new ItemStack(Material.STONE_SWORD, 1);
-			sword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-			return sword;
-		} else if (this == BOOSTER) {
-			ItemStack bow = new ItemStack(Material.BOW);
-			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
-			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
-			return bow;
-		} else if (this == CANNONER) {
-			ItemStack boots = new ItemStack(Material.IRON_BOOTS);
-			boots.addEnchantment(Enchantment.PROTECTION_FALL, 3);
-			return boots;
-		} else if (this == HEALER) {
-			ItemStack healingPotion = new ItemStack(Material.POTION, 1);
-			PotionMeta healingPotionMeta = (PotionMeta) healingPotion.getItemMeta();
-			PotionEffect healingEffect = new PotionEffect(PotionEffectType.HEAL, 1, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "HEAL 2" + ChatColor.RED + "\u2764");
-			healingPotionMeta.setLore(lore);
-			healingPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Health Potion");
-			healingPotionMeta.setMainEffect(PotionEffectType.HEAL);
-			healingPotionMeta.addCustomEffect(healingEffect, true);
-			healingPotion.setItemMeta(healingPotionMeta);
-			return healingPotion;
-		} else if (this == ENCHANTER) {
-			return new ItemStack(Material.ENCHANTMENT_TABLE, 1);
-		} else if (this == FISHERMAN) {
-			return new ItemStack(Material.FISHING_ROD, 1);
-		} else if (this == SCOUT) {
-			ItemStack speedPotion = new ItemStack(Material.POTION, 3);
-			PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
-			PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
-			speedPotionMeta.setLore(lore);
-			speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
-			speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
-			speedPotionMeta.addCustomEffect(speedEffect, true);
-			speedPotion.setItemMeta(speedPotionMeta);
-			return speedPotion;
-		} else if (this == PYROMANIAC) {
-			return new ItemStack(Material.LAVA_BUCKET, 1);
-		}
-		
-		return null;
 	}
 }
