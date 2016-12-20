@@ -23,13 +23,6 @@ public class CustomClass {
 	private Skill skillOne;
 	private Skill skillTwo;
 	
-	public CustomClass() {
-		
-		ultimate = Ultimate.HEAL;
-		skillOne = Skill.POWERFUL_WEAKNESS;
-		skillTwo = Skill.FLURRY;
-	}
-	
 	public void setName(String name) {
 		
 		this.name = name;

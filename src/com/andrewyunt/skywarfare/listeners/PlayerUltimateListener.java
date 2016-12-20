@@ -72,7 +72,7 @@ public class PlayerUltimateListener implements Listener {
 			if (!type.toString().toLowerCase().contains("sword"))
 				return;
 			
-			gp.getCustomClass().getUltimate().use();
+			gp.getCustomClass().getUltimate().use(gp);
 		}
 	}
 	
