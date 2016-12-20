@@ -96,21 +96,14 @@ public class MySQLSource extends DataSource {
 			savePlayer(player, uuid);
 	}
 	
-	String query = "CREATE TABLE IF NOT EXISTS `Players`"
-			+ "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
-			+ "   `class`            CHAR(20) NOT NULL,"
-			+ "   `coins`            INT,"
-			+ "   `earned_coins`     INT,"
-			+ "   `kills`            INT);";
-	
 	private void savePlayer(GamePlayer player, String uuid) {
 		
 		savePurchases(player);
 		saveClasses(player);
 		
-		String query = "INSERT INTO Players (uuid, class, coins, earned_coins, wins)"
-				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
-				+ " earned_coins = VALUES(earned_coins), wins = VALUES(wins);";
+		String query = "INSERT INTO Players (uuid, class, coins, earned_coins, kills, wins)"
+				+ " VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
+				+ " earned_coins = VALUES(earned_coins), kills = VALUES(kills), wins = VALUES(wins);";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -120,7 +113,8 @@ public class MySQLSource extends DataSource {
 					: player.getCustomClass().getName());
 			preparedStatement.setInt(4, player.getCoins());
 			preparedStatement.setInt(5, player.getEarnedCoins());
-			preparedStatement.setInt(6, player.getWins());
+			preparedStatement.setInt(6, player.getKills());
+			preparedStatement.setInt(7, player.getWins());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
@@ -170,6 +164,7 @@ public class MySQLSource extends DataSource {
 					
 					player.setCoins(resultSet.getInt("coins"));
 					player.setEarnedCoins(resultSet.getInt("earned_coins"));
+					player.setKills(resultSet.getInt("kills"));
 					player.setWins(resultSet.getInt("wins"));
 				}
 			} catch (SQLException e) {
@@ -391,7 +386,8 @@ public class MySQLSource extends DataSource {
 				+ "   `class`            CHAR(20) NOT NULL,"
 				+ "   `coins`            INT,"
 				+ "   `earned_coins`     INT,"
-				+ "   `kills`            INT);";
+				+ "   `kills`            INT,"
+				+ "   `wins`             INT);";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);

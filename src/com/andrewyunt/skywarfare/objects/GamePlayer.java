@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
@@ -39,7 +40,7 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private CustomClass customClass;
-	private int coins, earnedCoins, wins, energy;
+	private int coins, earnedCoins, wins, energy, kills;
 	private boolean cooldown, hasSpeed, loaded, spectating;
 	private Set<Purchasable> purchases = new HashSet<Purchasable>();
 	private Set<CustomClass> customClasses = new HashSet<CustomClass>();
@@ -52,6 +53,20 @@ public class GamePlayer {
 		// Set up scoreboard
 		dynamicScoreboard = new DynamicScoreboard(ChatColor.YELLOW + "" + ChatColor.BOLD + "MEGATW");
 		getBukkitPlayer().setScoreboard(dynamicScoreboard.getScoreboard());
+		
+		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncRepeatingTask(SkyWarfare.getInstance(), new Runnable() {
+			ChatColor curTitleColor = ChatColor.YELLOW;
+			
+			@Override
+			public void run() {
+				ChatColor newTitleColor = curTitleColor == ChatColor.YELLOW ? ChatColor.WHITE : ChatColor.YELLOW;
+				
+				dynamicScoreboard.getObjective().setDisplayName(newTitleColor.toString() + ChatColor.BOLD + "MEGATW");
+				
+				curTitleColor = newTitleColor;
+			}
+		}, 0L, 20L);
 		
 		// Register health objective
 		Objective healthObjective = dynamicScoreboard.getScoreboard().registerNewObjective(ChatColor.RED + "❤", "health");
@@ -108,6 +123,26 @@ public class GamePlayer {
 		return wins;
 	}
 	
+	public void addEnergy(int energy) {
+		
+		this.energy = this.energy + energy;
+	}
+	
+	public int getEnergy() {
+		
+		return energy;
+	}
+	
+	public void setKills(int kills) {
+		
+		this.kills = kills;
+	}
+	
+	public int getKills() {
+		
+		return kills;
+	}
+	
 	public void setCooldown(boolean cooldown) {
 		
 		this.cooldown = cooldown;
@@ -126,16 +161,6 @@ public class GamePlayer {
 	public boolean hasSpeed() {
 		
 		return hasSpeed;
-	}
-	
-	public void addEnergy(int energy) {
-		
-		this.energy = this.energy + energy;
-	}
-	
-	public int getEnergy() {
-		
-		return energy;
 	}
 	
 	public void setLoaded(boolean loaded) {
@@ -222,8 +247,28 @@ public class GamePlayer {
 	}
 	
 	public void updateDynamicScoreboard() {
-		// TODO Auto-generated method stub
 		
+		// Space
+		dynamicScoreboard.blankLine(8);
+		
+		// Display player's wins
+		dynamicScoreboard.update(7, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
+		
+		// Display player's coins */
+		dynamicScoreboard.update(6, "Coins" + ChatColor.GREEN + String.valueOf(coins));
+		
+		// Display player's kills */
+		dynamicScoreboard.update(5, "Kills" + ChatColor.GREEN + String.valueOf(kills));
+		
+		// Display player's chosen class 
+		dynamicScoreboard.update(4, "Chosen Class:");
+		dynamicScoreboard.update(3, ChatColor.GREEN + (customClass == null ? "None" : customClass.getName()));
+		
+		// Space
+		dynamicScoreboard.blankLine(2);
+		
+		// Display server's IP */
+		dynamicScoreboard.update(1, ChatColor.YELLOW + "mc.amosita.net");
 	}
 	
 	public void updateHotbar() {
