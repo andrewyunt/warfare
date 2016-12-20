@@ -19,12 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.WitherSkull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import com.andrewyunt.skywarfare.SkyWarfare;
+import com.andrewyunt.skywarfare.exception.PlayerException;
 
 /**
  * The enumeration for abilities, their names, and the method to use them.
@@ -105,8 +116,84 @@ public enum Ultimate implements Purchasable {
 	
 	public void use(GamePlayer player) {
 		
+		Player bp = player.getBukkitPlayer();
+		
+		player.setEnergy(0);
+		
 		if (this == HEAL) {
 			
+			bp.setHealth(((Damageable) bp).getHealth() + 6);
+		
+		} else if (this == WRATH) {
+			
+			int count = 0;
+
+			for (Entity entity : player.getBukkitPlayer().getNearbyEntities(3, 3, 3)) {
+				if (!(entity instanceof Player))
+					continue;
+
+				Player entityPlayer = (Player) entity;
+				GamePlayer entityAP = null;
+
+				try {
+					entityAP = SkyWarfare.getInstance().getPlayerManager().getPlayer(entityPlayer.getName());
+				} catch (PlayerException e) {
+					e.printStackTrace();
+				}
+
+				if (!entityAP.isInGame())
+					continue;
+				
+				entityPlayer.getWorld().strikeLightningEffect(entityPlayer.getLocation());
+				Damageable dmgVictim = (Damageable) entityPlayer;
+				dmgVictim.damage(0.00001D); // Just so an actual hit will register
+				
+				if (dmgVictim.getHealth() <= 5)
+					dmgVictim.setHealth(0D);
+				else
+					dmgVictim.setHealth(dmgVictim.getHealth() - 5);
+				
+				count++;
+			}
+			
+			if (count == 0) {
+				player.getBukkitPlayer().sendMessage(ChatColor.RED + "No targets within range found!");
+				return;
+			}
+			
+		} else if (this == HELL_SPAWNING) {
+			
+			Location loc = bp.getLocation();
+			
+			player.getGhasts().add(loc.getWorld().spawnEntity(loc, EntityType.GHAST).getUniqueId());
+			
+		} else if (this == LEAP) {
+			
+			bp.setVelocity(bp.getEyeLocation().getDirection().multiply(5.0));
+			
+		} else if (this == SONIC) {
+			
+			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
+			
+		} else if (this == WITHERING) {
+			
+			WitherSkull skull = bp.launchProjectile(WitherSkull.class, bp.getEyeLocation().getDirection());
+			skull.setMetadata("SkyWarfare", new FixedMetadataValue(SkyWarfare.getInstance(), true));
+			
+		} else if (this == FLAMING_FEET) {
+			
+			player.setFlamingFeet(true);
+			
+			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					
+					player.setFlamingFeet(false);
+				}
+			}, 100);
 		}
+		
+		bp.sendMessage(ChatColor.GOLD + String.format("You have used the %s ability.", getName()));
 	}
 }

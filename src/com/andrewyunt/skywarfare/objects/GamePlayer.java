@@ -41,10 +41,12 @@ public class GamePlayer {
 	private UUID uuid;
 	private CustomClass customClass;
 	private int coins, earnedCoins, wins, energy, kills;
-	private boolean cooldown, hasSpeed, loaded, spectating;
-	private Set<Purchasable> purchases = new HashSet<Purchasable>();
-	private Set<CustomClass> customClasses = new HashSet<CustomClass>();
+	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet;
 	private DynamicScoreboard dynamicScoreboard;
+	
+	private final Set<Purchasable> purchases = new HashSet<Purchasable>();
+	private final Set<CustomClass> customClasses = new HashSet<CustomClass>();
+	private final Set<UUID> ghasts = new HashSet<UUID>();
 	
 	public GamePlayer(UUID uuid) {
 		
@@ -123,9 +125,9 @@ public class GamePlayer {
 		return wins;
 	}
 	
-	public void addEnergy(int energy) {
+	public void setEnergy(int energy) {
 		
-		this.energy = this.energy + energy;
+		this.energy = energy;
 	}
 	
 	public int getEnergy() {
@@ -213,6 +215,16 @@ public class GamePlayer {
 		return spectating;
 	}
 	
+	public void setFlamingFeet(boolean flamingFeet) {
+		
+		this.flamingFeet = flamingFeet;
+	}
+	
+	public boolean isFlamingFeet() {
+		
+		return flamingFeet;
+	}
+	
 	public Set<Purchasable> getPurchases() {
 		
 		return purchases;
@@ -244,6 +256,11 @@ public class GamePlayer {
 	public DynamicScoreboard getDynamicScoreboard() {
 		
 		return dynamicScoreboard;
+	}
+	
+	public Set<UUID> getGhasts() {
+		
+		return ghasts;
 	}
 	
 	public void updateDynamicScoreboard() {

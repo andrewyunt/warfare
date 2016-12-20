@@ -117,7 +117,7 @@ public class PlayerUltimateListener implements Listener {
 				return;
 			}
 			
-			gpDamager.addEnergy(gpDamager.getCustomClass().getUltimate().getEnergyPerClick());
+			gpDamager.setEnergy(gpDamager.getEnergy() + gpDamager.getCustomClass().getUltimate().getEnergyPerClick());
 			
 			return;
 		}
@@ -156,63 +156,58 @@ public class PlayerUltimateListener implements Listener {
 			}.runTaskLater(SkyWarfare.getInstance(), 10L);
 		}
 	}
-
+	
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event) {
 		
 		if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT))
 				event.setCancelled(true);
 	}
-
+	
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event) {
-
+		
 		Entity entity = event.getEntity();
-
+		
 		if (!(entity instanceof Arrow))
 			return;
-
+		
 		if (!entity.hasMetadata("MegaTW"))
 			return;
-
+		
 		Player shooter = (Player) ((Projectile) entity).getShooter();
-		GamePlayer shooterGP = null;
-
-		try {
-			shooterGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(shooter.getName());
-		} catch (PlayerException e) {
-		}
 		
 		Location loc = entity.getLocation();
 		
 		loc.getWorld().createExplosion(loc, 5);
-
+		
 		for (Entity nearby : entity.getNearbyEntities(5D, 3D, 5D)) {
 			if (!(nearby instanceof Player))
 				continue;
-
+			
 			if (nearby == shooter)
 				continue;
-
+			
 			Player nearbyPlayer = (Player) nearby;
-
 			GamePlayer nearbyGP = null;
-
+			
 			try {
 				nearbyGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(nearbyPlayer.getName());
 			} catch (PlayerException e) {
+				e.printStackTrace();
 			}
-
-			double dmg = 1.5 + (shooterGP.getLevel(shooterGP.getCustomClass().getUltimate()) * .5);
-			Damageable dmgPlayer = (Damageable) nearbyPlayer;
-			dmgPlayer.damage(0.00001D);// So the player will get the kill
-												// as well as red damage and invisibility
 			
-			if (dmgPlayer.getHealth() < dmg) {
+			if (!nearbyGP.isInGame())
+				return;
+			
+			Damageable dmgPlayer = (Damageable) nearbyPlayer;
+			dmgPlayer.damage(0.00001D);// So the player will the red damage
+			
+			if (dmgPlayer.getHealth() < 5) {
 				dmgPlayer.setHealth(0D);
 				return;
 			} else
-				nearbyPlayer.setHealth(((Damageable) nearbyPlayer).getHealth() - dmg);
+				nearbyPlayer.setHealth(((Damageable) nearbyPlayer).getHealth() - 5);
 		}
 	}
 }
