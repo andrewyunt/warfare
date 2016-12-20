@@ -15,6 +15,16 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 /**
  * The enumeration for abilities, their names, and the method to use them.
  * 
@@ -40,5 +50,44 @@ public enum Skill implements Upgradable {
 	public String getName() {
 		
 		return name;
+	}
+
+	public ItemStack getDisplayItem() {
+		
+		if (this == RESISTANCE) {
+			return new ItemStack(Material.STONE_SWORD, 1);
+		} else if (this == JUGGERNAUT) {
+			return new ItemStack(Material.POTION, 1, (short) 0);
+		} else if (this == CONSUMPTION) {
+			ItemStack regenPotion = new ItemStack(Material.POTION, 1);
+			PotionMeta regenPotionMeta = (PotionMeta) regenPotion.getItemMeta();
+			PotionEffect regenEffect = new PotionEffect(PotionEffectType.REGENERATION, 660, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "REGENERATION 2" + ChatColor.RED + "\u2764");
+			regenPotionMeta.setLore(lore);
+			regenPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Regeneration Potion");
+			regenPotionMeta.setMainEffect(PotionEffectType.REGENERATION);
+			regenPotionMeta.addCustomEffect(regenEffect, true);
+			regenPotion.setItemMeta(regenPotionMeta);
+			return regenPotion;
+		} else if (this == HEAD_START) {
+			ItemStack speedPotion = new ItemStack(Material.POTION, 3);
+			PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
+			PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
+			speedPotionMeta.setLore(lore);
+			speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
+			speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
+			speedPotionMeta.addCustomEffect(speedEffect, true);
+			speedPotion.setItemMeta(speedPotionMeta);
+			return speedPotion;
+		} else if (this == GUARD) {
+			return new ItemStack(Material.CHEST, 1);
+		} else if (this == FLAME) {
+			return new ItemStack(Material.FIRE, 1);
+		}
+		
+		return null;
 	}
 }

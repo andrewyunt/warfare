@@ -15,6 +15,17 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 /**
  * The enumeration for abilities, their names, and the method to use them.
  * 
@@ -48,6 +59,39 @@ public enum Ultimate implements Upgradable {
 	public int getEnergyPerClick() {
 		
 		return energyPerClick;
+	}
+	
+	public ItemStack getDisplayItem() {
+		
+		if (this == HEAL) {
+			ItemStack healingPotion = new ItemStack(Material.POTION, 1);
+			PotionMeta healingPotionMeta = (PotionMeta) healingPotion.getItemMeta();
+			PotionEffect healingEffect = new PotionEffect(PotionEffectType.HEAL, 1, 2, false);
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.RESET + "HEAL 2" + ChatColor.RED + "\u2764");
+			healingPotionMeta.setLore(lore);
+			healingPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Health Potion");
+			healingPotionMeta.setMainEffect(PotionEffectType.HEAL);
+			healingPotionMeta.addCustomEffect(healingEffect, true);
+			healingPotion.setItemMeta(healingPotionMeta);
+			return healingPotion;
+		} else if (this == WRATH) {
+			return new ItemStack(Material.DIAMOND_SWORD, 1);
+		} else if (this == HELL_SPAWNING) {
+			return new ItemStack(Material.FIREBALL, 1);
+		} else if (this == LEAP) {
+			return new ItemStack(Material.FISHING_ROD, 1);
+		} else if (this == SONIC) {
+			return new ItemStack(Material.FEATHER, 1);
+		} else if (this == WITHERING) {
+			return new ItemStack(Material.SKULL, 1, (short) 1);
+		} else if (this == FLAMING_FEET) {
+			ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS, 1);
+			ironBoots.addEnchantment(Enchantment.PROTECTION_FIRE, 1);
+			return ironBoots;
+		}
+		
+		return null;
 	}
 	
 	public void use(GamePlayer player) {
