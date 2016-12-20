@@ -16,13 +16,8 @@
 package com.andrewyunt.skywarfare.db;
 
 import java.util.Map;
-
 import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.Inventory;
-
-import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
-import com.andrewyunt.skywarfare.objects.Purchasable;
 
 public abstract class DataSource {
 	
@@ -34,27 +29,26 @@ public abstract class DataSource {
 	
 	public abstract void loadPlayer(GamePlayer player);
 	
-	public abstract void saveLayout(GamePlayer player, CustomClass customClass, Inventory inv);
+	public abstract void savePurchases(GamePlayer player);
 	
-	public abstract Inventory loadLayout(GamePlayer player, CustomClass customClass);
-
-	public abstract void setLevel(GamePlayer player, Purchasable upgradable, int level);
+	public abstract void loadPurchases(GamePlayer player);
 	
-	public abstract int getLevel(GamePlayer player, Purchasable upgradable);
+	public abstract void saveClasses(GamePlayer player);
 	
-	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills(boolean weekly,
-			boolean finalKill, CustomClass classType);
+	public abstract void loadClasses(GamePlayer player);
+	
+	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills();
 	
 	public void updateDB() {
 		
 		createPlayersTable();
-		createLayoutsTable();
-		createUpgradesTable();
+		createPurchasesTable();
+		createClassesTable();
 	}
 	
 	public abstract void createPlayersTable();
 
-	public abstract void createLayoutsTable();
+	public abstract void createPurchasesTable();
 	
-	public abstract void createUpgradesTable();
+	public abstract void createClassesTable();
 }

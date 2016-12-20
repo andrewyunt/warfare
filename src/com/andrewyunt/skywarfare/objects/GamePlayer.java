@@ -15,8 +15,8 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -39,25 +39,15 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private CustomClass customClass;
-	private Map<Purchasable, Integer> upgradeLevels = new HashMap<Purchasable, Integer>();
-	private int coins, wins, energy;
+	private int coins, earnedCoins, wins, energy;
 	private boolean cooldown, hasSpeed, loaded, spectating;
+	private Set<Purchasable> purchases = new HashSet<Purchasable>();
+	private Set<CustomClass> customClasses = new HashSet<CustomClass>();
 	private DynamicScoreboard dynamicScoreboard;
 	
 	public GamePlayer(UUID uuid) {
 		
 		this.uuid = uuid;
-		
-		// Load upgradable levels
-		/*for (Ultimate ultimate : Ultimate.values()) {
-			int level = SkyWarfare.getInstance().getDataSource().getLevel(this, ultimate);
-			upgradeLevels.put(ultimate, level);
-		}
-		
-		for (Skill skill : Skill.values()) {
-			int level = SkyWarfare.getInstance().getDataSource().getLevel(this, skill);
-			upgradeLevels.put(skill, level);
-		}*/
 		
 		// Set up scoreboard
 		dynamicScoreboard = new DynamicScoreboard(ChatColor.YELLOW + "" + ChatColor.BOLD + "MEGATW");
@@ -85,21 +75,7 @@ public class GamePlayer {
 	
 	public CustomClass getCustomClass() {
 		
-		return new CustomClass();
-		//return customClass;
-	}
-	
-	public int getLevel(Purchasable upgradable) {
-		
-		if (upgradeLevels.containsKey(upgradable))
-			return upgradeLevels.get(upgradable);
-		
-		return 1;
-	}
-	
-	public Map<Purchasable, Integer> getUpgradeLevels() {
-		
-		return upgradeLevels;
+		return customClass;
 	}
 	
 	public void setCoins(int coins) {
@@ -110,6 +86,16 @@ public class GamePlayer {
 	public int getCoins() {
 		
 		return coins;
+	}
+	
+	public void setEarnedCoins(int earnedCoins) {
+		
+		this.earnedCoins = earnedCoins;
+	}
+	
+	public int getEarnedCoins() {
+		
+		return earnedCoins;
 	}
 	
 	public void setWins(int wins) {
@@ -200,6 +186,34 @@ public class GamePlayer {
 	public boolean isSpectating() {
 		
 		return spectating;
+	}
+	
+	public Set<Purchasable> getPurchases() {
+		
+		return purchases;
+	}
+	
+	public boolean hasPurchased(Purchasable purchasable) {
+		
+		for (Purchasable purchase : purchases)
+			if (purchase.toString().equals(purchasable.toString()))
+				return true;
+		
+		return false;
+	}
+	
+	public Set<CustomClass> getCustomClasses() {
+		
+		return customClasses;
+	}
+	
+	public CustomClass getCustomClass(String name) {
+		
+		for (CustomClass customClass : customClasses)
+			if (customClass.getName().equalsIgnoreCase(name))
+				return customClass;
+		
+		return null;
 	}
 	
 	public DynamicScoreboard getDynamicScoreboard() {

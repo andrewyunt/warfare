@@ -20,16 +20,23 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
+import com.andrewyunt.skywarfare.objects.Skill;
+import com.andrewyunt.skywarfare.objects.Ultimate;
 
 public class MySQLSource extends DataSource {
 	
@@ -84,41 +91,33 @@ public class MySQLSource extends DataSource {
 			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 			scheduler.runTaskAsynchronously(SkyWarfare.getInstance(), () -> {
 				savePlayer(player, uuid);
-				
-				for (Map.Entry<Purchasable, Integer> entry : player.getUpgradeLevels().entrySet()) {
-					Purchasable upgradable = entry.getKey();
-					int level = entry.getValue();
-					
-					setLevel(player, upgradable, level);
-				}
 			});
-		} else {
+		} else
 			savePlayer(player, uuid);
-			
-			for (Map.Entry<Purchasable, Integer> entry : player.getUpgradeLevels().entrySet()) {
-				Purchasable upgradable = entry.getKey();
-				int level = entry.getValue();
-				
-				setLevel(player, upgradable, level);
-			}
-		}
 	}
 	
+	String query = "CREATE TABLE IF NOT EXISTS `Players`"
+			+ "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
+			+ "   `class`            CHAR(20) NOT NULL,"
+			+ "   `coins`            INT,"
+			+ "   `earned_coins`     INT,"
+			+ "   `kills`            INT);";
+	
 	private void savePlayer(GamePlayer player, String uuid) {
-		/*
-		CustomClass customClass = player.getCustomClass();
 		
-		String query = "INSERT INTO Players (uuid, class, blood_particles, coins, earned_coins, wins)"
-				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class),"
-				+ " blood_particles = VALUES(blood_particles), coins = VALUES(coins),"
+		savePurchases(player);
+		saveClasses(player);
+		
+		String query = "INSERT INTO Players (uuid, class, coins, earned_coins, wins)"
+				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
 				+ " earned_coins = VALUES(earned_coins), wins = VALUES(wins);";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, classType == null ? "none" : classType.toString());
-			preparedStatement.setInt(3, player.hasBloodEffect() ? 1 : 0);
+			preparedStatement.setString(2, player.getCustomClass() == null ? "none"
+					: player.getCustomClass().getName());
 			preparedStatement.setInt(4, player.getCoins());
 			preparedStatement.setInt(5, player.getEarnedCoins());
 			preparedStatement.setInt(6, player.getWins());
@@ -136,14 +135,16 @@ public class MySQLSource extends DataSource {
 					e.printStackTrace();
 				}
 		}
-		*/
 	}
 	
 	@Override
 	public void loadPlayer(GamePlayer player) {
-		/*
+		
+		loadPurchases(player);
+		loadClasses(player);
+		
 		String uuid = player.getUUID().toString();
-
+		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.runTaskAsynchronously(SkyWarfare.getInstance(), () -> {
 			ResultSet resultSet = null;
@@ -165,9 +166,8 @@ public class MySQLSource extends DataSource {
 					String classStr = resultSet.getString("class");
 					
 					if (!classStr.equals("none"))
-						player.setClassType(com.andrewyunt.megatw_base.objects.Class.valueOf(classStr));
+						player.setCustomClass(player.getCustomClass(classStr));
 					
-					player.setBloodEffect(resultSet.getInt("blood_particles") == 1);
 					player.setCoins(resultSet.getInt("coins"));
 					player.setEarnedCoins(resultSet.getInt("earned_coins"));
 					player.setWins(resultSet.getInt("wins"));
@@ -187,75 +187,76 @@ public class MySQLSource extends DataSource {
 			
 			player.setLoaded(true);
 		});
-		*/
 	}
 	
 	@Override
-	public void saveLayout(GamePlayer player, CustomClass customClass, Inventory inv) {
-		/*
+	public void savePurchases(GamePlayer player) {
+		
 		String uuid = player.getUUID().toString();
 		
-		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
-		scheduler.runTaskAsynchronously(SkyWarfare.getInstance(), () -> {
-			String query = "INSERT INTO Layouts (uuid, layout, level, inventory)"
-					+ " VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE inventory = VALUES(inventory);";
+		for (Purchasable purchasable : player.getPurchases()) {
+			String query = "INSERT INTO Purchases (uuid, purchasable) VALUES (?,?) ON DUPLICATE KEY UPDATE"
+					+ " uuid = VALUES(uuid), purchasable = VALUES(purchasable);";
 			
 			try {
-				
 				preparedStatement = connection.prepareStatement(query);
 				
 				preparedStatement.setString(1, uuid);
-				preparedStatement.setString(2, classType.toString());
-				preparedStatement.setInt(3, player.getLevel(classType));
-				preparedStatement.setString(4, BukkitSerialization.toBase64(inv));
+				preparedStatement.setString(2, purchasable.toString());
 				
 				preparedStatement.executeUpdate();
-				} catch (SQLException e) {
-					SkyWarfare.getInstance().getLogger().severe(String.format(
-							"An error occured while saving %s's layout.", player.getBukkitPlayer().getName()));
-					e.printStackTrace();
-				} finally {
-					if (preparedStatement != null)
-						try {
-							preparedStatement.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-				}
-		});
-		*/
+			} catch (SQLException e) {
+				SkyWarfare.getInstance().getLogger().severe(String.format(
+						"An error occured while saving %s's purchases.",
+						player.getBukkitPlayer().getName()));
+				e.printStackTrace();
+			} finally {
+				if (preparedStatement != null)
+					try {
+						preparedStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
+		}
 	}
 	
 	@Override
-	public Inventory loadLayout(GamePlayer player, CustomClass customClass) {
-		/*
-		String uuid = player.getBukkitPlayer().getUniqueId().toString();
+	public void loadPurchases(GamePlayer player) {
 		
 		ResultSet resultSet = null;
 		
-		String query = "SELECT * FROM Layouts WHERE uuid = ? AND layout = ? AND level = ?;";
+		String query = "SELECT * FROM Purchases WHERE uuid = ?;";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
-			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, classType.toString());
-			preparedStatement.setInt(3, player.getLevel(classType));
+			preparedStatement.setString(1, player.getUUID().toString());
 			
 			resultSet = preparedStatement.executeQuery();
 		} catch (SQLException e) {
-			return null; // layout doesn't exist
+			return; // player does not exist, so don't load their data
 		}
 		
 		try {
 			while (resultSet.next()) {
-				String layoutStr = resultSet.getString("inventory");
-				return BukkitSerialization.fromBase64(layoutStr);
+				String purchasable = resultSet.getString("purchasable");
+				
+				for (Kit kit : Kit.values())
+					if (kit.toString().equals(purchasable))
+						player.getPurchases().add(Kit.valueOf(purchasable));
+				
+				for (Ultimate ultimate : Ultimate.values())
+					if (ultimate.toString().equals(purchasable))
+						player.getPurchases().add(Ultimate.valueOf(purchasable));
+				
+				for (Skill skill : Skill.values())
+					if (skill.toString().equals(purchasable))
+						player.getPurchases().add(Skill.valueOf(purchasable));
 			}
-		} catch (SQLException | IOException e) {
+		} catch (SQLException e) {
 			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while loading %s's %s layout.", player.getBukkitPlayer().getName(), 
-					player.getCustomClass().getName()));
+					"An error occured while loading %s.", player.getBukkitPlayer().getName()));
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -265,29 +266,78 @@ public class MySQLSource extends DataSource {
 					e.printStackTrace();
 				}
 		}
-		*/
-		return null;
+		
+		player.setLoaded(true);
 	}
 	
 	@Override
-	public void setLevel(GamePlayer player, Purchasable upgradable, int level) {
+	public void saveClasses(GamePlayer player) {
 		
 		String uuid = player.getUUID().toString();
 		
-		String query = "INSERT INTO Upgrades (uuid, upgradable, level)"
-				+ " VALUES (?,?,?) ON DUPLICATE KEY UPDATE `level` = VALUES(level);";
+		for (CustomClass customClass : player.getCustomClasses()) {
+			String query = "INSERT INTO Classes (uuid, name, kit, ultimate, skill_one, skill_two)"
+					+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE uuid = VALUES(uuid),"
+					+ " name = VALUES(name), kit = VALUES(kit), ultimate = VALUES(ultimate),"
+					+ " skill_one = VALUES(skill_one), skill_two = VALUES(skill_two);";
+			
+			try {
+				preparedStatement = connection.prepareStatement(query);
+				
+				preparedStatement.setString(1, uuid);
+				preparedStatement.setString(2, customClass.getName());
+				preparedStatement.setString(3, customClass.getKit().toString());
+				preparedStatement.setString(4, customClass.getUltimate().toString());
+				preparedStatement.setString(5, customClass.getSkillOne().toString());
+				preparedStatement.setString(6, customClass.getSkillTwo().toString());
+				
+				preparedStatement.executeUpdate();
+			} catch (SQLException e) {
+				SkyWarfare.getInstance().getLogger().severe(String.format(
+						"An error occured while saving %s's purchases.",
+						player.getBukkitPlayer().getName()));
+				e.printStackTrace();
+			} finally {
+				if (preparedStatement != null)
+					try {
+						preparedStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
+		}
+	}
+	
+	@Override
+	public void loadClasses(GamePlayer player) {
+		
+		ResultSet resultSet = null;
+		
+		String query = "SELECT * FROM Classes WHERE uuid = ?;";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
-			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, upgradable.toString());
-			preparedStatement.setInt(3, level);
+			preparedStatement.setString(1, player.getUUID().toString());
 			
-			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			return; // player does not exist, so don't load their data
+		}
+		
+		try {
+			while (resultSet.next()) {
+				CustomClass customClass = new CustomClass();
+				customClass.setName(resultSet.getString("name"));
+				customClass.setKit(Kit.valueOf(resultSet.getString("kit")));
+				customClass.setUltimate(Ultimate.valueOf(resultSet.getString("ultimate")));
+				customClass.setSkillOne(Skill.valueOf(resultSet.getString("skill_one")));
+				customClass.setSkillTwo(Skill.valueOf(resultSet.getString("skill_two")));
+				player.getCustomClasses().add(customClass);
+			}
 		} catch (SQLException e) {
 			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while saving %s's upgrade levels.", player.getBukkitPlayer().getName()));
+					"An error occured while loading %s.", player.getBukkitPlayer().getName()));
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -297,71 +347,21 @@ public class MySQLSource extends DataSource {
 					e.printStackTrace();
 				}
 		}
+		
+		player.setLoaded(true);
 	}
 	
 	@Override
-	public int getLevel(GamePlayer player, Purchasable upgradable) {
+	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills() {
 		
-		String uuid = player.getUUID().toString();
+		Map<Integer, Map.Entry<OfflinePlayer, Integer>> mostKills = new HashMap
+				<Integer, Map.Entry<OfflinePlayer, Integer>>();
 		
+		String query = "SELECT `uuid`, `kills` FROM `Players` ORDER BY `kills` DESC LIMIT 5;";
 		ResultSet resultSet = null;
 		
-		String query = "SELECT * FROM Upgrades WHERE uuid = ? AND upgradable = ?;";
-		
 		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, upgradable.toString());
-			
-			resultSet = preparedStatement.executeQuery();
-		} catch (SQLException e) {
-			return 1;
-		}
-		
-		try {
-			while (resultSet.next())
-				return resultSet.getInt("level");
-		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while loading %s's %s upgradable.", player.getBukkitPlayer().getName(),
-					upgradable.getName()));
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-		
-		return 1;
-	}
-	
-	@Override
-	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills(boolean weekly, boolean finalKill,
-			CustomClass customClass) {
-				return null;
-		
-		/*
-		
-		Map<Integer, Map.Entry<OfflinePlayer, Integer>> mostKills =  new HashMap<Integer, Map.Entry<OfflinePlayer, Integer>>();
-		
-		ResultSet resultSet = null;
-		
-		String query = "SELECT uuid, kills FROM Players WHERE"
-				+ " reset_weekly = ? AND final = ? AND class = ?"
-				+ " ORDER BY `kills` DESC LIMIT 5;";
-		
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.setInt(1, weekly ? 1 : 0);
-			preparedStatement.setInt(2, finalKill ? 1 : 0);
-			preparedStatement.setString(3, classType == null ? "ALL" : classType.toString());
-			
-			resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery(query);
 		} catch (SQLException e) {
 			return null;
 		}
@@ -372,35 +372,26 @@ public class MySQLSource extends DataSource {
 			while (resultSet.next()) {
 				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(UUID.fromString(resultSet.getString("uuid")));
 				
-				mostKills.put(place, new AbstractMap.SimpleEntry(op, resultSet.getInt("kills")));
+				mostKills.put(place, new AbstractMap.SimpleEntry<OfflinePlayer, Integer>(op, resultSet.getInt("kills")));
 				
 				place++;
 			}
 		} catch (SQLException e) {
 			SkyWarfare.getInstance().getLogger().severe("An error occured while getting players with the most kills.");
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 		}
 		
-		return mostKills;*/
+		return mostKills;
 	}
 	
 	@Override
 	public void createPlayersTable() {
-		
+
 		String query = "CREATE TABLE IF NOT EXISTS `Players`"
 				+ "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
 				+ "   `class`            CHAR(20) NOT NULL,"
-				+ "   `blood_particles`  INT,"
 				+ "   `coins`            INT,"
 				+ "   `earned_coins`     INT,"
-				+ "   `wins`            INT);";
+				+ "   `kills`            INT);";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -408,52 +399,15 @@ public class MySQLSource extends DataSource {
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Players table.");
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 		}
 	}
 	
 	@Override
-	public void createLayoutsTable() {
-		
-		String query = "CREATE TABLE IF NOT EXISTS `Layouts`"
-				+ "  (`uuid`             CHAR(36) NOT NULL,"
-				+ "   `layout`           CHAR(20) NOT NULL,"
-				+ "   `level`            INT NOT NULL,"
-				+ "   `inventory`        VARCHAR(8000) NOT NULL,"
-				+ "   PRIMARY KEY (`uuid`, `layout`, `level`));";
-		
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Layouts table.");
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-	}
-	
-	@Override
-	public void createUpgradesTable() {
+	public void createPurchasesTable() {
 		
 		String query = "CREATE TABLE IF NOT EXISTS `Upgrades`"
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
-				+ "   `upgradable`       CHAR(20) NOT NULL,"
-				+ "   `level`            INT NOT NULL,"
-				+ "   PRIMARY KEY (`uuid`, `upgradable`));";
+				+ "   `purchasable`      CHAR(20) NOT NULL);";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -461,6 +415,34 @@ public class MySQLSource extends DataSource {
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Upgrades table.");
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	@Override
+	public void createClassesTable() {
+		
+		String query = "CREATE TABLE IF NOT EXISTS `Classes`"
+				+ "  (`uuid`             CHAR(36) NOT NULL,"
+				+ "   `name`             CHAR(20) NOT NULL,"
+				+ "   `kit`              CHAR(20) NOT NULL,"
+				+ "   `ultimate`         CHAR(20) NOT NULL,"
+				+ "   `skill_one`        CHAR(20) NOT NULL,"
+				+ "   `skill_two`        CHAR(20) NOT NULL);";
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Layouts table.");
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
