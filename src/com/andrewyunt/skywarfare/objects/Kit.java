@@ -29,28 +29,36 @@ import org.bukkit.potion.PotionEffectType;
 
 public enum Kit implements Purchasable{
 	
-	ARMORER("Armorer"),
-	ARCHER("Archer"),
-	SWORDSMAN("Swordsman"),
-	BOOSTER("Booster"),
-	CANNONER("Cannoner"),
-	HEALER("Healer"),
-	ENCHANTER("Enchanter"),
-	FISHERMAN("Fisherman"),
-	SCOUT("Scout"),
-	PYROMANIAC("Pyromaniac");
+	ARMORER("Armorer", 0),
+	ARCHER("Archer", 10000),
+	SWORDSMAN("Swordsman", 10000),
+	BOOSTER("Booster", 30000),
+	CANNONER("Cannoner", 20000),
+	HEALER("Healer", 15000),
+	ENCHANTER("Enchanter", 10000),
+	FISHERMAN("Fisherman", 8000),
+	SCOUT("Scout", 20000),
+	PYROMANIAC("Pyromaniac", 30000);
 	
-	private String name;
+	private final String name;
+	private final int price;
 	
-	Kit(String name) {
+	Kit(String name, int price) {
 		
 		this.name = name;
+		this.price = price;
 	}
 	
 	@Override
 	public String getName() {
 		
 		return name;
+	}
+	
+	@Override
+	public int getPrice() {
+		
+		return price;
 	}
 	
 	@Override

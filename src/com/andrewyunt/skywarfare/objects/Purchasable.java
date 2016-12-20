@@ -27,12 +27,17 @@ import org.bukkit.inventory.ItemStack;
 public interface Purchasable {
 	
 	/**
-	 * @return The display name for the Purchasable.
+	 * @return The display name of the Purchasable.
 	 */
 	public String getName();
 	
 	/**
-	 * @return The display item for the Purchasable.
+	 * @return The price of the purchasable
+	 */
+	public int getPrice();
+	
+	/**
+	 * @return The display item of the Purchasable.
 	 */
 	public ItemStack getDisplayItem();
 }

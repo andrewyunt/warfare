@@ -32,24 +32,32 @@ import org.bukkit.potion.PotionEffectType;
  */
 public enum Skill implements Purchasable {
 	
-	RESISTANCE("Resistance"),
-	JUGGERNAUT("Juggernaut"),
-	CONSUMPTION("Consumption"),
-	HEAD_START("Head Start"),
-	GUARD("Guard"),
-	FLAME("Flame");
+	RESISTANCE("Resistance", 10000),
+	JUGGERNAUT("Juggernaut", 50000),
+	CONSUMPTION("Consumption", 5000),
+	HEAD_START("Head Start", 0),
+	GUARD("Guard", 0),
+	FLAME("Flame", 20000);
 	
-	final String name;
+	private final String name;
+	private final int price;
 	
-	Skill(String name) {
+	Skill(String name, int price) {
 		
 		this.name = name;
+		this.price = price;
 	}
 	
 	@Override
 	public String getName() {
 		
 		return name;
+	}
+	
+	@Override
+	public int getPrice() {
+		
+		return price;
 	}
 	
 	@Override

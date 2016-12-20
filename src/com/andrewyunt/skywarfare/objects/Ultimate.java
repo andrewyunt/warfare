@@ -33,20 +33,22 @@ import org.bukkit.potion.PotionEffectType;
  */
 public enum Ultimate implements Purchasable {
 
-	HEAL("Heal", 4),
-	WRATH("Weath", 6),
-	HELL_SPAWNING("Hell's Spawning", 2),
-	LEAP("Leap", 4),
-	SONIC("Sonic", 3),
-	WITHERING("Withering", 5),
-	FLAMING_FEET("Flaming Feet", 4);
+	HEAL("Heal", 0, 4),
+	WRATH("Weath", 20000, 6),
+	HELL_SPAWNING("Hell's Spawning", 40000, 2),
+	LEAP("Leap", 50000, 4),
+	SONIC("Sonic", 25000, 3),
+	WITHERING("Withering", 20000, 5),
+	FLAMING_FEET("Flaming Feet", 50000, 4);
 	
-	private String name;
-	private int energyPerClick;
+	private final String name;
+	private final int price;
+	private final int energyPerClick;
 
-	Ultimate(String name, int energyPerClick) {
+	Ultimate(String name, int price, int energyPerClick) {
 
 		this.name = name;
+		this.price = price;
 		this.energyPerClick = energyPerClick;
 	}
 
@@ -54,6 +56,12 @@ public enum Ultimate implements Purchasable {
 	public String getName() {
 
 		return name;
+	}
+	
+	@Override
+	public int getPrice() {
+		
+		return price;
 	}
 
 	public int getEnergyPerClick() {
