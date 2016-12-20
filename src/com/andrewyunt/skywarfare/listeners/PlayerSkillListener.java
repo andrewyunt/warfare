@@ -16,16 +16,21 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
+
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
@@ -113,8 +118,8 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() != Skill.GUARD
-				&& gp.getCustomClass().getSkillTwo() != Skill.GUARD)
+		if (gp.getCustomClass().getSkillOne() == Skill.GUARD
+				&& gp.getCustomClass().getSkillTwo() == Skill.GUARD)
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
 	}
 	
@@ -133,8 +138,34 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() != Skill.GUARD
-				&& gp.getCustomClass().getSkillTwo() != Skill.GUARD)
+		if (gp.getCustomClass().getSkillOne() == Skill.GUARD
+				&& gp.getCustomClass().getSkillTwo() == Skill.GUARD)
 			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+	}
+	
+	@EventHandler
+	public void onProjectileLaunch(ProjectileLaunchEvent event) {
+		
+		Projectile projectile = event.getEntity();
+		
+		if (projectile.getType() != EntityType.ARROW)
+			return;
+		
+		ProjectileSource ps = projectile.getShooter();
+		
+		if (!(ps instanceof Player))
+			return;
+		
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer((Player) ps);
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (gp.getCustomClass().getSkillOne() == Skill.FLAME
+				&& gp.getCustomClass().getSkillTwo() == Skill.FLAME)
+			projectile.setFireTicks(Integer.MAX_VALUE);
 	}
 }
