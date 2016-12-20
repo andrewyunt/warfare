@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
-import com.andrewyunt.skywarfare.objects.utilities.Utils;
+import com.andrewyunt.skywarfare.utilities.Utils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.andrewyunt.skywarfare.objects.utilities;
+package com.andrewyunt.skywarfare.utilities;
 
 import java.util.Collection;
 import java.util.HashMap;
