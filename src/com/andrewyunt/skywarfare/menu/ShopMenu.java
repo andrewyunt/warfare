@@ -17,16 +17,23 @@ package com.andrewyunt.skywarfare.menu;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.andrewyunt.skywarfare.SkyWarfare;
+import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
 import com.andrewyunt.skywarfare.objects.Ultimate;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class ShopMenu implements Listener {
 	
@@ -37,38 +44,54 @@ public class ShopMenu implements Listener {
 		SKILLS
 	}
 	
-	ItemStack glassPane = new ItemStack(Material.GLASS, 1);
+	ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	
 	public void open(GamePlayer player, Type type) {
 		
 		Inventory inv = null;
 		
 		if (type == Type.MAIN) {
-			inv = Bukkit.createInventory(null, 27);
+			inv = Bukkit.createInventory(null, 27, "Shop");
 			
-			for (int i = 0; i <= 11; i++)
-				inv.addItem(glassPane);
+			for (int i = 0; i <= 10; i++)
+				inv.setItem(i, glassPane);
 			
-			inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
-			inv.addItem(glassPane);
-			inv.addItem(new ItemStack(Material.EYE_OF_ENDER, 1));
-			inv.addItem(glassPane);
-			inv.addItem(new ItemStack(Material.DIAMOND_CHESTPLATE, 1));
+			ItemStack kits = new ItemStack(Material.IRON_SWORD, 1);
+			ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
+			ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
 			
-			for (int i = 17; i <= 21; i++)
-				inv.addItem(glassPane);
+			ItemMeta kitsMeta = kits.getItemMeta();
+			ItemMeta ultimatesMeta = ultimates.getItemMeta();
+			ItemMeta skillsMeta = skills.getItemMeta();
 			
-			ItemStack goBack = new ItemStack(Material.ARROW, 1);
-			ItemMeta goBackMeta = goBack.getItemMeta();
-			goBackMeta.setDisplayName("Go Back");
-			inv.addItem(goBack);
+			kitsMeta.setDisplayName("Kits");
+			ultimatesMeta.setDisplayName("Ultimates");
+			skillsMeta.setDisplayName("Skills");
+			
+			kits.setItemMeta(kitsMeta);
+			ultimates.setItemMeta(ultimatesMeta);
+			skills.setItemMeta(skillsMeta);
+			
+			inv.setItem(11, kits);
+			inv.setItem(12, glassPane);
+			inv.setItem(13, ultimates);
+			inv.setItem(14, glassPane);
+			inv.setItem(15, skills);
+			
+			for (int i = 16; i <= 21; i++)
+				inv.setItem(i, glassPane);
+			
+			ItemStack close = new ItemStack(Material.ARROW, 1);
+			ItemMeta closeMeta = close.getItemMeta();
+			closeMeta.setDisplayName(ChatColor.RED + "Close");
+			close.setItemMeta(closeMeta);
+			inv.setItem(22, close);
 			
 			for (int i = 23; i <= 26; i++)
-				inv.addItem(glassPane);
-			
-			player.getBukkitPlayer().openInventory(inv);
+				inv.setItem(i, glassPane);
 		} else {
-			inv = Bukkit.createInventory(null, 9);
+			inv = Bukkit.createInventory(null, 18, "Shop - " + (type == Type.KITS ? "Kits": type == Type.ULTIMATES
+					? "Ultimates" : "Skills"));
 			
 			Purchasable[] purchasables = type == Type.KITS ? Kit.values(): type == Type.ULTIMATES
 					? Ultimate.values() : Skill.values();
@@ -77,8 +100,82 @@ public class ShopMenu implements Listener {
 				ItemStack is = purchasable.getDisplayItem();
 				ItemMeta im = is.getItemMeta();
 				im.setDisplayName(purchasable.getName());
+				is.setItemMeta(im);
 				inv.addItem(is);
 			}
+			
+			ItemStack goBack = new ItemStack(Material.ARROW, 1);
+			ItemMeta goBackMeta = goBack.getItemMeta();
+			goBackMeta.setDisplayName(ChatColor.RED + "Go Back");
+			goBack.setItemMeta(goBackMeta);
+			inv.setItem(13, goBack);
+		}
+		
+		player.getBukkitPlayer().openInventory(inv);
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		String title = event.getClickedInventory().getTitle();
+		
+		if (!title.contains("Shop"))
+			return;
+		
+		event.setCancelled(true);
+		
+		Player player = (Player) event.getWhoClicked();
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(player);
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		ItemStack is = event.getCurrentItem();
+		
+		if (!is.hasItemMeta())
+			return;
+		
+		ItemMeta im = is.getItemMeta();
+		String name = im.getDisplayName();
+		
+		if (title.equals("Shop")) {
+			if (name.equals("Kits"))
+				open(gp, Type.KITS);
+			else if (name.equals("Ultimates"))
+				open(gp, Type.ULTIMATES);
+			else if (name.equals("Skills"))
+				open(gp, Type.SKILLS);
+			else if (name.equals(ChatColor.RED + "Close"))
+				player.closeInventory();
+		} else {
+			if (name.equals(ChatColor.RED + "Go Back")) {
+				open(gp, Type.MAIN);
+				return;
+			}
+			
+			Purchasable purchasable = null;
+			
+			if (title.contains("Kits"))
+				purchasable = Kit.valueOf(name.toUpperCase());
+			else if (title.contains("Ultimates"))
+				purchasable = Ultimate.valueOf(name.toUpperCase());
+			else if (title.contains("Skills"))
+				purchasable = Skill.valueOf(name.toUpperCase());
+			
+			if (gp.getCoins() < purchasable.getPrice()) {
+				player.sendMessage(ChatColor.RED + String.format("You do not have enough coins to purchase %s.",
+						purchasable.getName()));
+				return;
+			}
+			
+			gp.setCoins(gp.getCoins() - purchasable.getPrice());
+			gp.getPurchases().add(purchasable);
+			
+			player.sendMessage(ChatColor.GOLD + String.format("You purchased %s for %s coins.",
+					purchasable.getName(), purchasable.getPrice()));
 		}
 	}
 }
