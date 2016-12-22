@@ -45,7 +45,7 @@ import com.andrewyunt.skywarfare.exception.PlayerException;
 public enum Ultimate implements Purchasable {
 
 	HEAL("Heal", 0, 4),
-	WRATH("Weath", 20000, 6),
+	WRATH("Wrath", 20000, 6),
 	HELL_SPAWNING("Hell's Spawning", 40000, 2),
 	LEAP("Leap", 50000, 4),
 	SONIC("Sonic", 25000, 3),

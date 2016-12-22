@@ -29,6 +29,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
+import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
@@ -132,6 +133,8 @@ public class PlayerListener implements Listener {
 		Material type = item.getType();
 		
 		if (type == Material.EMERALD)
-			SkyWarfare.getInstance().getShopMenu().open(gp, ShopMenu.Type.MAIN);
+			SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
+		else if (type == Material.CHEST)
+			SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
 	}
 }

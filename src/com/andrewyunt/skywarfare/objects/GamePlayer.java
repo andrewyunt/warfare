@@ -15,7 +15,9 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,8 +46,8 @@ public class GamePlayer {
 	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet;
 	private DynamicScoreboard dynamicScoreboard;
 	
+	private final List<CustomClass> customClasses = new ArrayList<CustomClass>();
 	private final Set<Purchasable> purchases = new HashSet<Purchasable>();
-	private final Set<CustomClass> customClasses = new HashSet<CustomClass>();
 	private final Set<UUID> ghasts = new HashSet<UUID>();
 	
 	public GamePlayer(UUID uuid) {
@@ -239,7 +241,7 @@ public class GamePlayer {
 		return false;
 	}
 	
-	public Set<CustomClass> getCustomClasses() {
+	public List<CustomClass> getCustomClasses() {
 		
 		return customClasses;
 	}
@@ -297,5 +299,11 @@ public class GamePlayer {
 		shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
 		shop.setItemMeta(shopMeta);
 		bp.getInventory().setItem(0, shop);
+		
+		ItemStack classCreator = new ItemStack(Material.CHEST, 1);
+		ItemMeta classCreatorMeta = classCreator.getItemMeta();
+		classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
+		classCreator.setItemMeta(classCreatorMeta);
+		bp.getInventory().setItem(1, classCreator);
 	}
 }

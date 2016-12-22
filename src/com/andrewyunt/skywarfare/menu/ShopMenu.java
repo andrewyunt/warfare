@@ -44,9 +44,9 @@ public class ShopMenu implements Listener {
 		SKILLS
 	}
 	
-	ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	
-	public void open(GamePlayer player, Type type) {
+	public void open(Type type, GamePlayer player) {
 		
 		Inventory inv = null;
 		
@@ -90,8 +90,8 @@ public class ShopMenu implements Listener {
 			for (int i = 23; i <= 26; i++)
 				inv.setItem(i, glassPane);
 		} else {
-			inv = Bukkit.createInventory(null, 18, "Shop - " + (type == Type.KITS ? "Kits": type == Type.ULTIMATES
-					? "Ultimates" : "Skills"));
+			inv = Bukkit.createInventory(null, 18, "Shop - " + (type == Type.KITS ? "Kits"
+					: type == Type.ULTIMATES ? "Ultimates" : "Skills"));
 			
 			Purchasable[] purchasables = type == Type.KITS ? Kit.values(): type == Type.ULTIMATES
 					? Ultimate.values() : Skill.values();
@@ -124,6 +124,13 @@ public class ShopMenu implements Listener {
 		
 		event.setCancelled(true);
 		
+		ItemStack is = event.getCurrentItem();
+		
+		if (!is.hasItemMeta())
+			return;
+		
+		ItemMeta im = is.getItemMeta();
+		String name = im.getDisplayName();
 		Player player = (Player) event.getWhoClicked();
 		GamePlayer gp = null;
 		
@@ -133,26 +140,18 @@ public class ShopMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		ItemStack is = event.getCurrentItem();
-		
-		if (!is.hasItemMeta())
-			return;
-		
-		ItemMeta im = is.getItemMeta();
-		String name = im.getDisplayName();
-		
 		if (title.equals("Shop")) {
 			if (name.equals("Kits"))
-				open(gp, Type.KITS);
+				open(Type.KITS, gp);
 			else if (name.equals("Ultimates"))
-				open(gp, Type.ULTIMATES);
+				open(Type.ULTIMATES, gp);
 			else if (name.equals("Skills"))
-				open(gp, Type.SKILLS);
+				open(Type.SKILLS, gp);
 			else if (name.equals(ChatColor.RED + "Close"))
 				player.closeInventory();
 		} else {
 			if (name.equals(ChatColor.RED + "Go Back")) {
-				open(gp, Type.MAIN);
+				open(Type.MAIN, gp);
 				return;
 			}
 			

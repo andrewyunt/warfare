@@ -53,7 +53,7 @@ public class PlayerManager {
 
 		GamePlayer player = new GamePlayer(uuid);
 
-		//SkyWarfare.getInstance().getDataSource().loadPlayer(player);
+		SkyWarfare.getInstance().getDataSource().loadPlayer(player);
 		
 		// Add player to plugin's player map
 		players.put(uuid, player);

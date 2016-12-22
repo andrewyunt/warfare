@@ -102,7 +102,7 @@ public class MySQLSource extends DataSource {
 		saveClasses(player);
 		
 		String query = "INSERT INTO Players (uuid, class, coins, earned_coins, kills, wins)"
-				+ " VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
+				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
 				+ " earned_coins = VALUES(earned_coins), kills = VALUES(kills), wins = VALUES(wins);";
 		
 		try {
@@ -111,15 +111,13 @@ public class MySQLSource extends DataSource {
 			preparedStatement.setString(1, uuid);
 			preparedStatement.setString(2, player.getCustomClass() == null ? "none"
 					: player.getCustomClass().getName());
-			preparedStatement.setInt(4, player.getCoins());
-			preparedStatement.setInt(5, player.getEarnedCoins());
-			preparedStatement.setInt(6, player.getKills());
-			preparedStatement.setInt(7, player.getWins());
+			preparedStatement.setInt(3, player.getCoins());
+			preparedStatement.setInt(4, player.getEarnedCoins());
+			preparedStatement.setInt(5, player.getKills());
+			preparedStatement.setInt(6, player.getWins());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while saving %s.", player.getBukkitPlayer().getName()));
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -168,8 +166,6 @@ public class MySQLSource extends DataSource {
 					player.setWins(resultSet.getInt("wins"));
 				}
 			} catch (SQLException e) {
-				SkyWarfare.getInstance().getLogger().severe(String.format(
-						"An error occured while loading %s.", player.getBukkitPlayer().getName()));
 				e.printStackTrace();
 			} finally {
 				if (preparedStatement != null)
@@ -201,9 +197,6 @@ public class MySQLSource extends DataSource {
 				
 				preparedStatement.executeUpdate();
 			} catch (SQLException e) {
-				SkyWarfare.getInstance().getLogger().severe(String.format(
-						"An error occured while saving %s's purchases.",
-						player.getBukkitPlayer().getName()));
 				e.printStackTrace();
 			} finally {
 				if (preparedStatement != null)
@@ -250,8 +243,6 @@ public class MySQLSource extends DataSource {
 						player.getPurchases().add(Skill.valueOf(purchasable));
 			}
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while loading %s.", player.getBukkitPlayer().getName()));
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -288,9 +279,6 @@ public class MySQLSource extends DataSource {
 				
 				preparedStatement.executeUpdate();
 			} catch (SQLException e) {
-				SkyWarfare.getInstance().getLogger().severe(String.format(
-						"An error occured while saving %s's purchases.",
-						player.getBukkitPlayer().getName()));
 				e.printStackTrace();
 			} finally {
 				if (preparedStatement != null)
@@ -331,8 +319,6 @@ public class MySQLSource extends DataSource {
 				player.getCustomClasses().add(customClass);
 			}
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe(String.format(
-					"An error occured while loading %s.", player.getBukkitPlayer().getName()));
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -372,7 +358,7 @@ public class MySQLSource extends DataSource {
 				place++;
 			}
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe("An error occured while getting players with the most kills.");
+			e.printStackTrace();
 		}
 		
 		return mostKills;
@@ -394,14 +380,14 @@ public class MySQLSource extends DataSource {
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Players table.");
+			e.printStackTrace();
 		}
 	}
 	
 	@Override
 	public void createPurchasesTable() {
 		
-		String query = "CREATE TABLE IF NOT EXISTS `Upgrades`"
+		String query = "CREATE TABLE IF NOT EXISTS `Purchases`"
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
 				+ "   `purchasable`      CHAR(20) NOT NULL);";
 		
@@ -410,7 +396,6 @@ public class MySQLSource extends DataSource {
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Upgrades table.");
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)
@@ -438,7 +423,6 @@ public class MySQLSource extends DataSource {
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			SkyWarfare.getInstance().getLogger().severe( "An error occured while creating the Layouts table.");
 			e.printStackTrace();
 		} finally {
 			if (preparedStatement != null)

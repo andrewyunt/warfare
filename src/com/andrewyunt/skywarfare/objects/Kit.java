@@ -27,7 +27,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public enum Kit implements Purchasable{
+public enum Kit implements Purchasable {
 	
 	ARMORER("Armorer", 0),
 	ARCHER("Archer", 10000),

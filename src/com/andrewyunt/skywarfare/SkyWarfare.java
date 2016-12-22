@@ -41,6 +41,9 @@ public class SkyWarfare extends JavaPlugin {
 		saveDefaultConfig();
 		arenaConfig.saveDefaultConfig();
 		
+		dataSource.connect();
+		dataSource.updateDB();
+		
 		PluginManager pm = getServer().getPluginManager();
 		
 		// Register events
