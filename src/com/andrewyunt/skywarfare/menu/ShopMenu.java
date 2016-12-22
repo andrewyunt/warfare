@@ -157,13 +157,14 @@ public class ShopMenu implements Listener {
 			}
 			
 			Purchasable purchasable = null;
+			String enumName = name.toUpperCase().replace(' ', '_');
 			
 			if (title.contains("Kits"))
-				purchasable = Kit.valueOf(name.toUpperCase());
+				purchasable = Kit.valueOf(enumName);
 			else if (title.contains("Ultimates"))
-				purchasable = Ultimate.valueOf(name.toUpperCase());
+				purchasable = Ultimate.valueOf(enumName);
 			else if (title.contains("Skills"))
-				purchasable = Skill.valueOf(name.toUpperCase());
+				purchasable = Skill.valueOf(enumName);
 			
 			if (gp.getCoins() < purchasable.getPrice()) {
 				player.sendMessage(ChatColor.RED + String.format("You do not have enough coins to purchase %s.",
