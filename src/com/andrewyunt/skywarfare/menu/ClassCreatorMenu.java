@@ -16,6 +16,7 @@
 package com.andrewyunt.skywarfare.menu;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -139,6 +140,13 @@ public class ClassCreatorMenu implements Listener {
 				ItemStack displayItem = purchasable.getDisplayItem();
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
 				displayItemMeta.setDisplayName(purchasable.getName());
+				
+				List<String> lore = SkyWarfare.getInstance().getConfig().getStringList(
+						"description-" + purchasable.toString());
+				lore.add("");
+				lore.add(player.getPurchases().contains(purchasable) ? "PURCHASED" : "Price: " + purchasable.getPrice());
+				displayItemMeta.setLore(lore);
+				
 				displayItem.setItemMeta(displayItemMeta);
 				
 				inv.setItem(i, displayItem);

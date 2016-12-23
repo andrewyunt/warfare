@@ -15,6 +15,8 @@
  */
 package com.andrewyunt.skywarfare.menu;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,6 +34,7 @@ import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
 import com.andrewyunt.skywarfare.objects.Ultimate;
+import com.andrewyunt.skywarfare.utilities.Utils;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -97,9 +100,17 @@ public class ShopMenu implements Listener {
 					? Ultimate.values() : Skill.values();
 			
 			for (Purchasable purchasable : purchasables) {
-				ItemStack is = purchasable.getDisplayItem();
+				ItemStack is = Utils.removeAttributes(purchasable.getDisplayItem());
 				ItemMeta im = is.getItemMeta();
+				
 				im.setDisplayName(purchasable.getName());
+				
+				List<String> lore = SkyWarfare.getInstance().getConfig().getStringList(
+						"description-" + purchasable.toString());
+				lore.add("");
+				lore.add(player.getPurchases().contains(purchasable) ? "PURCHASED" : "Price: " + purchasable.getPrice());
+				im.setLore(lore);
+				
 				is.setItemMeta(im);
 				inv.addItem(is);
 			}
@@ -155,15 +166,25 @@ public class ShopMenu implements Listener {
 				return;
 			}
 			
+			if (im.getLore().contains("PURCHASED")) {
+				player.sendMessage(ChatColor.RED + "You have already purchased that item.");
+				return;
+			}
+			
 			Purchasable purchasable = null;
 			String enumName = name.toUpperCase().replace(' ', '_');
+			Type type = null;
 			
-			if (title.contains("Kits"))
+			if (title.contains("Kits")) {
 				purchasable = Kit.valueOf(enumName);
-			else if (title.contains("Ultimates"))
+				type = Type.KITS;
+			} else if (title.contains("Ultimates")){
 				purchasable = Ultimate.valueOf(enumName);
-			else if (title.contains("Skills"))
+				type = Type.ULTIMATES;
+			} else if (title.contains("Skills")) {
 				purchasable = Skill.valueOf(enumName);
+				type = Type.SKILLS;
+			}
 			
 			if (gp.getCoins() < purchasable.getPrice()) {
 				player.sendMessage(ChatColor.RED + String.format("You do not have enough coins to purchase %s.",
@@ -176,6 +197,8 @@ public class ShopMenu implements Listener {
 			
 			player.sendMessage(ChatColor.GOLD + String.format("You purchased %s for %s coins.",
 					purchasable.getName(), purchasable.getPrice()));
+			
+			open(type, gp);
 		}
 	}
 }

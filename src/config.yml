@@ -1,1 +1,79 @@
+# MySQL Connection Details
+database-ip: 127.0.0.1
+database-port: 3306
+database-name: MegaTW
+database-user: user
+database-pass: password
+
+# Setting this to false will put the plugin in game server mode
 is-lobby: true
+
+# Kit Descriptions
+description-ARMORER:
+  - "Gold Helmet"
+  - "Iron Chestplate"
+  - "Gold Leggings"
+description-ARCHER:
+  - "Bow (Power I)"
+  - "32 Arrows"
+description-SWORDSMAN:
+  - "Stone Sword (Sharpness I)"
+  - "Iron Helmet"
+description-BOOSTER:
+  - "Bow (Punch II, Infinity I) (15 Durability)"
+  - "*You can only shoot yourself!"
+description-CANNONER:
+  - "16 TNT"
+  - "Water Bucket"
+  - "Pressure Plate"
+  - "Iron Boots (Feather Falling III)"
+description-HEALER:
+  - "2 Splash Potion of Healing II"
+  - "Splash Potion of Regeneration"
+description-ENCHANTER:
+  - "Enchanting Table"
+  - "32 Bottles of Enchanting"
+  - "Diamond Shovel"
+description-FISHERMAN:
+  - "Fishing Rod"
+  - "Leather Helmet"
+  - "16 Cooked Fish"
+description-SCOUT:
+  - "3 Splash Potion of Speed II"
+  - "Stone Sword"
+description-PYROMANIAC:
+  - "Splash Potion of Fire Resistance (Infinite)"
+  - "5 Lava Buckets"
+  - "Flint & Steel"
+  - "Wood Sword (Fire Aspect I)"
+
+# Ultimate Descriptions
+description-HEAL:
+  - "Heal yourself 3 \u2764"
+description-WRATH:
+  - "Strike nearby enemies with lightning for 2.5 \u2764"
+description-HELL_SPAWNING:
+  - "Spawn a Ghast to assist you in battle"
+description-LEAP:
+  - "Leap forward & upward"
+description-SONIC:
+  - "Gain Speed 3 for 5 seconds"
+description-WITHERING:
+  - "Shoot a wither skull"
+description-FLAMING_FEET:
+  - "For 5 seconds, you will gain Speed II and"
+  - "the blocks below you will be put on fire!"
+
+# Skill Descriptions
+description-RESISTANCE:
+  - "20% chance to gain Resistance I for 1 second upon being hit"
+description-JUGGERNAUT:
+  - "Killing an enemy increases your max health by 1 \u2764"
+description-CONSUMPTION:
+  - "Killing an enemy gives you Regeneration II for 4 seconds"
+description-HEAD_START:
+  - "Get 10 seconds of Speed II when the game begins"
+description-GUARD:
+  - "Get Resistance II while in a chest"
+description-FLAME:
+  - "10% chance for your arrows to be set on fire"
