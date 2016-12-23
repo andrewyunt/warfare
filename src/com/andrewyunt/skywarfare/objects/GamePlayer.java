@@ -55,7 +55,7 @@ public class GamePlayer {
 		this.uuid = uuid;
 		
 		// Set up scoreboard
-		dynamicScoreboard = new DynamicScoreboard(ChatColor.YELLOW + "" + ChatColor.BOLD + "MEGATW");
+		dynamicScoreboard = new DynamicScoreboard(ChatColor.YELLOW + "" + ChatColor.BOLD + "SkyWarfare");
 		getBukkitPlayer().setScoreboard(dynamicScoreboard.getScoreboard());
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
@@ -66,7 +66,7 @@ public class GamePlayer {
 			public void run() {
 				ChatColor newTitleColor = curTitleColor == ChatColor.YELLOW ? ChatColor.WHITE : ChatColor.YELLOW;
 				
-				dynamicScoreboard.getObjective().setDisplayName(newTitleColor.toString() + ChatColor.BOLD + "MEGATW");
+				dynamicScoreboard.getObjective().setDisplayName(newTitleColor.toString() + ChatColor.BOLD + "SkyWarfare");
 				
 				curTitleColor = newTitleColor;
 			}
@@ -100,6 +100,8 @@ public class GamePlayer {
 	public void setCoins(int coins) {
 		
 		this.coins = coins;
+		
+		updateDynamicScoreboard();
 	}
 	
 	public int getCoins() {
@@ -120,6 +122,8 @@ public class GamePlayer {
 	public void setWins(int wins) {
 		
 		this.wins = wins;
+		
+		updateDynamicScoreboard();
 	}
 	
 	public int getWins() {
@@ -140,6 +144,8 @@ public class GamePlayer {
 	public void setKills(int kills) {
 		
 		this.kills = kills;
+		
+		updateDynamicScoreboard();
 	}
 	
 	public int getKills() {
@@ -268,16 +274,18 @@ public class GamePlayer {
 	public void updateDynamicScoreboard() {
 		
 		// Space
-		dynamicScoreboard.blankLine(8);
+		dynamicScoreboard.blankLine(9);
 		
 		// Display player's wins
-		dynamicScoreboard.update(7, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
+		dynamicScoreboard.update(8, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
 		
 		// Display player's coins */
-		dynamicScoreboard.update(6, "Coins" + ChatColor.GREEN + String.valueOf(coins));
+		dynamicScoreboard.update(7, "Coins: " + ChatColor.GREEN + String.valueOf(coins));
 		
 		// Display player's kills */
-		dynamicScoreboard.update(5, "Kills" + ChatColor.GREEN + String.valueOf(kills));
+		dynamicScoreboard.update(6, "Kills: " + ChatColor.GREEN + String.valueOf(kills));
+		
+		dynamicScoreboard.blankLine(5);
 		
 		// Display player's chosen class 
 		dynamicScoreboard.update(4, "Chosen Class:");
