@@ -25,8 +25,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -40,7 +40,10 @@ public class LootChest {
 	private ItemStack[] tier2Items;
 	private ItemStack[] tier1Items;
 	
-	public LootChest(Chest bukkitchest, byte tier) {
+	public LootChest(Chest bukkitChest, byte tier) {
+		
+		this.bukkitChest = bukkitChest;
+		this.tier = tier;
 		
 		tier3Items = new ItemStack[] {
 				new ItemStack(Material.WOOD, 16),
@@ -167,9 +170,9 @@ public class LootChest {
 		return tier;
 	}
 	
-	public void fill(GamePlayer player) {
+	public void fill() {
 		
-		PlayerInventory inv = player.getBukkitPlayer().getInventory();
+		Inventory inv = bukkitChest.getBlockInventory();
 		
 		for (short i = 0; i < ThreadLocalRandom.current().nextInt(2, 5 + 1); i++) {
 			List<ItemStack> items = Arrays.asList(tier == 3 ? tier3Items : tier == 2 ? tier2Items : tier1Items);

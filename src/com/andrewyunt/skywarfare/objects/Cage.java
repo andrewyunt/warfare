@@ -100,6 +100,11 @@ public class Cage {
 		return player != null;
 	}
 	
+	public Set<Block> getBlocks() {
+		
+		return blocks;
+	}
+	
 	public void destroy() {
 		
 		for (Block block : blocks)

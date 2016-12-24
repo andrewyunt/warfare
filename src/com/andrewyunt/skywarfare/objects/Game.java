@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,12 +44,13 @@ public class Game {
 	
 	public enum Stage {
 		WAITING,
+		COUNTDOWN,
 		BATTLE,
 		END,
 		RESTART
 	}
 	
-	private short countdownTime = 10;
+	private short countdownTime = 10, refillCountdownTime = 300;
 	private Stage stage = Stage.WAITING;
 	
 	private final Set<GamePlayer> players = new HashSet<GamePlayer>();
@@ -90,7 +92,7 @@ public class Game {
 				}
 				
 				if (getAvailableCages().size() == 0)
-					setStage(Stage.BATTLE);
+					setStage(Stage.COUNTDOWN);
 				
 				Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
 						String.format("&7%s &ehas joined (&b%s&e/&b%s&e)!", bp.getDisplayName(),
@@ -167,10 +169,17 @@ public class Game {
 			
 			// Give player speed 2 for 10 seconds if they have HEAD_START Skill
 			player.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
+			
+			// Update player's scoreboard
+			player.updateDynamicScoreboard();
 		}
 		
+		// Destroy cages
 		for (Cage cage : cages)
 			cage.destroy();
+		
+		// Start chest refill timer
+		runRefillTimer();
 	}
 	
 	/**
@@ -218,7 +227,11 @@ public class Game {
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		
-		if (stage == Stage.BATTLE) {
+		if (stage == Stage.COUNTDOWN) {
+			
+			runCountdownTimer();
+			
+		} else if (stage == Stage.BATTLE) {
 			
 			start();
 			
@@ -273,10 +286,57 @@ public class Game {
 	
 	public void checkCountdownTime() {
 		
-		if (countdownTime > 0)
+		if (countdownTime > 0) {
 			Bukkit.getServer().broadcastMessage(ChatColor.RED + String.format("The game will start in %s seconds.",
 					countdownTime));
-		else if (countdownTime == 0)
+			
+			for (GamePlayer player : SkyWarfare.getInstance().getPlayerManager().getPlayers())
+				player.updateDynamicScoreboard();
+		} else if (countdownTime == 0)
 			setStage(Stage.BATTLE);
+	}
+
+	public short getCountdownTime() {
+		
+		return countdownTime;
+	}
+	
+	public void runRefillTimer() {
+		
+		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncRepeatingTask(SkyWarfare.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				
+				refillCountdownTime--;
+				
+				checkRefillTime();
+			}
+		}, 0L, 20L);
+	}
+	
+	public void checkRefillTime() {
+		
+		if (refillCountdownTime == 0) {
+			
+			for (LootChest lootChest : SkyWarfare.getInstance().getArena().getLootChests()) {
+				if (lootChest.getBukkitChest().getBlock().getLocation().getBlock().getType() != Material.CHEST)
+					continue;
+				
+				lootChest.fill();
+			}
+			
+			refillCountdownTime = 300;
+			
+			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Chests have been refilled. Next refill is in 5 minutes.");
+		}
+		
+		for (GamePlayer player : SkyWarfare.getInstance().getPlayerManager().getPlayers())
+			player.updateDynamicScoreboard();
+	}
+	
+	public short getRefillCountdownTime() {
+		
+		return refillCountdownTime;
 	}
 }

@@ -16,6 +16,7 @@
 package com.andrewyunt.skywarfare.objects;
 
 import org.bukkit.Location;
+import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -24,8 +25,11 @@ import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.utilities.Utils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The class used to store arena information.
@@ -35,6 +39,7 @@ import java.util.Map.Entry;
 public class Arena {
 	
 	private final Map<String, Location> cageLocations = new HashMap<String, Location>();
+	private final Set<LootChest> lootChests = new HashSet<LootChest>();
 	
 	private boolean isEdit;
 	private Location mapLocation;
@@ -66,12 +71,27 @@ public class Arena {
 		return mapLocation;
 	}
 	
+	public Set<LootChest> getLootChests() {
+		
+		return lootChests;
+	}
+	
 	public void save() {
 		
 		SkyWarfare plugin = SkyWarfare.getInstance();
 		FileConfiguration arenaConfig = plugin.getArenaConfig().getConfig();
 		
 		arenaConfig.createSection("map_location", Utils.serializeLocation(mapLocation));
+		
+		ConfigurationSection chestsSection = arenaConfig.createSection("chests");
+		
+		for (LootChest lootChest : lootChests) {
+			Map<String, Object> chestSection = Utils.serializeLocation(lootChest.getBukkitChest().getLocation());
+			
+			chestSection.put("tier", lootChest.getTier());
+			
+			chestsSection.createSection(UUID.randomUUID().toString(), chestSection);
+		}
 		
 		ConfigurationSection cagesSection = arenaConfig.createSection("cages");
 		
@@ -87,6 +107,15 @@ public class Arena {
 		
 		FileConfiguration arenaConfig = SkyWarfare.getInstance().getArenaConfig().getConfig();
 		arena.mapLocation = Utils.deserializeLocation(arenaConfig.getConfigurationSection("map_location"));
+		
+		ConfigurationSection chestsSection = arenaConfig.getConfigurationSection("chests");
+		
+		for (String key : chestsSection.getKeys(false)) {
+			ConfigurationSection chestSection = chestsSection.getConfigurationSection(key);
+			arena.lootChests.add(new LootChest((Chest) Utils.deserializeLocation(chestSection).getBlock().getState(),
+					(byte) chestSection.getInt("tier")));
+		}
+		
 		ConfigurationSection cagesSection = arenaConfig.getConfigurationSection("cages");
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();

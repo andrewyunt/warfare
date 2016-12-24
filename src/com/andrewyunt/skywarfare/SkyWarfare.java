@@ -1,7 +1,9 @@
 package com.andrewyunt.skywarfare;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import com.andrewyunt.skywarfare.command.SWCommand;
 import com.andrewyunt.skywarfare.configuration.ArenaConfiguration;
@@ -16,8 +18,11 @@ import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Arena;
 import com.andrewyunt.skywarfare.objects.Game;
+import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 
-public class SkyWarfare extends JavaPlugin {
+public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 	
 	private static SkyWarfare instance;
 	
@@ -28,6 +33,7 @@ public class SkyWarfare extends JavaPlugin {
 	private ShopMenu shopMenu = new ShopMenu();
 	private Arena arena;
 	private Game game;
+	private String serverName;
 	
 	@Override
 	public void onEnable() {
@@ -58,7 +64,28 @@ public class SkyWarfare extends JavaPlugin {
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
 		}
 		
+		// Register plugin messaging channels
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+		
 		getCommand("sw").setExecutor(new SWCommand());
+	}
+	
+	@Override
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+		
+		if (!channel.equals("BungeeCord"))
+			return;
+		
+		ByteArrayDataInput in = ByteStreams.newDataInput(message);
+		
+		if (!in.readUTF().equals("GetServer"))
+			return;
+		
+		serverName = in.readUTF();
+		
+		for (GamePlayer gp : playerManager.getPlayers())
+			gp.updateDynamicScoreboard();
 	}
 	
 	public static SkyWarfare getInstance() {
@@ -104,5 +131,15 @@ public class SkyWarfare extends JavaPlugin {
 	public ShopMenu getShopMenu() {
 		
 		return shopMenu;
+	}
+	
+	public void setServerName(String serverName) {
+		
+		this.serverName = serverName;
+	}
+	
+	public String getServerName() {
+		
+		return serverName;
 	}
 }

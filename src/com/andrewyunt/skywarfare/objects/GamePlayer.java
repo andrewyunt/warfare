@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,12 +38,13 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
+import com.andrewyunt.skywarfare.objects.Game.Stage;
 
 public class GamePlayer {
 	
 	private UUID uuid;
 	private CustomClass customClass;
-	private int coins, earnedCoins, wins, energy, kills;
+	private int coins, earnedCoins, wins, energy, kills, killStreak;
 	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet;
 	private DynamicScoreboard dynamicScoreboard;
 	
@@ -139,6 +141,13 @@ public class GamePlayer {
 	public int getEnergy() {
 		
 		return energy;
+	}
+	
+	public void addKill() {
+		
+		this.killStreak = killStreak + 1;
+		
+		setKills(kills + 1);
 	}
 	
 	public void setKills(int kills) {
@@ -261,35 +270,90 @@ public class GamePlayer {
 		return null;
 	}
 	
-	public DynamicScoreboard getDynamicScoreboard() {
-		
-		return dynamicScoreboard;
-	}
-	
 	public Set<UUID> getGhasts() {
 		
 		return ghasts;
 	}
 	
+	public boolean isCaged() {
+		
+		return getCage() != null;
+	}
+	
+	public Cage getCage() {
+		
+		for (Cage cage : SkyWarfare.getInstance().getGame().getCages())
+			if (cage.hasPlayer() && cage.getPlayer() == this)
+				return cage;
+		
+		return null;
+	}
+	
+	public DynamicScoreboard getDynamicScoreboard() {
+		
+		return dynamicScoreboard;
+	}
+	
 	public void updateDynamicScoreboard() {
 		
-		// Space
-		dynamicScoreboard.blankLine(9);
-		
-		// Display player's wins
-		dynamicScoreboard.update(8, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
-		
-		// Display player's coins */
-		dynamicScoreboard.update(7, "Coins: " + ChatColor.GREEN + String.valueOf(coins));
-		
-		// Display player's kills */
-		dynamicScoreboard.update(6, "Kills: " + ChatColor.GREEN + String.valueOf(kills));
-		
-		dynamicScoreboard.blankLine(5);
-		
-		// Display player's chosen class 
-		dynamicScoreboard.update(4, "Chosen Class:");
-		dynamicScoreboard.update(3, ChatColor.GREEN + (customClass == null ? "None" : customClass.getName()));
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby")){
+			dynamicScoreboard.blankLine(9);
+			
+			// Display player's wins
+			dynamicScoreboard.update(8, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
+			
+			// Display player's coins */
+			dynamicScoreboard.update(7, "Coins: " + ChatColor.GREEN + String.valueOf(coins));
+			
+			// Display player's kills */
+			dynamicScoreboard.update(6, "Kills: " + ChatColor.GREEN + String.valueOf(kills));
+			
+			dynamicScoreboard.blankLine(5);
+			
+			// Display player's chosen class 
+			dynamicScoreboard.update(4, "Chosen Class:");
+			dynamicScoreboard.update(3, ChatColor.GREEN + (customClass == null ? "None" : customClass.getName()));
+		} else {
+			Game game = SkyWarfare.getInstance().getGame();
+			Stage stage = game.getStage();
+			
+			if (stage == Stage.WAITING || stage == Stage.COUNTDOWN) {
+				
+				dynamicScoreboard.blankLine(8);
+				
+				// Display players
+				dynamicScoreboard.update(7, "Players: " + ChatColor.GREEN + game.getPlayers().size() + "/"
+						+ game.getCages().size());
+				
+				dynamicScoreboard.blankLine(6);
+				
+				// Display seconds left
+				if (stage == Stage.WAITING)
+					dynamicScoreboard.update(5, "Waiting...");
+				else
+					dynamicScoreboard.update(5, "Starting in " + ChatColor.GREEN + game.getCountdownTime() + "s");
+				
+				dynamicScoreboard.blankLine(4);
+				
+				// Display server name
+				dynamicScoreboard.update(3, "Server: " + ChatColor.GREEN + SkyWarfare.getInstance().getServerName());
+			} else {
+				dynamicScoreboard.blankLine(9);
+				
+				dynamicScoreboard.update(8, "Next event:");
+				
+				dynamicScoreboard.update(7, ChatColor.GREEN + "Refill " + LocalTime.ofSecondOfDay(game
+						.getRefillCountdownTime()).toString().substring(3));
+				
+				dynamicScoreboard.blankLine(6);
+				
+				dynamicScoreboard.update(5, "Players Left: " + ChatColor.GREEN + game.getPlayers().size());
+				
+				dynamicScoreboard.blankLine(4);
+				
+				dynamicScoreboard.update(3, "Killstreak: " + ChatColor.GREEN + killStreak);
+			}
+		}
 		
 		// Space
 		dynamicScoreboard.blankLine(2);

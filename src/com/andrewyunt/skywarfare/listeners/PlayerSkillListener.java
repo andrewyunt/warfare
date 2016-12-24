@@ -83,6 +83,10 @@ public class PlayerSkillListener implements Listener {
 		}
 		
 		GamePlayer lastDamagerGP = killedGP.getLastDamager();
+		
+		if (lastDamagerGP == null)
+			return;
+		
 		Player lastDamager = lastDamagerGP.getBukkitPlayer();
 		
 		if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.JUGGERNAUT

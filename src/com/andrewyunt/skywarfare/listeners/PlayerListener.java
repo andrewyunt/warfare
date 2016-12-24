@@ -21,6 +21,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,6 +36,8 @@ import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 
 public class PlayerListener implements Listener {
@@ -83,7 +88,18 @@ public class PlayerListener implements Listener {
 				else
 					finalGP.setSpectating(true);
 			}
-		}, 1L);
+		}, 2L);
+		
+		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
+			// Fetch server name for scoreboards if it's null
+			if (SkyWarfare.getInstance().getServerName() == null) {
+				ByteArrayDataOutput out = ByteStreams.newDataOutput();
+				
+				out.writeUTF("GetServer");
+				
+				player.sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
+			}
+		}, 40L);
 	}
 
 	@EventHandler
@@ -136,5 +152,92 @@ public class PlayerListener implements Listener {
 			SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 		else if (type == Material.CHEST)
 			SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
+	}
+	
+	@EventHandler
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		
+		event.setDeathMessage(null);
+		
+		Player player = event.getEntity();
+		GamePlayer playerGP = null;
+
+		try {
+			playerGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(player.getName());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (!playerGP.isInGame())
+			return;
+		
+		SkyWarfare.getInstance().getGame().removePlayer(playerGP);
+		
+		GamePlayer lastDamager = playerGP.getLastDamager();
+		
+		if (lastDamager == null)
+			return;
+		
+		if (lastDamager == playerGP)
+			return;
+			
+		if (!(lastDamager.isInGame()))
+			return;
+		
+		lastDamager.addKill();
+		
+		Player lastDamagerBP = lastDamager.getBukkitPlayer();
+		int killCoins = 2;
+		
+		if (lastDamagerBP.hasPermission("megatw.coins.double"))
+			killCoins = 4;
+		
+		if (lastDamagerBP.hasPermission("megatw.coins.triple"))
+			killCoins = 6;
+		
+		lastDamager.setCoins(lastDamager.getCoins() + killCoins);
+		
+		lastDamagerBP.sendMessage(ChatColor.GOLD + String.format("You killed %s and received %s coins.",
+				playerGP.getBukkitPlayer().getDisplayName(), String.valueOf(killCoins)));
+		
+		playerGP.getBukkitPlayer().sendMessage(ChatColor.RED + String.format("You were killed by %s",
+				lastDamager.getBukkitPlayer().getDisplayName()));
+	}
+	
+	@EventHandler
+	public void onFoodLevelChange(FoodLevelChangeEvent event) {
+		
+		GamePlayer player = null;
+		
+		try {
+			player = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getEntity().getName());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		Stage stage = SkyWarfare.getInstance().getGame().getStage();
+		
+		if (stage == Stage.WAITING || stage == Stage.COUNTDOWN)
+			event.setCancelled(true);
+		else if (player.isSpectating())
+			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		
+		GamePlayer player = null;
+		
+		try {
+			player = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (!player.isCaged())
+			return;
+		
+		if (player.getCage().getBlocks().contains(event.getBlock()))
+			event.setCancelled(true);
 	}
 }
