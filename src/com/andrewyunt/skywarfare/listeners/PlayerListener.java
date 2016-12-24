@@ -114,7 +114,8 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		SkyWarfare.getInstance().getGame().removePlayer(gp);
+		if (!SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			SkyWarfare.getInstance().getGame().removePlayer(gp);
 		
 		try {
 			SkyWarfare.getInstance().getPlayerManager().deletePlayer(gp);
@@ -206,6 +207,9 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
+		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
 		
 		GamePlayer player = null;
 		

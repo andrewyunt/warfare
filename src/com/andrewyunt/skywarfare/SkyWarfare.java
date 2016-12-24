@@ -40,31 +40,29 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 		
 		instance = this;
 		
-		arena = Arena.loadFromConfig();
-		game = new Game();
-		
-		// Save default configs to plugin folder
 		saveDefaultConfig();
-		arenaConfig.saveDefaultConfig();
 		
 		dataSource.connect();
 		dataSource.updateDB();
 		
 		PluginManager pm = getServer().getPluginManager();
 		
-		// Register events
 		pm.registerEvents(new PlayerListener(), this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
 			pm.registerEvents(classCreatorMenu, this);
 			pm.registerEvents(shopMenu, this);
 		} else {
+			arenaConfig.saveDefaultConfig();
+			
+			arena = Arena.loadFromConfig();
+			game = new Game();
+			
 			pm.registerEvents(new PlayerUltimateListener(), this);
 			pm.registerEvents(new PlayerSkillListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
 		}
 		
-		// Register plugin messaging channels
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		

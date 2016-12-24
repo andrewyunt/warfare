@@ -101,9 +101,11 @@ public class ClassCreatorMenu implements Listener {
 					
 					if (bp.hasPermission("skywarfare.classes." + classNum)) {
 						try {
-							customClass = player.getCustomClasses().get(i);
+							customClass = player.getCustomClasses().get(classNum - 1);
 							
-							inv.setItem(i, customClass.getKit().getDisplayItem());
+							im.setDisplayName(customClass.getName());
+							
+							is = customClass.getKit().getDisplayItem();
 						} catch (IndexOutOfBoundsException e) {
 							im.setDisplayName("Class " + classNum);
 						}

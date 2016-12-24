@@ -9,6 +9,7 @@ import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 
@@ -55,11 +56,19 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 		@Override
 		public Prompt acceptInput(ConversationContext context, String input) {
 			
-			customClass.setName(input);
-			player.getCustomClasses().add(customClass);
+			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 			
-			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
-					"You set the name of your class to %s", input));
+			scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					
+					customClass.setName(input);
+					player.getCustomClasses().add(customClass);
+					
+					player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
+							"You set the name of your class to %s", input));
+				}
+			}, 20L);
 			
 			return Prompt.END_OF_CONVERSATION;
 		}
