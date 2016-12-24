@@ -153,6 +153,8 @@ public class PlayerListener implements Listener {
 			SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 		else if (type == Material.CHEST)
 			SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
+		else if (type == Material.COMMAND)
+			SkyWarfare.getInstance().getClassSelectorMenu().open(gp);
 	}
 	
 	@EventHandler

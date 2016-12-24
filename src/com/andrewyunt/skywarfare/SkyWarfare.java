@@ -15,6 +15,7 @@ import com.andrewyunt.skywarfare.listeners.PlayerUltimateListener;
 import com.andrewyunt.skywarfare.listeners.SpectatorsInteractionsListener;
 import com.andrewyunt.skywarfare.managers.PlayerManager;
 import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
+import com.andrewyunt.skywarfare.menu.ClassSelectorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Arena;
 import com.andrewyunt.skywarfare.objects.Game;
@@ -29,8 +30,9 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 	private final DataSource dataSource = new MySQLSource();
 	private PlayerManager playerManager = new PlayerManager();
 	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
-	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
 	private ShopMenu shopMenu = new ShopMenu();
+	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
+	private ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
 	private Arena arena;
 	private Game game;
 	private String serverName;
@@ -50,8 +52,9 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 		pm.registerEvents(new PlayerListener(), this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
-			pm.registerEvents(classCreatorMenu, this);
 			pm.registerEvents(shopMenu, this);
+			pm.registerEvents(classCreatorMenu, this);
+			pm.registerEvents(classSelectorMenu, this);
 		} else {
 			arenaConfig.saveDefaultConfig();
 			
@@ -121,14 +124,19 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 		this.game = game;
 	}
 	
+	public ShopMenu getShopMenu() {
+		
+		return shopMenu;
+	}
+	
 	public ClassCreatorMenu getClassCreatorMenu() {
 		
 		return classCreatorMenu;
 	}
 	
-	public ShopMenu getShopMenu() {
+	public ClassSelectorMenu getClassSelectorMenu() {
 		
-		return shopMenu;
+		return classSelectorMenu;
 	}
 	
 	public void setServerName(String serverName) {

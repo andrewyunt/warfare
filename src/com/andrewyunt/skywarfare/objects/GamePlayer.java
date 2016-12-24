@@ -92,6 +92,8 @@ public class GamePlayer {
 	public void setCustomClass(CustomClass customClass) {
 		
 		this.customClass = customClass;
+		
+		updateDynamicScoreboard();
 	}
 	
 	public CustomClass getCustomClass() {
@@ -377,5 +379,11 @@ public class GamePlayer {
 		classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
 		classCreator.setItemMeta(classCreatorMeta);
 		bp.getInventory().setItem(1, classCreator);
+		
+		ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+		ItemMeta classSelectorMeta = classSelector.getItemMeta();
+		classSelectorMeta.setDisplayName(ChatColor.RED + "Class Selector");
+		classSelector.setItemMeta(classSelectorMeta);
+		bp.getInventory().setItem(2, classSelector);
 	}
 }

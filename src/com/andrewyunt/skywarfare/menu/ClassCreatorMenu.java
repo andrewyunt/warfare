@@ -73,12 +73,12 @@ public class ClassCreatorMenu implements Listener {
 		
 		if (type == Type.MAIN) {
 			inv = Bukkit.createInventory(null, 27, "Class Creator");
-			int kitSlot = 9;
+			int classSlot = 9;
 			
 			for (int i = 0; i < 27; i++) {
-				if (i == kitSlot) {
+				if (i == classSlot) {
 					if (i < 16)
-						kitSlot = kitSlot + 2;
+						classSlot = classSlot + 2;
 					
 					int classNum = 1;
 					
