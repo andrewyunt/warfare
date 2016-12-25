@@ -190,13 +190,13 @@ public class PlayerListener implements Listener {
 		lastDamager.addKill();
 		
 		Player lastDamagerBP = lastDamager.getBukkitPlayer();
-		int killCoins = 2;
+		int killCoins = 20;
 		
 		if (lastDamagerBP.hasPermission("megatw.coins.double"))
-			killCoins = 4;
+			killCoins = 40;
 		
 		if (lastDamagerBP.hasPermission("megatw.coins.triple"))
-			killCoins = 6;
+			killCoins = 60;
 		
 		lastDamager.setCoins(lastDamager.getCoins() + killCoins);
 		
