@@ -163,6 +163,10 @@ public class Game {
 			if (entity.getType() != EntityType.PLAYER)
 				entity.remove();
 		
+		// Destroy cages
+		for (Cage cage : cages)
+			cage.destroy();
+		
 		for (GamePlayer player : players) {
 			// Update player's name color
 			Utils.colorPlayerName(player, SkyWarfare.getInstance().getGame().getPlayers());
@@ -172,11 +176,10 @@ public class Game {
 			
 			// Update player's scoreboard
 			player.updateDynamicScoreboard();
+			
+			// Give player kit items
+			player.getCustomClass().getKit().giveItems(player);
 		}
-		
-		// Destroy cages
-		for (Cage cage : cages)
-			cage.destroy();
 		
 		// Start chest refill timer
 		runRefillTimer();
