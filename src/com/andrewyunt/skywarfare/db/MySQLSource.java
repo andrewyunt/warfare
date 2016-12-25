@@ -192,7 +192,7 @@ public class MySQLSource extends DataSource {
 			try {
 				preparedStatement = connection.prepareStatement(query);
 				
-				preparedStatement.setString(1, uuid);
+				preparedStatement.setString(1, uuid); 
 				preparedStatement.setString(2, purchasable.toString());
 				
 				preparedStatement.executeUpdate();
@@ -262,6 +262,7 @@ public class MySQLSource extends DataSource {
 		String uuid = player.getUUID().toString();
 		
 		for (CustomClass customClass : player.getCustomClasses()) {
+
 			String query = "INSERT INTO Classes (uuid, name, kit, ultimate, skill_one, skill_two)"
 					+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE uuid = VALUES(uuid),"
 					+ " name = VALUES(name), kit = VALUES(kit), ultimate = VALUES(ultimate),"
@@ -389,8 +390,8 @@ public class MySQLSource extends DataSource {
 		
 		String query = "CREATE TABLE IF NOT EXISTS `Purchases`"
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
-				+ "   `purchasable`      CHAR(20) NOT NULL);";
-		
+				+ "   `purchasable`      CHAR(20) NOT NULL,"
+				+ "   PRIMARY KEY (`uuid`, `purchasable`));";
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
@@ -416,7 +417,8 @@ public class MySQLSource extends DataSource {
 				+ "   `kit`              CHAR(20) NOT NULL,"
 				+ "   `ultimate`         CHAR(20) NOT NULL,"
 				+ "   `skill_one`        CHAR(20) NOT NULL,"
-				+ "   `skill_two`        CHAR(20) NOT NULL);";
+				+ "   `skill_two`        CHAR(20) NOT NULL,"
+				+ "    PRIMARY KEY (`uuid`, `name`));";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
