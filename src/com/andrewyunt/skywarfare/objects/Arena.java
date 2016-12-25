@@ -16,6 +16,8 @@
 package com.andrewyunt.skywarfare.objects;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -112,8 +114,15 @@ public class Arena {
 		
 		for (String key : chestsSection.getKeys(false)) {
 			ConfigurationSection chestSection = chestsSection.getConfigurationSection(key);
-			arena.lootChests.add(new LootChest((Chest) Utils.deserializeLocation(chestSection).getBlock().getState(),
-					(byte) chestSection.getInt("tier")));
+			Block block = Utils.deserializeLocation(chestSection).getBlock();
+			
+			if (block == null)
+				continue;
+			
+			if (block.getType() != Material.CHEST)
+				continue;
+			
+			arena.lootChests.add(new LootChest((Chest) block.getState(), (byte) chestSection.getInt("tier")));
 		}
 		
 		ConfigurationSection cagesSection = arenaConfig.getConfigurationSection("cages");
