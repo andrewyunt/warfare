@@ -202,8 +202,9 @@ public class Game {
 			player.setCoins(player.getCoins() + winCoins);
 			player.setWins(player.getWins() + 1);
 			
-			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("You earned %s for winning the game.",
-					ChatColor.AQUA + String.valueOf(winCoins) + "coins" + ChatColor.GREEN));
+			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
+					"You earned %s coins for winning the game.",
+					String.valueOf(winCoins)));
 		}
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
