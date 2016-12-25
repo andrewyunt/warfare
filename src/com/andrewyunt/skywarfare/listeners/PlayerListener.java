@@ -160,6 +160,9 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
 		event.setDeathMessage(null);
 		
 		Player player = event.getEntity();
