@@ -232,6 +232,9 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
 		GamePlayer player = null;
 		
 		try {
