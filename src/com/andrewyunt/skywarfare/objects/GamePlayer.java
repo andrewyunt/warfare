@@ -50,7 +50,7 @@ public class GamePlayer {
 	private DynamicScoreboard dynamicScoreboard;
 	
 	private final List<CustomClass> customClasses = new ArrayList<CustomClass>();
-	private final Set<Purchasable> purchases = new HashSet<Purchasable>();
+	private final List<Purchasable> purchases = new ArrayList<Purchasable>();
 	private final Set<UUID> ghasts = new HashSet<UUID>();
 	
 	public GamePlayer(UUID uuid) {
@@ -245,7 +245,7 @@ public class GamePlayer {
 		return flamingFeet;
 	}
 	
-	public Set<Purchasable> getPurchases() {
+	public List<Purchasable> getPurchases() {
 		
 		return purchases;
 	}
@@ -284,6 +284,9 @@ public class GamePlayer {
 	}
 	
 	public Cage getCage() {
+		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return null;
 		
 		for (Cage cage : SkyWarfare.getInstance().getGame().getCages())
 			if (cage.hasPlayer() && cage.getPlayer() == this)

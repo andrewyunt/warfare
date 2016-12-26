@@ -42,7 +42,8 @@ import com.andrewyunt.skywarfare.objects.GamePlayer;
 public class ClassSelectorMenu implements Listener {
 
 	private Inventory inv;
-	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
+	
+	private final ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	
 	public ClassSelectorMenu() {
 		

@@ -125,10 +125,34 @@ public class ClassCreatorMenu implements Listener {
 						inv.setItem(i, glassPane);
 			}
 		} else {
-			inv = Bukkit.createInventory(null, 18, "Class Creator - " + type.getName());
-			int i =  0;
+			inv = Bukkit.createInventory(null, 54, "Class Creator - " + type.getName());
 			
-			for (Purchasable purchasable : player.getPurchases()) {
+			for (int i = 0; i < 9; i++)
+				inv.setItem(i, glassPane);
+			
+			for (int i = 9; i < 45; i = i + 9) {
+				inv.setItem(i, glassPane);
+				inv.setItem(i + 8, glassPane);
+			}
+			
+			for (int i = 45; i < 54; i++)
+				inv.setItem(i, glassPane);
+			
+			List<Purchasable> purchases = player.getPurchases();
+			
+			int purchaseNum = 0;
+			
+			for (int i = 0; i < inv.getSize(); i++) {
+				if (inv.getItem(i) != null)
+					continue;
+				
+				Purchasable purchasable = purchases.get(purchaseNum);
+				
+				if (purchaseNum >= purchases.size() - 1)
+					break;
+				
+				purchaseNum++;
+				
 				if (type == Type.KIT) {
 					if (!(purchasable instanceof Kit))
 						continue;
@@ -152,8 +176,6 @@ public class ClassCreatorMenu implements Listener {
 				displayItem.setItemMeta(displayItemMeta);
 				
 				inv.setItem(i, displayItem);
-				
-				i++;
 			}
 		}
 		

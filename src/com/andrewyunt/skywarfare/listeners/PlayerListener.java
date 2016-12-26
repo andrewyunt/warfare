@@ -16,8 +16,6 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import java.util.List;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,7 +65,7 @@ public class PlayerListener implements Listener {
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
-			Set<Purchasable> purchases = finalGP.getPurchases();
+			List<Purchasable> purchases = finalGP.getPurchases();
 			
 			if (!purchases.contains(Kit.ARMORER))
 				purchases.add(Kit.ARMORER);
