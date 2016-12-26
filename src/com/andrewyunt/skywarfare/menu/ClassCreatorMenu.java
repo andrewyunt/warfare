@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.skywarfare.menu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,35 +126,60 @@ public class ClassCreatorMenu implements Listener {
 						inv.setItem(i, glassPane);
 			}
 		} else {
-			inv = Bukkit.createInventory(null, 18, "Class Creator - " + type.getName());
-			int i =  0;
+			inv = Bukkit.createInventory(null, 54, "Class Creator - " + type.getName());
 			
-			for (Purchasable purchasable : player.getPurchases()) {
+			for (int i = 0; i < 9; i++)
+				inv.setItem(i, glassPane);
+			
+			for (int i = 9; i < 45; i = i + 9) {
+				inv.setItem(i, glassPane);
+				inv.setItem(i + 8, glassPane);
+			}
+			
+			for (int i = 45; i < 54; i++)
+				inv.setItem(i, glassPane);
+			
+			List<Purchasable> toAdd = new ArrayList<Purchasable>();
+			
+			for (Purchasable purchase : player.getPurchases())
 				if (type == Type.KIT) {
-					if (!(purchasable instanceof Kit))
-						continue;
+					if (purchase instanceof Kit)
+						toAdd.add(purchase);
 				} else if (type == Type.ULTIMATE) {
-					if (!(purchasable instanceof Ultimate))
-						continue;
-				} else
-					if (!(purchasable instanceof Skill))
-						continue;
+					if (purchase instanceof Ultimate)
+						toAdd.add(purchase);
+				} else {
+					if (purchase instanceof Skill)
+						toAdd.add(purchase);
+				}
+			
+			for (int i = 0; i < inv.getSize(); i++) {
+				if (inv.getItem(i) != null)
+					continue;
 				
-				ItemStack displayItem = purchasable.getDisplayItem();
+				Purchasable purchase = null;
+				
+				try {
+					purchase = toAdd.get(0);
+				} catch (IndexOutOfBoundsException e) {
+					break;
+				}
+				
+				toAdd.remove(purchase);
+				
+				ItemStack displayItem = purchase.getDisplayItem();
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
-				displayItemMeta.setDisplayName(purchasable.getName());
+				displayItemMeta.setDisplayName(purchase.getName());
 				
 				List<String> lore = SkyWarfare.getInstance().getConfig().getStringList(
-						"description-" + purchasable.toString());
+						"description-" + purchase.toString());
 				lore.add("");
-				lore.add(player.getPurchases().contains(purchasable) ? "PURCHASED" : "Price: " + purchasable.getPrice());
+				lore.add(player.getPurchases().contains(purchase) ? "PURCHASED" : "Price: " + purchase.getPrice());
 				displayItemMeta.setLore(lore);
 				
 				displayItem.setItemMeta(displayItemMeta);
 				
 				inv.setItem(i, displayItem);
-				
-				i++;
 			}
 		}
 		

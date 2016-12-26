@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.skywarfare.menu;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -48,6 +49,24 @@ public class ShopMenu implements Listener {
 	}
 	
 	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private ItemStack kits = new ItemStack(Material.IRON_SWORD, 1);
+	private ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
+	private ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+	
+	public ShopMenu() {
+		
+		ItemMeta kitsMeta = kits.getItemMeta();
+		ItemMeta ultimatesMeta = ultimates.getItemMeta();
+		ItemMeta skillsMeta = skills.getItemMeta();
+		
+		kitsMeta.setDisplayName("Kits");
+		ultimatesMeta.setDisplayName("Ultimates");
+		skillsMeta.setDisplayName("Skills");
+		
+		kits.setItemMeta(kitsMeta);
+		ultimates.setItemMeta(ultimatesMeta);
+		skills.setItemMeta(skillsMeta);
+	}
 	
 	public void open(Type type, GamePlayer player) {
 		
@@ -58,22 +77,6 @@ public class ShopMenu implements Listener {
 			
 			for (int i = 0; i <= 10; i++)
 				inv.setItem(i, glassPane);
-			
-			ItemStack kits = new ItemStack(Material.IRON_SWORD, 1);
-			ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
-			ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-			
-			ItemMeta kitsMeta = kits.getItemMeta();
-			ItemMeta ultimatesMeta = ultimates.getItemMeta();
-			ItemMeta skillsMeta = skills.getItemMeta();
-			
-			kitsMeta.setDisplayName("Kits");
-			ultimatesMeta.setDisplayName("Ultimates");
-			skillsMeta.setDisplayName("Skills");
-			
-			kits.setItemMeta(kitsMeta);
-			ultimates.setItemMeta(ultimatesMeta);
-			skills.setItemMeta(skillsMeta);
 			
 			inv.setItem(11, kits);
 			inv.setItem(12, glassPane);
@@ -93,13 +96,36 @@ public class ShopMenu implements Listener {
 			for (int i = 23; i <= 26; i++)
 				inv.setItem(i, glassPane);
 		} else {
-			inv = Bukkit.createInventory(null, 18, "Shop - " + (type == Type.KITS ? "Kits"
+			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.KITS ? "Kits"
 					: type == Type.ULTIMATES ? "Ultimates" : "Skills"));
 			
-			Purchasable[] purchasables = type == Type.KITS ? Kit.values(): type == Type.ULTIMATES
-					? Ultimate.values() : Skill.values();
+			for (int i = 0; i < 9; i++)
+				inv.setItem(i, glassPane);
 			
-			for (Purchasable purchasable : purchasables) {
+			for (int i = 9; i < 45; i = i + 9) {
+				inv.setItem(i, glassPane);
+				inv.setItem(i + 8, glassPane);
+			}
+			
+			for (int i = 45; i < 54; i++)
+				inv.setItem(i, glassPane);
+			
+			List<Purchasable> purchasables = Arrays.asList(type == Type.KITS ? Kit.values(): type == Type.ULTIMATES
+					? Ultimate.values() : Skill.values());
+			
+			int purchasableNum = 0;
+			
+			for (int i = 0; i < inv.getSize(); i++) {
+				if (inv.getItem(i) != null)
+					continue;
+				
+				Purchasable purchasable = purchasables.get(purchasableNum);
+				
+				if (purchasableNum >= purchasables.size() - 1)
+					break;
+				
+				purchasableNum++;
+				
 				ItemStack is = Utils.removeAttributes(purchasable.getDisplayItem());
 				ItemMeta im = is.getItemMeta();
 				
@@ -112,14 +138,16 @@ public class ShopMenu implements Listener {
 				im.setLore(lore);
 				
 				is.setItemMeta(im);
-				inv.addItem(is);
+				inv.setItem(i, is);
 			}
+			
+			inv.setItem(4,(type == Type.KITS ? kits : type == Type.ULTIMATES ? ultimates : skills));
 			
 			ItemStack goBack = new ItemStack(Material.ARROW, 1);
 			ItemMeta goBackMeta = goBack.getItemMeta();
 			goBackMeta.setDisplayName(ChatColor.RED + "Go Back");
 			goBack.setItemMeta(goBackMeta);
-			inv.setItem(13, goBack);
+			inv.setItem(49, goBack);
 		}
 		
 		player.getBukkitPlayer().openInventory(inv);
@@ -165,6 +193,9 @@ public class ShopMenu implements Listener {
 				open(Type.MAIN, gp);
 				return;
 			}
+			
+			if (name.equals("Kits") || name.equals("Ultimtes") || name.equals("Skills"))
+				return;
 			
 			if (im.getLore().contains("PURCHASED")) {
 				player.sendMessage(ChatColor.RED + "You have already purchased that item.");
