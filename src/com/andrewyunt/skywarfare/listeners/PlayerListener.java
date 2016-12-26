@@ -165,9 +165,6 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		
-		if (!SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
-			return;
-		
 		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
 			return;
 		

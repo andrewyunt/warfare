@@ -43,6 +43,7 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 	private static SkyWarfare instance;
 	
 	private final DataSource dataSource = new MySQLSource();
+	
 	private PlayerManager playerManager = new PlayerManager();
 	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
 	private ShopMenu shopMenu = new ShopMenu();

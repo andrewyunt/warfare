@@ -88,6 +88,9 @@ public class Cage {
 		player.getBukkitPlayer().teleport(location);
 		
 		location.setY(location.getY() - 1);
+		
+		// Update player's hotbar
+		player.updateHotbar();
 	}
 	
 	public GamePlayer getPlayer() {

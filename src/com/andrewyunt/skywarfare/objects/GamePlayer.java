@@ -30,6 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -366,24 +367,28 @@ public class GamePlayer {
 	
 	public void updateHotbar() {
 		
-		Player bp = getBukkitPlayer();
-		
-		ItemStack shop = new ItemStack(Material.EMERALD, 1);
-		ItemMeta shopMeta = shop.getItemMeta();
-		shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
-		shop.setItemMeta(shopMeta);
-		bp.getInventory().setItem(0, shop);
-		
-		ItemStack classCreator = new ItemStack(Material.CHEST, 1);
-		ItemMeta classCreatorMeta = classCreator.getItemMeta();
-		classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
-		classCreator.setItemMeta(classCreatorMeta);
-		bp.getInventory().setItem(1, classCreator);
+		PlayerInventory inv = getBukkitPlayer().getInventory();
 		
 		ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 		ItemMeta classSelectorMeta = classSelector.getItemMeta();
 		classSelectorMeta.setDisplayName(ChatColor.RED + "Class Selector");
 		classSelector.setItemMeta(classSelectorMeta);
-		bp.getInventory().setItem(2, classSelector);
+		
+		if (!isCaged()) {
+			ItemStack shop = new ItemStack(Material.EMERALD, 1);
+			ItemMeta shopMeta = shop.getItemMeta();
+			shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
+			shop.setItemMeta(shopMeta);
+			inv.setItem(0, shop);
+			
+			ItemStack classCreator = new ItemStack(Material.CHEST, 1);
+			ItemMeta classCreatorMeta = classCreator.getItemMeta();
+			classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
+			classCreator.setItemMeta(classCreatorMeta);
+			inv.setItem(1, classCreator);
+			
+			inv.setItem(2, classSelector);
+		} else
+			inv.setItem(0, classSelector);
 	}
 }
