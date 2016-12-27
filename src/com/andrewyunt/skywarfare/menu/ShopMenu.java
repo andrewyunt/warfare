@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,8 +38,6 @@ import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
 import com.andrewyunt.skywarfare.objects.Ultimate;
 import com.andrewyunt.skywarfare.utilities.Utils;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class ShopMenu implements Listener {
 	
@@ -126,18 +126,21 @@ public class ShopMenu implements Listener {
 				
 				purchasableNum++;
 				
-				ItemStack is = Utils.removeAttributes(purchasable.getDisplayItem());
+				ItemStack is = Utils.removeAttributes(purchasable.getDisplayItem().clone());
+				
+				for(Enchantment enchantment : is.getEnchantments().keySet())
+					is.removeEnchantment(enchantment);
+				
 				ItemMeta im = is.getItemMeta();
-				
-				im.setDisplayName(purchasable.getName());
-				
-				List<String> lore = SkyWarfare.getInstance().getConfig().getStringList(
-						"description-" + purchasable.toString());
+				im.setDisplayName(ChatColor.AQUA + purchasable.getName());
+				List<String> lore = Utils.colorizeList(SkyWarfare.getInstance().getConfig().getStringList(
+						"description-" + purchasable.toString()), ChatColor.WHITE);
 				lore.add("");
-				lore.add(player.getPurchases().contains(purchasable) ? "PURCHASED" : "Price: " + purchasable.getPrice());
+				lore.add(ChatColor.GOLD + (player.getPurchases().contains(purchasable) ?
+						"Purchased" : "Price: " + purchasable.getPrice()));
 				im.setLore(lore);
-				
 				is.setItemMeta(im);
+				
 				inv.setItem(i, is);
 			}
 			
@@ -197,13 +200,13 @@ public class ShopMenu implements Listener {
 			if (name.equals("Kits") || name.equals("Ultimtes") || name.equals("Skills"))
 				return;
 			
-			if (im.getLore().contains("PURCHASED")) {
+			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {
 				player.sendMessage(ChatColor.RED + "You have already purchased that item.");
 				return;
 			}
 			
 			Purchasable purchasable = null;
-			String enumName = name.toUpperCase().replace(' ', '_');
+			String enumName = ChatColor.stripColor(name.toUpperCase().replace(' ', '_'));
 			Type type = null;
 			
 			if (title.contains("Kits")) {

@@ -23,6 +23,7 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,6 +41,7 @@ import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
 import com.andrewyunt.skywarfare.objects.Ultimate;
+import com.andrewyunt.skywarfare.utilities.Utils;
 
 public class ClassCreatorMenu implements Listener {
 	
@@ -167,16 +169,15 @@ public class ClassCreatorMenu implements Listener {
 				
 				toAdd.remove(purchase);
 				
-				ItemStack displayItem = purchase.getDisplayItem();
+				ItemStack displayItem = purchase.getDisplayItem().clone();
+				
+				for(Enchantment enchantment : displayItem.getEnchantments().keySet())
+					displayItem.removeEnchantment(enchantment);
+				
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
-				displayItemMeta.setDisplayName(purchase.getName());
-				
-				List<String> lore = SkyWarfare.getInstance().getConfig().getStringList(
-						"description-" + purchase.toString());
-				lore.add("");
-				lore.add(player.getPurchases().contains(purchase) ? "PURCHASED" : "Price: " + purchase.getPrice());
-				displayItemMeta.setLore(lore);
-				
+				displayItemMeta.setDisplayName(ChatColor.AQUA + purchase.getName());
+				displayItemMeta.setLore(Utils.colorizeList(SkyWarfare.getInstance().getConfig().getStringList(
+						"description-" + purchase.toString()), ChatColor.WHITE));
 				displayItem.setItemMeta(displayItemMeta);
 				
 				inv.setItem(i, displayItem);
@@ -227,7 +228,7 @@ public class ClassCreatorMenu implements Listener {
 			editingClasses.put(gp, customClass);
 			open(Type.KIT, gp, customClass);
 		} else {
-			String enumStr = name.toUpperCase().replace(" ", "_");
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(" ", "_"));
 			
 			if (title.contains("Kit")) {
 				editingClasses.get(gp).setKit(Kit.valueOf(enumStr));

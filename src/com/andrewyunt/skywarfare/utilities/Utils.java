@@ -2,7 +2,9 @@ package com.andrewyunt.skywarfare.utilities;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +38,11 @@ public class Utils {
 		map.put("z", loc.getZ());
 
 		return map;
+	}
+	
+	public static List<String> colorizeList(List<String> list, ChatColor color) {
+
+		return list.stream().map(line -> color + line).collect(Collectors.toList());
 	}
 
 	public static ItemStack removeAttributes(ItemStack is) {
