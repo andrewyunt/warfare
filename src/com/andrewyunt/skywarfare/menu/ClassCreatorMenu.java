@@ -67,7 +67,8 @@ public class ClassCreatorMenu implements Listener {
 	}
 	
 	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
-	private Map<GamePlayer, CustomClass> editingClasses = new HashMap<GamePlayer, CustomClass>();
+	private Map<GamePlayer, CustomClass> creatingClasses = new HashMap<GamePlayer, CustomClass>();
+	private Map<GamePlayer, CustomClass> replacingClasses = new HashMap<GamePlayer, CustomClass>();
 	
 	public void open(Type type, GamePlayer player, CustomClass customClass) {
 		
@@ -222,27 +223,34 @@ public class ClassCreatorMenu implements Listener {
 			
 			CustomClass customClass = new CustomClass();
 			
-			if (editingClasses.containsKey(gp))
-				editingClasses.remove(gp);
+			if (creatingClasses.containsKey(gp))
+				creatingClasses.remove(gp);
 			
-			editingClasses.put(gp, customClass);
+			creatingClasses.put(gp, customClass);
+			
+			if (is.getType() != Material.CHEST) {
+				if (replacingClasses.containsKey(gp.getCustomClass(name)))
+					replacingClasses.remove(gp);
+				
+				replacingClasses.put(gp, gp.getCustomClass(name));
+			}
 			open(Type.KIT, gp, customClass);
 		} else {
 			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(" ", "_"));
 			
 			if (title.contains("Kit")) {
-				editingClasses.get(gp).setKit(Kit.valueOf(enumStr));
+				creatingClasses.get(gp).setKit(Kit.valueOf(enumStr));
 				open(Type.ULTIMATE, gp, null);
 			} else if (title.contains("Ultimate")) {
-				editingClasses.get(gp).setUltimate(Ultimate.valueOf(enumStr));
+				creatingClasses.get(gp).setUltimate(Ultimate.valueOf(enumStr));
 				open(Type.SKILL_ONE, gp, null);
 			} else if (title.contains("Skill One")) {
-				editingClasses.get(gp).setSkillOne(Skill.valueOf(enumStr));
+				creatingClasses.get(gp).setSkillOne(Skill.valueOf(enumStr));
 				open(Type.SKILL_TWO, gp, null);
 			} else if (title.contains("Skill Two")) {
 				player.closeInventory();
-				editingClasses.get(gp).setSkillTwo(Skill.valueOf(enumStr));
-				new ClassNameConversation(gp, editingClasses.get(gp)).beginConversation();
+				creatingClasses.get(gp).setSkillTwo(Skill.valueOf(enumStr));
+				new ClassNameConversation(gp, creatingClasses.get(gp), replacingClasses.get(gp)).beginConversation();
 			}
 		}
 	}

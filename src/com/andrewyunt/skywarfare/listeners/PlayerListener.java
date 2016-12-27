@@ -65,36 +65,6 @@ public class PlayerListener implements Listener {
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
-			List<Purchasable> purchases = finalGP.getPurchases();
-			
-			if (!purchases.contains(Kit.ARMORER))
-				purchases.add(Kit.ARMORER);
-			
-			if (!purchases.contains(Ultimate.HEAL))
-				purchases.add(Ultimate.HEAL);
-			
-			if (!purchases.contains(Skill.HEAD_START))
-				purchases.add(Skill.HEAD_START);
-			
-			if (!purchases.contains(Skill.GUARD))
-				purchases.add(Skill.GUARD);
-			
-			CustomClass defaultClass = new CustomClass();
-			
-			defaultClass.setKit(Kit.ARMORER);
-			defaultClass.setUltimate(Ultimate.HEAL);
-			defaultClass.setSkillOne(Skill.HEAD_START);
-			defaultClass.setSkillTwo(Skill.GUARD);
-			defaultClass.setName("Default");
-			
-			List<CustomClass> customClasses = finalGP.getCustomClasses();
-			
-			if (customClasses.size() == 0)
-				customClasses.add(defaultClass);
-			
-			if (finalGP.getCustomClass() == null)
-				finalGP.setCustomClass(defaultClass);
-			
 			if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby")) {
 				finalGP.updateHotbar();
 			} else {
@@ -125,6 +95,38 @@ public class PlayerListener implements Listener {
 					finalGP.setSpectating(true);
 			}
 		}, 2L);
+		
+		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
+			List<Purchasable> purchases = finalGP.getPurchases();
+	
+			if (!purchases.contains(Kit.ARMORER))
+				purchases.add(Kit.ARMORER);
+			
+			if (!purchases.contains(Ultimate.HEAL))
+				purchases.add(Ultimate.HEAL);
+			
+			if (!purchases.contains(Skill.HEAD_START))
+				purchases.add(Skill.HEAD_START);
+			
+			if (!purchases.contains(Skill.GUARD))
+				purchases.add(Skill.GUARD);
+			
+			CustomClass defaultClass = new CustomClass();
+			
+			defaultClass.setKit(Kit.ARMORER);
+			defaultClass.setUltimate(Ultimate.HEAL);
+			defaultClass.setSkillOne(Skill.HEAD_START);
+			defaultClass.setSkillTwo(Skill.GUARD);
+			defaultClass.setName("Default");
+			
+			List<CustomClass> customClasses = finalGP.getCustomClasses();
+			
+			if (customClasses.size() == 0)
+				customClasses.add(defaultClass);
+			
+			if (finalGP.getCustomClass() == null)
+				finalGP.setCustomClass(customClasses.get(0));
+		}, 20L);
 		
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
 			// Fetch server name for scoreboards if it's null

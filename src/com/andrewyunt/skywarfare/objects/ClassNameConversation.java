@@ -18,13 +18,13 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 	private final ConversationFactory conversationFactory;
 	private final GamePlayer player;
 	
-	public ClassNameConversation(GamePlayer player, CustomClass customClass) {
+	public ClassNameConversation(GamePlayer player, CustomClass customClass, CustomClass replacingClass) {
 		
 		this.player = player;
 		
 		conversationFactory = new ConversationFactory(SkyWarfare.getInstance())
 				.withModality(true)
-				.withFirstPrompt(new NamePrompt(player, customClass))
+				.withFirstPrompt(new NamePrompt(player, customClass, replacingClass))
 				.withEscapeSequence("quit")
 				.withTimeout(30)
 				.thatExcludesNonPlayersWithMessage("Unable to access from the console.")
@@ -40,11 +40,13 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 		
 		private GamePlayer player;
 		private CustomClass customClass;
+		private CustomClass replacingClass;
 		
-		NamePrompt(GamePlayer player, CustomClass customClass) {
+		NamePrompt(GamePlayer player, CustomClass customClass, CustomClass replacingClass) {
 			
 			this.player = player;
 			this.customClass = customClass;
+			this.replacingClass = replacingClass;
 		}
 		
 		@Override
@@ -62,11 +64,16 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 				@Override
 				public void run() {
 					
+					player.getCustomClasses().remove(replacingClass);
+					
 					customClass.setName(input);
 					player.getCustomClasses().add(customClass);
 					
 					player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
 							"You set the name of your class to %s", input));
+					
+					if (player.getCustomClass(player.getCustomClass().getName()) == null)
+						player.setCustomClass(player.getCustomClasses().get(0));
 				}
 			}, 20L);
 			
