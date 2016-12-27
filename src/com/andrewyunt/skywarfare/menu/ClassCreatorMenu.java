@@ -119,7 +119,19 @@ public class ClassCreatorMenu implements Listener {
 					is.setItemMeta(im);
 					inv.setItem(i, is);
 				} else
-					if (i == 22) {
+					if (i == 4) {
+						ItemStack info = new ItemStack(Material.PAPER, 1);
+						ItemMeta infoMeta = info.getItemMeta();
+						infoMeta.setDisplayName("Class Info");
+						List<String> infoLore = new ArrayList<String>();
+						infoLore.add("a class consists of:");
+						infoLore.add("x1 Kit");
+						infoLore.add("x1 Ultimate");
+						infoLore.add("x1 Skill");
+						infoMeta.setLore(Utils.colorizeList(infoLore, ChatColor.WHITE));
+						info.setItemMeta(infoMeta);
+						inv.setItem(4, info);
+					} else if (i == 22) {
 						ItemStack close = new ItemStack(Material.ARROW, 1);
 						ItemMeta closeMeta = close.getItemMeta();
 						closeMeta.setDisplayName(ChatColor.RED + "Close");
@@ -222,7 +234,9 @@ public class ClassCreatorMenu implements Listener {
 			if (name.equals(ChatColor.RED + "Close")) {
 				player.closeInventory();
 				return;
-			} else if (name.equals(ChatColor.RED + "Donate @ amosita.net for more class slots."))
+			} else if (name.equals("Class Info"))
+				return;
+			else if (name.equals(ChatColor.RED + "Donate @ amosita.net for more class slots."))
 				return;
 			
 			CustomClass customClass = new CustomClass();
