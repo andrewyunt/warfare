@@ -153,7 +153,11 @@ public class ClassCreatorMenu implements Listener {
 						toAdd.add(purchase);
 				} else {
 					if (purchase instanceof Skill)
-						toAdd.add(purchase);
+						if (type == Type.SKILL_TWO) { 
+							if (creatingClasses.get(player).getSkillOne() != purchase)
+								toAdd.add(purchase);
+						} else
+							toAdd.add(purchase);
 				}
 			
 			for (int i = 0; i < inv.getSize(); i++) {
