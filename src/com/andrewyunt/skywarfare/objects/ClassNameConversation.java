@@ -22,6 +22,9 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 		
 		this.player = player;
 		
+		for (int i = 0; i < 100; i++)
+			player.getBukkitPlayer().sendMessage(" ");
+		
 		conversationFactory = new ConversationFactory(SkyWarfare.getInstance())
 				.withModality(true)
 				.withFirstPrompt(new NamePrompt(player, customClass, replacingClass))
@@ -52,7 +55,7 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 		@Override
 		public String getPromptText(ConversationContext context) {
 			
-			return ChatColor.GOLD + "Please enter a name for your class in the chat.";
+			return ChatColor.GOLD + ChatColor.BOLD.toString() + "Please enter a name for your class in the chat.";
 		}
 
 		@Override
@@ -69,8 +72,8 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 					customClass.setName(input);
 					player.getCustomClasses().add(customClass);
 					
-					player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
-							"You set the name of your class to %s", input));
+					player.getBukkitPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString()
+						+ String.format("You set the name of your class to %s", input));
 					
 					if (player.getCustomClass(player.getCustomClass().getName()) == null)
 						player.setCustomClass(player.getCustomClasses().get(0));
@@ -86,7 +89,7 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 		
 		Player player = (Player) event.getContext().getForWhom();
 		
-		if(!event.gracefulExit())
+		if (!event.gracefulExit())
 			player.sendMessage("Converastion abandoned by " + event.getCanceller().getClass().getName());
 	}
 }

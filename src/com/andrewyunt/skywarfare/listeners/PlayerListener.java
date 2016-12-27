@@ -18,6 +18,7 @@ package com.andrewyunt.skywarfare.listeners;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.conversations.Conversable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -286,5 +288,16 @@ public class PlayerListener implements Listener {
 		
 		if (player.getCage().getBlocks().contains(event.getBlock()))
 			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onChat(AsyncPlayerChatEvent event) {
+		
+		for (Player player : event.getRecipients()) {
+			Conversable conversable = (Conversable) player;
+			
+			if (conversable.isConversing())
+				event.getRecipients().remove(player);
+		}
 	}
 }
