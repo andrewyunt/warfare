@@ -132,10 +132,10 @@ public class ShopMenu implements Listener {
 				if (inv.getItem(i) != null)
 					continue;
 				
-				Purchasable purchasable = purchasables.get(purchasableNum);
-				
-				if (purchasableNum >= purchasables.size() - 1)
+				if (purchasableNum > purchasables.size() - 1)
 					break;
+				
+				Purchasable purchasable = purchasables.get(purchasableNum);
 				
 				purchasableNum++;
 				

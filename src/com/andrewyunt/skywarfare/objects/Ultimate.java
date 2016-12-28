@@ -104,7 +104,7 @@ public enum Ultimate implements Purchasable {
 		} else if (this == SONIC) {
 			return new ItemStack(Material.FEATHER, 1);
 		} else if (this == WITHERING) {
-			return new ItemStack(Material.SKULL, 1, (short) 1);
+			return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
 		} else if (this == FLAMING_FEET) {
 			ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS, 1);
 			ironBoots.addEnchantment(Enchantment.PROTECTION_FIRE, 1);
