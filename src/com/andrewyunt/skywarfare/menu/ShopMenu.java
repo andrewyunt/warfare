@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.skywarfare.menu;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class ShopMenu implements Listener {
 	
 	public ShopMenu() {
 		
+		ItemMeta glassPaneMeta = glassPane.getItemMeta();
+		
 		ItemMeta kitsMeta = kits.getItemMeta();
 		ItemMeta ultimatesMeta = ultimates.getItemMeta();
 		ItemMeta skillsMeta = skills.getItemMeta();
@@ -62,10 +65,14 @@ public class ShopMenu implements Listener {
 		kitsMeta.setDisplayName("Kits");
 		ultimatesMeta.setDisplayName("Ultimates");
 		skillsMeta.setDisplayName("Skills");
+		glassPaneMeta.setDisplayName(" ");
+		
+		glassPaneMeta.setLore(new ArrayList<String>());
 		
 		kits.setItemMeta(kitsMeta);
 		ultimates.setItemMeta(ultimatesMeta);
 		skills.setItemMeta(skillsMeta);
+		glassPane.setItemMeta(glassPaneMeta);
 	}
 	
 	public void open(Type type, GamePlayer player) {

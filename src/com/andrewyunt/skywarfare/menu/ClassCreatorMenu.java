@@ -70,6 +70,14 @@ public class ClassCreatorMenu implements Listener {
 	private Map<GamePlayer, CustomClass> creatingClasses = new HashMap<GamePlayer, CustomClass>();
 	private Map<GamePlayer, CustomClass> replacingClasses = new HashMap<GamePlayer, CustomClass>();
 	
+	public ClassCreatorMenu() {
+		
+		ItemMeta glassPaneMeta = glassPane.getItemMeta();
+		glassPaneMeta.setDisplayName(" ");
+		glassPaneMeta.setLore(new ArrayList<String>());
+		glassPane.setItemMeta(glassPaneMeta);
+	}
+	
 	public void open(Type type, GamePlayer player, CustomClass customClass) {
 		
 		Player bp = player.getBukkitPlayer();
