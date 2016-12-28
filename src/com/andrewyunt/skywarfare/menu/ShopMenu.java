@@ -34,6 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.HealthBoost;
 import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
@@ -46,33 +47,37 @@ public class ShopMenu implements Listener {
 		MAIN,
 		KITS,
 		ULTIMATES,
-		SKILLS
+		SKILLS,
+		HEALTH_BOOSTS
 	}
 	
 	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	private ItemStack kits = new ItemStack(Material.IRON_SWORD, 1);
 	private ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
 	private ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+	private ItemStack healthBoosts = new ItemStack(Material.GOLDEN_APPLE, 1);
 	
 	public ShopMenu() {
 		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
-		
 		ItemMeta kitsMeta = kits.getItemMeta();
 		ItemMeta ultimatesMeta = ultimates.getItemMeta();
 		ItemMeta skillsMeta = skills.getItemMeta();
+		ItemMeta healthBoostsMeta = healthBoosts.getItemMeta();
 		
-		kitsMeta.setDisplayName("Kits");
-		ultimatesMeta.setDisplayName("Ultimates");
-		skillsMeta.setDisplayName("Skills");
 		glassPaneMeta.setDisplayName(" ");
+		kitsMeta.setDisplayName(ChatColor.AQUA + "Kits");
+		ultimatesMeta.setDisplayName(ChatColor.AQUA + "Ultimates");
+		skillsMeta.setDisplayName(ChatColor.AQUA + "Skills");
+		healthBoostsMeta.setDisplayName(ChatColor.AQUA + "Health Boosts");
 		
 		glassPaneMeta.setLore(new ArrayList<String>());
 		
+		glassPane.setItemMeta(glassPaneMeta);
 		kits.setItemMeta(kitsMeta);
 		ultimates.setItemMeta(ultimatesMeta);
 		skills.setItemMeta(skillsMeta);
-		glassPane.setItemMeta(glassPaneMeta);
+		healthBoosts.setItemMeta(healthBoostsMeta);
 	}
 	
 	public void open(Type type, GamePlayer player) {
@@ -80,31 +85,32 @@ public class ShopMenu implements Listener {
 		Inventory inv = null;
 		
 		if (type == Type.MAIN) {
-			inv = Bukkit.createInventory(null, 27, "Shop");
+			inv = Bukkit.createInventory(null, 54, "Shop");
 			
-			for (int i = 0; i <= 10; i++)
+			for (int i = 0; i < 9; i++)
 				inv.setItem(i, glassPane);
 			
-			inv.setItem(11, kits);
-			inv.setItem(12, glassPane);
-			inv.setItem(13, ultimates);
-			inv.setItem(14, glassPane);
-			inv.setItem(15, skills);
-			
-			for (int i = 16; i <= 21; i++)
+			for (int i = 9; i < 45; i = i + 9) {
 				inv.setItem(i, glassPane);
+				inv.setItem(i + 8, glassPane);
+			}
+			
+			for (int i = 45; i < 54; i++)
+				inv.setItem(i, glassPane);
+			
+			inv.setItem(21, kits);
+			inv.setItem(22, ultimates);
+			inv.setItem(23, skills);
+			inv.setItem(31, healthBoosts);
 			
 			ItemStack close = new ItemStack(Material.ARROW, 1);
 			ItemMeta closeMeta = close.getItemMeta();
 			closeMeta.setDisplayName(ChatColor.RED + "Close");
 			close.setItemMeta(closeMeta);
-			inv.setItem(22, close);
-			
-			for (int i = 23; i <= 26; i++)
-				inv.setItem(i, glassPane);
+			inv.setItem(49, close);
 		} else {
-			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.KITS ? "Kits"
-					: type == Type.ULTIMATES ? "Ultimates" : "Skills"));
+			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.KITS ? "Kits" : type == Type.ULTIMATES
+					? "Ultimates" : type == Type.SKILLS ? "Skills" : "Health Boosts"));
 			
 			for (int i = 0; i < 9; i++)
 				inv.setItem(i, glassPane);
@@ -118,7 +124,7 @@ public class ShopMenu implements Listener {
 				inv.setItem(i, glassPane);
 			
 			List<Purchasable> purchasables = Arrays.asList(type == Type.KITS ? Kit.values(): type == Type.ULTIMATES
-					? Ultimate.values() : Skill.values());
+					? Ultimate.values() : type == Type.SKILLS ? Skill.values() : HealthBoost.values());
 			
 			int purchasableNum = 0;
 			
@@ -151,7 +157,8 @@ public class ShopMenu implements Listener {
 				inv.setItem(i, is);
 			}
 			
-			inv.setItem(4,(type == Type.KITS ? kits : type == Type.ULTIMATES ? ultimates : skills));
+			inv.setItem(4,(type == Type.KITS ? kits : type == Type.ULTIMATES ? ultimates
+					: type == Type.SKILLS ? skills : healthBoosts));
 			
 			ItemStack goBack = new ItemStack(Material.ARROW, 1);
 			ItemMeta goBackMeta = goBack.getItemMeta();
@@ -190,12 +197,14 @@ public class ShopMenu implements Listener {
 		}
 		
 		if (title.equals("Shop")) {
-			if (name.equals("Kits"))
+			if (name.equals(ChatColor.AQUA + "Kits"))
 				open(Type.KITS, gp);
-			else if (name.equals("Ultimates"))
+			else if (name.equals(ChatColor.AQUA + "Ultimates"))
 				open(Type.ULTIMATES, gp);
-			else if (name.equals("Skills"))
+			else if (name.equals(ChatColor.AQUA + "Skills"))
 				open(Type.SKILLS, gp);
+			else if (name.equals(ChatColor.AQUA + "Health Boosts"))
+				open(Type.HEALTH_BOOSTS, gp);
 			else if (name.equals(ChatColor.RED + "Close"))
 				player.closeInventory();
 		} else {
@@ -204,7 +213,11 @@ public class ShopMenu implements Listener {
 				return;
 			}
 			
-			if (name.equals("Kits") || name.equals("Ultimtes") || name.equals("Skills"))
+			if (name.equals(" "))
+				return;
+			
+			if (name.equals(ChatColor.AQUA + "Kits") || name.equals(ChatColor.AQUA + "Ultimtes") || name.equals(" ")
+					|| name.equals(ChatColor.AQUA + "Skills") || name.equals(ChatColor.AQUA + "Health Boosts"))
 				return;
 			
 			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {
@@ -225,6 +238,9 @@ public class ShopMenu implements Listener {
 			} else if (title.contains("Skills")) {
 				purchasable = Skill.valueOf(enumName);
 				type = Type.SKILLS;
+			} else if (title.contains("Health Boosts")) {
+				purchasable = HealthBoost.valueOf(enumName);
+				type = Type.HEALTH_BOOSTS;
 			}
 			
 			if (gp.getCoins() < purchasable.getPrice()) {

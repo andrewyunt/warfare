@@ -16,6 +16,7 @@
 package com.andrewyunt.skywarfare.objects;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -168,17 +169,33 @@ public class Game {
 			cage.destroy();
 		
 		for (GamePlayer player : players) {
+			Player bp = player.getBukkitPlayer();
+			
 			// Update player's name color
 			Utils.colorPlayerName(player, SkyWarfare.getInstance().getGame().getPlayers());
 			
 			// Give player speed 2 for 10 seconds if they have HEAD_START Skill
-			player.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
+			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
 			
 			// Update player's scoreboard
 			player.updateDynamicScoreboard();
 			
 			// Give player kit items
 			player.getCustomClass().getKit().giveItems(player);
+			
+			// Set player's health
+			List<Purchasable> purchases = player.getPurchases();
+			double health = 24;
+			
+			if (purchases.contains(HealthBoost.HEALTH_BOOST_I))
+				health = 26;
+			else if (purchases.contains(HealthBoost.HEALTH_BOOST_II))
+				health = 28;
+			else if (purchases.contains(HealthBoost.HEALTH_BOOST_III))
+				health = 30;
+			
+			bp.setMaxHealth(health);
+			bp.setHealth(health);
 		}
 		
 		// Start chest refill timer
