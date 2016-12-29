@@ -16,16 +16,21 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -40,13 +45,13 @@ import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.Purchasable;
 import com.andrewyunt.skywarfare.objects.Skill;
 import com.andrewyunt.skywarfare.objects.Ultimate;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 public class PlayerListener implements Listener {
 	
@@ -272,22 +277,37 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		
+		cancelCageInteractions(event, event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		
+		cancelCageInteractions(event, event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event) {
+		
+		if (event.getInventory().getType() != InventoryType.PLAYER)
+			cancelCageInteractions(event, (Player) event.getPlayer());
+	}
+	
+	private void cancelCageInteractions(Cancellable cancellable, Player player) {
+		
 		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
 			return;
 		
-		GamePlayer player = null;
+		GamePlayer gp = null;
 		
 		try {
-			player = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(player);
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
 		
-		if (!player.isCaged())
-			return;
-		
-		if (player.getCage().getBlocks().contains(event.getBlock()))
-			event.setCancelled(true);
+		if (gp.isCaged())
+			cancellable.setCancelled(true);
 	}
 	
 	@EventHandler
