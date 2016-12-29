@@ -66,11 +66,11 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 		PluginManager pm = getServer().getPluginManager();
 		
 		pm.registerEvents(new PlayerListener(), this);
+		pm.registerEvents(classSelectorMenu, this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(classCreatorMenu, this);
-			pm.registerEvents(classSelectorMenu, this);
 		} else {
 			arenaConfig.saveDefaultConfig();
 			

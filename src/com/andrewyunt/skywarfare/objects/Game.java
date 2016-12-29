@@ -180,6 +180,9 @@ public class Game {
 			// Update player's scoreboard
 			player.updateDynamicScoreboard();
 			
+			// Clear player's inventory to remove class selector
+			bp.getInventory().clear();
+			
 			// Give player kit items
 			player.getCustomClass().getKit().giveItems(player);
 			
