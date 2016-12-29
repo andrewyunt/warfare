@@ -275,11 +275,18 @@ public class Game {
 			for (GamePlayer player : SkyWarfare.getInstance().getPlayerManager().getPlayers()) {
 				SkyWarfare.getInstance().getDataSource().savePlayer(player);
 				
+				if (SkyWarfare.getInstance().getArena().isEdit())
+					if (player.getBukkitPlayer().hasPermission("skywarfare.edit"))
+						continue;
+				
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("Connect");
 				out.writeUTF(lobbyServerName);
 				player.getBukkitPlayer().sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
 			}
+			
+			if (SkyWarfare.getInstance().getArena().isEdit())
+				return;
 			
 			scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
 				@Override

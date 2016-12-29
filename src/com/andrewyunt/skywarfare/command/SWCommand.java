@@ -42,11 +42,11 @@ public class SWCommand implements CommandExecutor {
 	private static final List<String> help = new ArrayList<String>();
 
 	static {
-		help.add(ChatColor.DARK_GRAY + "=" + ChatColor.GRAY + "------------" + ChatColor.DARK_GRAY + "[ " + ChatColor.AQUA + 
+		help.add(ChatColor.DARK_GRAY + "=" + ChatColor.GRAY + "------------" + ChatColor.DARK_GRAY + "[ " + ChatColor.GOLD + 
 				"SkyWarfare Help" + ChatColor.DARK_GRAY + " ]" + ChatColor.GRAY + "------------" + ChatColor.DARK_GRAY + "=");
-		help.add(ChatColor.GREEN + "/sw edit");
-		help.add(ChatColor.GREEN + "/sw addcage " + ChatColor.AQUA + "[name]");
-		help.add(ChatColor.GREEN + "/sw removecage " + ChatColor.AQUA + "[name]");
+		help.add(ChatColor.GOLD + "/sw edit");
+		help.add(ChatColor.GOLD + "/sw addcage " + "[name]");
+		help.add(ChatColor.GOLD + "/sw removecage " + "[name]");
 	}
 	
 	@Override
@@ -98,9 +98,9 @@ public class SWCommand implements CommandExecutor {
 			}
 			
 			coinsGP.setCoins(coinsGP.getCoins() + coins);
-			coinsGP.getBukkitPlayer().sendMessage(ChatColor.GREEN + String.format("You received %s coins from %s.", 
-					ChatColor.AQUA + String.valueOf(coins) + ChatColor.GREEN ,
-					ChatColor.AQUA + sender.getName() + ChatColor.GREEN));
+			coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("You received %s coins from %s.", 
+					String.valueOf(coins),
+					sender.getName()));
 			
 			return true;
 		}
@@ -152,13 +152,13 @@ public class SWCommand implements CommandExecutor {
 			arena.addCageLocation(args[1], loc);
 			arena.save();
 			
-			sender.sendMessage(String.format(ChatColor.GREEN + "You created the cage %s at %s.", 
-					ChatColor.AQUA + args[1] + ChatColor.GREEN,
+			sender.sendMessage(String.format(ChatColor.GOLD + "You created the cage %s at %s.", 
+					args[1],
 					String.format("X:%s Y:%s Z:%s world: %s", 
-							ChatColor.AQUA + String.valueOf(loc.getX()) + ChatColor.GREEN,
-							ChatColor.AQUA + String.valueOf(loc.getY()) + ChatColor.GREEN,
-							ChatColor.AQUA + String.valueOf(loc.getZ()) + ChatColor.GREEN,
-							ChatColor.AQUA + loc.getWorld().getName())  + ChatColor.GREEN));
+							String.valueOf(loc.getX()),
+							String.valueOf(loc.getY()),
+							String.valueOf(loc.getZ()),
+							loc.getWorld().getName())));
 		
 		} else if (args[0].equalsIgnoreCase("removecage")) {
 			
@@ -188,8 +188,7 @@ public class SWCommand implements CommandExecutor {
 			arena.getCageLocations().remove(args[1]);
 			arena.save();
 			
-			sender.sendMessage(String.format(ChatColor.GREEN + "You removed the cage %s.",
-					ChatColor.AQUA + args[1] + ChatColor.GREEN));
+			sender.sendMessage(String.format(ChatColor.GOLD + "You removed the cage %s.", args[1]));
 			
 		} else if (args[0].equalsIgnoreCase("edit")) {
 			
@@ -208,7 +207,7 @@ public class SWCommand implements CommandExecutor {
 				
 				SkyWarfare.getInstance().setGame(new Game());
 				
-				sender.sendMessage(ChatColor.GREEN + "You have disabled edit mode for the arena.");
+				sender.sendMessage(ChatColor.GOLD + "You have disabled edit mode for the arena.");
 			} else {
 				Game game = SkyWarfare.getInstance().getGame();
 				
@@ -216,7 +215,7 @@ public class SWCommand implements CommandExecutor {
 					game.end();
 				
 				arena.setEdit(true);
-				sender.sendMessage(ChatColor.GREEN + "You have enabled edit mode for the arena.");
+				sender.sendMessage(ChatColor.GOLD + "You have enabled edit mode for the arena.");
 			}
 		} else if (args[0].equalsIgnoreCase("start")) {
 			
