@@ -77,6 +77,9 @@ public class Cage {
 		
 		this.player = player;
 		
+		if (player == null)
+			return;
+		
 		// Teleport the player to the location;
 		Chunk chunk = location.getChunk();
 		

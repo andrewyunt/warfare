@@ -21,16 +21,21 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.objects.Arena;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.LootChest;
 
 /**
  * The arena command class which is used as a Bukkit CommandExecutor.
@@ -110,6 +115,8 @@ public class SWCommand implements CommandExecutor {
 			return false;
 		}
 		
+		Player player = (Player) sender;
+		
 		if (args[0].equalsIgnoreCase("help")) {
 			
 			if (!sender.hasPermission("skywarfare.help")) {
@@ -147,7 +154,7 @@ public class SWCommand implements CommandExecutor {
 				return false;
 			}
 			
-			Location loc = ((Player) sender).getLocation();
+			Location loc = player.getLocation();
 			
 			arena.addCageLocation(args[1], loc);
 			arena.save();
@@ -189,6 +196,44 @@ public class SWCommand implements CommandExecutor {
 			arena.save();
 			
 			sender.sendMessage(String.format(ChatColor.GOLD + "You removed the cage %s.", args[1]));
+
+		} else if (args[0].equalsIgnoreCase("addchest")) {
+			
+			if (!sender.hasPermission("skywarfare.addchest")) {
+				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
+				return false;
+			}
+			
+			if (args.length < 2) {
+				sender.sendMessage(ChatColor.RED + "Usage: /sw addchest [tier]");
+				return false;
+			}
+			
+			BlockIterator iterator = new BlockIterator(player.getLocation(), player.getEyeHeight());
+			Block block = null;
+			
+			while (iterator.hasNext()) {
+				block = iterator.next();
+				
+				if (!block.getType().equals(Material.AIR))
+					break;
+			}
+			
+			if (block == null || block.getType() != Material.CHEST)
+				return false;
+			
+			Arena arena = SkyWarfare.getInstance().getArena();
+			
+			if (arena == null)
+				return false;
+			
+			try {
+				arena.getLootChests().add(new LootChest((Chest) block.getState(), Byte.valueOf(args[1])));
+			} catch (NumberFormatException e) {
+				sender.sendMessage(ChatColor.RED + "Usage: /sw addchest [tier]");
+			}
+			
+			arena.save();
 			
 		} else if (args[0].equalsIgnoreCase("edit")) {
 			
@@ -216,7 +261,12 @@ public class SWCommand implements CommandExecutor {
 				
 				arena.setEdit(true);
 				sender.sendMessage(ChatColor.GOLD + "You have enabled edit mode for the arena.");
+				
+				for (GamePlayer gp : game.getPlayers())
+					if (gp.isCaged())
+						gp.getCage().setPlayer(null);
 			}
+			
 		} else if (args[0].equalsIgnoreCase("start")) {
 			
 			if (!sender.hasPermission("skywarfare.start")) {

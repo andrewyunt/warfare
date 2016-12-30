@@ -132,14 +132,14 @@ public class LootChest {
 		diamondChestplate.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 		
 		ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
-		diamondBoots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+		//diamondBoots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 		
 		ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
-		diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-		diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_FALL, 2);
+		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_FALL, 2);
 		
 		ItemStack power3Bow = new ItemStack(Material.BOW, 1);
-		diamondBootsFalling.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
+		//diamondBootsFalling.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
 		
 		tier1Items = new ItemStack[] {
 				new ItemStack(Material.ENDER_PEARL, 2),
