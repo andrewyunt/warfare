@@ -18,7 +18,6 @@ package com.andrewyunt.skywarfare.objects;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -88,7 +87,7 @@ public class Arena {
 		ConfigurationSection chestsSection = arenaConfig.createSection("chests");
 		
 		for (LootChest lootChest : lootChests) {
-			Map<String, Object> chestSection = Utils.serializeLocation(lootChest.getBukkitChest().getLocation());
+			Map<String, Object> chestSection = Utils.serializeLocation(lootChest.getLocation());
 			
 			chestSection.put("tier", lootChest.getTier());
 			
@@ -122,7 +121,7 @@ public class Arena {
 			if (block.getType() != Material.CHEST)
 				continue;
 			
-			arena.lootChests.add(new LootChest((Chest) block.getState(), (byte) chestSection.getInt("tier")));
+			arena.lootChests.add(new LootChest(block.getLocation(), (byte) chestSection.getInt("tier")));
 		}
 		
 		ConfigurationSection cagesSection = arenaConfig.getConfigurationSection("cages");

@@ -201,6 +201,9 @@ public class Game {
 			bp.setHealth(health);
 		}
 		
+		// Fill chests
+		fillChests();
+		
 		// Start chest refill timer
 		runRefillTimer();
 	}
@@ -332,6 +335,21 @@ public class Game {
 		return countdownTime;
 	}
 	
+	public void fillChests() {
+		
+		int num = 1;
+		
+		for (LootChest lootChest : SkyWarfare.getInstance().getArena().getLootChests()) {
+			if (lootChest.getLocation().getBlock().getType() != Material.CHEST)
+				continue;
+			
+			Bukkit.getServer().broadcastMessage(String.valueOf(num));
+			num++;
+			
+			lootChest.fill();
+		}
+	}
+	
 	public void runRefillTimer() {
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
@@ -349,13 +367,7 @@ public class Game {
 	public void checkRefillTime() {
 		
 		if (refillCountdownTime == 0) {
-			
-			for (LootChest lootChest : SkyWarfare.getInstance().getArena().getLootChests()) {
-				if (lootChest.getBukkitChest().getBlock().getLocation().getBlock().getType() != Material.CHEST)
-					continue;
-				
-				lootChest.fill();
-			}
+			fillChests();
 			
 			refillCountdownTime = 300;
 			

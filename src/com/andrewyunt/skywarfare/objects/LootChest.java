@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
@@ -33,16 +34,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class LootChest {
 	
-	private Chest bukkitChest;
+	private Location location;
 	private byte tier;
 	
 	private ItemStack[] tier3Items;
 	private ItemStack[] tier2Items;
 	private ItemStack[] tier1Items;
 	
-	public LootChest(Chest bukkitChest, byte tier) {
+	public LootChest(Location location, byte tier) {
 		
-		this.bukkitChest = bukkitChest;
+		this.location = location;
 		this.tier = tier;
 		
 		tier3Items = new ItemStack[] {
@@ -160,9 +161,9 @@ public class LootChest {
 		};
 	}
 	
-	public Chest getBukkitChest() {
+	public Location getLocation() {
 		
-		return bukkitChest;
+		return location;
 	}
 	
 	public byte getTier() {
@@ -172,12 +173,16 @@ public class LootChest {
 	
 	public void fill() {
 		
-		Inventory inv = bukkitChest.getBlockInventory();
+		Chest chest = ((Chest) location.getBlock().getState());
+		Inventory inv = chest.getBlockInventory();
 		
 		for (short i = 0; i < ThreadLocalRandom.current().nextInt(2, 5 + 1); i++) {
 			List<ItemStack> items = Arrays.asList(tier == 3 ? tier3Items : tier == 2 ? tier2Items : tier1Items);
 			Collections.shuffle(items);
-			ItemStack item = items.get(0);
+			ItemStack is = items.get(0);
+			
+			if (inv.contains(is))
+				continue;
 			
 			int randomSlot; 
 			
@@ -185,10 +190,12 @@ public class LootChest {
 				randomSlot = ThreadLocalRandom.current().nextInt(2, inv.getSize() + 1) - 1;
 				
 				if (inv.getItem(randomSlot) == null) {
-					inv.setItem(randomSlot, item);
+					inv.setItem(randomSlot, is);
 					break;
 				}
 			} while (inv.firstEmpty() != -1);
 		}
+		
+		chest.update();
 	}
 }

@@ -23,7 +23,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -219,16 +218,22 @@ public class SWCommand implements CommandExecutor {
 					break;
 			}
 			
-			if (block == null || block.getType() != Material.CHEST)
+			if (block == null || block.getType() != Material.CHEST) {
+				sender.sendMessage(ChatColor.RED + "The target block is not a chest.");
 				return false;
+			}
 			
 			Arena arena = SkyWarfare.getInstance().getArena();
 			
-			if (arena == null)
+			if (arena == null) {
+				sender.sendMessage(ChatColor.RED + "The arena is null.");
 				return false;
+			}
 			
 			try {
-				arena.getLootChests().add(new LootChest((Chest) block.getState(), Byte.valueOf(args[1])));
+				arena.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1])));
+				
+				sender.sendMessage(ChatColor.GOLD + "Loot chest has been added successfully.");
 			} catch (NumberFormatException e) {
 				sender.sendMessage(ChatColor.RED + "Usage: /sw addchest [tier]");
 			}
