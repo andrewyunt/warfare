@@ -15,8 +15,6 @@
  */
 package com.andrewyunt.skywarfare.listeners;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
@@ -42,14 +40,9 @@ import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
-import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
-import com.andrewyunt.skywarfare.objects.Kit;
-import com.andrewyunt.skywarfare.objects.Purchasable;
-import com.andrewyunt.skywarfare.objects.Skill;
-import com.andrewyunt.skywarfare.objects.Ultimate;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -102,38 +95,6 @@ public class PlayerListener implements Listener {
 					finalGP.setSpectating(true);
 			}
 		}, 2L);
-		
-		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
-			List<Purchasable> purchases = finalGP.getPurchases();
-	
-			if (!purchases.contains(Kit.ARMORER))
-				purchases.add(Kit.ARMORER);
-			
-			if (!purchases.contains(Ultimate.HEAL))
-				purchases.add(Ultimate.HEAL);
-			
-			if (!purchases.contains(Skill.HEAD_START))
-				purchases.add(Skill.HEAD_START);
-			
-			if (!purchases.contains(Skill.GUARD))
-				purchases.add(Skill.GUARD);
-			
-			CustomClass defaultClass = new CustomClass();
-			
-			defaultClass.setKit(Kit.ARMORER);
-			defaultClass.setUltimate(Ultimate.HEAL);
-			defaultClass.setSkillOne(Skill.HEAD_START);
-			defaultClass.setSkillTwo(Skill.GUARD);
-			defaultClass.setName("Default");
-			
-			List<CustomClass> customClasses = finalGP.getCustomClasses();
-			
-			if (customClasses.size() == 0)
-				customClasses.add(defaultClass);
-			
-			if (finalGP.getCustomClass() == null)
-				finalGP.setCustomClass(customClasses.get(0));
-		}, 20L);
 		
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
 			// Fetch server name for scoreboards if it's null

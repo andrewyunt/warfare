@@ -17,15 +17,22 @@ package com.andrewyunt.skywarfare.managers;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
+import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.Kit;
+import com.andrewyunt.skywarfare.objects.Purchasable;
+import com.andrewyunt.skywarfare.objects.Skill;
+import com.andrewyunt.skywarfare.objects.Ultimate;
 
 /**
  * The class used to cache players, create players, and perform operations on them.
@@ -47,13 +54,46 @@ public class PlayerManager {
 	 * 		If a player with the specified UUID already exists, throw PlayerException.
 	 */
 	public GamePlayer createPlayer(UUID uuid) throws PlayerException {
-
+		
 		if (players.containsKey(uuid))
 			throw new PlayerException(String.format("The player with the UUID %s already exists.", uuid));
-
-		GamePlayer player = new GamePlayer(uuid);
-
-		SkyWarfare.getInstance().getDataSource().loadPlayer(player);
+		
+		final GamePlayer player = new GamePlayer(uuid);
+		
+		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
+			SkyWarfare.getInstance().getDataSource().loadPlayer(player);
+			
+			List<Purchasable> purchases = player.getPurchases();
+	
+			if (!purchases.contains(Kit.ARMORER))
+				purchases.add(Kit.ARMORER);
+			
+			if (!purchases.contains(Ultimate.HEAL))
+				purchases.add(Ultimate.HEAL);
+			
+			if (!purchases.contains(Skill.HEAD_START))
+				purchases.add(Skill.HEAD_START);
+			
+			if (!purchases.contains(Skill.GUARD))
+				purchases.add(Skill.GUARD);
+			
+			CustomClass defaultClass = new CustomClass();
+			
+			defaultClass.setKit(Kit.ARMORER);
+			defaultClass.setUltimate(Ultimate.HEAL);
+			defaultClass.setSkillOne(Skill.HEAD_START);
+			defaultClass.setSkillTwo(Skill.GUARD);
+			defaultClass.setName("Default");
+			
+			List<CustomClass> customClasses = player.getCustomClasses();
+			
+			if (customClasses.size() == 0)
+				customClasses.add(defaultClass);
+			
+			if (player.getCustomClass() == null)
+				player.setCustomClass(customClasses.get(0));
+		}, 20L);
 		
 		// Add player to plugin's player map
 		players.put(uuid, player);
