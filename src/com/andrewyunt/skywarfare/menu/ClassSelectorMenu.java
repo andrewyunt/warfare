@@ -40,8 +40,6 @@ import com.andrewyunt.skywarfare.objects.GamePlayer;
  * @author Andrew Yunt
  */
 public class ClassSelectorMenu implements Listener {
-
-	private Inventory inv;
 	
 	private final ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	
@@ -55,7 +53,7 @@ public class ClassSelectorMenu implements Listener {
 
 	public void open(GamePlayer player) {
 
-		inv = Bukkit.createInventory(null, 27, "Class Selector");
+		Inventory inv = Bukkit.createInventory(null, 27, "Class Selector");
 		int classSlot = 9;
 		
 		for (int i = 0; i < 27; i++) {

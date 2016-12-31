@@ -289,7 +289,10 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		
-		if (event.getInventory().getType() != InventoryType.PLAYER)
+		if (event.getInventory().getType() == InventoryType.PLAYER)
+			return;
+		
+		if (!event.getInventory().getTitle().equals("Class Selector"))
 			cancelCageInteractions(event, (Player) event.getPlayer());
 	}
 	
