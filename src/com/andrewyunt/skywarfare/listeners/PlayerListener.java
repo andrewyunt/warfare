@@ -15,6 +15,8 @@
  */
 package com.andrewyunt.skywarfare.listeners;
 
+import java.lang.reflect.Method;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
@@ -33,6 +35,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -45,6 +48,8 @@ import com.andrewyunt.skywarfare.objects.Game.Stage;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import SebucoHD.Selector.Main;
 
 public class PlayerListener implements Listener {
 	
@@ -67,15 +72,15 @@ public class PlayerListener implements Listener {
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), () -> {
 			if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby")) {
 				finalGP.updateHotbar();
-			} else {
-				Player bp = event.getPlayer();
 				
-				bp.setMaximumNoDamageTicks(0); // Part of the EPC
+				player.teleport(player.getLocation().getWorld().getSpawnLocation());
+			} else {
+				player.setMaximumNoDamageTicks(0); // Part of the EPC
 				
 				Game game = SkyWarfare.getInstance().getGame();
 				
 				if (SkyWarfare.getInstance().getArena().isEdit()) {
-					bp.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
+					player.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
 					return;
 				}
 				
@@ -89,8 +94,8 @@ public class PlayerListener implements Listener {
 					return;
 				}
 				
-				if (game.getStage() != Stage.WAITING && !bp.hasPermission("skywarfare.spectatorjoin"))
-					bp.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
+				if (game.getStage() != Stage.WAITING && !player.hasPermission("skywarfare.spectatorjoin"))
+					player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
 				else
 					finalGP.setSpectating(true);
 			}
@@ -152,7 +157,17 @@ public class PlayerListener implements Listener {
 		
 		Material type = item.getType();
 		
-		if (type == Material.EMERALD)
+		if (type == Material.COMPASS) {
+			Method method = null;
+			
+			try {
+				method = Main.getInstance().getClass().getDeclaredMethod("getInv", Player.class);
+				method.setAccessible(true);
+				player.openInventory((Inventory) method.invoke(Main.getInstance(), player));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (type == Material.EMERALD)
 			SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 		else if (type == Material.CHEST)
 			SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);

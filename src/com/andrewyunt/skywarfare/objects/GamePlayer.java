@@ -390,25 +390,33 @@ public class GamePlayer {
 		
 		PlayerInventory inv = getBukkitPlayer().getInventory();
 		
+		inv.clear();
+		
 		ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 		ItemMeta classSelectorMeta = classSelector.getItemMeta();
-		classSelectorMeta.setDisplayName(ChatColor.RED + "Class Selector");
+		classSelectorMeta.setDisplayName(ChatColor.AQUA + "Class Selector");
 		classSelector.setItemMeta(classSelectorMeta);
 		
 		if (!isCaged()) {
+			ItemStack compass = new ItemStack(Material.COMPASS, 1);
+			ItemMeta compassMeta = compass.getItemMeta();
+			compassMeta.setDisplayName(ChatColor.RED + "Compass");
+			compass.setItemMeta(compassMeta);
+			inv.setItem(0, compass);
+			
 			ItemStack shop = new ItemStack(Material.EMERALD, 1);
 			ItemMeta shopMeta = shop.getItemMeta();
 			shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
 			shop.setItemMeta(shopMeta);
-			inv.setItem(0, shop);
+			inv.setItem(1, shop);
 			
 			ItemStack classCreator = new ItemStack(Material.CHEST, 1);
 			ItemMeta classCreatorMeta = classCreator.getItemMeta();
 			classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
 			classCreator.setItemMeta(classCreatorMeta);
-			inv.setItem(1, classCreator);
+			inv.setItem(2, classCreator);
 			
-			inv.setItem(2, classSelector);
+			inv.setItem(3, classSelector);
 		} else
 			inv.setItem(0, classSelector);
 	}
