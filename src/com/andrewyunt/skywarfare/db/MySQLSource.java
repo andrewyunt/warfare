@@ -43,7 +43,6 @@ public class MySQLSource extends DataSource {
 	private String ip, database, user, pass;
 	private int port;
 	private Connection connection;
-	private PreparedStatement preparedStatement;
 	
 	@Override
 	public boolean connect() {
@@ -105,6 +104,8 @@ public class MySQLSource extends DataSource {
 				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
 				+ " earned_coins = VALUES(earned_coins), kills = VALUES(kills), wins = VALUES(wins);";
 		
+		PreparedStatement preparedStatement = null;
+		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
@@ -139,9 +140,11 @@ public class MySQLSource extends DataSource {
 		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.runTaskAsynchronously(SkyWarfare.getInstance(), () -> {
-			ResultSet resultSet = null;
 			
 			String query = "SELECT * FROM Players WHERE uuid = ?;";
+			
+			PreparedStatement preparedStatement;
+			ResultSet resultSet = null;
 			
 			try {
 				preparedStatement = connection.prepareStatement(query);
@@ -189,6 +192,8 @@ public class MySQLSource extends DataSource {
 			String query = "INSERT INTO Purchases (uuid, purchasable) VALUES (?,?) ON DUPLICATE KEY UPDATE"
 					+ " uuid = VALUES(uuid), purchasable = VALUES(purchasable);";
 			
+			PreparedStatement preparedStatement = null;
+			
 			try {
 				preparedStatement = connection.prepareStatement(query);
 				
@@ -212,9 +217,10 @@ public class MySQLSource extends DataSource {
 	@Override
 	public void loadPurchases(GamePlayer player) {
 		
-		ResultSet resultSet = null;
-		
 		String query = "SELECT * FROM Purchases WHERE uuid = ?;";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -268,6 +274,8 @@ public class MySQLSource extends DataSource {
 					+ " name = VALUES(name), kit = VALUES(kit), ultimate = VALUES(ultimate),"
 					+ " skill_one = VALUES(skill_one), skill_two = VALUES(skill_two);";
 			
+			PreparedStatement preparedStatement = null;
+			
 			try {
 				preparedStatement = connection.prepareStatement(query);
 				
@@ -295,9 +303,10 @@ public class MySQLSource extends DataSource {
 	@Override
 	public void loadClasses(GamePlayer player) {
 		
-		ResultSet resultSet = null;
-		
 		String query = "SELECT * FROM Classes WHERE uuid = ?;";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -340,10 +349,14 @@ public class MySQLSource extends DataSource {
 				<Integer, Map.Entry<OfflinePlayer, Integer>>();
 		
 		String query = "SELECT `uuid`, `kills` FROM `Players` ORDER BY `kills` DESC LIMIT 5;";
+		
+		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
 		try {
-			resultSet = preparedStatement.executeQuery(query);
+			preparedStatement = connection.prepareStatement(query);
+			
+			resultSet = preparedStatement.executeQuery();
 		} catch (SQLException e) {
 			return null;
 		}
@@ -376,6 +389,8 @@ public class MySQLSource extends DataSource {
 				+ "   `kills`            INT,"
 				+ "   `wins`             INT);";
 		
+		PreparedStatement preparedStatement = null;
+		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
@@ -392,6 +407,9 @@ public class MySQLSource extends DataSource {
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
 				+ "   `purchasable`      CHAR(20) NOT NULL,"
 				+ "   PRIMARY KEY (`uuid`, `purchasable`));";
+		
+		PreparedStatement preparedStatement = null;
+		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
@@ -419,6 +437,8 @@ public class MySQLSource extends DataSource {
 				+ "   `skill_one`        CHAR(20) NOT NULL,"
 				+ "   `skill_two`        CHAR(20) NOT NULL,"
 				+ "    PRIMARY KEY (`uuid`, `name`));";
+		
+		PreparedStatement preparedStatement = null;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
