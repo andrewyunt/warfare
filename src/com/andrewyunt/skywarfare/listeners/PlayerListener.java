@@ -205,6 +205,7 @@ public class PlayerListener implements Listener {
 		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
 			return;
 		
+		event.setDroppedExp(0);
 		event.setDeathMessage(null);
 		
 		Player player = event.getEntity();

@@ -46,7 +46,7 @@ public class GamePlayer {
 	private UUID uuid;
 	private CustomClass customClass;
 	private int coins, earnedCoins, wins, energy, kills, killStreak;
-	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet;
+	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate;
 	private DynamicScoreboard dynamicScoreboard;
 	
 	private final List<CustomClass> customClasses = new ArrayList<CustomClass>();
@@ -139,6 +139,24 @@ public class GamePlayer {
 	public void setEnergy(int energy) {
 		
 		this.energy = energy;
+		
+		if (this.energy > 100)
+			this.energy = 100;
+		else
+			sentActivate = false;
+		
+		Player player = getBukkitPlayer();
+		
+		if (this.energy == 100)
+			if (!sentActivate) {
+				sentActivate = true;
+				
+				player.sendMessage(ChatColor.AQUA + "Right click " + ChatColor.GREEN +
+						"using your sword to activate your ability!");
+			}
+		
+		getBukkitPlayer().setLevel(this.energy);
+		getBukkitPlayer().setExp(this.energy / 100.0F);
 	}
 	
 	public int getEnergy() {
