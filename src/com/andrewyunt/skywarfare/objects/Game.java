@@ -337,14 +337,9 @@ public class Game {
 	
 	public void fillChests() {
 		
-		int num = 1;
-		
 		for (LootChest lootChest : SkyWarfare.getInstance().getArena().getLootChests()) {
 			if (lootChest.getLocation().getBlock().getType() != Material.CHEST)
 				continue;
-			
-			Bukkit.getServer().broadcastMessage(String.valueOf(num));
-			num++;
 			
 			lootChest.fill();
 		}

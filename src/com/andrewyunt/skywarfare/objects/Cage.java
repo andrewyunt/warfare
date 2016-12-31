@@ -49,20 +49,18 @@ public class Cage {
 		blocks.add(world.getBlockAt(new Location(world, X, Y + 1, Z - 1)));
 		blocks.add(world.getBlockAt(new Location(world, X, Y + 1, Z + 1)));
 		
-		// side middle blocks
+		// side top blocks
 		blocks.add(world.getBlockAt(new Location(world, X - 1, Y + 2, Z)));
 		blocks.add(world.getBlockAt(new Location(world, X + 1, Y + 2, Z)));
 		blocks.add(world.getBlockAt(new Location(world, X, Y + 2, Z - 1)));
 		blocks.add(world.getBlockAt(new Location(world, X, Y + 2, Z + 1)));
 		
-		// side top blocks
-		blocks.add(world.getBlockAt(new Location(world, X - 1, Y + 3, Z)));
-		blocks.add(world.getBlockAt(new Location(world, X + 1, Y + 3, Z)));
-		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z - 1)));
-		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z + 1)));
-		
 		// top block
-		blocks.add(world.getBlockAt(new Location(world, X, Y + 4, Z)));
+		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z)));
+		
+		// set middle blocks to air
+		world.getBlockAt(new Location(world, X + 1, Y, Z)).setType(Material.AIR);
+		world.getBlockAt(new Location(world, X + 2, Y, Z)).setType(Material.AIR);
 		
 		for (Block block : blocks)
 			block.setType(Material.GLASS);
@@ -112,6 +110,8 @@ public class Cage {
 	}
 	
 	public void destroy() {
+		
+		player = null;
 		
 		for (Block block : blocks)
 			block.setType(Material.AIR);
