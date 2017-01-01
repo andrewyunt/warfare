@@ -15,18 +15,26 @@
  */
 package com.andrewyunt.skywarfare.listeners;
 
+import java.util.Map;
+
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
@@ -130,9 +138,6 @@ public class PlayerSkillListener implements Listener {
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
 		
-		if (event.getInventory().getType() != InventoryType.CHEST)
-			return;
-		
 		Player player = (Player) event.getPlayer();
 		GamePlayer gp = null;
 		
@@ -142,9 +147,11 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() == Skill.GUARD
-				&& gp.getCustomClass().getSkillTwo() == Skill.GUARD)
-			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		if (event.getInventory().getType() == InventoryType.ENCHANTING)
+			gp.setEnergy(gp.getEnergy());
+		else if (event.getInventory().getType() == InventoryType.CHEST)
+			if (gp.getCustomClass().getSkillOne() == Skill.GUARD && gp.getCustomClass().getSkillTwo() == Skill.GUARD)
+				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 	}
 	
 	@EventHandler
@@ -171,5 +178,34 @@ public class PlayerSkillListener implements Listener {
 		if (gp.getCustomClass().getSkillOne() == Skill.FLAME
 				&& gp.getCustomClass().getSkillTwo() == Skill.FLAME)
 			projectile.setFireTicks(Integer.MAX_VALUE);
+	}
+	
+	@EventHandler
+	public void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
+		
+		for (HumanEntity he : event.getViewers())
+			((Player) he).setLevel(100);
+	}
+	
+	@EventHandler
+	public void onEnchantItem(EnchantItemEvent event) {
+		
+		Map<Enchantment, Integer> enchants = event.getEnchantsToAdd();
+		
+		enchants.clear();
+		
+		Material type = event.getItem().getType();
+		
+		if (type == Material.IRON_HELMET || type == Material.IRON_CHESTPLATE || type == Material.IRON_LEGGINGS
+				|| type == Material.IRON_BOOTS || type == Material.DIAMOND_HELMET || type == Material.DIAMOND_CHESTPLATE
+				|| type == Material.DIAMOND_LEGGINGS || type == Material.DIAMOND_BOOTS)
+			enchants.put(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+		else if (type == Material.WOOD_SWORD || type == Material.STONE_SWORD || type == Material.IRON_SWORD
+				|| type == Material.DIAMOND_SWORD)
+			enchants.put(Enchantment.DAMAGE_ALL, 1);
+		else if (type == Material.BOW)
+			enchants.put(Enchantment.ARROW_DAMAGE, 1);
+		
+		event.setExpLevelCost(0);
 	}
 }
