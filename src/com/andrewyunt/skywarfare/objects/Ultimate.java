@@ -116,9 +116,12 @@ public enum Ultimate implements Purchasable {
 	
 	public void use(GamePlayer player) {
 		
-		Player bp = player.getBukkitPlayer();
+		if (player.getEnergy() < 100)
+			return;
 		
 		player.setEnergy(0);
+		
+		Player bp = player.getBukkitPlayer();
 		
 		if (this == HEAL) {
 			
