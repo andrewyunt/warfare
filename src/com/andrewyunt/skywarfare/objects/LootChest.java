@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
@@ -34,51 +35,25 @@ import org.bukkit.potion.PotionEffectType;
 
 public class LootChest {
 	
-	private Location location;
-	private byte tier;
+	private static ItemStack bow = new ItemStack(Material.BOW, 1);
+	private static ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
+	private static ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static ItemStack diamondChestplate = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+	private static ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static ItemStack power3Bow = new ItemStack(Material.BOW, 1);
+	private static ItemStack frPotion = new ItemStack(Material.POTION, 3);
+	private static ItemStack speedPotion = new ItemStack(Material.POTION, 3);
 	
-	private ItemStack[] tier3Items;
-	private ItemStack[] tier2Items;
-	private ItemStack[] tier1Items;
-	
-	public LootChest(Location location, byte tier) {
-		
-		this.location = location;
-		this.tier = tier;
-		
-		tier3Items = new ItemStack[] {
-				new ItemStack(Material.WOOD, 16),
-				new ItemStack(Material.WOOD, 32),
-				new ItemStack(Material.COBBLESTONE, 16),
-				new ItemStack(Material.COBBLESTONE, 32),
-				new ItemStack(Material.IRON_AXE, 1),
-				new ItemStack(Material.STONE_SWORD, 1),
-				new ItemStack(Material.IRON_SWORD, 1),
-				new ItemStack(Material.IRON_HELMET, 1),
-				new ItemStack(Material.IRON_CHESTPLATE, 1),
-				new ItemStack(Material.IRON_LEGGINGS, 1),
-				new ItemStack(Material.IRON_BOOTS, 1),
-				new ItemStack(Material.COOKED_BEEF, 4),
-				new ItemStack(Material.COOKED_BEEF, 16),
-				new ItemStack(Material.BREAD, 4),
-				new ItemStack(Material.BREAD, 16),
-				new ItemStack(Material.FISHING_ROD, 1),
-				new ItemStack(Material.WATER_BUCKET, 1),
-				new ItemStack(Material.LAVA_BUCKET, 1),
-				new ItemStack(Material.FLINT_AND_STEEL, 1),
-				new ItemStack(Material.SNOW_BALL, 16),
-				new ItemStack(Material.EXP_BOTTLE, 16),
-				new ItemStack(Material.BOW, 1),
-				new ItemStack(Material.ARROW, 16)
-		};
-		
-		ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
-		ironSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-		
-		ItemStack bow = new ItemStack(Material.BOW, 1);
+	static {
 		bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
+		ironSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+		diamondSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+		diamondChestplate.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+		//diamondBoots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_FALL, 2);
 		
-		ItemStack frPotion = new ItemStack(Material.POTION, 3);
 		PotionMeta frMeta = (PotionMeta) frPotion.getItemMeta();
 		PotionEffect frEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 9600, 1, false);
 		List<String> lore = new ArrayList<String>();
@@ -89,7 +64,6 @@ public class LootChest {
 		frMeta.addCustomEffect(frEffect, true);
 		frPotion.setItemMeta(frMeta);
 		
-		ItemStack speedPotion = new ItemStack(Material.POTION, 3);
 		PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
 		PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
 		lore = new ArrayList<String>();
@@ -99,66 +73,90 @@ public class LootChest {
 		speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
 		speedPotionMeta.addCustomEffect(speedEffect, true);
 		speedPotion.setItemMeta(speedPotionMeta);
+	}
+	
+	private enum LootItem {
 		
-		tier2Items = new ItemStack[] {
-				new ItemStack(Material.WOOD, 64),
-				new ItemStack(Material.COBBLESTONE, 64),
-				ironSword,
-				new ItemStack(Material.DIAMOND_SWORD, 1),
-				new ItemStack(Material.FISHING_ROD, 1),
-				new ItemStack(Material.IRON_HELMET, 1),
-				new ItemStack(Material.IRON_CHESTPLATE, 1),
-				new ItemStack(Material.IRON_LEGGINGS, 1),
-				new ItemStack(Material.IRON_BOOTS, 1),
-				new ItemStack(Material.DIAMOND_CHESTPLATE, 1),
-				new ItemStack(Material.DIAMOND_BOOTS, 1),
-				new ItemStack(Material.WATER_BUCKET, 1),
-				new ItemStack(Material.LAVA_BUCKET, 1),
-				new ItemStack(Material.SNOW_BALL, 16),
-				new ItemStack(Material.COOKED_BEEF, 16),
-				new ItemStack(Material.ENCHANTMENT_TABLE, 1),
-				new ItemStack(Material.EXP_BOTTLE, 32),
-				bow,
-				new ItemStack(Material.ARROW, 32),
-				new ItemStack(Material.GOLDEN_APPLE, 1),
-				frPotion,
-				speedPotion,
-				new ItemStack(Material.ENDER_PEARL, 1)
-		};
+		I(3, 0, new ItemStack(Material.IRON_HELMET, 1)),
+		II(3, 0, new ItemStack(Material.IRON_CHESTPLATE, 1)),
+		III(3, 0, new ItemStack(Material.IRON_LEGGINGS, 1)),
+		IV(3, 0, new ItemStack(Material.IRON_BOOTS, 1)),
+		V(3, 0, new ItemStack(Material.FISHING_ROD, 1)),
+		VI(3, 0, new ItemStack(Material.SNOW_BALL, 16)),
+		VII(3, 0, new ItemStack(Material.BOW, 1)),
+		VIII(3, 0, new ItemStack(Material.ARROW, 16)),
+		IX(3, 1, new ItemStack(Material.WOOD, 16)),
+		X(3, 1, new ItemStack(Material.WOOD, 32)),
+		XI(3, 1, new ItemStack(Material.COBBLESTONE, 16)),
+		XII(3, 1, new ItemStack(Material.COBBLESTONE, 32)),
+		XIII(3, 2, new ItemStack(Material.IRON_AXE, 1)),
+		XIV(3, 2, new ItemStack(Material.STONE_SWORD, 1)),
+		XV(3, 2, new ItemStack(Material.IRON_SWORD, 1)),
+		XVI(3, 3, new ItemStack(Material.COOKED_BEEF, 4)),
+		XVII(3, 3, new ItemStack(Material.COOKED_BEEF, 16)),
+		XVIII(3, 3, new ItemStack(Material.BREAD, 4)),
+		XIX(3, 3, new ItemStack(Material.BREAD, 16)),
+		XX(3, 4, new ItemStack(Material.WATER_BUCKET, 1)),
+		XXI(3, 4, new ItemStack(Material.LAVA_BUCKET, 1)),
+		XXIII(3, 4, new ItemStack(Material.FLINT_AND_STEEL, 1)),
+		XXIV(2, 0, new ItemStack(Material.FISHING_ROD, 1)),
+		XXV(2, 0, new ItemStack(Material.IRON_HELMET, 1)),
+		XXVI(2, 0, new ItemStack(Material.IRON_CHESTPLATE, 1)),
+		XXVII(2, 0, new ItemStack(Material.IRON_LEGGINGS, 1)),
+		XXVIII(2, 0, new ItemStack(Material.IRON_BOOTS, 1)),
+		XXIX(2, 0, new ItemStack(Material.SNOW_BALL, 16)),
+		XXX(2, 0, new ItemStack(Material.COOKED_BEEF, 16)),
+		XXXI(2, 0, new ItemStack(Material.LOG, 64)),
+		XXXII(2, 0, new ItemStack(Material.ENCHANTMENT_TABLE, 1)),
+		XXXIII(2, 0, new ItemStack(Material.EXP_BOTTLE, 32)),
+		XXXIV(2, 0, new ItemStack(Material.GOLDEN_APPLE, 1)),
+		XXXV(2, 0, new ItemStack(Material.ENDER_PEARL, 1)),
+		XXXVI(2, 0, new ItemStack(Material.ARROW, 32)),
+		XXXVII(2, 0, bow),
+		XXXVIII(2, 1, new ItemStack(Material.WOOD, 64)),
+		XXXIX(2, 1, new ItemStack(Material.COBBLESTONE, 64)),
+		XL(2, 2, ironSword),
+		XLI(2, 2, new ItemStack(Material.DIAMOND_SWORD, 1)),
+		XLII(2, 3, new ItemStack(Material.DIAMOND_CHESTPLATE, 1)),
+		XLIII(2, 3, new ItemStack(Material.DIAMOND_BOOTS, 1)),
+		XLIV(2, 4, new ItemStack(Material.WATER_BUCKET, 1)),
+		XLV(2, 4, new ItemStack(Material.LAVA_BUCKET, 1)),
+		XLVII(2, 5, frPotion),
+		XLVIII(2, 5, speedPotion),
+		XLIX(1, 0, new ItemStack(Material.FISHING_ROD, 1)),
+		L(1, 0, new ItemStack(Material.DIAMOND_HELMET, 1)),
+		LI(1, 0, new ItemStack(Material.DIAMOND_LEGGINGS, 1)),
+		LII(1, 0, new ItemStack(Material.ARROW, 64)),
+		LIII(1, 0, new ItemStack(Material.TNT, 16)),
+		LIV(1, 0, new ItemStack(Material.SNOW_BALL, 64)),
+		LV(1, 0, diamondSword),
+		LVI(1, 0, power3Bow),
+		LVII(1, 0, diamondChestplate),
+		LVIII(1, 1, new ItemStack(Material.ENDER_PEARL, 2)),
+		LIX(1, 1, new ItemStack(Material.ENDER_PEARL, 4)),
+		LX(1, 2, new ItemStack(Material.GOLDEN_APPLE, 2)),
+		LXI(1, 2, new ItemStack(Material.GOLDEN_APPLE, 4)),
+		LXII(1, 3, diamondBoots),
+		LXIII(1, 3, diamondBootsFalling);
 		
-		ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
-		diamondSword.addEnchantment(Enchantment.DAMAGE_ALL, 1);
+		private int tier, group;
+		private ItemStack itemStack;
 		
-		ItemStack diamondChestplate = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-		diamondChestplate.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+		LootItem(int tier, int group, ItemStack itemStack) {
+			
+			this.tier = tier;
+			this.group = group;
+			this.itemStack = itemStack;
+		}
+	}
+	
+	private Location location;
+	private byte tier;
+	
+	public LootChest(Location location, byte tier) {
 		
-		ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
-		//diamondBoots.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-		
-		ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
-		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2);
-		//diamondBootsFalling.addEnchantment(Enchantment.PROTECTION_FALL, 2);
-		
-		ItemStack power3Bow = new ItemStack(Material.BOW, 1);
-		//diamondBootsFalling.addEnchantment(Enchantment.ARROW_DAMAGE, 3);
-		
-		tier1Items = new ItemStack[] {
-				new ItemStack(Material.ENDER_PEARL, 2),
-				new ItemStack(Material.ENDER_PEARL, 4),
-				new ItemStack(Material.GOLDEN_APPLE, 2),
-				new ItemStack(Material.GOLDEN_APPLE, 4),
-				diamondSword,
-				new ItemStack(Material.LOG, 64),
-				new ItemStack(Material.DIAMOND_HELMET, 1),
-				new ItemStack(Material.DIAMOND_LEGGINGS, 1),
-				diamondChestplate,
-				diamondBoots,
-				diamondBootsFalling,
-				new ItemStack(Material.SNOW_BALL, 64),
-				power3Bow,
-				new ItemStack(Material.ARROW, 64),
-				new ItemStack(Material.TNT, 16)
-		};
+		this.location = location;
+		this.tier = tier;
 	}
 	
 	public Location getLocation() {
@@ -171,26 +169,61 @@ public class LootChest {
 		return tier;
 	}
 	
+	private LootItem getRandomLootItem(int group) {
+		
+		List<LootItem> lootItems = Arrays.asList(LootItem.values());
+		
+		Collections.shuffle(lootItems);
+		
+		for (LootItem lootItem : lootItems)
+			if (lootItem.tier == tier && lootItem.group == group)
+				return lootItem;
+		
+		return null;
+	}
+	
 	public void fill() {
 		
 		Chest chest = ((Chest) location.getBlock().getState());
 		Inventory inv = chest.getBlockInventory();
 		
-		for (short i = 0; i < ThreadLocalRandom.current().nextInt(2, 5 + 1); i++) {
-			List<ItemStack> items = Arrays.asList(tier == 3 ? tier3Items : tier == 2 ? tier2Items : tier1Items);
-			Collections.shuffle(items);
-			ItemStack is = items.get(0);
-			
-			if (inv.contains(is))
+		List<LootItem> lootItems = new ArrayList<LootItem>();
+		
+		if (tier == 3) {
+			lootItems.add(getRandomLootItem(1));
+			lootItems.add(getRandomLootItem(2));
+		} else if (tier == 2)
+			lootItems.add(getRandomLootItem(1));
+		
+		int random = new Random().nextInt(4 - 3 + 1) + 3;
+		
+		for (int i = 0; i <= 5; i++) {
+			if (lootItems.size() >= random)
 				continue;
 			
+			boolean containsTier = false;
+			
+			for (LootItem lootItem : lootItems)
+				if (lootItem.tier == i)
+					containsTier = true;
+			
+			if (containsTier)
+				continue;
+			
+			LootItem randomItem = getRandomLootItem(i);
+			
+			if (randomItem != null)
+				lootItems.add(randomItem);
+		}
+		
+		for (LootItem lootItem : lootItems) {
 			int randomSlot; 
 			
 			do {
 				randomSlot = ThreadLocalRandom.current().nextInt(2, inv.getSize() + 1) - 1;
 				
 				if (inv.getItem(randomSlot) == null) {
-					inv.setItem(randomSlot, is);
+					inv.setItem(randomSlot, lootItem.itemStack.clone());
 					break;
 				}
 			} while (inv.firstEmpty() != -1);
