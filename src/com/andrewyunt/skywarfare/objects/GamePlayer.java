@@ -45,7 +45,7 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private CustomClass customClass;
-	private int coins, earnedCoins, wins, energy, kills, killStreak;
+	private int coins, earnedCoins, earnedCoinsGame, wins, energy, kills, killStreak;
 	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate;
 	private DynamicScoreboard dynamicScoreboard;
 	
@@ -122,6 +122,16 @@ public class GamePlayer {
 	public int getEarnedCoins() {
 		
 		return earnedCoins;
+	}
+	
+	public void setEarnedCoinsGame(int earnedCoinsGame) {
+		
+		this.earnedCoinsGame = earnedCoinsGame;
+	}
+	
+	public int getEarnedCoinsGame() {
+		
+		return earnedCoinsGame;
 	}
 	
 	public void setWins(int wins) {

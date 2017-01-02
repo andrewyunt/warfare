@@ -213,9 +213,10 @@ public class Game {
 	 */
 	public void end() {
 		
+		// Only one player should be in-game when the game ends
 		for (GamePlayer player : players) {
-			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + String.format(
-					"%s has won the game!", player.getBukkitPlayer().getDisplayName()));
+			Bukkit.getServer().broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() +
+					String.format("%s has won the game!", player.getBukkitPlayer().getDisplayName()));
 			
 			int winCoins = 200;
 			
@@ -233,6 +234,16 @@ public class Game {
 					String.valueOf(winCoins)));
 		}
 		
+		// Send messages to all online players
+		for (GamePlayer player : SkyWarfare.getInstance().getPlayerManager().getPlayers()) {
+			if (player.getEarnedCoinsGame() > 0)
+				player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
+						"You earned %s coins total during the game.",
+						String.valueOf(player.getEarnedCoinsGame())));
+			
+			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + "Thanks for playing!");
+		}
+		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
 			@Override
@@ -240,7 +251,7 @@ public class Game {
 				
 				setStage(Stage.RESTART);
 			}
-		}, 300L);
+		}, 200L);
 	}
 	
 	public Stage getStage() {
