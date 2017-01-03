@@ -36,6 +36,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -291,6 +292,18 @@ public class PlayerListener implements Listener {
 		
 		if (gp.isCaged())
 			cancellable.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
+		Player player = event.getPlayer();
+		
+		if (player.getLocation().getY() < 0)
+			player.teleport(player.getLocation().getWorld().getSpawnLocation());
 	}
 	
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
