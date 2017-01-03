@@ -33,6 +33,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -290,6 +291,22 @@ public class PlayerListener implements Listener {
 		
 		if (gp.isCaged())
 			cancellable.setCancelled(true);
+	}
+	
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer((Player) event.getPlayer());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			event.setCancelled(true);
+		else if (gp.isCaged())
+			event.setCancelled(true);
 	}
 	
 	@EventHandler
