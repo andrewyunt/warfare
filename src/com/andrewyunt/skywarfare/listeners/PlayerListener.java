@@ -27,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -41,6 +42,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
+import com.andrewyunt.skywarfare.exception.SignException;
 import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Game;
@@ -298,6 +300,47 @@ public class PlayerListener implements Listener {
 			
 			if (conversable.isConversing())
 				event.getRecipients().remove(player);
+		}
+	}
+	
+	@EventHandler
+	public void onSignChange(SignChangeEvent event) {
+		
+		if (event.getLine(0) == null || event.getLine(1) == null)
+			return;
+		
+		if (!event.getLine(0).equalsIgnoreCase("[Leaderboard]"))
+			return;
+		
+		Player player = event.getPlayer();
+		
+		if (!player.hasPermission("megaarena.sign.create")) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to create a leaderboard sign.");
+			return;
+		}
+		
+		int place = 0;
+		
+		try {
+			place = Integer.valueOf(event.getLine(1));
+		} catch (NumberFormatException e) {
+			player.sendMessage(ChatColor.RED + "You did not enter an integer for the sign place.");
+			return;
+		}
+		
+		if (place > 5) {
+			player.sendMessage(ChatColor.RED + "You may not enter a place over 5.");
+			return;
+		}
+		
+		try {
+			SkyWarfare.getInstance().getSignManager().createSign(
+					event.getBlock().getLocation(),
+					place,
+					6000L);
+		} catch (SignException e) {
+			e.printStackTrace();
+			player.sendMessage(ChatColor.RED + e.getMessage());
 		}
 	}
 }

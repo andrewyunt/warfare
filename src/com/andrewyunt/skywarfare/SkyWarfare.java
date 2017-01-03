@@ -22,6 +22,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import com.andrewyunt.skywarfare.command.SWCommand;
 import com.andrewyunt.skywarfare.configuration.ArenaConfiguration;
+import com.andrewyunt.skywarfare.configuration.SignConfiguration;
 import com.andrewyunt.skywarfare.db.DataSource;
 import com.andrewyunt.skywarfare.db.MySQLSource;
 import com.andrewyunt.skywarfare.listeners.PlayerListener;
@@ -29,6 +30,7 @@ import com.andrewyunt.skywarfare.listeners.PlayerSkillListener;
 import com.andrewyunt.skywarfare.listeners.PlayerUltimateListener;
 import com.andrewyunt.skywarfare.listeners.SpectatorsInteractionsListener;
 import com.andrewyunt.skywarfare.managers.PlayerManager;
+import com.andrewyunt.skywarfare.managers.SignManager;
 import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ClassSelectorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
@@ -45,7 +47,9 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 	private final DataSource dataSource = new MySQLSource();
 	
 	private PlayerManager playerManager = new PlayerManager();
+	private SignManager signManager = new SignManager();
 	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
+	private SignConfiguration signConfig = new SignConfiguration();
 	private ShopMenu shopMenu = new ShopMenu();
 	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
 	private ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
@@ -119,10 +123,20 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
 		
 		return playerManager;
 	}
+	
+	public SignManager getSignManager() {
+		
+		return signManager;
+	}
 
 	public ArenaConfiguration getArenaConfig() {
 		
 		return arenaConfig;
+	}
+	
+	public SignConfiguration getSignConfig() {
+		
+		return signConfig;
 	}
 	
 	public Arena getArena() {

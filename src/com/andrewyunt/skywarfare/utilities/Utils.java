@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -85,6 +86,47 @@ public class Utils {
 			}
 
 			team.addPlayer(toColor.getBukkitPlayer());
+		}
+	}
+	
+	public static int getHighestEntry(ConfigurationSection section) {
+		
+		int highest = 0;
+		
+		if (section == null)
+			return 1;
+		
+		Set<String> keys = section.getKeys(false);
+		
+		if (keys.size() == 0)
+			return 0;
+		
+		for (String key : section.getKeys(false)) {
+			int num = Integer.valueOf(key);
+			
+			if (highest < num)
+				highest = num;
+		}
+		
+		return highest;
+	}
+	
+	public static String getNumberSuffix(int num) {
+		
+		num = num % 100;
+		
+		if (num >= 11 && num <= 13)
+			return "th";
+		
+		switch (num % 10) {
+		case 1:
+			return "st";
+		case 2:
+			return "nd";
+		case 3:
+			return "rd";
+		default:
+			return "th";
 		}
 	}
 }
