@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,6 +36,8 @@ import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import net.minecraft.server.v1_7_R4.MinecraftServer;
 
 /**
  * The class used to store game attributes, placed blocks, and players.
@@ -261,9 +264,13 @@ public class Game {
 	
 	public void setStage(Stage stage) {
 		
+		// Set variables
 		this.stage = stage;
-		
 		BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+		String lcName = stage.toString().toLowerCase();
+		
+		// Set server MOTD
+		MinecraftServer.getServer().setMotd(lcName.substring(0, 1).toUpperCase() + lcName.substring(1));
 		
 		if (stage == Stage.COUNTDOWN) {
 			

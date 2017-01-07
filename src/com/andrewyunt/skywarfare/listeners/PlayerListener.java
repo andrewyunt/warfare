@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -101,7 +102,7 @@ public class PlayerListener implements Listener {
 				if (game.getStage() != Stage.WAITING && !player.hasPermission("skywarfare.spectatorjoin"))
 					player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
 				else
-					finalGP.setSpectating(true);
+					finalGP.setSpectating(true, false);
 			}
 		}, 2L);
 		
@@ -234,6 +235,28 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
+		Game game = SkyWarfare.getInstance().getGame();
+		
+		if (game == null || game.getStage() == Stage.WAITING || game.getStage() == Stage.COUNTDOWN)
+			return;
+		
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		event.setRespawnLocation(gp.setSpectating(true, true));
+	}
+	
+	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		
 		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
@@ -297,7 +320,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		
-		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (!SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
 			return;
 		
 		Player player = event.getPlayer();
@@ -306,6 +329,7 @@ public class PlayerListener implements Listener {
 			player.teleport(player.getLocation().getWorld().getSpawnLocation());
 	}
 	
+	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		
 		GamePlayer gp = null;

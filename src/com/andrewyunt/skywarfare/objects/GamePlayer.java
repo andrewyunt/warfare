@@ -233,7 +233,7 @@ public class GamePlayer {
 		return null;
 	}
 	
-	public void setSpectating(boolean spectating) {
+	public Location setSpectating(boolean spectating, boolean respawn) {
 		
 		this.spectating = spectating;
 		
@@ -254,8 +254,13 @@ public class GamePlayer {
 			
 			loc.setY(loc.getY() + 1);
 			
-			player.teleport(loc, TeleportCause.COMMAND);
+			if (respawn)
+				return loc;
+			else
+				player.teleport(loc, TeleportCause.COMMAND);
 		}
+		
+		return null;
 	}
 	
 	public boolean isSpectating() {

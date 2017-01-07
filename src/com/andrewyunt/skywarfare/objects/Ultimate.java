@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -125,16 +126,26 @@ public enum Ultimate implements Purchasable {
 		
 		if (this == HEAL) {
 			
-			bp.setHealth(((Damageable) bp).getHealth() + 6);
+			double newHealth = ((Damageable) bp).getHealth() + 6;
+			
+			if (newHealth < 40)
+				((Damageable) bp).setHealth(newHealth);
+			else
+				((Damageable) bp).setHealth(40D);
+			
+			Location loc = bp.getEyeLocation().clone();
+			loc.getWorld().spigot().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.HEART);
+			
+			bp.sendMessage(ChatColor.GREEN + "You have used the heal ultimate");
 		
 		} else if (this == WRATH) {
 			
 			int count = 0;
-
+			
 			for (Entity entity : player.getBukkitPlayer().getNearbyEntities(3, 3, 3)) {
 				if (!(entity instanceof Player))
 					continue;
-
+				
 				Player entityPlayer = (Player) entity;
 				GamePlayer entityAP = null;
 

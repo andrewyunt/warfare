@@ -16,6 +16,7 @@
 package com.andrewyunt.skywarfare;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -40,7 +41,7 @@ import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-public class SkyWarfare extends JavaPlugin implements PluginMessageListener {
+public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Listener {
 	
 	private static SkyWarfare instance;
 	
