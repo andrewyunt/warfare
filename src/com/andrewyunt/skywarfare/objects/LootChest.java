@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -201,13 +202,13 @@ public class LootChest {
 			if (lootItems.size() >= random)
 				continue;
 			
-			boolean containsTier = false;
+			boolean containsGroup = false;
 			
 			for (LootItem lootItem : lootItems)
-				if (lootItem.tier == i)
-					containsTier = true;
+				if (lootItem.group == i)
+					containsGroup = true;
 			
-			if (containsTier)
+			if (containsGroup)
 				continue;
 			
 			LootItem randomItem = getRandomLootItem(i);
@@ -217,7 +218,7 @@ public class LootChest {
 		}
 		
 		for (LootItem lootItem : lootItems) {
-			int randomSlot; 
+			int randomSlot;
 			
 			do {
 				randomSlot = ThreadLocalRandom.current().nextInt(2, inv.getSize() + 1) - 1;
