@@ -368,7 +368,7 @@ public class PlayerListener implements Listener {
 		
 		Player player = event.getPlayer();
 		
-		if (!player.hasPermission("megaarena.sign.create")) {
+		if (!player.hasPermission("skywarfare.sign.create")) {
 			player.sendMessage(ChatColor.RED + "You do not have permission to create a leaderboard sign.");
 			return;
 		}
