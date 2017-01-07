@@ -47,7 +47,7 @@ public enum Ultimate implements Purchasable {
 
 	HEAL("Heal", 0, 4),
 	WRATH("Wrath", 20000, 6),
-	HELL_SPAWNING("Hell's Spawning", 40000, 2),
+	HELLS_SPAWNING("Hell's Spawning", 40000, 2),
 	LEAP("Leap", 50000, 4),
 	SONIC("Sonic", 25000, 3),
 	WITHERING("Withering", 20000, 5),
@@ -98,7 +98,7 @@ public enum Ultimate implements Purchasable {
 			return healingPotion;
 		} else if (this == WRATH) {
 			return new ItemStack(Material.DIAMOND_SWORD, 1);
-		} else if (this == HELL_SPAWNING) {
+		} else if (this == HELLS_SPAWNING) {
 			return new ItemStack(Material.FIREBALL, 1);
 		} else if (this == LEAP) {
 			return new ItemStack(Material.FISHING_ROD, 1);
@@ -175,7 +175,7 @@ public enum Ultimate implements Purchasable {
 				return;
 			}
 			
-		} else if (this == HELL_SPAWNING) {
+		} else if (this == HELLS_SPAWNING) {
 			
 			Location loc = bp.getLocation();
 			

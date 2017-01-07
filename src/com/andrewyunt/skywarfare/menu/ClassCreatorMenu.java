@@ -262,7 +262,7 @@ public class ClassCreatorMenu implements Listener {
 			}
 			open(Type.KIT, gp, customClass);
 		} else {
-			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(" ", "_"));
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
 			
 			if (title.contains("Kit")) {
 				creatingClasses.get(gp).setKit(Kit.valueOf(enumStr));

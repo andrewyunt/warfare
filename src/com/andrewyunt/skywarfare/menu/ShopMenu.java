@@ -226,20 +226,20 @@ public class ShopMenu implements Listener {
 			}
 			
 			Purchasable purchasable = null;
-			String enumName = ChatColor.stripColor(name.toUpperCase().replace(' ', '_'));
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
 			Type type = null;
 			
 			if (title.contains("Kits")) {
-				purchasable = Kit.valueOf(enumName);
+				purchasable = Kit.valueOf(enumStr);
 				type = Type.KITS;
 			} else if (title.contains("Ultimates")){
-				purchasable = Ultimate.valueOf(enumName);
+				purchasable = Ultimate.valueOf(enumStr);
 				type = Type.ULTIMATES;
 			} else if (title.contains("Skills")) {
-				purchasable = Skill.valueOf(enumName);
+				purchasable = Skill.valueOf(enumStr);
 				type = Type.SKILLS;
 			} else if (title.contains("Health Boosts")) {
-				purchasable = HealthBoost.valueOf(enumName);
+				purchasable = HealthBoost.valueOf(enumStr);
 				type = Type.HEALTH_BOOSTS;
 			}
 			
