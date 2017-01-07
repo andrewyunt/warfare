@@ -84,8 +84,9 @@ public class Game {
 			// Set player's mode to survival
 			bp.setGameMode(GameMode.SURVIVAL);
 			
-			// Update the player's scoreboard
-			player.updateDynamicScoreboard();
+			// Update player scoreboards
+			for (GamePlayer toUpdate : players)
+				toUpdate.updateDynamicScoreboard();
 			
 			// Send the join message to the players, delayed for disguises
 			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
@@ -109,11 +110,28 @@ public class Game {
 		
 		players.remove(player);
 		
-		if (stage == Stage.WAITING)
+		// Start of temporary fix
+		String lobbyServerName = SkyWarfare.getInstance().getConfig().getString("lobby-server");
+		
+		SkyWarfare.getInstance().getDataSource().savePlayer(player);
+		
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Connect");
+		out.writeUTF(lobbyServerName);
+		player.getBukkitPlayer().sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
+		// End of temporary fix
+		
+		if (stage == Stage.WAITING) {
+			player.getCage().setPlayer(null);
+			
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
 					String.format("&7%s &ehas quit!", player.getBukkitPlayer().getDisplayName())));
-		else
+		} else
 			checkPlayers();
+		
+		// Update player scoreboards
+		for (GamePlayer toUpdate : players)
+			toUpdate.updateDynamicScoreboard();
 	}
 	
 	public void checkPlayers() {

@@ -26,6 +26,7 @@ import com.andrewyunt.skywarfare.configuration.ArenaConfiguration;
 import com.andrewyunt.skywarfare.configuration.SignConfiguration;
 import com.andrewyunt.skywarfare.db.DataSource;
 import com.andrewyunt.skywarfare.db.MySQLSource;
+import com.andrewyunt.skywarfare.listeners.EntityListener;
 import com.andrewyunt.skywarfare.listeners.PlayerListener;
 import com.andrewyunt.skywarfare.listeners.PlayerSkillListener;
 import com.andrewyunt.skywarfare.listeners.PlayerUltimateListener;
@@ -64,7 +65,6 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		instance = this;
 		
 		saveDefaultConfig();
-		signConfig.saveDefaultConfig();
 		
 		dataSource.connect();
 		dataSource.updateDB();
@@ -75,6 +75,8 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		pm.registerEvents(classSelectorMenu, this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
+			signConfig.saveDefaultConfig();
+			
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(classCreatorMenu, this);
 		} else {
@@ -83,6 +85,7 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 			arena = Arena.loadFromConfig();
 			game = new Game();
 			
+			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerUltimateListener(), this);
 			pm.registerEvents(new PlayerSkillListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);

@@ -20,16 +20,22 @@ import java.lang.reflect.Method;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -181,6 +187,34 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerDamage(EntityDamageByEntityEvent event) {
+		
+		Entity damager = event.getDamager();
+		Entity damaged = event.getEntity();
+		
+		if (damager instanceof Projectile)
+			damager = (Player) ((Projectile) damager).getShooter();
+		
+		if (!(damager instanceof Player) || !(damaged instanceof Player))
+			return;
+		
+		GamePlayer damagedGP = null;
+		GamePlayer damagerGP = null;
+		
+		try {
+			damagedGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(((Player) damaged).getName());
+			damagerGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (!damagerGP.isInGame() || !damagedGP.isInGame())
+			return;
+		
+		damagedGP.setLastDamager(damagerGP);
+	}
+	
+	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		
 		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
@@ -276,6 +310,30 @@ public class PlayerListener implements Listener {
 			event.setCancelled(true);
 		else if (player.isSpectating())
 			event.setCancelled(true);
+	}
+	
+	
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onPlayerFall(EntityDamageEvent event) {
+		
+		if (event.getCause() != DamageCause.FALL)
+			return;
+		
+		if (!(event.getEntity() instanceof Player))
+			return;
+		
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(((Player) event.getEntity()).getName());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (gp.isInGame() && !gp.hasFallen()) {
+			gp.setHasFallen(true);
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler

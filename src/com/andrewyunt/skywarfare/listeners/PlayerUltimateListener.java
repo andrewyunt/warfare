@@ -79,6 +79,9 @@ public class PlayerUltimateListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void EPC(EntityDamageByEntityEvent event) {
 		
+		if (event.getCause() == DamageCause.FALL)
+			return;
+		
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
@@ -125,6 +128,9 @@ public class PlayerUltimateListener implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void EPC(EntityDamageEvent event) {
+		
+		if (event.getCause() == DamageCause.FALL)
+			return;
 		
 		if (event instanceof EntityDamageByEntityEvent)
 			return;

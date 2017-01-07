@@ -46,8 +46,9 @@ public class GamePlayer {
 	private UUID uuid;
 	private CustomClass customClass;
 	private int coins, earnedCoins, earnedCoinsGame, wins, energy, kills, killStreak;
-	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate;
+	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate, hasFallen;
 	private DynamicScoreboard dynamicScoreboard;
+	private GamePlayer lastDamager;
 	
 	private final List<CustomClass> customClasses = new ArrayList<CustomClass>();
 	private final List<Purchasable> purchases = new ArrayList<Purchasable>();
@@ -223,14 +224,29 @@ public class GamePlayer {
 		return loaded;
 	}
 	
+	public void setHasFallen(boolean hasFallen) {
+		
+		this.hasFallen = hasFallen;
+	}
+	
+	public boolean hasFallen() {
+		
+		return hasFallen;
+	}
+	
 	public boolean isInGame() {
 		
 		return SkyWarfare.getInstance().getGame().getPlayers().contains(this);
 	}
 	
+	public void setLastDamager(GamePlayer lastDamager) {
+		
+		this.lastDamager = lastDamager;
+	}
+	
 	public GamePlayer getLastDamager() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return lastDamager;
 	}
 	
 	public Location setSpectating(boolean spectating, boolean respawn) {
@@ -415,7 +431,7 @@ public class GamePlayer {
 		if (!isCaged()) {
 			ItemStack compass = new ItemStack(Material.COMPASS, 1);
 			ItemMeta compassMeta = compass.getItemMeta();
-			compassMeta.setDisplayName(ChatColor.RED + "Compass");
+			compassMeta.setDisplayName(ChatColor.RED + "Server Selector");
 			compass.setItemMeta(compassMeta);
 			inv.setItem(0, compass);
 			
