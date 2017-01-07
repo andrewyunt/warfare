@@ -64,6 +64,7 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		instance = this;
 		
 		saveDefaultConfig();
+		signConfig.saveDefaultConfig();
 		
 		dataSource.connect();
 		dataSource.updateDB();
