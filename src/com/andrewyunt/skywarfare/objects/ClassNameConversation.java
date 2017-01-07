@@ -75,7 +75,7 @@ public class ClassNameConversation implements ConversationAbandonedListener {
 					player.getBukkitPlayer().sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString()
 						+ String.format("You set the name of your class to %s", input));
 					
-					if (player.getCustomClass(player.getCustomClass().getName()) == null)
+					if (player.getCustomClass() == null)
 						player.setCustomClass(player.getCustomClasses().get(0));
 				}
 			}, 20L);

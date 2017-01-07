@@ -135,7 +135,7 @@ public class ClassCreatorMenu implements Listener {
 						infoLore.add("a class consists of:");
 						infoLore.add("x1 Kit");
 						infoLore.add("x1 Ultimate");
-						infoLore.add("x1 Skill");
+						infoLore.add("x2 Skill");
 						infoMeta.setLore(Utils.colorizeList(infoLore, ChatColor.WHITE));
 						info.setItemMeta(infoMeta);
 						inv.setItem(4, info);
@@ -223,6 +223,9 @@ public class ClassCreatorMenu implements Listener {
 		event.setCancelled(true);
 		
 		ItemStack is = event.getCurrentItem();
+		
+		if (is.getType() == Material.THIN_GLASS)
+			return;
 		
 		if (!is.hasItemMeta())
 			return;

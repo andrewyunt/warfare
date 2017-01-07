@@ -46,7 +46,7 @@ public class ClassSelectorMenu implements Listener {
 	public ClassSelectorMenu() {
 		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
-		glassPaneMeta.setDisplayName(" ");
+		glassPaneMeta.setDisplayName("  ");
 		glassPaneMeta.setLore(new ArrayList<String>());
 		glassPane.setItemMeta(glassPaneMeta);
 	}
@@ -56,55 +56,56 @@ public class ClassSelectorMenu implements Listener {
 		Inventory inv = Bukkit.createInventory(null, 27, "Class Selector");
 		int classSlot = 9;
 		
-		for (int i = 0; i < 27; i++) {
-			if (i == classSlot) {
-				if (i < 16)
-					classSlot = classSlot + 2;
-				
-				int classNum = 1;
-				
-				switch (i) {
-				case 11:
-					classNum = 2;
-					break;
-				case 13:
-					classNum = 3;
-					break;
-				case 15:
-					classNum = 4;
-					break;
-				case 17:
-					classNum = 5;
+		for (int i = 0; i < 10; i++)
+			inv.setItem(i, glassPane);
+		
+		for (int i = 17; i < 27; i++)
+			inv.setItem(i, glassPane);
+		
+		for (int i = 9; i < 18; i = i + 2) {
+			if (i < 16)
+				classSlot = classSlot + 2;
+			
+			int classNum = 1;
+			
+			switch (i) {
+			case 11:
+				classNum = 2;
+				break;
+			case 13:
+				classNum = 3;
+				break;
+			case 15:
+				classNum = 4;
+				break;
+			case 17:
+				classNum = 5;
+			}
+			
+			ItemStack is = new ItemStack(Material.CHEST, 1);
+			ItemMeta im = is.getItemMeta();
+			
+			if (player.getBukkitPlayer().hasPermission("skywarfare.classes." + classNum)) {
+				try {
+					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
+					
+					im.setDisplayName(customClass.getName());
+					
+					is = customClass.getKit().getDisplayItem();
+				} catch (IndexOutOfBoundsException e) {
+					// do nothing
 				}
-				
-				ItemStack is = new ItemStack(Material.CHEST, 1);
-				ItemMeta im = is.getItemMeta();
-				
-				if (player.getBukkitPlayer().hasPermission("skywarfare.classes." + classNum)) {
-					try {
-						CustomClass customClass = player.getCustomClasses().get(classNum - 1);
-						
-						im.setDisplayName(customClass.getName());
-						
-						is = customClass.getKit().getDisplayItem();
-					} catch (IndexOutOfBoundsException e) {
-						is = glassPane;
-					}
-				} else
-					is = glassPane;
-				
-				is.setItemMeta(im);
-				inv.setItem(i, is);
-			} else
-				if (i == 22) {
-					ItemStack close = new ItemStack(Material.ARROW, 1);
-					ItemMeta closeMeta = close.getItemMeta();
-					closeMeta.setDisplayName(ChatColor.RED + "Close");
-					close.setItemMeta(closeMeta);
-					inv.setItem(22, close);
-				} else
-					inv.setItem(i, glassPane);
+			}
+			
+			is.setItemMeta(im);
+			inv.setItem(i, is);
 		}
+		
+		ItemStack close = new ItemStack(Material.ARROW, 1);
+		ItemMeta closeMeta = close.getItemMeta();
+		closeMeta.setDisplayName(ChatColor.RED + "Close");
+		close.setItemMeta(closeMeta);
+		inv.setItem(22, close);
 
 		player.getBukkitPlayer().openInventory(inv);
 	}
@@ -130,6 +131,9 @@ public class ClassSelectorMenu implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		
 		ItemStack is = event.getCurrentItem();
+		
+		if (is.getType() == Material.THIN_GLASS)
+			return;
 		
 		if(is == null || is.getType() == Material.AIR)
 			return;
