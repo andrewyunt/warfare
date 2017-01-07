@@ -59,8 +59,8 @@ public class Cage {
 		blocks.add(world.getBlockAt(new Location(world, X, Y + 3, Z)));
 		
 		// set middle blocks to air
-		world.getBlockAt(new Location(world, X + 1, Y, Z)).setType(Material.AIR);
-		world.getBlockAt(new Location(world, X + 2, Y, Z)).setType(Material.AIR);
+		world.getBlockAt(new Location(world, X, Y + 1, Z)).setType(Material.AIR);
+		world.getBlockAt(new Location(world, X, Y + 2, Z)).setType(Material.AIR);
 		
 		for (Block block : blocks)
 			block.setType(Material.GLASS);
