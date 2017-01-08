@@ -207,6 +207,9 @@ public class Game {
 			// Give player kit items
 			player.getCustomClass().getKit().giveItems(player);
 			
+			// Close player's inventory to keep them from using the class selector in-game
+			bp.closeInventory();
+			
 			// Set player's health
 			List<Purchasable> purchases = player.getPurchases();
 			double health = 24;
