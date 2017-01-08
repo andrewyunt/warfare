@@ -76,6 +76,9 @@ public class GamePlayer {
 			}
 		}, 0L, 20L);
 		
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+		
 		// Register health objective
 		Objective healthObjective = dynamicScoreboard.getScoreboard().registerNewObjective(ChatColor.RED + "❤", "health");
 		healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
