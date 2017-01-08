@@ -15,8 +15,10 @@
  */
 package com.andrewyunt.skywarfare.listeners;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -32,12 +34,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.Ultimate;
 
 /**
  * The listener class used for abilities which holds methods to listen on events.
@@ -214,6 +219,33 @@ public class PlayerUltimateListener implements Listener {
 				return;
 			} else
 				nearbyPlayer.setHealth(((Damageable) nearbyPlayer).getHealth() - 5);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerLeap(PlayerToggleFlightEvent event) {
+		
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (gp.getPurchases().contains(Ultimate.LEAP)) {
+			Vector vector = player.getEyeLocation().getDirection();
+			vector.multiply(5);
+			vector.setY(1);
+			player.setVelocity(vector);
+			
+			player.setAllowFlight(false);
+			player.setFlying(false);
+			
+			gp.setEnergy(0);
+			
+			player.sendMessage(ChatColor.GOLD + "You have used the leap ultimate.");
 		}
 	}
 }

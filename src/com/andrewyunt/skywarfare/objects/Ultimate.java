@@ -34,7 +34,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.exception.PlayerException;
 
@@ -120,8 +119,6 @@ public enum Ultimate implements Purchasable {
 		if (player.getEnergy() < 100)
 			return;
 		
-		player.setEnergy(0);
-		
 		Player bp = player.getBukkitPlayer();
 		
 		if (this == HEAL) {
@@ -135,8 +132,6 @@ public enum Ultimate implements Purchasable {
 			
 			Location loc = bp.getEyeLocation().clone();
 			loc.getWorld().spigot().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.HEART);
-			
-			bp.sendMessage(ChatColor.GREEN + "You have used the heal ultimate");
 		
 		} else if (this == WRATH) {
 			
@@ -170,21 +165,19 @@ public enum Ultimate implements Purchasable {
 				count++;
 			}
 			
-			if (count == 0) {
+			if (count == 0)
 				player.getBukkitPlayer().sendMessage(ChatColor.RED + "No targets within range found!");
-				return;
-			}
 			
 		} else if (this == HELLS_SPAWNING) {
 			
 			Location loc = bp.getLocation();
 			
 			player.getGhasts().add(loc.getWorld().spawnEntity(loc, EntityType.GHAST).getUniqueId());
-			
+		
 		} else if (this == LEAP) {
 			
-			bp.setVelocity(bp.getEyeLocation().getDirection().multiply(5.0));
-			
+			return;
+		
 		} else if (this == SONIC) {
 			
 			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
@@ -208,6 +201,8 @@ public enum Ultimate implements Purchasable {
 			}, 100);
 		}
 		
-		bp.sendMessage(ChatColor.GOLD + String.format("You have used the %s ability.", getName()));
+		player.setEnergy(0);
+		
+		bp.sendMessage(ChatColor.GOLD + String.format("You have used the %s ultimate.", getName()));
 	}
 }

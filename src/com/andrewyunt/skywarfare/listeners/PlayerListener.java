@@ -16,11 +16,14 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
@@ -31,6 +34,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -288,6 +293,35 @@ public class PlayerListener implements Listener {
 		}
 		
 		event.setRespawnLocation(gp.setSpectating(true, true));
+	}
+	
+	@EventHandler
+	public void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
+		
+		for (HumanEntity he : event.getViewers())
+			((Player) he).setLevel(100);
+	}
+	
+	@EventHandler
+	public void onEnchantItem(EnchantItemEvent event) {
+		
+		Map<Enchantment, Integer> enchants = event.getEnchantsToAdd();
+		
+		enchants.clear();
+		
+		Material type = event.getItem().getType();
+		
+		if (type == Material.IRON_HELMET || type == Material.IRON_CHESTPLATE || type == Material.IRON_LEGGINGS
+				|| type == Material.IRON_BOOTS || type == Material.DIAMOND_HELMET || type == Material.DIAMOND_CHESTPLATE
+				|| type == Material.DIAMOND_LEGGINGS || type == Material.DIAMOND_BOOTS)
+			enchants.put(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+		else if (type == Material.WOOD_SWORD || type == Material.STONE_SWORD || type == Material.IRON_SWORD
+				|| type == Material.DIAMOND_SWORD)
+			enchants.put(Enchantment.DAMAGE_ALL, 1);
+		else if (type == Material.BOW)
+			enchants.put(Enchantment.ARROW_DAMAGE, 1);
+		
+		event.setExpLevelCost(0);
 	}
 	
 	@EventHandler

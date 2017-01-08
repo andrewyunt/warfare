@@ -263,7 +263,34 @@ public class MySQLSource extends DataSource {
 	}
 	
 	@Override
+	public void clearClasses(GamePlayer player) {
+		
+		String query = "DELETE FROM Classes WHERE uuid = ?;";
+		
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.setString(1, player.getUUID().toString());
+			
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	@Override
 	public void saveClasses(GamePlayer player) {
+		
+		clearClasses(player);
 		
 		String uuid = player.getUUID().toString();
 		

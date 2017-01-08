@@ -158,13 +158,18 @@ public class GamePlayer {
 		
 		Player player = getBukkitPlayer();
 		
-		if (this.energy == 100)
+		if (this.energy == 100) {
 			if (!sentActivate) {
 				sentActivate = true;
 				
-				player.sendMessage(ChatColor.AQUA + "Right click " + ChatColor.GREEN +
-						"using your sword to activate your ability!");
+				if (purchases.contains(Ultimate.LEAP)) {
+					getBukkitPlayer().setAllowFlight(true);
+					
+					player.sendMessage(ChatColor.GOLD + "Double jump to activate your ultimate!");
+				} else
+					player.sendMessage(ChatColor.GOLD + "Right click using your sword to activate your ultimate!");
 			}
+		}
 		
 		getBukkitPlayer().setLevel(this.energy);
 		getBukkitPlayer().setExp(this.energy / 100.0F);

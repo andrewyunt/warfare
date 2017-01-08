@@ -33,6 +33,8 @@ public abstract class DataSource {
 	
 	public abstract void loadPurchases(GamePlayer player);
 	
+	public abstract void clearClasses(GamePlayer player);
+	
 	public abstract void saveClasses(GamePlayer player);
 	
 	public abstract void loadClasses(GamePlayer player);
