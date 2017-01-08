@@ -90,21 +90,14 @@ public class PlayerSkillListener implements Listener {
 		Player lastDamager = lastDamagerGP.getBukkitPlayer();
 		
 		if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.JUGGERNAUT
-				&& lastDamagerGP.getCustomClass().getSkillTwo() == Skill.JUGGERNAUT) {
+				|| lastDamagerGP.getCustomClass().getSkillTwo() == Skill.JUGGERNAUT) {
 			
-			double health = ((Damageable) lastDamager).getHealth();
-			double maxHealth = ((Damageable) lastDamager).getMaxHealth();
-			
-			if (health + 2 > maxHealth)
-				lastDamager.setHealth(maxHealth);
-			else
-				lastDamager.setHealth(health + 2);
-			
-		} else if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.CONSUMPTION
-				&& lastDamagerGP.getCustomClass().getSkillTwo() == Skill.CONSUMPTION) {
-			
-			lastDamager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 2));
+			lastDamager.setMaxHealth(((Damageable) lastDamager).getMaxHealth() + 2);
 		}
+		
+		if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.CONSUMPTION
+				|| lastDamagerGP.getCustomClass().getSkillTwo() == Skill.CONSUMPTION)
+			lastDamager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 2));
 	}
 	
 	@EventHandler
@@ -123,7 +116,7 @@ public class PlayerSkillListener implements Listener {
 		}
 		
 		if (gp.getCustomClass().getSkillOne() == Skill.GUARD
-				&& gp.getCustomClass().getSkillTwo() == Skill.GUARD)
+				|| gp.getCustomClass().getSkillTwo() == Skill.GUARD)
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
 	}
 	
@@ -142,7 +135,7 @@ public class PlayerSkillListener implements Listener {
 		if (event.getInventory().getType() == InventoryType.ENCHANTING)
 			gp.setEnergy(gp.getEnergy());
 		else if (event.getInventory().getType() == InventoryType.CHEST)
-			if (gp.getCustomClass().getSkillOne() == Skill.GUARD && gp.getCustomClass().getSkillTwo() == Skill.GUARD)
+			if (gp.getCustomClass().getSkillOne() == Skill.GUARD || gp.getCustomClass().getSkillTwo() == Skill.GUARD)
 				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 	}
 	
@@ -167,8 +160,10 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() == Skill.FLAME
-				&& gp.getCustomClass().getSkillTwo() == Skill.FLAME)
+		if (gp.getCustomClass().getSkillOne() != Skill.FLAME && gp.getCustomClass().getSkillTwo() != Skill.FLAME)
+			return;
+		
+		if (Math.random() <= 0.10D)
 			projectile.setFireTicks(Integer.MAX_VALUE);
 	}
 }
