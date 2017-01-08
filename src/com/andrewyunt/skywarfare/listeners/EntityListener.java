@@ -16,9 +16,14 @@
 package com.andrewyunt.skywarfare.listeners;
 
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import com.andrewyunt.skywarfare.SkyWarfare;
+import com.andrewyunt.skywarfare.exception.PlayerException;
+import com.andrewyunt.skywarfare.objects.GamePlayer;
 
 public class EntityListener implements Listener {
 	
@@ -28,5 +33,25 @@ public class EntityListener implements Listener {
 		if (event.getEntityType() != EntityType.GHAST && event.getEntityType() != EntityType.PLAYER
 				&& event.getEntityType() != EntityType.DROPPED_ITEM)
 			event.getEntity().remove();
+	}
+	
+	@EventHandler
+	public void onEntityTarget(EntityTargetEvent event) {
+		
+		if (event.getEntityType() != EntityType.GHAST || event.getTarget().getType() != EntityType.PLAYER)
+			return;
+		
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer((Player) event.getTarget());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (gp.getGhasts().contains(event.getEntity().getUniqueId())) {
+			event.setCancelled(true);
+			event.setTarget(null);
+		}
 	}
 }

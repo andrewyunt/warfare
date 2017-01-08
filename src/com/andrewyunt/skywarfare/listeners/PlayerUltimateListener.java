@@ -18,7 +18,7 @@ package com.andrewyunt.skywarfare.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -212,7 +213,6 @@ public class PlayerUltimateListener implements Listener {
 				return;
 			
 			Damageable dmgPlayer = (Damageable) nearbyPlayer;
-			dmgPlayer.damage(0.00001D);// So the player will the red damage
 			
 			if (dmgPlayer.getHealth() < 5) {
 				dmgPlayer.setHealth(0D);
@@ -236,7 +236,7 @@ public class PlayerUltimateListener implements Listener {
 		
 		if (gp.getPurchases().contains(Ultimate.LEAP)) {
 			Vector vector = player.getEyeLocation().getDirection();
-			vector.multiply(5);
+			vector.multiply(20);
 			vector.setY(1);
 			player.setVelocity(vector);
 			
@@ -247,5 +247,26 @@ public class PlayerUltimateListener implements Listener {
 			
 			player.sendMessage(ChatColor.GOLD + "You have used the leap ultimate.");
 		}
+	}
+	
+	@EventHandler
+	public void onFlamingFeetMove(PlayerMoveEvent event) {
+		
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
+		
+		try {
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (!gp.hasFlamingFeet())
+			return;
+		
+		Block block = player.getLocation().getBlock();
+		
+		if (block.getType() == Material.AIR)
+			block.setType(Material.FIRE);
 	}
 }

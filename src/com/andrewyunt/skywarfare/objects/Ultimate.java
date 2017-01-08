@@ -26,6 +26,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.inventory.ItemStack;
@@ -155,7 +156,6 @@ public enum Ultimate implements Purchasable {
 				
 				entityPlayer.getWorld().strikeLightningEffect(entityPlayer.getLocation());
 				Damageable dmgVictim = (Damageable) entityPlayer;
-				dmgVictim.damage(0.00001D); // Just so an actual hit will register
 				
 				if (dmgVictim.getHealth() <= 5)
 					dmgVictim.setHealth(0D);
@@ -170,9 +170,20 @@ public enum Ultimate implements Purchasable {
 			
 		} else if (this == HELLS_SPAWNING) {
 			
-			Location loc = bp.getLocation();
+			Ghast ghast = (Ghast) bp.getLocation().getWorld().spawnEntity(bp.getLocation().add(
+					new Location(bp.getLocation().getWorld(), 0, 10, 0)), EntityType.GHAST);
 			
-			player.getGhasts().add(loc.getWorld().spawnEntity(loc, EntityType.GHAST).getUniqueId());
+			player.getGhasts().add(ghast.getUniqueId());
+			
+			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+			scheduler.scheduleSyncRepeatingTask(SkyWarfare.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					
+					if (!ghast.isDead())
+						ghast.teleport(bp.getLocation().add(new Location(bp.getLocation().getWorld(), 0, 10, 0)));
+				}
+			}, 0L, 200L);
 		
 		} else if (this == LEAP) {
 			
@@ -188,6 +199,9 @@ public enum Ultimate implements Purchasable {
 			skull.setMetadata("SkyWarfare", new FixedMetadataValue(SkyWarfare.getInstance(), true));
 			
 		} else if (this == FLAMING_FEET) {
+			
+			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
+			bp.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 200, 0));
 			
 			player.setFlamingFeet(true);
 			

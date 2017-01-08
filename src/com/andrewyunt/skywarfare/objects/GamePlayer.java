@@ -162,7 +162,7 @@ public class GamePlayer {
 			if (!sentActivate) {
 				sentActivate = true;
 				
-				if (purchases.contains(Ultimate.LEAP)) {
+				if (customClass.getUltimate() == Ultimate.LEAP) {
 					getBukkitPlayer().setAllowFlight(true);
 					
 					player.sendMessage(ChatColor.GOLD + "Double jump to activate your ultimate!");
@@ -294,7 +294,7 @@ public class GamePlayer {
 		this.flamingFeet = flamingFeet;
 	}
 	
-	public boolean isFlamingFeet() {
+	public boolean hasFlamingFeet() {
 		
 		return flamingFeet;
 	}
