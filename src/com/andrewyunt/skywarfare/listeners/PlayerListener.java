@@ -22,7 +22,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -40,6 +42,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -52,6 +55,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
@@ -62,6 +67,7 @@ import com.andrewyunt.skywarfare.menu.ShopMenu;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
+import com.andrewyunt.skywarfare.objects.Kit;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -191,14 +197,20 @@ public class PlayerListener implements Listener {
 			SkyWarfare.getInstance().getClassSelectorMenu().open(gp);
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.LOWEST)
 	public void onPlayerDamage(EntityDamageByEntityEvent event) {
 		
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
 		
-		if (damager instanceof Projectile)
+		boolean isArrow = false;
+		
+		if (damager instanceof Projectile) {
 			damager = (Player) ((Projectile) damager).getShooter();
+			
+			if (damager instanceof Arrow)
+				isArrow = true;
+		}
 		
 		if (!(damager instanceof Player) || !(damaged instanceof Player))
 			return;
@@ -211,6 +223,11 @@ public class PlayerListener implements Listener {
 			damagerGP = SkyWarfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
 		} catch (PlayerException e) {
 			e.printStackTrace();
+		}
+		
+		if (isArrow && damagerGP.getCustomClass().getKit() == Kit.BOOSTER) {
+			event.setCancelled(true);
+			return;
 		}
 		
 		if (!damagerGP.isInGame() || !damagedGP.isInGame())
@@ -346,6 +363,31 @@ public class PlayerListener implements Listener {
 			event.setCancelled(true);
 	}
 	
+	@EventHandler
+	public void onProjectileLaunch(ProjectileLaunchEvent event) {
+		
+		if (event.getEntityType() != EntityType.ARROW)
+			return;
+		
+		Projectile arrow = event.getEntity();
+		ProjectileSource ps = arrow.getShooter();
+		
+		if (!(ps instanceof Player))
+			return;
+		
+		ItemStack itemInHand = ((Player) ps).getItemInHand();
+		
+		if (itemInHand == null || !itemInHand.hasItemMeta())
+			return;
+		
+		ItemMeta itemInHandMeta = itemInHand.getItemMeta();
+		
+		if (!itemInHandMeta.hasDisplayName())
+			return;
+		
+		if (itemInHandMeta.getDisplayName() == "Booster Bow")
+			arrow.remove();
+	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerFall(EntityDamageEvent event) {

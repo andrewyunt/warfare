@@ -15,17 +15,16 @@
  */
 package com.andrewyunt.skywarfare.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public enum Kit implements Purchasable {
 	
@@ -68,7 +67,8 @@ public enum Kit implements Purchasable {
 			return new ItemStack(Material.IRON_CHESTPLATE, 1);
 		} else if (this == ARCHER) {
 			ItemStack bow = new ItemStack(Material.BOW, 1);
-			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+			bow.setDurability((short) (bow.getDurability() - 370));
+			bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
 			return bow;
 		} else if (this == SWORDSMAN) {
 			ItemStack sword = new ItemStack(Material.STONE_SWORD, 1);
@@ -78,39 +78,30 @@ public enum Kit implements Purchasable {
 			ItemStack bow = new ItemStack(Material.BOW);
 			bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
 			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+			ItemMeta bowMeta = bow.getItemMeta();
+			bowMeta.setDisplayName("Booster Bow");
+			bow.setItemMeta(bowMeta);
 			return bow;
 		} else if (this == CANNONER) {
 			ItemStack boots = new ItemStack(Material.IRON_BOOTS);
 			boots.addEnchantment(Enchantment.PROTECTION_FALL, 3);
 			return boots;
 		} else if (this == HEALER) {
-			ItemStack healingPotion = new ItemStack(Material.POTION, 1);
-			PotionMeta healingPotionMeta = (PotionMeta) healingPotion.getItemMeta();
-			PotionEffect healingEffect = new PotionEffect(PotionEffectType.HEAL, 1, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "HEAL 2" + ChatColor.RED + "\u2764");
-			healingPotionMeta.setLore(lore);
-			healingPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Health Potion");
-			healingPotionMeta.setMainEffect(PotionEffectType.HEAL);
-			healingPotionMeta.addCustomEffect(healingEffect, true);
-			healingPotion.setItemMeta(healingPotionMeta);
-			return healingPotion;
+			ItemStack healItem = new ItemStack(Material.POTION, 2);
+			Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
+			healPotion.setSplash(true);
+			healPotion.apply(healItem);
+			return healItem;
 		} else if (this == ENCHANTER) {
 			return new ItemStack(Material.ENCHANTMENT_TABLE, 1);
 		} else if (this == FISHERMAN) {
 			return new ItemStack(Material.FISHING_ROD, 1);
 		} else if (this == SCOUT) {
-			ItemStack speedPotion = new ItemStack(Material.POTION, 3);
-			PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
-			PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
-			speedPotionMeta.setLore(lore);
-			speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
-			speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
-			speedPotionMeta.addCustomEffect(speedEffect, true);
-			speedPotion.setItemMeta(speedPotionMeta);
-			return speedPotion;
+			ItemStack speedItem = new ItemStack(Material.POTION, 3);
+			Potion frPotion = new Potion(PotionType.SPEED, 2);
+			frPotion.setSplash(true);
+			frPotion.apply(speedItem);
+			return speedItem;
 		} else if (this == PYROMANIAC) {
 			return new ItemStack(Material.LAVA_BUCKET, 1);
 		}
@@ -139,25 +130,18 @@ public enum Kit implements Purchasable {
 			inv.addItem(getDisplayItem());
 			inv.addItem(new ItemStack(Material.TNT, 16));
 			inv.addItem(new ItemStack(Material.WOOD_PLATE, 1));
-			inv.addItem(new ItemStack(Material.BUCKET, 1));
+			inv.addItem(new ItemStack(Material.WATER_BUCKET, 1));
 		} else if (this == HEALER) {
 			inv.addItem(getDisplayItem());
 			
-			ItemStack regenPotion = new ItemStack(Material.POTION, 1);
-			PotionMeta regenPotionMeta = (PotionMeta) regenPotion.getItemMeta();
-			PotionEffect regenEffect = new PotionEffect(PotionEffectType.REGENERATION, 660, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "REGENERATION 2" + ChatColor.RED + "\u2764");
-			regenPotionMeta.setLore(lore);
-			regenPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Regeneration Potion");
-			regenPotionMeta.setMainEffect(PotionEffectType.REGENERATION);
-			regenPotionMeta.addCustomEffect(regenEffect, true);
-			regenPotion.setItemMeta(regenPotionMeta);
-			inv.addItem(regenPotion);
+			ItemStack regenItem = new ItemStack(Material.POTION);
+			Potion regenPotion = new Potion(PotionType.REGEN, 1);
+			regenPotion.setSplash(true);
+			regenPotion.apply(regenItem);
+			inv.addItem(regenItem);
 		} else if (this == ENCHANTER) {
 			inv.addItem(new ItemStack(Material.DIAMOND_SPADE, 1));
 			inv.addItem(new ItemStack(Material.ENCHANTMENT_TABLE, 1));
-			inv.addItem(new ItemStack(Material.EXP_BOTTLE, 32));
 		} else if (this == FISHERMAN) {
 			inv.setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
 			inv.addItem(new ItemStack(Material.FISHING_ROD, 1));
@@ -172,17 +156,14 @@ public enum Kit implements Purchasable {
 			inv.addItem(new ItemStack(Material.LAVA_BUCKET, 5));
 			inv.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
 			
-			ItemStack frPotion = new ItemStack(Material.POTION, 3);
-			PotionMeta frMeta = (PotionMeta) frPotion.getItemMeta();
-			PotionEffect frEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 2, false);
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.RESET + "Fire Resistance 2" + ChatColor.RED + "\u2764");
-			frMeta.setLore(lore);
-			frMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Fire Resistance Potion");
-			frMeta.setMainEffect(PotionEffectType.FIRE_RESISTANCE);
-			frMeta.addCustomEffect(frEffect, true);
-			frPotion.setItemMeta(frMeta);
-			inv.addItem(frPotion);
+			ItemStack frItem = new ItemStack(Material.POTION);
+			Potion frPotion = new Potion(PotionType.FIRE_RESISTANCE, 1);
+			frPotion.setSplash(true);
+			frPotion.apply(frItem);
+			PotionMeta frMeta = (PotionMeta) frItem.getItemMeta();
+			frMeta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1), true);
+			frItem.setItemMeta(frMeta);
+			inv.addItem(frItem);
 		}
 	}
 }
