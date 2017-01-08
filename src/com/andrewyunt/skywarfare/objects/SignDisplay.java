@@ -39,21 +39,32 @@ public class SignDisplay {
 	
 	private final int configNumber;
 	private Sign bukkitSign;
+	private final Type type;
 	private final int place;
+	
+	public enum Type {
+		KILLS_LEADERBOARD,
+		WINS_LEADERBOARD
+	}
 	
 	/**
 	 * Creates a sign display with the specified location and update interval.
 	 * 
+	 * @param configNumber
+	 * 		The number for the sign in the signs configuration section;
 	 * @param loc
 	 * 		The location of the display.
-	 * @param updateInterval
-	 * 		The update interval of the display in ticks.
 	 * @param place
 	 * 		The place on the leaderboard the sign should display.
+	 * @param updateInterval
+	 * 		The update interval of the display in ticks.
+	 * @param load
+	 * 		Set this to true if the sign was loaded from a the configuration.
 	 */
-	public SignDisplay (int configNumber, Location loc, int place, long updateInterval, boolean load) {
+	public SignDisplay(int configNumber, Location loc, Type type, int place, long updateInterval, boolean load) {
 		
 		this.configNumber = configNumber;
+		this.type = type;
 		this.place = place;
 		
 		Block block = loc.getWorld().getBlockAt(loc);
@@ -84,6 +95,11 @@ public class SignDisplay {
 		return configNumber;
 	}
 	
+	public Type getType() {
+		
+		return type;
+	}
+	
 	public Sign getBukkitSign() {
 		
 		return bukkitSign;
@@ -91,13 +107,16 @@ public class SignDisplay {
 	
 	public void refresh() {
 		
-		Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = SkyWarfare.getInstance().getDataSource().getMostKills();
+		
+		
+		Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = SkyWarfare.getInstance().getDataSource()
+				.getHighestValuesColumn(type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
 		Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
 		
 		OfflinePlayer op = entry.getKey();
 		
 		bukkitSign.setLine(0, op.getName());
-		bukkitSign.setLine(1, entry.getValue() + " Kills");
+		bukkitSign.setLine(1, entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
 		bukkitSign.setLine(3, place + Utils.getNumberSuffix(place) + " Place");
 
 		bukkitSign.update();
@@ -108,6 +127,7 @@ public class SignDisplay {
 		SkyWarfare plugin = SkyWarfare.getInstance();
 		FileConfiguration signConfig = plugin.getSignConfig().getConfig();
 		
+		signConfig.set("signs." + configNumber + ".type", type.toString());
 		signConfig.set("signs." + configNumber + ".place", place);
 		
 		signConfig.createSection("signs." + configNumber + ".location",
@@ -122,10 +142,11 @@ public class SignDisplay {
 	public static SignDisplay loadFromConfig(ConfigurationSection section) {
 		
 		SignDisplay signDisplay = null;
+		Type type = Type.valueOf(section.getString("type"));
 		int place = section.getInt("place");
 		Location loc = Utils.deserializeLocation(section.getConfigurationSection("location"));
 		
-		signDisplay = new SignDisplay(Integer.valueOf(section.getName()), loc, place, 6000L, true);
+		signDisplay = new SignDisplay(Integer.valueOf(section.getName()), loc, type, place, 6000L, true);
 		
 		return signDisplay;
 	}

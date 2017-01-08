@@ -68,6 +68,8 @@ import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.andrewyunt.skywarfare.objects.Kit;
+import com.andrewyunt.skywarfare.objects.SignDisplay;
+import com.andrewyunt.skywarfare.objects.SignDisplay.Type;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -494,7 +496,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		
-		if (event.getLine(0) == null || event.getLine(1) == null)
+		if (event.getLine(0) == null || event.getLine(1) == null || event.getLine(2) == null)
 			return;
 		
 		if (!event.getLine(0).equalsIgnoreCase("[Leaderboard]"))
@@ -507,10 +509,19 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
+		SignDisplay.Type type = null;
+		
+		if (event.getLine(1).equalsIgnoreCase("kills"))
+			type = Type.KILLS_LEADERBOARD;
+		else if (event.getLine(1).equalsIgnoreCase("wins"))
+			type = Type.WINS_LEADERBOARD;
+		else
+			return;
+		
 		int place = 0;
 		
 		try {
-			place = Integer.valueOf(event.getLine(1));
+			place = Integer.valueOf(event.getLine(2));
 		} catch (NumberFormatException e) {
 			player.sendMessage(ChatColor.RED + "You did not enter an integer for the sign place.");
 			return;
@@ -524,6 +535,7 @@ public class PlayerListener implements Listener {
 		try {
 			SkyWarfare.getInstance().getSignManager().createSign(
 					event.getBlock().getLocation(),
+					type,
 					place,
 					6000L);
 		} catch (SignException e) {

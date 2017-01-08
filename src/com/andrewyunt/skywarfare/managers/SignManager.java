@@ -22,6 +22,7 @@ import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.configuration.SignConfiguration;
 import com.andrewyunt.skywarfare.exception.SignException;
 import com.andrewyunt.skywarfare.objects.SignDisplay;
+import com.andrewyunt.skywarfare.objects.SignDisplay.Type;
 import com.andrewyunt.skywarfare.utilities.Utils;
 
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class SignManager {
 	
 	public final Set<SignDisplay> signs = new HashSet<SignDisplay>();
 
-	public SignDisplay createSign(Location loc, int place, long updateInterval) throws SignException {
+	public SignDisplay createSign(Location loc, Type type, int place, long updateInterval) throws SignException {
 		
 		if (place == 0 || loc == null || updateInterval < 1)
 			throw new SignException();
@@ -40,7 +41,7 @@ public class SignManager {
 		SignDisplay sign = new SignDisplay(
 				Utils.getHighestEntry(SkyWarfare.getInstance().getSignConfig().getConfig()
 						.getConfigurationSection("signs")) + 1,
-				loc, place, updateInterval, false);
+				loc, type, place, updateInterval, false);
 		signs.add(sign);
 		
 		return sign;

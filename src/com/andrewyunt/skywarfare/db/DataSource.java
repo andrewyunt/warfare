@@ -39,7 +39,8 @@ public abstract class DataSource {
 	
 	public abstract void loadClasses(GamePlayer player);
 	
-	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills();
+	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>>
+			getHighestValuesColumn(String columnName);
 	
 	public void updateDB() {
 		

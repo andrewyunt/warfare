@@ -77,6 +77,8 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		if (getConfig().getBoolean("is-lobby")) {
 			signConfig.saveDefaultConfig();
 			
+			signManager.loadSigns();
+			
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(classCreatorMenu, this);
 		} else {

@@ -370,12 +370,12 @@ public class MySQLSource extends DataSource {
 	}
 	
 	@Override
-	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getMostKills() {
+	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getHighestValuesColumn(String columnName) {
 		
-		Map<Integer, Map.Entry<OfflinePlayer, Integer>> mostKills = new HashMap
+		Map<Integer, Map.Entry<OfflinePlayer, Integer>> highestValues = new HashMap
 				<Integer, Map.Entry<OfflinePlayer, Integer>>();
 		
-		String query = "SELECT `uuid`, `kills` FROM `Players` ORDER BY `kills` DESC LIMIT 5;";
+		String query = "SELECT `uuid`, " + columnName + " FROM `Players` ORDER BY " + columnName + " DESC LIMIT 5;";
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -394,7 +394,7 @@ public class MySQLSource extends DataSource {
 			while (resultSet.next()) {
 				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(UUID.fromString(resultSet.getString("uuid")));
 				
-				mostKills.put(place, new AbstractMap.SimpleEntry<OfflinePlayer, Integer>(op, resultSet.getInt("kills")));
+				highestValues.put(place, new AbstractMap.SimpleEntry<OfflinePlayer, Integer>(op, resultSet.getInt(columnName)));
 				
 				place++;
 			}
@@ -402,7 +402,7 @@ public class MySQLSource extends DataSource {
 			e.printStackTrace();
 		}
 		
-		return mostKills;
+		return highestValues;
 	}
 	
 	@Override
