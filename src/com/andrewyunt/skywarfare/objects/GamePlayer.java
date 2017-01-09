@@ -32,8 +32,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -262,13 +260,26 @@ public class GamePlayer {
 		this.spectating = spectating;
 		
 		if (spectating) {
-			Player player = getBukkitPlayer();
-			
-			player.setAllowFlight(true);
-			player.setFireTicks(0);
-			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15), true);
-			
-			updateDynamicScoreboard();
+			BukkitScheduler scheduler = SkyWarfare.getInstance().getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					Player player = getBukkitPlayer();
+					
+					player.setAllowFlight(true);
+					player.setFireTicks(0);
+					
+					for (GamePlayer toShow : SkyWarfare.getInstance().getGame().getSpectators())
+						player.showPlayer(toShow.getBukkitPlayer());
+					
+					for (GamePlayer toHide : SkyWarfare.getInstance().getGame().getPlayers())
+						toHide.getBukkitPlayer().hidePlayer(player);
+					
+					updateDynamicScoreboard();
+					
+					updateHotbar();
+				}
+			}, 5L);
 			
 			Location loc = SkyWarfare.getInstance().getArena().getMapLocation();
 			Chunk chunk = loc.getChunk();
@@ -281,7 +292,7 @@ public class GamePlayer {
 			if (respawn)
 				return loc;
 			else
-				player.teleport(loc, TeleportCause.COMMAND);
+				getBukkitPlayer().teleport(loc, TeleportCause.COMMAND);
 		}
 		
 		return null;
@@ -431,32 +442,63 @@ public class GamePlayer {
 		
 		inv.clear();
 		
-		ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
-		ItemMeta classSelectorMeta = classSelector.getItemMeta();
-		classSelectorMeta.setDisplayName(ChatColor.AQUA + "Class Selector");
-		classSelector.setItemMeta(classSelectorMeta);
+		if (spectating) {
+			// Delay so players don't accidentally click items after being set to spectator mode
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(SkyWarfare.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					
+					ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+					ItemMeta teleporterMeta = teleporter.getItemMeta();
+					teleporterMeta.setDisplayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Teleporter");
+					teleporter.setItemMeta(teleporterMeta);
+					inv.setItem(0, teleporter);
+					
+					ItemStack bed = new ItemStack(Material.BED, 1);
+					ItemMeta bedMeta = bed.getItemMeta();
+					bedMeta.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Return to Lobby");
+					bed.setItemMeta(bedMeta);
+					inv.setItem(8, bed);
+				}
+			}, 20L);
+		} else {
+			ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+			ItemMeta classSelectorMeta = classSelector.getItemMeta();
+			classSelectorMeta.setDisplayName(ChatColor.AQUA + ChatColor.BOLD.toString() + "Class Selector");
+			classSelector.setItemMeta(classSelectorMeta);
+			
+			if (!isCaged()) {
+				ItemStack compass = new ItemStack(Material.COMPASS, 1);
+				ItemMeta compassMeta = compass.getItemMeta();
+				compassMeta.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Server Selector");
+				compass.setItemMeta(compassMeta);
+				inv.setItem(0, compass);
+				
+				ItemStack shop = new ItemStack(Material.EMERALD, 1);
+				ItemMeta shopMeta = shop.getItemMeta();
+				shopMeta.setDisplayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
+				shop.setItemMeta(shopMeta);
+				inv.setItem(1, shop);
+				
+				ItemStack classCreator = new ItemStack(Material.CHEST, 1);
+				ItemMeta classCreatorMeta = classCreator.getItemMeta();
+				classCreatorMeta.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Class Creator");
+				classCreator.setItemMeta(classCreatorMeta);
+				inv.setItem(2, classCreator);
+				
+				inv.setItem(3, classSelector);
+			} else
+				inv.setItem(0, classSelector);
+		}
 		
-		if (!isCaged()) {
-			ItemStack compass = new ItemStack(Material.COMPASS, 1);
-			ItemMeta compassMeta = compass.getItemMeta();
-			compassMeta.setDisplayName(ChatColor.RED + "Server Selector");
-			compass.setItemMeta(compassMeta);
-			inv.setItem(0, compass);
+		for (ItemStack is : inv.getContents()) {
+			if (is == null || !is.hasItemMeta())
+				continue;
 			
-			ItemStack shop = new ItemStack(Material.EMERALD, 1);
-			ItemMeta shopMeta = shop.getItemMeta();
-			shopMeta.setDisplayName(ChatColor.GREEN + "Shop");
-			shop.setItemMeta(shopMeta);
-			inv.setItem(1, shop);
-			
-			ItemStack classCreator = new ItemStack(Material.CHEST, 1);
-			ItemMeta classCreatorMeta = classCreator.getItemMeta();
-			classCreatorMeta.setDisplayName(ChatColor.GOLD + "Class Creator");
-			classCreator.setItemMeta(classCreatorMeta);
-			inv.setItem(2, classCreator);
-			
-			inv.setItem(3, classSelector);
-		} else
-			inv.setItem(0, classSelector);
+			ItemMeta im = is.getItemMeta();
+			im.setDisplayName(im.getDisplayName() + ChatColor.GRAY + " (Right Click)");
+			is.setItemMeta(im);
+		}
 	}
 }

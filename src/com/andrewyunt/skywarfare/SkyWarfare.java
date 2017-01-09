@@ -36,6 +36,7 @@ import com.andrewyunt.skywarfare.managers.SignManager;
 import com.andrewyunt.skywarfare.menu.ClassCreatorMenu;
 import com.andrewyunt.skywarfare.menu.ClassSelectorMenu;
 import com.andrewyunt.skywarfare.menu.ShopMenu;
+import com.andrewyunt.skywarfare.menu.TeleporterMenu;
 import com.andrewyunt.skywarfare.objects.Arena;
 import com.andrewyunt.skywarfare.objects.Game;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
@@ -55,6 +56,7 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 	private ShopMenu shopMenu = new ShopMenu();
 	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
 	private ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
+	private TeleporterMenu teleporterMenu = new TeleporterMenu();
 	private Arena arena;
 	private Game game;
 	private String serverName;
@@ -71,8 +73,8 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		
 		PluginManager pm = getServer().getPluginManager();
 		
-		pm.registerEvents(new PlayerListener(), this);
 		pm.registerEvents(classSelectorMenu, this);
+		pm.registerEvents(new PlayerListener(), this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
 			signConfig.saveDefaultConfig();
@@ -87,6 +89,7 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 			arena = Arena.loadFromConfig();
 			game = new Game();
 			
+			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerUltimateListener(), this);
 			pm.registerEvents(new PlayerSkillListener(), this);
@@ -174,6 +177,11 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 	public ClassSelectorMenu getClassSelectorMenu() {
 		
 		return classSelectorMenu;
+	}
+	
+	public TeleporterMenu getTeleporterMenu() {
+		
+		return teleporterMenu;
 	}
 	
 	public void setServerName(String serverName) {

@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -160,8 +161,8 @@ public class SpectatorsInteractionsListener implements Listener {
 		
 		try  {
 			damagerGP = pm.getPlayer(((Player) event.getDamager()).getName());
-		} catch (PlayerException | ClassCastException e) {
-			// do nothing
+		} catch (PlayerException e) {
+			e.printStackTrace();
 		}
 		
 		if (damagerGP != null)
@@ -174,8 +175,8 @@ public class SpectatorsInteractionsListener implements Listener {
 		
 		try  {
 			damagedGP = pm.getPlayer(((Player) event.getEntity()).getName());
-		} catch (PlayerException | ClassCastException e) {
-			// do nothing
+		} catch (PlayerException e) {
+			e.printStackTrace();
 		}
 		
 		if (damagedGP != null)
@@ -627,5 +628,20 @@ public class SpectatorsInteractionsListener implements Listener {
 		} catch (PlayerException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		GamePlayer gp = null;
+		
+		try  {
+			gp = pm.getPlayer((Player) event.getWhoClicked());
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+		
+		if (gp.isSpectating())
+			event.setCancelled(true);
 	}
 }

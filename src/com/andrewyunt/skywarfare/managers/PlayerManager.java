@@ -155,4 +155,12 @@ public class PlayerManager {
 		
 		return getPlayer(player.getName());
 	}
+	
+	public GamePlayer getPlayer(UUID uuid) throws PlayerException {
+		
+		if (players.containsKey(uuid))
+			return players.get(uuid);
+		else
+			throw new PlayerException("No player with the specified UUID exists.");
+	}
 }

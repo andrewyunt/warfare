@@ -1,5 +1,5 @@
 /*
- * Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reserved.
+ * Unpublished Copyright (c) 2017 Andrew Yunt, All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property of Andrew Yunt. The intellectual and technical concepts contained
  * herein are proprietary to Andrew Yunt and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
@@ -16,7 +16,7 @@
 package com.andrewyunt.skywarfare.menu;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,88 +27,71 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
-import com.andrewyunt.skywarfare.exception.PlayerException;
-import com.andrewyunt.skywarfare.objects.CustomClass;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
 
-/**
- * The class used to create instances of the class selector menu.
- * 
- * @author Andrew Yunt
- */
-public class ClassSelectorMenu implements Listener {
+public class TeleporterMenu implements Listener {
 	
-	private final ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
 	
-	public ClassSelectorMenu() {
+	public TeleporterMenu() {
 		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
 		glassPaneMeta.setDisplayName("  ");
 		glassPaneMeta.setLore(new ArrayList<String>());
 		glassPane.setItemMeta(glassPaneMeta);
 	}
-
+	
 	public void open(GamePlayer player) {
-
-		Inventory inv = Bukkit.createInventory(null, 27, "Class Selector");
-		int classSlot = 9;
 		
-		for (int i = 0; i < 10; i++)
+		Inventory inv = Bukkit.createInventory(null, 54, "Teleporter");
+		
+		for (int i = 0; i < 9; i++)
 			inv.setItem(i, glassPane);
 		
-		for (int i = 17; i < 27; i++)
+		for (int i = 9; i < 45; i = i + 9) {
 			inv.setItem(i, glassPane);
-		
-		for (int i = 9; i < 18; i = i + 2) {
-			if (i < 16)
-				classSlot = classSlot + 2;
-			
-			int classNum = 1;
-			
-			switch (i) {
-			case 11:
-				classNum = 2;
-				break;
-			case 13:
-				classNum = 3;
-				break;
-			case 15:
-				classNum = 4;
-				break;
-			case 17:
-				classNum = 5;
-			}
-			
-			ItemStack is = new ItemStack(Material.CHEST, 1);
-			ItemMeta im = is.getItemMeta();
-			
-			if (player.getBukkitPlayer().hasPermission("skywarfare.classes." + classNum)) {
-				try {
-					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
-					
-					im.setDisplayName(customClass.getName());
-					
-					is = customClass.getKit().getDisplayItem();
-				} catch (IndexOutOfBoundsException e) {
-					// do nothing
-				}
-			}
-			
-			is.setItemMeta(im);
-			inv.setItem(i, is);
+			inv.setItem(i + 8, glassPane);
 		}
 		
-		ItemStack close = new ItemStack(Material.ARROW, 1);
-		ItemMeta closeMeta = close.getItemMeta();
-		closeMeta.setDisplayName(ChatColor.RED + "Close");
-		close.setItemMeta(closeMeta);
-		inv.setItem(22, close);
-
+		for (int i = 45; i < 54; i++)
+			inv.setItem(i, glassPane);
+		
+		ItemStack goBack = new ItemStack(Material.ARROW, 1);
+		ItemMeta goBackMeta = goBack.getItemMeta();
+		goBackMeta.setDisplayName(ChatColor.RED + "Close");
+		goBack.setItemMeta(goBackMeta);
+		inv.setItem(49, goBack);
+		
+		List<ItemStack> toAdd = new ArrayList<ItemStack>();
+		
+		for (GamePlayer inGame : SkyWarfare.getInstance().getGame().getPlayers()) {
+			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+			skullMeta.setOwner(inGame.getBukkitPlayer().getName());
+			skullMeta.setDisplayName(inGame.getBukkitPlayer().getName());
+			skull.setItemMeta(skullMeta);
+			
+			toAdd.add(skull);
+		}
+		
+		for (int i = 0; i < 36; i++) {
+			ItemStack is = inv.getItem(i);
+			
+			if (is == null || is.getType() == Material.AIR)
+				try {
+					inv.setItem(i, toAdd.get(0));
+					toAdd.remove(0);
+				} catch (IndexOutOfBoundsException e) {
+					break;
+				}
+		}
+		
 		player.getBukkitPlayer().openInventory(inv);
 	}
-
+	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		
@@ -122,11 +105,11 @@ public class ClassSelectorMenu implements Listener {
 		if (title == null)
 			return;
 		
-		if (!title.equals("Class Selector"))
+		if (!title.equals("Teleporter"))
 			return;
 		
 		event.setCancelled(true);
-
+		
 		Player player = (Player) event.getWhoClicked();
 		
 		ItemStack is = event.getCurrentItem();
@@ -139,29 +122,17 @@ public class ClassSelectorMenu implements Listener {
 		
 		if (!is.hasItemMeta())
 			return;
-
+		
 		String name = is.getItemMeta().getDisplayName();
-
-		if (name == null || name.equals(" "))
+		
+		if (name == null)
 			return;
-
+		
 		if (name.equals(ChatColor.RED + "Close")) {
 			player.closeInventory();
 			return;
 		}
 		
-		GamePlayer gp = null;
-		
-		try {
-			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(player);
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
-		
-		gp.setCustomClass(gp.getCustomClass(name));
-		
-		player.sendMessage(ChatColor.GOLD +  String.format("You selected the %s class.", name));
-		
-		player.closeInventory();
+		event.getWhoClicked().teleport(Bukkit.getPlayer(name));
 	}
 }

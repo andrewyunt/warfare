@@ -17,6 +17,7 @@ package com.andrewyunt.skywarfare.listeners;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -181,22 +182,32 @@ public class PlayerListener implements Listener {
 		
 		Material type = item.getType();
 		
-		if (type == Material.COMPASS) {
-			Method method = null;
-			
-			try {
-				method = Main.getInstance().getClass().getDeclaredMethod("getInv", Player.class);
-				method.setAccessible(true);
-				player.openInventory((Inventory) method.invoke(Main.getInstance(), player));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (type == Material.EMERALD)
-			SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
-		else if (type == Material.CHEST)
-			SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
-		else if (type == Material.COMMAND)
-			SkyWarfare.getInstance().getClassSelectorMenu().open(gp);
+		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby") || gp.isCaged()) {
+			if (type == Material.COMPASS) {
+				Method method = null;
+				
+				try {
+					method = Main.getInstance().getClass().getDeclaredMethod("getInv", Player.class);
+					method.setAccessible(true);
+					player.openInventory((Inventory) method.invoke(Main.getInstance(), player));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else if (type == Material.EMERALD)
+				SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
+			else if (type == Material.CHEST)
+				SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
+			else if (type == Material.COMMAND)
+				SkyWarfare.getInstance().getClassSelectorMenu().open(gp);
+		} else if (gp.isSpectating()) {
+			if (type == Material.BED) {
+				ByteArrayDataOutput out = ByteStreams.newDataOutput();
+				out.writeUTF("Connect");
+				out.writeUTF(SkyWarfare.getInstance().getConfig().getString("lobby-server"));
+				player.sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
+			} else if (type == Material.COMPASS)
+				SkyWarfare.getInstance().getTeleporterMenu().open(gp);
+		}
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
@@ -304,9 +315,11 @@ public class PlayerListener implements Listener {
 			return;
 		
 		GamePlayer gp = null;
+		UUID uuid = event.getPlayer().getUniqueId();
+		
 		
 		try {
-			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+			gp = SkyWarfare.getInstance().getPlayerManager().getPlayer(uuid);
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}

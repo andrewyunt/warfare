@@ -110,17 +110,6 @@ public class Game {
 		
 		players.remove(player);
 		
-		// Start of temporary fix
-		String lobbyServerName = SkyWarfare.getInstance().getConfig().getString("lobby-server");
-		
-		SkyWarfare.getInstance().getDataSource().savePlayer(player);
-		
-		ByteArrayDataOutput out = ByteStreams.newDataOutput();
-		out.writeUTF("Connect");
-		out.writeUTF(lobbyServerName);
-		player.getBukkitPlayer().sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
-		// End of temporary fix
-		
 		if (stage == Stage.WAITING) {
 			player.getCage().setPlayer(null);
 			
@@ -205,7 +194,9 @@ public class Game {
 			bp.getInventory().clear();
 			
 			// Give player kit items
-			player.getCustomClass().getKit().giveItems(player);
+			CustomClass customClass = player.getCustomClass();
+			Kit kit = customClass.getKit();
+			kit.giveItems(player);
 			
 			// Close player's inventory to keep them from using the class selector in-game
 			bp.closeInventory();
@@ -315,8 +306,6 @@ public class Game {
 			
 		} else if (stage == Stage.RESTART) {
 			
-			String lobbyServerName = SkyWarfare.getInstance().getConfig().getString("lobby-server");
-			
 			for (GamePlayer player : SkyWarfare.getInstance().getPlayerManager().getPlayers()) {
 				SkyWarfare.getInstance().getDataSource().savePlayer(player);
 				
@@ -326,7 +315,7 @@ public class Game {
 				
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("Connect");
-				out.writeUTF(lobbyServerName);
+				out.writeUTF(SkyWarfare.getInstance().getConfig().getString("lobby-server"));
 				player.getBukkitPlayer().sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
 			}
 			

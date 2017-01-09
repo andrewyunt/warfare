@@ -234,6 +234,9 @@ public class PlayerUltimateListener implements Listener {
 			e.printStackTrace();
 		}
 		
+		if (!gp.isInGame())
+			return;
+		
 		if (gp.getPurchases().contains(Ultimate.LEAP)) {
 			Vector vector = player.getEyeLocation().getDirection();
 			vector.multiply(20);
