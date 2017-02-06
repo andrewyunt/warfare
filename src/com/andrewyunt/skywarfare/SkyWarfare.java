@@ -1,5 +1,5 @@
 /*
- * Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reserved.
+* Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property of Andrew Yunt. The intellectual and technical concepts contained
  * herein are proprietary to Andrew Yunt and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.

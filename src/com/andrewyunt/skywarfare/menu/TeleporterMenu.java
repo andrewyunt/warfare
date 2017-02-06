@@ -77,7 +77,7 @@ public class TeleporterMenu implements Listener {
 			toAdd.add(skull);
 		}
 		
-		for (int i = 0; i < 36; i++) {
+		for (int i = 0; i < 45; i++) {
 			ItemStack is = inv.getItem(i);
 			
 			if (is == null || is.getType() == Material.AIR)
