@@ -38,6 +38,7 @@ import org.bukkit.scoreboard.Objective;
 
 import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.objects.Game.Stage;
+import com.andrewyunt.skywarfare.utilities.Utils;
 
 public class GamePlayer {
 	
@@ -433,7 +434,7 @@ public class GamePlayer {
 		dynamicScoreboard.blankLine(2);
 		
 		// Display server's IP */
-		dynamicScoreboard.update(1, ChatColor.YELLOW + "mc.amosita.net");
+		dynamicScoreboard.update(1, ChatColor.YELLOW + SkyWarfare.getInstance().getConfig().getString("server-ip"));
 	}
 	
 	public void updateHotbar() {
@@ -451,54 +452,49 @@ public class GamePlayer {
 					
 					ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
 					ItemMeta teleporterMeta = teleporter.getItemMeta();
-					teleporterMeta.setDisplayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Teleporter");
+					teleporterMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"));
 					teleporter.setItemMeta(teleporterMeta);
-					inv.setItem(0, teleporter);
+					inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1,
+							teleporter);
 					
 					ItemStack bed = new ItemStack(Material.BED, 1);
 					ItemMeta bedMeta = bed.getItemMeta();
-					bedMeta.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Return to Lobby");
+					bedMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"));
 					bed.setItemMeta(bedMeta);
-					inv.setItem(8, bed);
+					inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1,
+							bed);
 				}
 			}, 20L);
 		} else {
-			ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
-			ItemMeta classSelectorMeta = classSelector.getItemMeta();
-			classSelectorMeta.setDisplayName(ChatColor.AQUA + ChatColor.BOLD.toString() + "Class Selector");
-			classSelector.setItemMeta(classSelectorMeta);
-			
 			if (!isCaged()) {
-				ItemStack compass = new ItemStack(Material.COMPASS, 1);
-				ItemMeta compassMeta = compass.getItemMeta();
-				compassMeta.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Server Selector");
-				compass.setItemMeta(compassMeta);
-				inv.setItem(0, compass);
-				
 				ItemStack shop = new ItemStack(Material.EMERALD, 1);
 				ItemMeta shopMeta = shop.getItemMeta();
-				shopMeta.setDisplayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
+				shopMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"));
 				shop.setItemMeta(shopMeta);
-				inv.setItem(1, shop);
+				inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.shop.slot") - 1,
+						shop);
 				
 				ItemStack classCreator = new ItemStack(Material.CHEST, 1);
 				ItemMeta classCreatorMeta = classCreator.getItemMeta();
-				classCreatorMeta.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Class Creator");
+				classCreatorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title"));
 				classCreator.setItemMeta(classCreatorMeta);
-				inv.setItem(2, classCreator);
+				inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-creator.slot") - 1,
+						classCreator);
 				
-				inv.setItem(3, classSelector);
-			} else
-				inv.setItem(0, classSelector);
-		}
-		
-		for (ItemStack is : inv.getContents()) {
-			if (is == null || !is.hasItemMeta())
-				continue;
-			
-			ItemMeta im = is.getItemMeta();
-			im.setDisplayName(im.getDisplayName() + ChatColor.GRAY + " (Right Click)");
-			is.setItemMeta(im);
+				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+				ItemMeta classSelectorMeta = classSelector.getItemMeta();
+				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"));
+				classSelector.setItemMeta(classSelectorMeta);
+				inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-selector.slot") - 1,
+						classSelector);
+			} else {
+				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+				ItemMeta classSelectorMeta = classSelector.getItemMeta();
+				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.cage-items.class-selector.title"));
+				classSelector.setItemMeta(classSelectorMeta);
+				inv.setItem(SkyWarfare.getInstance().getConfig().getInt("hotbar-items.cage-items.class-selector.slot") - 1,
+						classSelector);
+			}
 		}
 	}
 }

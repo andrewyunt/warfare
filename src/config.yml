@@ -8,6 +8,33 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
+# The server ip to be displayed on the scoreboard
+server-ip: "test ip"
+
+# The slots and titles for hotbar items
+hotbar-items:
+  lobby-items:
+    shop:
+      slot: 1
+      title: "&a&lShop &7(Right Click)"
+    class-creator:
+      slot: 2
+      title: "&6&lClass Creator &7(Right Click)"
+    class-selector:
+      slot: 3
+      title: "&e&lClass Selector &7(Right Click)"
+  spectator-items:
+    teleporter:
+      slot: 1
+      title: "&a&lTeleporter &7(Right Click)"
+    return-to-lobby:
+      slot: 9
+      title: "&c&lReturn to Lobby &7(Right Click)"
+  cage-items:
+    class-selector:
+      slot: 1
+      title: "&e&lClass Selector &7(Right Click)"
+
 # Kit Descriptions
 description-ARMORER:
   - "Gold Helmet"

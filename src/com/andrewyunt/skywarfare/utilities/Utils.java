@@ -11,15 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.andrewyunt.skywarfare.SkyWarfare;
 import com.andrewyunt.skywarfare.objects.GamePlayer;
-
-import net.minecraft.server.v1_7_R4.NBTTagCompound;
-import net.minecraft.server.v1_7_R4.NBTTagList;
 
 public class Utils {
 
@@ -46,7 +42,7 @@ public class Utils {
 		return list.stream().map(line -> color + line).collect(Collectors.toList());
 	}
 
-	public static ItemStack removeAttributes(ItemStack is) {
+	/*public static ItemStack removeAttributes(ItemStack is) {
 		
 		net.minecraft.server.v1_7_R4.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound tag;
@@ -65,7 +61,7 @@ public class Utils {
 		nmsStack.setTag(tag);
 		
 		return CraftItemStack.asCraftMirror(nmsStack);
-	}
+	}*/
 	
 	public static void colorPlayerName(GamePlayer toColor, Collection<GamePlayer> toShowPlayers) {
 
@@ -128,5 +124,10 @@ public class Utils {
 		default:
 			return "th";
 		}
+	}
+	
+	public static String getFormattedMessage(String configPath) {
+		
+		return ChatColor.translateAlternateColorCodes('&', SkyWarfare.getInstance().getConfig().getString(configPath));
 	}
 }

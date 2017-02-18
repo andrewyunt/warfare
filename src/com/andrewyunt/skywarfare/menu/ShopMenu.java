@@ -139,7 +139,7 @@ public class ShopMenu implements Listener {
 				
 				purchasableNum++;
 				
-				ItemStack is = Utils.removeAttributes(purchasable.getDisplayItem().clone());
+				ItemStack is = purchasable.getDisplayItem().clone();
 				
 				for(Enchantment enchantment : is.getEnchantments().keySet())
 					is.removeEnchantment(enchantment);

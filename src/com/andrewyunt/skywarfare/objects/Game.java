@@ -37,8 +37,6 @@ import com.andrewyunt.skywarfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
-import net.minecraft.server.v1_7_R4.MinecraftServer;
-
 /**
  * The class used to store game attributes, placed blocks, and players.
  * 
@@ -282,7 +280,7 @@ public class Game {
 		String lcName = stage.toString().toLowerCase();
 		
 		// Set server MOTD
-		MinecraftServer.getServer().setMotd(lcName.substring(0, 1).toUpperCase() + lcName.substring(1));
+		//MinecraftServer.getServer().setMotd(lcName.substring(0, 1).toUpperCase() + lcName.substring(1));
 		
 		if (stage == Stage.COUNTDOWN) {
 			

@@ -1,7 +1,6 @@
 name: SkyWarfare
 main: com.andrewyunt.skywarfare.SkyWarfare
 version: 1.0
-softdepend: [Selector]
 commands:
   SW:
     description: The management command for SkyWarfare.

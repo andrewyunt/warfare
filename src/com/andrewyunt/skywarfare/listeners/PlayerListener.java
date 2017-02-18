@@ -15,7 +15,6 @@
  */
 package com.andrewyunt.skywarfare.listeners;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,7 +53,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.ProjectileSource;
@@ -71,10 +69,9 @@ import com.andrewyunt.skywarfare.objects.GamePlayer;
 import com.andrewyunt.skywarfare.objects.Kit;
 import com.andrewyunt.skywarfare.objects.SignDisplay;
 import com.andrewyunt.skywarfare.objects.SignDisplay.Type;
+import com.andrewyunt.skywarfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-
-import SebucoHD.Selector.Main;
 
 public class PlayerListener implements Listener {
 	
@@ -180,32 +177,22 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		Material type = item.getType();
+		String name = item.getItemMeta().getDisplayName();
 		
 		if (SkyWarfare.getInstance().getConfig().getBoolean("is-lobby") || gp.isCaged()) {
-			if (type == Material.COMPASS) {
-				Method method = null;
-				
-				try {
-					method = Main.getInstance().getClass().getDeclaredMethod("getInv", Player.class);
-					method.setAccessible(true);
-					player.openInventory((Inventory) method.invoke(Main.getInstance(), player));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (type == Material.EMERALD)
+			if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title")))
 				SkyWarfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
-			else if (type == Material.CHEST)
+			else if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title")))
 				SkyWarfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
-			else if (type == Material.COMMAND)
+			else if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title")))
 				SkyWarfare.getInstance().getClassSelectorMenu().open(gp);
 		} else if (gp.isSpectating()) {
-			if (type == Material.BED) {
+			if (name.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"))) {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("Connect");
 				out.writeUTF(SkyWarfare.getInstance().getConfig().getString("lobby-server"));
 				player.sendPluginMessage(SkyWarfare.getInstance(), "BungeeCord", out.toByteArray());
-			} else if (type == Material.COMPASS)
+			} else if (name.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title")))
 				SkyWarfare.getInstance().getTeleporterMenu().open(gp);
 		}
 	}
