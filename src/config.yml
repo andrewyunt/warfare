@@ -1,7 +1,7 @@
 # MySQL Connection Details
 database-ip: 127.0.0.1
 database-port: 3306
-database-name: MegaTW
+database-name: SkyWarfare
 database-user: user
 database-pass: password
 
@@ -10,6 +10,9 @@ is-lobby: true
 
 # The server ip to be displayed on the scoreboard
 server-ip: "test ip"
+
+# GUI menu message for no class slot access
+no-perms-class-slot: "&cNo access"
 
 # The slots and titles for hotbar items
 hotbar-items:

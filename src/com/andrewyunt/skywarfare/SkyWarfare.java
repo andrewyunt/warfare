@@ -68,10 +68,16 @@ public class SkyWarfare extends JavaPlugin implements PluginMessageListener, Lis
 		
 		saveDefaultConfig();
 		
-		dataSource.connect();
-		dataSource.updateDB();
-		
 		PluginManager pm = getServer().getPluginManager();
+		
+		// Connect to the database
+		if (!dataSource.connect()) {
+			getLogger().severe("Could not connect to the database, shutting down...");
+			pm.disablePlugin(this);
+			return;
+		}
+		
+		dataSource.updateDB();
 		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(new PlayerListener(), this);

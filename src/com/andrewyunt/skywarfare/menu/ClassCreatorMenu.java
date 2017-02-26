@@ -122,7 +122,7 @@ public class ClassCreatorMenu implements Listener {
 							im.setDisplayName("Class " + classNum);
 						}
 					} else
-						im.setDisplayName(ChatColor.RED + "Donate @ amosita.net for more class slots.");
+						im.setDisplayName(Utils.getFormattedMessage("no-perms-class-slot"));
 					
 					is.setItemMeta(im);
 					inv.setItem(i, is);
@@ -247,7 +247,7 @@ public class ClassCreatorMenu implements Listener {
 				return;
 			} else if (name.equals("Class Info"))
 				return;
-			else if (name.equals(ChatColor.RED + "Donate @ amosita.net for more class slots."))
+			else if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
 				return;
 			
 			CustomClass customClass = new CustomClass();
