@@ -8,9 +8,6 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
-# The server ip to be displayed on the scoreboard
-server-ip: "test ip"
-
 # GUI menu message for no class slot access
 no-perms-class-slot: "&cNo access"
 
@@ -18,25 +15,25 @@ no-perms-class-slot: "&cNo access"
 hotbar-items:
   lobby-items:
     shop:
-      slot: 1
-      title: "&a&lShop &7(Right Click)"
+      slot: 5
+      title: "&a&lShop"
     class-creator:
-      slot: 2
-      title: "&6&lClass Creator &7(Right Click)"
-    class-selector:
       slot: 3
-      title: "&e&lClass Selector &7(Right Click)"
+      title: "&d&lClass Creator"
+    class-selector:
+      slot: 7
+      title: "&b&lSelect Class"
   spectator-items:
     teleporter:
       slot: 1
-      title: "&a&lTeleporter &7(Right Click)"
+      title: "&a&lTeleporter"
     return-to-lobby:
       slot: 9
-      title: "&c&lReturn to Lobby &7(Right Click)"
+      title: "&c&lReturn to Lobby"
   cage-items:
     class-selector:
       slot: 1
-      title: "&e&lClass Selector &7(Right Click)"
+      title: "&e&lClass Selector"
 
 # Kit Descriptions
 description-ARMORER:

@@ -84,7 +84,7 @@ public class ClassCreatorMenu implements Listener {
 		Inventory inv;
 		
 		if (type == Type.MAIN) {
-			inv = Bukkit.createInventory(null, 27, "Class Creator");
+			inv = Bukkit.createInventory(null, 27, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator");
 			int classSlot = 9;
 			
 			for (int i = 0; i < 27; i++) {

@@ -52,7 +52,7 @@ public class ClassSelectorMenu implements Listener {
 
 	public void open(GamePlayer player) {
 
-		Inventory inv = Bukkit.createInventory(null, 27, "Class Selector");
+		Inventory inv = Bukkit.createInventory(null, 27, ChatColor.AQUA + ChatColor.BOLD.toString() + "Select Class");
 		int classSlot = 9;
 		
 		for (int i = 0; i < 10; i++)

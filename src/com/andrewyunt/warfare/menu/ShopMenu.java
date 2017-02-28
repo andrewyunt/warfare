@@ -85,7 +85,7 @@ public class ShopMenu implements Listener {
 		Inventory inv = null;
 		
 		if (type == Type.MAIN) {
-			inv = Bukkit.createInventory(null, 54, "Shop");
+			inv = Bukkit.createInventory(null, 54, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
 			
 			for (int i = 0; i < 9; i++)
 				inv.setItem(i, glassPane);
