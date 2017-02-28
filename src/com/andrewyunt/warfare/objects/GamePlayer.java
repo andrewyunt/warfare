@@ -58,22 +58,8 @@ public class GamePlayer {
 		this.uuid = uuid;
 		
 		// Set up scoreboard
-		dynamicScoreboard = new DynamicScoreboard(ChatColor.YELLOW + "" + ChatColor.BOLD + "Warfare");
+		dynamicScoreboard = new DynamicScoreboard(ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
 		getBukkitPlayer().setScoreboard(dynamicScoreboard.getScoreboard());
-		
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
-			ChatColor curTitleColor = ChatColor.YELLOW;
-			
-			@Override
-			public void run() {
-				ChatColor newTitleColor = curTitleColor == ChatColor.YELLOW ? ChatColor.WHITE : ChatColor.YELLOW;
-				
-				dynamicScoreboard.getObjective().setDisplayName(newTitleColor.toString() + ChatColor.BOLD + "Warfare");
-				
-				curTitleColor = newTitleColor;
-			}
-		}, 0L, 20L);
 		
 		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
 			return;
@@ -372,22 +358,34 @@ public class GamePlayer {
 	public void updateDynamicScoreboard() {
 		
 		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")){
-			dynamicScoreboard.blankLine(9);
+			dynamicScoreboard.update(12, ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString()
+					+ "- - --- ------ --- --   - --");
+			
+			dynamicScoreboard.update(8, ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics"
+					+ ChatColor.GRAY + ChatColor.BOLD.toString() + ":");
 			
 			// Display player's wins
-			dynamicScoreboard.update(8, "Wins: " + ChatColor.GREEN + String.valueOf(wins));
+			dynamicScoreboard.update(7, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Total Wins: "
+					+ ChatColor.GREEN + String.valueOf(wins));
 			
-			// Display player's coins */
-			dynamicScoreboard.update(7, "Coins: " + ChatColor.GREEN + String.valueOf(coins));
+			// Display player's kills
+			dynamicScoreboard.update(6, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Total Kills: "
+					+ ChatColor.GREEN + String.valueOf(kills));
 			
-			// Display player's kills */
-			dynamicScoreboard.update(6, "Kills: " + ChatColor.GREEN + String.valueOf(kills));
+			// Display player's coins
+			dynamicScoreboard.update(5, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Coin Balance: "
+					+ ChatColor.GREEN + String.valueOf(coins));
 			
-			dynamicScoreboard.blankLine(5);
+			dynamicScoreboard.blankLine(4);
 			
 			// Display player's chosen class 
-			dynamicScoreboard.update(4, "Chosen Class:");
-			dynamicScoreboard.update(3, ChatColor.GREEN + (customClass == null ? "None" : customClass.getName()));
+			dynamicScoreboard.update(3, ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Class"
+					+ ChatColor.GRAY + ChatColor.BOLD.toString() + ":");
+			dynamicScoreboard.update(2, ChatColor.GOLD + "  » " + ChatColor.YELLOW + ChatColor.BOLD.toString()
+					+ (customClass == null ? "None" : customClass.getName()));
+			
+			dynamicScoreboard.update(1, ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString()
+					+ "-------------------------");
 		} else {
 			Game game = Warfare.getInstance().getGame();
 			Stage stage = game.getStage();
@@ -429,12 +427,6 @@ public class GamePlayer {
 				dynamicScoreboard.update(3, "Killstreak: " + ChatColor.GREEN + killStreak);
 			}
 		}
-		
-		// Space
-		dynamicScoreboard.blankLine(2);
-		
-		// Display server's IP */
-		dynamicScoreboard.update(1, ChatColor.YELLOW + Warfare.getInstance().getConfig().getString("server-ip"));
 	}
 	
 	public void updateHotbar() {
