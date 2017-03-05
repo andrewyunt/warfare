@@ -66,7 +66,7 @@ public class ClassCreatorMenu implements Listener {
 		}
 	}
 	
-	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	private Map<GamePlayer, CustomClass> creatingClasses = new HashMap<GamePlayer, CustomClass>();
 	private Map<GamePlayer, CustomClass> replacingClasses = new HashMap<GamePlayer, CustomClass>();
 	
@@ -127,26 +127,7 @@ public class ClassCreatorMenu implements Listener {
 					is.setItemMeta(im);
 					inv.setItem(i, is);
 				} else
-					if (i == 4) {
-						ItemStack info = new ItemStack(Material.PAPER, 1);
-						ItemMeta infoMeta = info.getItemMeta();
-						infoMeta.setDisplayName("Class Info");
-						List<String> infoLore = new ArrayList<String>();
-						infoLore.add("a class consists of:");
-						infoLore.add("x1 Kit");
-						infoLore.add("x1 Ultimate");
-						infoLore.add("x2 Skill");
-						infoMeta.setLore(Utils.colorizeList(infoLore, ChatColor.WHITE));
-						info.setItemMeta(infoMeta);
-						inv.setItem(4, info);
-					} else if (i == 22) {
-						ItemStack close = new ItemStack(Material.ARROW, 1);
-						ItemMeta closeMeta = close.getItemMeta();
-						closeMeta.setDisplayName(ChatColor.RED + "Close");
-						close.setItemMeta(closeMeta);
-						inv.setItem(22, close);
-					} else
-						inv.setItem(i, glassPane);
+					inv.setItem(i, glassPane);
 			}
 		} else {
 			inv = Bukkit.createInventory(null, 54, "Class Creator - " + type.getName());
@@ -242,12 +223,7 @@ public class ClassCreatorMenu implements Listener {
 		}
 		
 		if (title.equals("Class Creator")) {
-			if (name.equals(ChatColor.RED + "Close")) {
-				player.closeInventory();
-				return;
-			} else if (name.equals("Class Info"))
-				return;
-			else if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
+			if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
 				return;
 			
 			CustomClass customClass = new CustomClass();

@@ -40,7 +40,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
  */
 public class ClassSelectorMenu implements Listener {
 	
-	private final ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	
 	public ClassSelectorMenu() {
 		
@@ -84,7 +84,7 @@ public class ClassSelectorMenu implements Listener {
 			ItemStack is = new ItemStack(Material.CHEST, 1);
 			ItemMeta im = is.getItemMeta();
 			
-			if (player.getBukkitPlayer().hasPermission("Warfare.classes." + classNum)) {
+			if (player.getBukkitPlayer().hasPermission("warfare.classes." + classNum)) {
 				try {
 					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
 					
@@ -99,12 +99,6 @@ public class ClassSelectorMenu implements Listener {
 			is.setItemMeta(im);
 			inv.setItem(i, is);
 		}
-		
-		ItemStack close = new ItemStack(Material.ARROW, 1);
-		ItemMeta closeMeta = close.getItemMeta();
-		closeMeta.setDisplayName(ChatColor.RED + "Close");
-		close.setItemMeta(closeMeta);
-		inv.setItem(22, close);
 
 		player.getBukkitPlayer().openInventory(inv);
 	}
@@ -122,13 +116,12 @@ public class ClassSelectorMenu implements Listener {
 		if (title == null)
 			return;
 		
-		if (!title.equals("Class Selector"))
+		if (!title.equals(ChatColor.AQUA + ChatColor.BOLD.toString() + "Select Class"))
 			return;
 		
 		event.setCancelled(true);
 
 		Player player = (Player) event.getWhoClicked();
-		
 		ItemStack is = event.getCurrentItem();
 		
 		if (is.getType() == Material.THIN_GLASS)
@@ -144,11 +137,6 @@ public class ClassSelectorMenu implements Listener {
 
 		if (name == null || name.equals(" "))
 			return;
-
-		if (name.equals(ChatColor.RED + "Close")) {
-			player.closeInventory();
-			return;
-		}
 		
 		GamePlayer gp = null;
 		

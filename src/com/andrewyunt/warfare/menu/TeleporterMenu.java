@@ -18,7 +18,6 @@ package com.andrewyunt.warfare.menu;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +33,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 
 public class TeleporterMenu implements Listener {
 	
-	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	
 	public TeleporterMenu() {
 		
@@ -58,12 +57,6 @@ public class TeleporterMenu implements Listener {
 		
 		for (int i = 45; i < 54; i++)
 			inv.setItem(i, glassPane);
-		
-		ItemStack goBack = new ItemStack(Material.ARROW, 1);
-		ItemMeta goBackMeta = goBack.getItemMeta();
-		goBackMeta.setDisplayName(ChatColor.RED + "Close");
-		goBack.setItemMeta(goBackMeta);
-		inv.setItem(49, goBack);
 		
 		List<ItemStack> toAdd = new ArrayList<ItemStack>();
 		
@@ -127,11 +120,6 @@ public class TeleporterMenu implements Listener {
 		
 		if (name == null)
 			return;
-		
-		if (name.equals(ChatColor.RED + "Close")) {
-			player.closeInventory();
-			return;
-		}
 		
 		event.getWhoClicked().teleport(Bukkit.getPlayer(name));
 	}

@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare.menu;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ShopMenu implements Listener {
 		HEALTH_BOOSTS
 	}
 	
-	private ItemStack glassPane = new ItemStack(Material.THIN_GLASS, 1);
+	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	private ItemStack kits = new ItemStack(Material.IRON_SWORD, 1);
 	private ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
 	private ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
@@ -85,29 +86,12 @@ public class ShopMenu implements Listener {
 		Inventory inv = null;
 		
 		if (type == Type.MAIN) {
-			inv = Bukkit.createInventory(null, 54, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
+			inv = Bukkit.createInventory(null, 27, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
 			
-			for (int i = 0; i < 9; i++)
-				inv.setItem(i, glassPane);
-			
-			for (int i = 9; i < 45; i = i + 9) {
-				inv.setItem(i, glassPane);
-				inv.setItem(i + 8, glassPane);
-			}
-			
-			for (int i = 45; i < 54; i++)
-				inv.setItem(i, glassPane);
-			
-			inv.setItem(21, kits);
-			inv.setItem(22, ultimates);
-			inv.setItem(23, skills);
-			inv.setItem(31, healthBoosts);
-			
-			ItemStack close = new ItemStack(Material.ARROW, 1);
-			ItemMeta closeMeta = close.getItemMeta();
-			closeMeta.setDisplayName(ChatColor.RED + "Close");
-			close.setItemMeta(closeMeta);
-			inv.setItem(49, close);
+			inv.setItem(12, kits);
+			inv.setItem(13, ultimates);
+			inv.setItem(14, skills);
+			inv.setItem(22, healthBoosts);
 		} else {
 			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.KITS ? "Kits" : type == Type.ULTIMATES
 					? "Ultimates" : type == Type.SKILLS ? "Skills" : "Health Boosts"));
@@ -145,12 +129,14 @@ public class ShopMenu implements Listener {
 					is.removeEnchantment(enchantment);
 				
 				ItemMeta im = is.getItemMeta();
-				im.setDisplayName(ChatColor.AQUA + purchasable.getName());
+				im.setDisplayName(ChatColor.GOLD + purchasable.getName());
 				List<String> lore = Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
 						"description-" + purchasable.toString()), ChatColor.WHITE);
 				lore.add("");
-				lore.add(ChatColor.GOLD + (player.getPurchases().contains(purchasable) ?
-						"Purchased" : "Price: " + purchasable.getPrice()));
+				NumberFormat numberFormat = NumberFormat.getInstance();
+				numberFormat.setGroupingUsed(true);
+				lore.add(ChatColor.GREEN + (player.getPurchases().contains(purchasable) ?
+						"Purchased" : "Price: $" + numberFormat.format(purchasable.getPrice())));
 				im.setLore(lore);
 				is.setItemMeta(im);
 				
@@ -205,8 +191,6 @@ public class ShopMenu implements Listener {
 				open(Type.SKILLS, gp);
 			else if (name.equals(ChatColor.AQUA + "Health Boosts"))
 				open(Type.HEALTH_BOOSTS, gp);
-			else if (name.equals(ChatColor.RED + "Close"))
-				player.closeInventory();
 		} else {
 			if (name.equals(ChatColor.RED + "Go Back")) {
 				open(Type.MAIN, gp);
@@ -218,6 +202,9 @@ public class ShopMenu implements Listener {
 			
 			if (name.equals(ChatColor.AQUA + "Kits") || name.equals(ChatColor.AQUA + "Ultimtes") || name.equals(" ")
 					|| name.equals(ChatColor.AQUA + "Skills") || name.equals(ChatColor.AQUA + "Health Boosts"))
+				return;
+			
+			if (im.hasLore())
 				return;
 			
 			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {
