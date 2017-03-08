@@ -87,7 +87,7 @@ public enum Kit implements Purchasable {
 			boots.addEnchantment(Enchantment.PROTECTION_FALL, 3);
 			return boots;
 		} else if (this == HEALER) {
-			ItemStack healItem = new ItemStack(Material.POTION, 2);
+			ItemStack healItem = new ItemStack(Material.POTION, 1);
 			Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
 			healPotion.setSplash(true);
 			healPotion.apply(healItem);
@@ -97,7 +97,7 @@ public enum Kit implements Purchasable {
 		} else if (this == FISHERMAN) {
 			return new ItemStack(Material.FISHING_ROD, 1);
 		} else if (this == SCOUT) {
-			ItemStack speedItem = new ItemStack(Material.POTION, 3);
+			ItemStack speedItem = new ItemStack(Material.POTION, 1);
 			Potion frPotion = new Potion(PotionType.SPEED, 2);
 			frPotion.setSplash(true);
 			frPotion.apply(speedItem);
