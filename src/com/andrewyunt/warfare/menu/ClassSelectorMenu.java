@@ -58,7 +58,10 @@ public class ClassSelectorMenu implements Listener {
 		for (int i = 0; i < 10; i++)
 			inv.setItem(i, glassPane);
 		
-		for (int i = 17; i < 27; i++)
+		for (int i = 18; i < 27; i++)
+			inv.setItem(i, glassPane);
+		
+		for (int i = 10; i < 18; i = i + 2)
 			inv.setItem(i, glassPane);
 		
 		for (int i = 9; i < 18; i = i + 2) {
@@ -81,25 +84,20 @@ public class ClassSelectorMenu implements Listener {
 				classNum = 5;
 			}
 			
-			ItemStack is = new ItemStack(Material.CHEST, 1);
-			ItemMeta im = is.getItemMeta();
-			
 			if (player.getBukkitPlayer().hasPermission("warfare.classes." + classNum)) {
 				try {
 					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
-					
+					ItemStack is = customClass.getKit().getDisplayItem();
+					ItemMeta im = is.getItemMeta();
 					im.setDisplayName(customClass.getName());
-					
-					is = customClass.getKit().getDisplayItem();
+					is.setItemMeta(im);
+					inv.setItem(i, is);
 				} catch (IndexOutOfBoundsException e) {
-					// do nothing
+					inv.setItem(i, glassPane);
 				}
 			}
-			
-			is.setItemMeta(im);
-			inv.setItem(i, is);
 		}
-
+		
 		player.getBukkitPlayer().openInventory(inv);
 	}
 
@@ -124,7 +122,7 @@ public class ClassSelectorMenu implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack is = event.getCurrentItem();
 		
-		if (is.getType() == Material.THIN_GLASS)
+		if (is.getType() == Material.STAINED_GLASS_PANE)
 			return;
 		
 		if(is == null || is.getType() == Material.AIR)

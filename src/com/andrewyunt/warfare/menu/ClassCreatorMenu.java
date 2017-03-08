@@ -130,7 +130,7 @@ public class ClassCreatorMenu implements Listener {
 					inv.setItem(i, glassPane);
 			}
 		} else {
-			inv = Bukkit.createInventory(null, 54, "Class Creator - " + type.getName());
+			inv = Bukkit.createInventory(null, 54, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator - " + type.getName());
 			
 			for (int i = 0; i < 9; i++)
 				inv.setItem(i, glassPane);
@@ -181,7 +181,7 @@ public class ClassCreatorMenu implements Listener {
 					displayItem.removeEnchantment(enchantment);
 				
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
-				displayItemMeta.setDisplayName(ChatColor.AQUA + purchase.getName());
+				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
 				displayItemMeta.setLore(Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
 						"description-" + purchase.toString()), ChatColor.WHITE));
 				displayItem.setItemMeta(displayItemMeta);
@@ -198,14 +198,14 @@ public class ClassCreatorMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains("Class Creator"))
+		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator"))
 			return;
 		
 		event.setCancelled(true);
 		
 		ItemStack is = event.getCurrentItem();
 		
-		if (is.getType() == Material.THIN_GLASS)
+		if (is.getType() == Material.STAINED_GLASS_PANE)
 			return;
 		
 		if (!is.hasItemMeta())
@@ -222,7 +222,7 @@ public class ClassCreatorMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (title.equals("Class Creator")) {
+		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator")) {
 			if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
 				return;
 			

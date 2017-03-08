@@ -67,10 +67,10 @@ public class ShopMenu implements Listener {
 		ItemMeta healthBoostsMeta = healthBoosts.getItemMeta();
 		
 		glassPaneMeta.setDisplayName(" ");
-		kitsMeta.setDisplayName(ChatColor.AQUA + "Kits");
-		ultimatesMeta.setDisplayName(ChatColor.AQUA + "Ultimates");
-		skillsMeta.setDisplayName(ChatColor.AQUA + "Skills");
-		healthBoostsMeta.setDisplayName(ChatColor.AQUA + "Health Boosts");
+		kitsMeta.setDisplayName(ChatColor.GOLD + "Kits");
+		ultimatesMeta.setDisplayName(ChatColor.GOLD + "Ultimates");
+		skillsMeta.setDisplayName(ChatColor.GOLD + "Skills");
+		healthBoostsMeta.setDisplayName(ChatColor.GOLD + "Health Boosts");
 		
 		glassPaneMeta.setLore(new ArrayList<String>());
 		
@@ -88,10 +88,19 @@ public class ShopMenu implements Listener {
 		if (type == Type.MAIN) {
 			inv = Bukkit.createInventory(null, 27, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
 			
-			inv.setItem(12, kits);
-			inv.setItem(13, ultimates);
+			for (int i = 0; i < 10; i++)
+				inv.setItem(i, glassPane);
+			
+			inv.setItem(10, kits);
+			inv.setItem(11, glassPane);
+			inv.setItem(12, ultimates);
+			inv.setItem(13, glassPane);
 			inv.setItem(14, skills);
-			inv.setItem(22, healthBoosts);
+			inv.setItem(15, glassPane);
+			inv.setItem(16, healthBoosts);
+			
+			for (int i = 17; i < 27; i++)
+				inv.setItem(i, glassPane);
 		} else {
 			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.KITS ? "Kits" : type == Type.ULTIMATES
 					? "Ultimates" : type == Type.SKILLS ? "Skills" : "Health Boosts"));
@@ -182,14 +191,14 @@ public class ShopMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (title.equals("Shop")) {
-			if (name.equals(ChatColor.AQUA + "Kits"))
+		if (title.equals(ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop")) {
+			if (name.equals(ChatColor.GOLD + "Kits"))
 				open(Type.KITS, gp);
-			else if (name.equals(ChatColor.AQUA + "Ultimates"))
+			else if (name.equals(ChatColor.GOLD + "Ultimates"))
 				open(Type.ULTIMATES, gp);
-			else if (name.equals(ChatColor.AQUA + "Skills"))
+			else if (name.equals(ChatColor.GOLD + "Skills"))
 				open(Type.SKILLS, gp);
-			else if (name.equals(ChatColor.AQUA + "Health Boosts"))
+			else if (name.equals(ChatColor.GOLD + "Health Boosts"))
 				open(Type.HEALTH_BOOSTS, gp);
 		} else {
 			if (name.equals(ChatColor.RED + "Go Back")) {
@@ -200,11 +209,11 @@ public class ShopMenu implements Listener {
 			if (name.equals(" "))
 				return;
 			
-			if (name.equals(ChatColor.AQUA + "Kits") || name.equals(ChatColor.AQUA + "Ultimtes") || name.equals(" ")
-					|| name.equals(ChatColor.AQUA + "Skills") || name.equals(ChatColor.AQUA + "Health Boosts"))
+			if (name.equals(ChatColor.GOLD + "Kits") || name.equals(ChatColor.GOLD + "Ultimtes") || name.equals(" ")
+					|| name.equals(ChatColor.GOLD + "Skills") || name.equals(ChatColor.GOLD + "Health Boosts"))
 				return;
 			
-			if (im.hasLore())
+			if (!im.hasLore())
 				return;
 			
 			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {

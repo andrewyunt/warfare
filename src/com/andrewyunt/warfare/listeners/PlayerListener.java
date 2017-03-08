@@ -81,6 +81,18 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		GamePlayer gp = null;
 		
+		// Send welcome message
+		player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+			+ "-----------------------------------------------------");
+		player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD
+				+ ChatColor.BOLD.toString() + "Warfare");
+		player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: "
+				+ ChatColor.GRAY + "ts.faithfulmc.com");
+		player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: "
+				+ ChatColor.GRAY + "www.faithfulmc.com");
+		player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+			+ "-----------------------------------------------------");
+		
 		// Create the player's GamePlayer object
 		try {
 			gp = Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
