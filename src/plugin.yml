@@ -2,5 +2,5 @@ name: Warfare
 main: com.andrewyunt.warfare.Warfare
 version: 1.0
 commands:
-  SW:
+  warfare:
     description: The management command for Warfare.

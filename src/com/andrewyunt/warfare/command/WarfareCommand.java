@@ -41,27 +41,27 @@ import com.andrewyunt.warfare.objects.LootChest;
  * 
  * @author Andrew Yunt
  */
-public class SWCommand implements CommandExecutor {
+public class WarfareCommand implements CommandExecutor {
 	
 	private static final List<String> help = new ArrayList<String>();
 
 	static {
 		help.add(ChatColor.DARK_GRAY + "=" + ChatColor.GRAY + "------------" + ChatColor.DARK_GRAY + "[ " + ChatColor.GOLD + 
 				"Warfare Help" + ChatColor.DARK_GRAY + " ]" + ChatColor.GRAY + "------------" + ChatColor.DARK_GRAY + "=");
-		help.add(ChatColor.GOLD + "/sw edit");
-		help.add(ChatColor.GOLD + "/sw addcage " + "[name]");
-		help.add(ChatColor.GOLD + "/sw removecage " + "[name]");
+		help.add(ChatColor.GOLD + "/warfare edit");
+		help.add(ChatColor.GOLD + "/warfare addcage " + "[name]");
+		help.add(ChatColor.GOLD + "/warfare removecage " + "[name]");
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		if (!cmd.getName().equalsIgnoreCase("sw"))
+		if (!cmd.getName().equalsIgnoreCase("warfare"))
 			return false;
 		
 		if (!(args.length > 0)) {
 			
-			if (!sender.hasPermission("Warfare.help")) {
+			if (!sender.hasPermission("warfare.help")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
@@ -70,43 +70,6 @@ public class SWCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
 			
 			return false;
-		}
-	
-		if (args[0].equalsIgnoreCase("addcoins")) {
-			
-			if (sender instanceof Player) {
-				System.out.println("You may only execute that command from the console.");
-				return false;
-			}
-			
-			if (!(args.length >= 3)) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw addcoins [player] [amount]");
-				return false;
-			}
-			
-			Player coinsPlayer = Bukkit.getServer().getPlayer(args[1]);
-			GamePlayer coinsGP = null;
-			
-			try {
-				coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
-			} catch (PlayerException e) {
-			}
-			
-			int coins = 0;
-			
-			try {
-				coins = Integer.valueOf(args[2]);
-			} catch (NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw addcoins [player] [amount]");
-				return false;
-			}
-			
-			coinsGP.setCoins(coinsGP.getCoins() + coins);
-			coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("You received %s coins from %s.", 
-					String.valueOf(coins),
-					sender.getName()));
-			
-			return true;
 		}
 		
 		if (!(sender instanceof Player)) {
@@ -118,7 +81,7 @@ public class SWCommand implements CommandExecutor {
 		
 		if (args[0].equalsIgnoreCase("help")) {
 			
-			if (!sender.hasPermission("Warfare.help")) {
+			if (!sender.hasPermission("warfare.help")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
@@ -130,13 +93,13 @@ public class SWCommand implements CommandExecutor {
 		
 		} else if (args[0].equalsIgnoreCase("addcage")) {
 			
-			if (!sender.hasPermission("Warfare.addcage")) {
+			if (!sender.hasPermission("warfare.addcage")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw addcage [name]");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare addcage [name]");
 				return false;
 			}
 			
@@ -144,7 +107,7 @@ public class SWCommand implements CommandExecutor {
 			
 			if (!arena.isEdit()) {
 				sender.sendMessage(ChatColor.RED + "You must set the map to edit mode before using that command");
-				sender.sendMessage(ChatColor.RED + "Usage: /sw edit");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare edit");
 				return false;
 			}
 			
@@ -166,15 +129,81 @@ public class SWCommand implements CommandExecutor {
 							String.valueOf(loc.getZ()),
 							loc.getWorld().getName())));
 		
+		} else if (args[0].equalsIgnoreCase("addcoins")) {
+			
+			if (!(args.length >= 3)) {
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare addcoins [player] [amount]");
+				return false;
+			}
+			
+			Player coinsPlayer = Bukkit.getServer().getPlayer(args[1]);
+			GamePlayer coinsGP = null;
+			
+			try {
+				coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
+			} catch (PlayerException e) {
+			}
+			
+			int coins = 0;
+			
+			try {
+				coins = Integer.valueOf(args[2]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare addcoins [player] [amount]");
+				return false;
+			}
+			
+			coinsGP.setCoins(coinsGP.getCoins() + coins);
+			
+			coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("You received %s coins from %s.", 
+					String.valueOf(coins),
+					((Player) sender).getDisplayName()));
+			sender.sendMessage(ChatColor.GOLD + String.format("You gave %s coins to %s.", 
+					String.valueOf(coins),
+					coinsGP.getBukkitPlayer().getDisplayName()));
+			
+		} else if (args[0].equalsIgnoreCase("removecoins")) {
+			
+			if (!(args.length >= 3)) {
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare removecoins [player] [amount]");
+				return false;
+			}
+			
+			Player coinsPlayer = Bukkit.getServer().getPlayer(args[1]);
+			GamePlayer coinsGP = null;
+			
+			try {
+				coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
+			} catch (PlayerException e) {
+			}
+			
+			int coins = 0;
+			
+			try {
+				coins = Integer.valueOf(args[2]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare removecoins [player] [amount]");
+				return false;
+			}
+			
+			coinsGP.setCoins(coinsGP.getCoins() - coins);
+			
+			coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("%s took away %s of your coins.",
+					((Player) sender).getDisplayName(),
+					String.valueOf(coins)));
+			sender.sendMessage(ChatColor.GOLD + String.format("You took %s coins from %s.", 
+					String.valueOf(coins),
+					coinsGP.getBukkitPlayer().getDisplayName()));
+			
 		} else if (args[0].equalsIgnoreCase("removecage")) {
 			
-			if (!sender.hasPermission("Warfare.removecage")) {
+			if (!sender.hasPermission("warfare.removecage")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw removecage [name]");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare removecage [name]");
 				return false;
 			}
 			
@@ -182,7 +211,7 @@ public class SWCommand implements CommandExecutor {
 			
 			if (!arena.isEdit()) {
 				sender.sendMessage(ChatColor.RED + "You must set the map to edit mode before using that command");
-				sender.sendMessage(ChatColor.RED + "Usage: /sw edit");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare edit");
 				return false;
 			}
 			
@@ -198,13 +227,13 @@ public class SWCommand implements CommandExecutor {
 
 		} else if (args[0].equalsIgnoreCase("addchest")) {
 			
-			if (!sender.hasPermission("Warfare.addchest")) {
+			if (!sender.hasPermission("warfare.addchest")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
 			
 			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw addchest [tier]");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
 				return false;
 			}
 			
@@ -235,14 +264,14 @@ public class SWCommand implements CommandExecutor {
 				
 				sender.sendMessage(ChatColor.GOLD + "Loot chest has been added successfully.");
 			} catch (NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + "Usage: /sw addchest [tier]");
+				sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
 			}
 			
 			arena.save();
 			
 		} else if (args[0].equalsIgnoreCase("edit")) {
 			
-			if (!sender.hasPermission("Warfare.edit")) {
+			if (!sender.hasPermission("warfare.edit")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
@@ -274,7 +303,7 @@ public class SWCommand implements CommandExecutor {
 			
 		} else if (args[0].equalsIgnoreCase("start")) {
 			
-			if (!sender.hasPermission("Warfare.start")) {
+			if (!sender.hasPermission("warfare.start")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}
@@ -285,7 +314,7 @@ public class SWCommand implements CommandExecutor {
 			
 		} else if (args[0].equalsIgnoreCase("restart")) {
 			
-			if (!sender.hasPermission("Warfare.restart")) {
+			if (!sender.hasPermission("warfare.restart")) {
 				sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
 				return false;
 			}

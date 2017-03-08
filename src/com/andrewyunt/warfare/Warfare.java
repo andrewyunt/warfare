@@ -21,7 +21,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import com.andrewyunt.warfare.command.SWCommand;
+import com.andrewyunt.warfare.command.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.db.DataSource;
@@ -105,7 +105,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		
-		getCommand("sw").setExecutor(new SWCommand());
+		getCommand("warfare").setExecutor(new WarfareCommand());
 	}
 	
 	@Override
