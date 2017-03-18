@@ -26,6 +26,7 @@ import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.db.DataSource;
 import com.andrewyunt.warfare.db.MySQLSource;
+import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.listeners.EntityListener;
 import com.andrewyunt.warfare.listeners.PlayerListener;
 import com.andrewyunt.warfare.listeners.PlayerSkillListener;
@@ -79,6 +80,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		
 		dataSource.updateDB();
 		
+		for (Player player : getServer().getOnlinePlayers())
+			try {
+				Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
+			} catch (PlayerException e) {
+				e.printStackTrace();
+			}
+		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(new PlayerListener(), this);
 		
@@ -106,6 +114,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
+	}
+	
+	@Override
+	public void onDisable() {
+		
+		for (GamePlayer player : playerManager.getPlayers())
+			dataSource.savePlayer(player);
 	}
 	
 	@Override
