@@ -48,7 +48,6 @@ public enum Ultimate implements Purchasable {
 	HEAL("Heal", 0, 4),
 	WRATH("Wrath", 20000, 6),
 	HELLS_SPAWNING("Hell's Spawning", 40000, 2),
-	LEAP("Leap", 50000, 4),
 	SONIC("Sonic", 25000, 3),
 	WITHERING("Withering", 20000, 5),
 	FLAMING_FEET("Flaming Feet", 50000, 4);
@@ -100,8 +99,6 @@ public enum Ultimate implements Purchasable {
 			return new ItemStack(Material.DIAMOND_SWORD, 1);
 		} else if (this == HELLS_SPAWNING) {
 			return new ItemStack(Material.FIREBALL, 1);
-		} else if (this == LEAP) {
-			return new ItemStack(Material.FISHING_ROD, 1);
 		} else if (this == SONIC) {
 			return new ItemStack(Material.FEATHER, 1);
 		} else if (this == WITHERING) {
@@ -184,10 +181,6 @@ public enum Ultimate implements Purchasable {
 						ghast.teleport(bp.getLocation().add(new Location(bp.getLocation().getWorld(), 0, 10, 0)));
 				}
 			}, 0L, 200L);
-		
-		} else if (this == LEAP) {
-			
-			return;
 		
 		} else if (this == SONIC) {
 			

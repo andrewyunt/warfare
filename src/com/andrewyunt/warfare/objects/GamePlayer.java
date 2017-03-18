@@ -149,13 +149,7 @@ public class GamePlayer {
 		if (this.energy == 100) {
 			if (!sentActivate) {
 				sentActivate = true;
-				
-				if (customClass.getUltimate() == Ultimate.LEAP) {
-					getBukkitPlayer().setAllowFlight(true);
-					
-					player.sendMessage(ChatColor.GOLD + "Double jump to activate your ultimate!");
-				} else
-					player.sendMessage(ChatColor.GOLD + "Right click using your sword to activate your ultimate!");
+				player.sendMessage(ChatColor.GOLD + "Right click using your sword to activate your ultimate!");
 			}
 		}
 		
