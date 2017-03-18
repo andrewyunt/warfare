@@ -44,6 +44,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -180,7 +181,23 @@ public class PlayerListener implements Listener {
 		if (item == null || !item.hasItemMeta())
 			return;
 		
-		Player player = event.getPlayer();
+		handleHotbarClick(event.getPlayer(), item.getItemMeta().getDisplayName());
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		ItemStack item = event.getCurrentItem();
+		
+		if (item == null || !item.hasItemMeta())
+			return;
+		
+		if (handleHotbarClick((Player) event.getWhoClicked(), item.getItemMeta().getDisplayName()))
+			event.setCancelled(true);
+	}
+	
+	private boolean handleHotbarClick(Player player, String itemName) {
+		
 		GamePlayer gp = null;
 		
 		try {
@@ -189,24 +206,31 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		String name = item.getItemMeta().getDisplayName();
-		
 		if (Warfare.getInstance().getConfig().getBoolean("is-lobby") || gp.isCaged()) {
-			if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title")))
+			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"))) {
 				Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
-			else if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title")))
+				return true;
+			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title"))) {
 				Warfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
-			else if (name.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title")))
+				return true;
+			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"))) {
 				Warfare.getInstance().getClassSelectorMenu().open(gp);
+				return true;
+			}
 		} else if (gp.isSpectating()) {
-			if (name.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"))) {
+			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"))) {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("Connect");
 				out.writeUTF(Warfare.getInstance().getConfig().getString("lobby-server"));
 				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
-			} else if (name.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title")))
+				return true;
+			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"))) {
 				Warfare.getInstance().getTeleporterMenu().open(gp);
+				return true;
+			}
 		}
+		
+		return false;
 	}
 	
 	@EventHandler (priority = EventPriority.LOWEST)
