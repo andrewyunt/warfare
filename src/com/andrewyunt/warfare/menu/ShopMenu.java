@@ -140,7 +140,7 @@ public class ShopMenu implements Listener {
 				ItemMeta im = is.getItemMeta();
 				im.setDisplayName(ChatColor.GOLD + purchasable.getName());
 				List<String> lore = Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
-						"description-" + purchasable.toString()), ChatColor.WHITE);
+						"description-" + purchasable.toString()), ChatColor.YELLOW);
 				lore.add("");
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setGroupingUsed(true);

@@ -111,15 +111,17 @@ public class ClassCreatorMenu implements Listener {
 					ItemStack is = new ItemStack(Material.CHEST, 1);
 					ItemMeta im = is.getItemMeta();
 					
-					if (bp.hasPermission("Warfare.classes." + classNum)) {
+					if (bp.hasPermission("warfare.classes." + classNum)) {
 						try {
 							customClass = player.getCustomClasses().get(classNum - 1);
 							
-							im.setDisplayName(customClass.getName());
-							
+							im.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Class:");
+							List<String> lore = new ArrayList<String>();
+							lore.add(ChatColor.YELLOW + customClass.getName());
+							im.setLore(lore);
 							is = customClass.getKit().getDisplayItem();
 						} catch (IndexOutOfBoundsException e) {
-							im.setDisplayName("Class " + classNum);
+							im.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Create Class " + classNum);
 						}
 					} else
 						im.setDisplayName(Utils.getFormattedMessage("no-perms-class-slot"));
@@ -183,7 +185,7 @@ public class ClassCreatorMenu implements Listener {
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
 				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
 				displayItemMeta.setLore(Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
-						"description-" + purchase.toString()), ChatColor.WHITE));
+						"description-" + purchase.toString()), ChatColor.YELLOW));
 				displayItem.setItemMeta(displayItemMeta);
 				
 				inv.setItem(i, displayItem);

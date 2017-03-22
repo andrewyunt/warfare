@@ -8,7 +8,7 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
-# GUI menu message for no class slot access
+# GUI menu message for no class slot permission
 no-perms-class-slot: "&cNo access"
 
 # The slots and titles for hotbar items

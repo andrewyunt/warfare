@@ -16,6 +16,7 @@
 package com.andrewyunt.warfare.menu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,16 +86,26 @@ public class ClassSelectorMenu implements Listener {
 			}
 			
 			if (player.getBukkitPlayer().hasPermission("warfare.classes." + classNum)) {
+				ItemStack is = null;
+				ItemMeta im = null;
 				try {
 					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
-					ItemStack is = customClass.getKit().getDisplayItem();
-					ItemMeta im = is.getItemMeta();
-					im.setDisplayName(customClass.getName());
+					is = customClass.getKit().getDisplayItem();
+					im = is.getItemMeta();
+					im.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Class:");
+					List<String> lore = new ArrayList<String>();
+					lore.add(ChatColor.YELLOW + customClass.getName());
+					im.setLore(lore);
 					is.setItemMeta(im);
-					inv.setItem(i, is);
 				} catch (IndexOutOfBoundsException e) {
-					inv.setItem(i, glassPane);
+					is = new ItemStack(Material.CHEST);
+					im = is.getItemMeta();
+					im.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Empty " + classNum);
+					is.setItemMeta(im);
 				}
+				
+				is.setItemMeta(im);
+				inv.setItem(i, is);
 			}
 		}
 		
@@ -135,6 +146,9 @@ public class ClassSelectorMenu implements Listener {
 
 		if (name == null || name.equals(" "))
 			return;
+			
+		if (name.contains(ChatColor.RED + ChatColor.BOLD.toString() + "Empty "))
+			return;
 		
 		GamePlayer gp = null;
 		
@@ -144,9 +158,10 @@ public class ClassSelectorMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		gp.setCustomClass(gp.getCustomClass(name));
+		String className = ChatColor.stripColor(is.getItemMeta().getLore().get(0));
 		
-		player.sendMessage(ChatColor.GOLD +  String.format("You selected the %s class.", name));
+		gp.setCustomClass(gp.getCustomClass(className));
+		player.sendMessage(ChatColor.GOLD +  String.format("You selected the %s class.", className));
 		
 		player.closeInventory();
 	}
