@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * The enumeration for abilities, their names, and the method to use them.
+ * The enumeration for skills and their names.
  * 
  * @author Andrew Yunt
  */

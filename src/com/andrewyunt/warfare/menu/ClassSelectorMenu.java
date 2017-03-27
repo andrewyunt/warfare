@@ -46,7 +46,7 @@ public class ClassSelectorMenu implements Listener {
 		
 		KIT("Kit"),
 		ULTIMATE("Ultimate"),
-		SKILL("Skill One");
+		SKILL("Skill");
 		
 		private String name;
 		
@@ -76,7 +76,7 @@ public class ClassSelectorMenu implements Listener {
 		Player bp = player.getBukkitPlayer();
 		Inventory inv;
 		
-		inv = Bukkit.createInventory(null, 54, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator - " + type.getName());
+		inv = Bukkit.createInventory(null, 54, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector - " + type.getName());
 		
 		for (int i = 0; i < 9; i++)
 			inv.setItem(i, glassPane);
@@ -159,7 +159,7 @@ public class ClassSelectorMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator"))
+		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector"))
 			return;
 		
 		event.setCancelled(true);
@@ -183,7 +183,7 @@ public class ClassSelectorMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator")) {
+		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
 			if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
 				return;
 			
