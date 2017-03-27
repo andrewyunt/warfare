@@ -192,9 +192,7 @@ public class Game {
 			bp.getInventory().clear();
 			
 			// Give player kit items
-			CustomClass customClass = player.getCustomClass();
-			Kit kit = customClass.getKit();
-			kit.giveItems(player);
+			player.getSelectedKit().giveItems(player);
 			
 			// Close player's inventory to keep them from using the class selector in-game
 			bp.closeInventory();
@@ -305,7 +303,7 @@ public class Game {
 		} else if (stage == Stage.RESTART) {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-				Warfare.getInstance().getDataSource().savePlayer(player);
+				Warfare.getInstance().getMySQLManager().savePlayer(player);
 				
 				if (Warfare.getInstance().getArena().isEdit())
 					if (player.getBukkitPlayer().hasPermission("Warfare.edit"))

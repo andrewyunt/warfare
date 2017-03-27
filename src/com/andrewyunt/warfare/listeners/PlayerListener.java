@@ -22,7 +22,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -62,12 +61,11 @@ import org.bukkit.scheduler.BukkitScheduler;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.menu.ClassCreatorMenu;
+import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.Game.Stage;
 import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.objects.SignDisplay.Type;
 import com.andrewyunt.warfare.utilities.Utils;
@@ -210,11 +208,8 @@ public class PlayerListener implements Listener {
 			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"))) {
 				Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 				return true;
-			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title"))) {
-				Warfare.getInstance().getClassCreatorMenu().open(ClassCreatorMenu.Type.MAIN, gp, null);
-				return true;
 			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"))) {
-				Warfare.getInstance().getClassSelectorMenu().open(gp);
+				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
 				return true;
 			}
 		} else if (gp.isSpectating()) {
@@ -239,15 +234,6 @@ public class PlayerListener implements Listener {
 		Entity damager = event.getDamager();
 		Entity damaged = event.getEntity();
 		
-		boolean isArrow = false;
-		
-		if (damager instanceof Projectile) {
-			damager = (Player) ((Projectile) damager).getShooter();
-			
-			if (damager instanceof Arrow)
-				isArrow = true;
-		}
-		
 		if (!(damager instanceof Player) || !(damaged instanceof Player))
 			return;
 		
@@ -259,11 +245,6 @@ public class PlayerListener implements Listener {
 			damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
 		} catch (PlayerException e) {
 			e.printStackTrace();
-		}
-		
-		if (isArrow && damagerGP.getCustomClass().getKit() == Kit.BOOSTER) {
-			event.setCancelled(true);
-			return;
 		}
 		
 		if (!damagerGP.isInGame() || !damagedGP.isInGame())

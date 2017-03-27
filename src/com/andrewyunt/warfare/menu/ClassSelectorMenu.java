@@ -17,10 +17,10 @@ package com.andrewyunt.warfare.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,128 +28,153 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.exception.PlayerException;
-import com.andrewyunt.warfare.objects.CustomClass;
 import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.objects.Kit;
+import com.andrewyunt.warfare.objects.Purchasable;
+import com.andrewyunt.warfare.objects.Skill;
+import com.andrewyunt.warfare.objects.Ultimate;
+import com.andrewyunt.warfare.utilities.Utils;
 
-/**
- * The class used to create instances of the class selector menu.
- * 
- * @author Andrew Yunt
- */
 public class ClassSelectorMenu implements Listener {
+	
+	public enum Type {
+		
+		KIT("Kit"),
+		ULTIMATE("Ultimate"),
+		SKILL("Skill One");
+		
+		private String name;
+		
+		Type(String name) {
+			
+			this.name = name;
+		}
+		
+		public String getName() {
+			
+			return name;
+		}
+	}
 	
 	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	
 	public ClassSelectorMenu() {
 		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
-		glassPaneMeta.setDisplayName("  ");
+		glassPaneMeta.setDisplayName(" ");
 		glassPaneMeta.setLore(new ArrayList<String>());
 		glassPane.setItemMeta(glassPaneMeta);
 	}
-
-	public void open(GamePlayer player) {
-
-		Inventory inv = Bukkit.createInventory(null, 27, ChatColor.AQUA + ChatColor.BOLD.toString() + "Select Class");
-		int classSlot = 9;
+	
+	public void open(Type type, GamePlayer player) {
 		
-		for (int i = 0; i < 10; i++)
+		Player bp = player.getBukkitPlayer();
+		Inventory inv;
+		
+		inv = Bukkit.createInventory(null, 54, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator - " + type.getName());
+		
+		for (int i = 0; i < 9; i++)
 			inv.setItem(i, glassPane);
 		
-		for (int i = 18; i < 27; i++)
+		for (int i = 9; i < 45; i = i + 9) {
+			inv.setItem(i, glassPane);
+			inv.setItem(i + 8, glassPane);
+		}
+		
+		for (int i = 45; i < 54; i++)
 			inv.setItem(i, glassPane);
 		
-		for (int i = 10; i < 18; i = i + 2)
-			inv.setItem(i, glassPane);
+		List<Purchasable> toAdd = new ArrayList<Purchasable>();
 		
-		for (int i = 9; i < 18; i = i + 2) {
-			if (i < 16)
-				classSlot = classSlot + 2;
+		
+		if (type == Type.KIT) {
+			ItemStack uhc = new ItemStack(new ItemStack(Material.GOLDEN_APPLE));
+			ItemMeta uhcMeta = uhc.getItemMeta();
+			uhcMeta.setDisplayName(ChatColor.GOLD + "UHC");
+			uhc.setItemMeta(uhcMeta);
+			inv.setItem(10, uhc);
 			
-			int classNum = 1;
+			Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
+			healPotion.setSplash(true);
+			ItemStack pot = healPotion.toItemStack(1);
+			ItemMeta potMeta = pot.getItemMeta();
+			potMeta.setDisplayName(ChatColor.GOLD + "Pot");
+			pot.setItemMeta(potMeta);
+			inv.setItem(11, pot);
 			
-			switch (i) {
-			case 11:
-				classNum = 2;
-				break;
-			case 13:
-				classNum = 3;
-				break;
-			case 15:
-				classNum = 4;
-				break;
-			case 17:
-				classNum = 5;
-			}
+			ItemStack soup = new ItemStack(Material.MUSHROOM_SOUP, 1);
+			ItemMeta soupMeta = soup.getItemMeta();
+			soupMeta.setDisplayName(ChatColor.GOLD + "Soup");
+			soup.setItemMeta(soupMeta);
+			inv.setItem(12, soup);
+		} else {
+			for (Purchasable purchase : player.getPurchases())
+				if (type == Type.ULTIMATE) {
+					if (purchase instanceof Ultimate)
+						toAdd.add(purchase);
+				} else if (type == Type.SKILL) { 
+					if (purchase instanceof Skill)
+						toAdd.add(purchase);
+				}
 			
-			if (player.getBukkitPlayer().hasPermission("warfare.classes." + classNum)) {
-				ItemStack is = null;
-				ItemMeta im = null;
+			for (int i = 0; i < inv.getSize(); i++) {
+				if (inv.getItem(i) != null)
+					continue;
+				
+				Purchasable purchase = null;
+				
 				try {
-					CustomClass customClass = player.getCustomClasses().get(classNum - 1);
-					is = customClass.getKit().getDisplayItem();
-					im = is.getItemMeta();
-					im.setDisplayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Class:");
-					List<String> lore = new ArrayList<String>();
-					lore.add(ChatColor.YELLOW + customClass.getName());
-					im.setLore(lore);
-					is.setItemMeta(im);
+					purchase = toAdd.get(0);
 				} catch (IndexOutOfBoundsException e) {
-					is = new ItemStack(Material.CHEST);
-					im = is.getItemMeta();
-					im.setDisplayName(ChatColor.RED + ChatColor.BOLD.toString() + "Empty " + classNum);
-					is.setItemMeta(im);
+					break;
 				}
 				
-				is.setItemMeta(im);
-				inv.setItem(i, is);
+				toAdd.remove(purchase);
+				
+				ItemStack displayItem = purchase.getDisplayItem().clone();
+				
+				for(Enchantment enchantment : displayItem.getEnchantments().keySet())
+					displayItem.removeEnchantment(enchantment);
+				
+				ItemMeta displayItemMeta = displayItem.getItemMeta();
+				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
+				displayItemMeta.setLore(Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
+						"description-" + purchase.toString()), ChatColor.YELLOW));
+				displayItem.setItemMeta(displayItemMeta);
+				
+				inv.setItem(i, displayItem);
 			}
 		}
 		
-		player.getBukkitPlayer().openInventory(inv);
+		bp.openInventory(inv);
 	}
-
+	
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
+	private void onInventoryClick(InventoryClickEvent event) {
 		
-		Inventory inv = event.getClickedInventory();
+		String title = event.getClickedInventory().getTitle();
 		
-		if (inv == null)
-			return;
-		
-		String title = inv.getTitle();
-		
-		if (title == null)
-			return;
-		
-		if (!title.equals(ChatColor.AQUA + ChatColor.BOLD.toString() + "Select Class"))
+		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator"))
 			return;
 		
 		event.setCancelled(true);
-
-		Player player = (Player) event.getWhoClicked();
+		
 		ItemStack is = event.getCurrentItem();
 		
 		if (is.getType() == Material.STAINED_GLASS_PANE)
 			return;
 		
-		if(is == null || is.getType() == Material.AIR)
-			return;
-		
 		if (!is.hasItemMeta())
 			return;
-
-		String name = is.getItemMeta().getDisplayName();
-
-		if (name == null || name.equals(" "))
-			return;
-			
-		if (name.contains(ChatColor.RED + ChatColor.BOLD.toString() + "Empty "))
-			return;
 		
+		ItemMeta im = is.getItemMeta();
+		String name = im.getDisplayName();
+		Player player = (Player) event.getWhoClicked();
 		GamePlayer gp = null;
 		
 		try {
@@ -158,11 +183,24 @@ public class ClassSelectorMenu implements Listener {
 			e.printStackTrace();
 		}
 		
-		String className = ChatColor.stripColor(is.getItemMeta().getLore().get(0));
-		
-		gp.setCustomClass(gp.getCustomClass(className));
-		player.sendMessage(ChatColor.GOLD +  String.format("You selected the %s class.", className));
-		
-		player.closeInventory();
+		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Creator")) {
+			if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
+				return;
+			
+			open(Type.KIT, gp);
+		} else {
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
+			
+			if (title.contains("Kit")) {
+				gp.setSelectedKit(Kit.valueOf(enumStr));
+				open(Type.ULTIMATE, gp);
+			} else if (title.contains("Ultimate")) {
+				gp.setSelectedUltimate(Ultimate.valueOf(enumStr));
+				open(Type.SKILL, gp);
+			} else if (title.contains("Skill")) {
+				gp.setSelectedSkill(Skill.valueOf(enumStr));
+				player.closeInventory();
+			}
+		}
 	}
 }

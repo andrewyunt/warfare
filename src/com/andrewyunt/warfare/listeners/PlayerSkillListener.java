@@ -58,8 +58,7 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (damagedGP.getCustomClass().getSkillOne() != Skill.RESISTANCE
-				&& damagedGP.getCustomClass().getSkillTwo() != Skill.RESISTANCE)
+		if (damagedGP.getSelectedSkill() != Skill.RESISTANCE)
 			return;
 
 		if (Math.random() > 0.20D)
@@ -89,14 +88,12 @@ public class PlayerSkillListener implements Listener {
 		
 		Player lastDamager = lastDamagerGP.getBukkitPlayer();
 		
-		if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.JUGGERNAUT
-				|| lastDamagerGP.getCustomClass().getSkillTwo() == Skill.JUGGERNAUT) {
+		if (lastDamagerGP.getSelectedSkill() == Skill.JUGGERNAUT) {
 			
 			lastDamager.setMaxHealth(((Damageable) lastDamager).getMaxHealth() + 2);
 		}
 		
-		if (lastDamagerGP.getCustomClass().getSkillOne() == Skill.CONSUMPTION
-				|| lastDamagerGP.getCustomClass().getSkillTwo() == Skill.CONSUMPTION)
+		if (lastDamagerGP.getSelectedSkill() == Skill.CONSUMPTION)
 			lastDamager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 2));
 	}
 	
@@ -115,8 +112,7 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() == Skill.GUARD
-				|| gp.getCustomClass().getSkillTwo() == Skill.GUARD)
+		if (gp.getSelectedSkill() == Skill.GUARD)
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
 	}
 	
@@ -135,7 +131,7 @@ public class PlayerSkillListener implements Listener {
 		if (event.getInventory().getType() == InventoryType.ENCHANTING)
 			gp.setEnergy(gp.getEnergy());
 		else if (event.getInventory().getType() == InventoryType.CHEST)
-			if (gp.getCustomClass().getSkillOne() == Skill.GUARD || gp.getCustomClass().getSkillTwo() == Skill.GUARD)
+			if (gp.getSelectedSkill() == Skill.GUARD)
 				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 	}
 	
@@ -160,7 +156,7 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getCustomClass().getSkillOne() != Skill.FLAME && gp.getCustomClass().getSkillTwo() != Skill.FLAME)
+		if (gp.getSelectedSkill() != Skill.FLAME)
 			return;
 		
 		if (Math.random() <= 0.10D)

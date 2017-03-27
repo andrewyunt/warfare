@@ -27,7 +27,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.exception.PlayerException;
-import com.andrewyunt.warfare.objects.CustomClass;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.objects.Purchasable;
@@ -62,37 +61,21 @@ public class PlayerManager {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			Warfare.getInstance().getDataSource().loadPlayer(player);
+			Warfare.getInstance().getMySQLManager().loadPlayer(player);
 			
 			List<Purchasable> purchases = player.getPurchases();
 	
-			if (!purchases.contains(Kit.ARMORER))
-				purchases.add(Kit.ARMORER);
-			
 			if (!purchases.contains(Ultimate.HEAL))
 				purchases.add(Ultimate.HEAL);
-			
-			if (!purchases.contains(Skill.HEAD_START))
-				purchases.add(Skill.HEAD_START);
-			
 			if (!purchases.contains(Skill.GUARD))
 				purchases.add(Skill.GUARD);
 			
-			CustomClass defaultClass = new CustomClass();
-			
-			defaultClass.setKit(Kit.ARMORER);
-			defaultClass.setUltimate(Ultimate.HEAL);
-			defaultClass.setSkillOne(Skill.HEAD_START);
-			defaultClass.setSkillTwo(Skill.GUARD);
-			defaultClass.setName("Default");
-			
-			List<CustomClass> customClasses = player.getCustomClasses();
-			
-			if (customClasses.size() == 0)
-				customClasses.add(defaultClass);
-			
-			if (player.getCustomClass() == null)
-				player.setCustomClass(customClasses.get(0));
+			if (player.getSelectedKit() == null)
+				player.setSelectedKit(Kit.UHC);
+			if (player.getSelectedUltimate() == null)
+				player.setSelectedUltimate(Ultimate.HEAL);
+			if (player.getSelectedSkill() == null)
+				player.setSelectedSkill(Skill.GUARD);
 		}, 20L);
 		
 		// Add player to plugin's player map
@@ -114,7 +97,7 @@ public class PlayerManager {
 		if (!players.containsKey(player.getUUID()))
 			throw new PlayerException("The player specified is not in the plugin's records.");
 		
-		Warfare.getInstance().getDataSource().savePlayer(player);
+		Warfare.getInstance().getMySQLManager().savePlayer(player);
 		
 		players.remove(player.getUUID());
 	}

@@ -13,7 +13,7 @@
  * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
  * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
  */
-package com.andrewyunt.warfare.db;
+package com.andrewyunt.warfare.managers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,20 +31,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.CustomClass;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.objects.Purchasable;
 import com.andrewyunt.warfare.objects.Skill;
 import com.andrewyunt.warfare.objects.Ultimate;
 
-public class MySQLSource extends DataSource {
+public class MySQLManager {
 	
 	private String ip, database, user, pass;
 	private int port;
 	private Connection connection;
 	
-	@Override
 	public boolean connect() {
 		
 		FileConfiguration config = Warfare.getInstance().getConfig();
@@ -70,7 +68,6 @@ public class MySQLSource extends DataSource {
 		return true;
 	}
 	
-	@Override
 	public void disconnect() {
 		
 		try {
@@ -78,7 +75,13 @@ public class MySQLSource extends DataSource {
 		} catch (SQLException e) {
 		}
 	}
-	@Override
+	
+	public void updateDB() {
+		
+		createPlayersTable();
+		createPurchasesTable();
+	}
+	
 	public void savePlayer(GamePlayer player) {
 		
 		if (!player.isLoaded())
@@ -98,11 +101,11 @@ public class MySQLSource extends DataSource {
 	private void savePlayer(GamePlayer player, String uuid) {
 		
 		savePurchases(player);
-		saveClasses(player);
 		
-		String query = "INSERT INTO Players (uuid, class, coins, earned_coins, kills, wins)"
-				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE class = VALUES(class), coins = VALUES(coins),"
-				+ " earned_coins = VALUES(earned_coins), kills = VALUES(kills), wins = VALUES(wins);";
+		String query = "INSERT INTO Players (uuid, kit, ultimate, skill, coins, earned_coins, kills, wins)"
+				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE kit = VALUES(kit), ultimate = VALUES(ultimate),"
+				+ " skill = VALUES(skill), coins = VALUES(coins), earned_coins = VALUES(earned_coins),"
+				+ " kills = VALUES(kills), wins = VALUES(wins);";
 		
 		PreparedStatement preparedStatement = null;
 		
@@ -110,12 +113,16 @@ public class MySQLSource extends DataSource {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, player.getCustomClass() == null ? "none"
-					: player.getCustomClass().getName());
-			preparedStatement.setInt(3, player.getCoins());
-			preparedStatement.setInt(4, player.getEarnedCoins());
-			preparedStatement.setInt(5, player.getKills());
-			preparedStatement.setInt(6, player.getWins());
+			preparedStatement.setString(2, player.getSelectedKit() == null ? "none"
+					: player.getSelectedKit().toString());
+			preparedStatement.setString(3, player.getSelectedUltimate() == null ? "none"
+					: player.getSelectedUltimate().toString());
+			preparedStatement.setString(4, player.getSelectedSkill() == null ? "none"
+					: player.getSelectedSkill().toString());
+			preparedStatement.setInt(5, player.getCoins());
+			preparedStatement.setInt(6, player.getEarnedCoins());
+			preparedStatement.setInt(7, player.getKills());
+			preparedStatement.setInt(8, player.getWins());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
@@ -130,11 +137,9 @@ public class MySQLSource extends DataSource {
 		}
 	}
 	
-	@Override
 	public void loadPlayer(GamePlayer player) {
 		
 		loadPurchases(player);
-		loadClasses(player);
 		
 		String uuid = player.getUUID().toString();
 		
@@ -158,10 +163,16 @@ public class MySQLSource extends DataSource {
 			
 			try {
 				while (resultSet.next()) {
-					String classStr = resultSet.getString("class");
+					String kitStr = resultSet.getString("kit");
+					String ultimateStr = resultSet.getString("ultimate");
+					String skillStr = resultSet.getString("skill");
 					
-					if (!classStr.equals("none"))
-						player.setCustomClass(player.getCustomClass(classStr));
+					if (!kitStr.equals("none"))
+						player.setSelectedKit(Kit.valueOf(kitStr));
+					if (!ultimateStr.equals("none"))
+						player.setSelectedUltimate(Ultimate.valueOf(ultimateStr));
+					if (!skillStr.equals("none"))
+						player.setSelectedSkill(Skill.valueOf(skillStr));
 					
 					player.setCoins(resultSet.getInt("coins"));
 					player.setEarnedCoins(resultSet.getInt("earned_coins"));
@@ -183,7 +194,6 @@ public class MySQLSource extends DataSource {
 		});
 	}
 	
-	@Override
 	public void savePurchases(GamePlayer player) {
 		
 		String uuid = player.getUUID().toString();
@@ -214,7 +224,6 @@ public class MySQLSource extends DataSource {
 		}
 	}
 	
-	@Override
 	public void loadPurchases(GamePlayer player) {
 		
 		String query = "SELECT * FROM Purchases WHERE uuid = ?;";
@@ -235,10 +244,6 @@ public class MySQLSource extends DataSource {
 		try {
 			while (resultSet.next()) {
 				String purchasable = resultSet.getString("purchasable");
-				
-				for (Kit kit : Kit.values())
-					if (kit.toString().equals(purchasable))
-						player.getPurchases().add(Kit.valueOf(purchasable));
 				
 				for (Ultimate ultimate : Ultimate.values())
 					if (ultimate.toString().equals(purchasable))
@@ -262,114 +267,6 @@ public class MySQLSource extends DataSource {
 		player.setLoaded(true);
 	}
 	
-	@Override
-	public void clearClasses(GamePlayer player) {
-		
-		String query = "DELETE FROM Classes WHERE uuid = ?;";
-		
-		PreparedStatement preparedStatement = null;
-		
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.setString(1, player.getUUID().toString());
-			
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		}
-	}
-	
-	@Override
-	public void saveClasses(GamePlayer player) {
-		
-		clearClasses(player);
-		
-		String uuid = player.getUUID().toString();
-		
-		for (CustomClass customClass : player.getCustomClasses()) {
-
-			String query = "INSERT INTO Classes (uuid, name, kit, ultimate, skill_one, skill_two)"
-					+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE uuid = VALUES(uuid),"
-					+ " name = VALUES(name), kit = VALUES(kit), ultimate = VALUES(ultimate),"
-					+ " skill_one = VALUES(skill_one), skill_two = VALUES(skill_two);";
-			
-			PreparedStatement preparedStatement = null;
-			
-			try {
-				preparedStatement = connection.prepareStatement(query);
-				
-				preparedStatement.setString(1, uuid);
-				preparedStatement.setString(2, customClass.getName());
-				preparedStatement.setString(3, customClass.getKit().toString());
-				preparedStatement.setString(4, customClass.getUltimate().toString());
-				preparedStatement.setString(5, customClass.getSkillOne().toString());
-				preparedStatement.setString(6, customClass.getSkillTwo().toString());
-				
-				preparedStatement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				if (preparedStatement != null)
-					try {
-						preparedStatement.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-			}
-		}
-	}
-	
-	@Override
-	public void loadClasses(GamePlayer player) {
-		
-		String query = "SELECT * FROM Classes WHERE uuid = ?;";
-		
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.setString(1, player.getUUID().toString());
-			
-			resultSet = preparedStatement.executeQuery();
-		} catch (SQLException e) {
-			return; // player does not exist, so don't load their data
-		}
-		
-		try {
-			while (resultSet.next()) {
-				CustomClass customClass = new CustomClass();
-				customClass.setName(resultSet.getString("name"));
-				customClass.setKit(Kit.valueOf(resultSet.getString("kit")));
-				customClass.setUltimate(Ultimate.valueOf(resultSet.getString("ultimate")));
-				customClass.setSkillOne(Skill.valueOf(resultSet.getString("skill_one")));
-				customClass.setSkillTwo(Skill.valueOf(resultSet.getString("skill_two")));
-				player.getCustomClasses().add(customClass);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-		
-		player.setLoaded(true);
-	}
-	
-	@Override
 	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getHighestValuesColumn(String columnName) {
 		
 		Map<Integer, Map.Entry<OfflinePlayer, Integer>> highestValues = new HashMap
@@ -405,7 +302,6 @@ public class MySQLSource extends DataSource {
 		return highestValues;
 	}
 	
-	@Override
 	public void createPlayersTable() {
 
 		String query = "CREATE TABLE IF NOT EXISTS `Players`"
@@ -427,43 +323,12 @@ public class MySQLSource extends DataSource {
 		}
 	}
 	
-	@Override
 	public void createPurchasesTable() {
 		
 		String query = "CREATE TABLE IF NOT EXISTS `Purchases`"
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
 				+ "   `purchasable`      CHAR(20) NOT NULL,"
 				+ "   PRIMARY KEY (`uuid`, `purchasable`));";
-		
-		PreparedStatement preparedStatement = null;
-		
-		try {
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-	}
-	
-	@Override
-	public void createClassesTable() {
-		
-		String query = "CREATE TABLE IF NOT EXISTS `Classes`"
-				+ "  (`uuid`             CHAR(36) NOT NULL,"
-				+ "   `name`             CHAR(20) NOT NULL,"
-				+ "   `kit`              CHAR(20) NOT NULL,"
-				+ "   `ultimate`         CHAR(20) NOT NULL,"
-				+ "   `skill_one`        CHAR(20) NOT NULL,"
-				+ "   `skill_two`        CHAR(20) NOT NULL,"
-				+ "    PRIMARY KEY (`uuid`, `name`));";
 		
 		PreparedStatement preparedStatement = null;
 		

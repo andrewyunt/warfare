@@ -15,13 +15,10 @@ no-perms-class-slot: "&cNo access"
 hotbar-items:
   lobby-items:
     shop:
-      slot: 5
+      slot: 4
       title: "&a&lShop"
-    class-creator:
-      slot: 3
-      title: "&d&lClass Creator"
     class-selector:
-      slot: 7
+      slot: 6
       title: "&b&lSelect Class"
   spectator-items:
     teleporter:
@@ -34,45 +31,6 @@ hotbar-items:
     class-selector:
       slot: 1
       title: "&e&lClass Selector"
-
-# Kit Descriptions
-description-ARMORER:
-  - "Gold Helmet"
-  - "Iron Chestplate"
-  - "Gold Leggings"
-description-ARCHER:
-  - "Bow (Power I)"
-  - "32 Arrows"
-description-SWORDSMAN:
-  - "Stone Sword (Sharpness I)"
-  - "Iron Helmet"
-description-BOOSTER:
-  - "Bow (Punch II, Infinity I) (15 Durability)"
-  - "*You can only shoot yourself!"
-description-CANNONER:
-  - "16 TNT"
-  - "Water Bucket"
-  - "Pressure Plate"
-  - "Iron Boots (Feather Falling III)"
-description-HEALER:
-  - "Splash Potion of Healing II"
-  - "Splash Potion of Regeneration"
-description-ENCHANTER:
-  - "Enchanting Table"
-  - "32 Bottles of Enchanting"
-  - "Diamond Shovel"
-description-FISHERMAN:
-  - "Fishing Rod"
-  - "Leather Helmet"
-  - "16 Cooked Fish"
-description-SCOUT:
-  - "Splash Potion of Speed II"
-  - "Stone Sword"
-description-PYROMANIAC:
-  - "Splash Potion of Fire Resistance (Infinite)"
-  - "5 Lava Buckets"
-  - "Flint & Steel"
-  - "Wood Sword (Fire Aspect I)"
 
 # Ultimate Descriptions
 description-HEAL:

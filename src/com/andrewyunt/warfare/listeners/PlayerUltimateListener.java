@@ -73,7 +73,7 @@ public class PlayerUltimateListener implements Listener {
 			if (!type.toString().toLowerCase().contains("sword"))
 				return;
 			
-			gp.getCustomClass().getUltimate().use(gp);
+			gp.getSelectedUltimate().use(gp);
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class PlayerUltimateListener implements Listener {
 				return;
 			}
 			
-			gpDamager.setEnergy(gpDamager.getEnergy() + gpDamager.getCustomClass().getUltimate().getEnergyPerClick());
+			gpDamager.setEnergy(gpDamager.getEnergy() + gpDamager.getSelectedUltimate().getEnergyPerClick());
 			
 			return;
 		}

@@ -43,13 +43,14 @@ import com.andrewyunt.warfare.utilities.Utils;
 public class GamePlayer {
 	
 	private UUID uuid;
-	private CustomClass customClass;
 	private int coins, earnedCoins, earnedCoinsGame, wins, energy, kills, killStreak;
 	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate, hasFallen;
 	private DynamicScoreboard dynamicScoreboard;
 	private GamePlayer lastDamager;
+	private Kit selectedKit;
+	private Skill selectedSkill;
+	private Ultimate selectedUltimate;
 	
-	private final List<CustomClass> customClasses = new ArrayList<CustomClass>();
 	private final List<Purchasable> purchases = new ArrayList<Purchasable>();
 	private final Set<UUID> ghasts = new HashSet<UUID>();
 	
@@ -77,18 +78,6 @@ public class GamePlayer {
 	public Player getBukkitPlayer() {
 		
 		return Bukkit.getServer().getPlayer(uuid);
-	}
-	
-	public void setCustomClass(CustomClass customClass) {
-		
-		this.customClass = customClass;
-		
-		updateDynamicScoreboard();
-	}
-	
-	public CustomClass getCustomClass() {
-		
-		return customClass;
 	}
 	
 	public void setCoins(int coins) {
@@ -236,6 +225,36 @@ public class GamePlayer {
 		return lastDamager;
 	}
 	
+	public void setSelectedKit(Kit selectedKit) {
+		
+		this.selectedKit = selectedKit;
+	}
+	
+	public Kit getSelectedKit() {
+		
+		return selectedKit;
+	}
+	
+	public void setSelectedSkill(Skill selectedSkill) {
+		
+		this.selectedSkill = selectedSkill;
+	}
+	
+	public Skill getSelectedSkill() {
+		
+		return selectedSkill;
+	}
+	
+	public void setSelectedUltimate(Ultimate selectedUltimate) {
+		
+		this.selectedUltimate = selectedUltimate;
+	}
+	
+	public Ultimate getSelectedUltimate() {
+		
+		return selectedUltimate;
+	}
+	
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		
 		this.spectating = spectating;
@@ -308,20 +327,6 @@ public class GamePlayer {
 		return false;
 	}
 	
-	public List<CustomClass> getCustomClasses() {
-		
-		return customClasses;
-	}
-	
-	public CustomClass getCustomClass(String name) {
-		
-		for (CustomClass customClass : customClasses)
-			if (customClass.getName().equalsIgnoreCase(name))
-				return customClass;
-		
-		return null;
-	}
-	
 	public Set<UUID> getGhasts() {
 		
 		return ghasts;
@@ -373,10 +378,10 @@ public class GamePlayer {
 			dynamicScoreboard.blankLine(4);
 			
 			// Display player's chosen class 
-			dynamicScoreboard.update(3, ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Class"
+			dynamicScoreboard.update(3, ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit"
 					+ ChatColor.GRAY + ChatColor.BOLD.toString() + ":");
 			dynamicScoreboard.update(2, ChatColor.GOLD + "  » " + ChatColor.YELLOW + ChatColor.BOLD.toString()
-					+ (customClass == null ? "None" : customClass.getName()));
+					+ (selectedKit == null ? "None" : selectedKit.getName()));
 			
 			dynamicScoreboard.update(1, ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString()
 					+ "-------------------------");
@@ -459,13 +464,6 @@ public class GamePlayer {
 				shop.setItemMeta(shopMeta);
 				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.shop.slot") - 1,
 						shop);
-				
-				ItemStack classCreator = new ItemStack(Material.CHEST, 1);
-				ItemMeta classCreatorMeta = classCreator.getItemMeta();
-				classCreatorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.class-creator.title"));
-				classCreator.setItemMeta(classCreatorMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-creator.slot") - 1,
-						classCreator);
 				
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();

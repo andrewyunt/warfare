@@ -24,17 +24,15 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import com.andrewyunt.warfare.command.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
-import com.andrewyunt.warfare.db.DataSource;
-import com.andrewyunt.warfare.db.MySQLSource;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.listeners.EntityListener;
 import com.andrewyunt.warfare.listeners.PlayerListener;
 import com.andrewyunt.warfare.listeners.PlayerSkillListener;
 import com.andrewyunt.warfare.listeners.PlayerUltimateListener;
 import com.andrewyunt.warfare.listeners.SpectatorsInteractionsListener;
+import com.andrewyunt.warfare.managers.MySQLManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
-import com.andrewyunt.warfare.menu.ClassCreatorMenu;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.menu.TeleporterMenu;
@@ -48,14 +46,12 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	
 	private static Warfare instance;
 	
-	private final DataSource dataSource = new MySQLSource();
-	
+	private MySQLManager mysqlManager = new MySQLManager();
 	private PlayerManager playerManager = new PlayerManager();
 	private SignManager signManager = new SignManager();
 	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
 	private SignConfiguration signConfig = new SignConfiguration();
 	private ShopMenu shopMenu = new ShopMenu();
-	private ClassCreatorMenu classCreatorMenu = new ClassCreatorMenu();
 	private ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
 	private TeleporterMenu teleporterMenu = new TeleporterMenu();
 	private Arena arena;
@@ -72,13 +68,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		PluginManager pm = getServer().getPluginManager();
 		
 		// Connect to the database
-		if (!dataSource.connect()) {
+		if (!mysqlManager.connect()) {
 			getLogger().severe("Could not connect to the database, shutting down...");
 			pm.disablePlugin(this);
 			return;
 		}
 		
-		dataSource.updateDB();
+		mysqlManager.updateDB();
 		
 		for (Player player : getServer().getOnlinePlayers())
 			try {
@@ -96,7 +92,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 			signManager.loadSigns();
 			
 			pm.registerEvents(shopMenu, this);
-			pm.registerEvents(classCreatorMenu, this);
 		} else {
 			arenaConfig.saveDefaultConfig();
 			
@@ -120,7 +115,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	public void onDisable() {
 		
 		for (GamePlayer player : playerManager.getPlayers())
-			dataSource.savePlayer(player);
+			mysqlManager.savePlayer(player);
 	}
 	
 	@Override
@@ -145,9 +140,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		return instance;
 	}
 	
-	public DataSource getDataSource() {
+	public MySQLManager getMySQLManager() {
 		
-		return dataSource;
+		return mysqlManager;
 	}
 	
 	public PlayerManager getPlayerManager() {
@@ -188,11 +183,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	public ShopMenu getShopMenu() {
 		
 		return shopMenu;
-	}
-	
-	public ClassCreatorMenu getClassCreatorMenu() {
-		
-		return classCreatorMenu;
 	}
 	
 	public ClassSelectorMenu getClassSelectorMenu() {
