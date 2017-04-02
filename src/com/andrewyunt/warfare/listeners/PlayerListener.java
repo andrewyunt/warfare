@@ -17,8 +17,8 @@ package com.andrewyunt.warfare.listeners;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -41,10 +41,10 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -488,7 +488,7 @@ public class PlayerListener implements Listener {
 		if (event.getInventory().getType() == InventoryType.PLAYER)
 			return;
 		
-		if (!event.getInventory().getTitle().equals("Class Selector"))
+		if (!event.getInventory().getTitle().contains("Class Selector"))
 			cancelCageInteractions(event, (Player) event.getPlayer());
 	}
 	
