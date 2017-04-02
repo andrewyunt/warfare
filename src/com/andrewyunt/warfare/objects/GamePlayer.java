@@ -408,7 +408,7 @@ public class GamePlayer {
 				dynamicScoreboard.blankLine(4);
 				
 				// Display server name
-				dynamicScoreboard.update(3, "Server: " + ChatColor.GREEN + Warfare.getInstance().getServerName());
+				dynamicScoreboard.update(3, "Server: " + ChatColor.GREEN + Warfare.getInstance().getConfig().getString("server-name"));
 			} else {
 				dynamicScoreboard.blankLine(9);
 				
@@ -471,6 +471,13 @@ public class GamePlayer {
 				classSelector.setItemMeta(classSelectorMeta);
 				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-selector.slot") - 1,
 						classSelector);
+				
+				ItemStack play = new ItemStack(Material.DIAMOND_SWORD, 1);
+				ItemMeta playMeta = play.getItemMeta();
+				playMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"));
+				play.setItemMeta(playMeta);
+				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.play.slot") - 1,
+						play);
 			} else {
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();

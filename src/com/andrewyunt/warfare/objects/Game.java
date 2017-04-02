@@ -272,13 +272,10 @@ public class Game {
 	
 	public void setStage(Stage stage) {
 		
-		// Set variables
 		this.stage = stage;
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		String lcName = stage.toString().toLowerCase();
+		Warfare.getInstance().getMySQLManager().updateServerStatus();
 		
-		// Set server MOTD
-		//MinecraftServer.getServer().setMotd(lcName.substring(0, 1).toUpperCase() + lcName.substring(1));
+		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		
 		if (stage == Stage.COUNTDOWN) {
 			

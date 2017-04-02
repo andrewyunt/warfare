@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.objects.Purchasable;
@@ -80,6 +82,7 @@ public class MySQLManager {
 		
 		createPlayersTable();
 		createPurchasesTable();
+		createGameServersTable();
 	}
 	
 	public void savePlayer(GamePlayer player) {
@@ -103,7 +106,7 @@ public class MySQLManager {
 		savePurchases(player);
 		
 		String query = "INSERT INTO Players (uuid, kit, ultimate, skill, coins, earned_coins, kills, wins)"
-				+ " VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE kit = VALUES(kit), ultimate = VALUES(ultimate),"
+				+ " VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE kit = VALUES(kit), ultimate = VALUES(ultimate),"
 				+ " skill = VALUES(skill), coins = VALUES(coins), earned_coins = VALUES(earned_coins),"
 				+ " kills = VALUES(kills), wins = VALUES(wins);";
 		
@@ -267,12 +270,68 @@ public class MySQLManager {
 		player.setLoaded(true);
 	}
 	
-	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getHighestValuesColumn(String columnName) {
+	public Map<String, Entry<Game.Stage, Integer>> getServers() {
+		
+		Map<String, Entry<Game.Stage, Integer>> servers = new HashMap<String, Entry<Game.Stage, Integer>>();
+		
+		String query = "SELECT `name`, `stage`, `online_players` FROM `GameServers`;";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		try {
+			while (resultSet.next())
+				servers.put(resultSet.getString("name"), new AbstractMap.SimpleEntry<Game.Stage, Integer>(
+						Game.Stage.valueOf(resultSet.getString("stage")), resultSet.getInt("online_players")));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return servers;
+	}
+	
+	public void updateServerStatus() {
+		
+		String query = "INSERT INTO GameServers (name, stage, online_players) VALUES (?,?,?) ON DUPLICATE KEY UPDATE"
+				+ " name = VALUES(name), stage = VALUES(stage), online_players = VALUES(online_players);";
+		
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.setString(1, Warfare.getInstance().getConfig().getString("server-name"));
+			preparedStatement.setString(2, Warfare.getInstance().getGame().getStage().toString());
+			preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().length);
+			
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
 		
 		Map<Integer, Map.Entry<OfflinePlayer, Integer>> highestValues = new HashMap
 				<Integer, Map.Entry<OfflinePlayer, Integer>>();
 		
-		String query = "SELECT `uuid`, " + columnName + " FROM `Players` ORDER BY " + columnName + " DESC LIMIT 5;";
+		String query = "SELECT `" + select + "`, " + orderBy + " FROM `" + tableName + "` ORDER BY " + orderBy + " DESC LIMIT 5;";
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -291,7 +350,7 @@ public class MySQLManager {
 			while (resultSet.next()) {
 				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(UUID.fromString(resultSet.getString("uuid")));
 				
-				highestValues.put(place, new AbstractMap.SimpleEntry<OfflinePlayer, Integer>(op, resultSet.getInt(columnName)));
+				highestValues.put(place, new AbstractMap.SimpleEntry<OfflinePlayer, Integer>(op, resultSet.getInt(orderBy)));
 				
 				place++;
 			}
@@ -306,7 +365,9 @@ public class MySQLManager {
 
 		String query = "CREATE TABLE IF NOT EXISTS `Players`"
 				+ "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
-				+ "   `class`            CHAR(20) NOT NULL,"
+				+ "   `kit`              CHAR(20) NOT NULL,"
+				+ "   `ultimate`         CHAR(20) NOT NULL,"
+				+ "   `skill`            CHAR(20) NOT NULL,"
 				+ "   `coins`            INT,"
 				+ "   `earned_coins`     INT,"
 				+ "   `kills`            INT,"
@@ -329,6 +390,31 @@ public class MySQLManager {
 				+ "  (`uuid`             CHAR(36) NOT NULL,"
 				+ "   `purchasable`      CHAR(20) NOT NULL,"
 				+ "   PRIMARY KEY (`uuid`, `purchasable`));";
+		
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	public void createGameServersTable() {
+		
+		String query = "CREATE TABLE IF NOT EXISTS `GameServers`"
+				+ "  (`name`            CHAR(20) PRIMARY KEY NOT NULL,"
+				+ "   `stage`           CHAR(20) NOT NULL,"
+				+ "   `online_players`     INT NOT NULL);";
 		
 		PreparedStatement preparedStatement = null;
 		

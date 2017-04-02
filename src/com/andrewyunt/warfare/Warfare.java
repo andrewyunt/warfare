@@ -19,8 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-
 import com.andrewyunt.warfare.command.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
@@ -39,10 +37,8 @@ import com.andrewyunt.warfare.menu.TeleporterMenu;
 import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 
-public class Warfare extends JavaPlugin implements PluginMessageListener, Listener {
+public class Warfare extends JavaPlugin implements Listener {
 	
 	private static Warfare instance;
 	
@@ -56,7 +52,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	private TeleporterMenu teleporterMenu = new TeleporterMenu();
 	private Arena arena;
 	private Game game;
-	private String serverName;
 	
 	@Override
 	public void onEnable() {
@@ -88,15 +83,14 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		
 		if (getConfig().getBoolean("is-lobby")) {
 			signConfig.saveDefaultConfig();
-			
 			signManager.loadSigns();
 			
 			pm.registerEvents(shopMenu, this);
 		} else {
 			arenaConfig.saveDefaultConfig();
-			
 			arena = Arena.loadFromConfig();
-			game = new Game();
+			game = new Game();			
+			mysqlManager.updateServerStatus();
 			
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
@@ -106,7 +100,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 		}
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
 	}
@@ -114,25 +107,11 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	@Override
 	public void onDisable() {
 		
+		if (!getConfig().getBoolean("is-lobby"))
+			game.setStage(Game.Stage.END);
+		
 		for (GamePlayer player : playerManager.getPlayers())
 			mysqlManager.savePlayer(player);
-	}
-	
-	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		
-		if (!channel.equals("BungeeCord"))
-			return;
-		
-		ByteArrayDataInput in = ByteStreams.newDataInput(message);
-		
-		if (!in.readUTF().equals("GetServer"))
-			return;
-		
-		serverName = in.readUTF();
-		
-		for (GamePlayer gp : playerManager.getPlayers())
-			gp.updateDynamicScoreboard();
 	}
 	
 	public static Warfare getInstance() {
@@ -193,15 +172,5 @@ public class Warfare extends JavaPlugin implements PluginMessageListener, Listen
 	public TeleporterMenu getTeleporterMenu() {
 		
 		return teleporterMenu;
-	}
-	
-	public void setServerName(String serverName) {
-		
-		this.serverName = serverName;
-	}
-	
-	public String getServerName() {
-		
-		return serverName;
 	}
 }

@@ -110,7 +110,7 @@ public class SignDisplay {
 		
 		
 		Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = Warfare.getInstance().getMySQLManager()
-				.getHighestValuesColumn(type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
+				.getTopFiveColumn("uuid", "Players", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
 		Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
 		
 		OfflinePlayer op = entry.getKey();

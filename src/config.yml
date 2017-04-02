@@ -8,6 +8,9 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
+# Set this to the BungeeCord server name (only needed for game servers)
+server-name: "server name"
+
 # GUI menu message for no class slot permission
 no-perms-class-slot: "&cNo access"
 
@@ -15,11 +18,14 @@ no-perms-class-slot: "&cNo access"
 hotbar-items:
   lobby-items:
     shop:
-      slot: 4
+      slot: 3
       title: "&a&lShop"
     class-selector:
-      slot: 6
+      slot: 5
       title: "&b&lSelect Class"
+    play:
+      slot: 7
+      title: "&c&lPlay"
   spectator-items:
     teleporter:
       slot: 1

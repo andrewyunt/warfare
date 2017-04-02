@@ -15,8 +15,10 @@
  */
 package com.andrewyunt.warfare.listeners;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,6 +57,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -76,6 +79,10 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		
+		// Update server status
+		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+			Warfare.getInstance().getMySQLManager().updateServerStatus();
 		
 		Player player = event.getPlayer();
 		GamePlayer gp = null;
@@ -133,17 +140,6 @@ public class PlayerListener implements Listener {
 					finalGP.setSpectating(true, false);
 			}
 		}, 2L);
-		
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			// Fetch server name for scoreboards if it's null
-			if (Warfare.getInstance().getServerName() == null) {
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				
-				out.writeUTF("GetServer");
-				
-				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
-			}
-		}, 40L);
 	}
 
 	@EventHandler
@@ -158,8 +154,10 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
 			Warfare.getInstance().getGame().removePlayer(gp);
+			Warfare.getInstance().getMySQLManager().updateServerStatus();
+		}
 		
 		try {
 			Warfare.getInstance().getPlayerManager().deletePlayer(gp);
@@ -204,11 +202,42 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby") || gp.isCaged()) {
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
 			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"))) {
 				Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 				return true;
 			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"))) {
+				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
+				return true;
+			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"))) {
+				Map<String, Entry<Game.Stage, Integer>> servers = Warfare.getInstance().getMySQLManager().getServers();
+				Map<String, Integer> playableServers = new HashMap<String, Integer>();
+				
+				for (Entry<String, Entry<Stage, Integer>> entry : servers.entrySet())
+					if (entry.getValue().getKey() == Game.Stage.WAITING)
+						playableServers.put(entry.getKey(), entry.getValue().getValue());
+				
+				if (playableServers.size() == 0)  {
+					player.sendMessage(ChatColor.RED + "There are no available servers at the moment.");
+					return true;
+				}
+				
+				String mostPlayers = null;
+				int mostPlayersCount = 0;
+				
+				for (Entry<String, Integer> entry : playableServers.entrySet())
+					if (entry.getValue() >= mostPlayersCount)
+						mostPlayers = entry.getKey();
+				
+				ByteArrayDataOutput out = ByteStreams.newDataOutput();
+				out.writeUTF("Connect");
+				out.writeUTF(mostPlayers);
+				player.sendPluginMessage((Plugin) Warfare.getInstance(), "BungeeCord", out.toByteArray());
+				
+				return true;
+			}
+		} else if (gp.isCaged()) {
+			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.cage-items.class-selector.title"))) {
 				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
 				return true;
 			}
@@ -231,26 +260,30 @@ public class PlayerListener implements Listener {
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void onPlayerDamage(EntityDamageByEntityEvent event) {
 		
-		Entity damager = event.getDamager();
-		Entity damaged = event.getEntity();
-		
-		if (!(damager instanceof Player) || !(damaged instanceof Player))
-			return;
-		
-		GamePlayer damagedGP = null;
-		GamePlayer damagerGP = null;
-		
-		try {
-			damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damaged).getName());
-			damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+			event.setCancelled(true);
+		} else {
+			Entity damager = event.getDamager();
+			Entity damaged = event.getEntity();
+			
+			if (!(damager instanceof Player) || !(damaged instanceof Player))
+				return;
+			
+			GamePlayer damagedGP = null;
+			GamePlayer damagerGP = null;
+			
+			try {
+				damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damaged).getName());
+				damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
+			} catch (PlayerException e) {
+				e.printStackTrace();
+			}
+			
+			if (!damagerGP.isInGame() || !damagedGP.isInGame())
+				return;
+			
+			damagedGP.setLastDamager(damagerGP);
 		}
-		
-		if (!damagerGP.isInGame() || !damagedGP.isInGame())
-			return;
-		
-		damagedGP.setLastDamager(damagerGP);
 	}
 	
 	@EventHandler
@@ -434,13 +467,19 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		
-		cancelCageInteractions(event, event.getPlayer());
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+			event.setCancelled(true);
+		else
+			cancelCageInteractions(event, event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-		cancelCageInteractions(event, event.getPlayer());
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+			event.setCancelled(true);
+		else
+			cancelCageInteractions(event, event.getPlayer());
 	}
 	
 	@EventHandler
