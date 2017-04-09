@@ -21,10 +21,10 @@ import java.util.*;
  */
 public class DynamicScoreboard {
 	
-	private Scoreboard scoreboard;
-	private Objective objective;
-	private Map<Integer, NameData> scoreMap = new HashMap<>();
-	private Map<String, Integer> nameMap = new HashMap<>();
+	private final Scoreboard scoreboard;
+	private final Objective objective;
+	private final Map<Integer, NameData> scoreMap = new HashMap<>();
+	private final Map<String, Integer> nameMap = new HashMap<>();
  
 	public DynamicScoreboard(String title) {
 		
@@ -121,7 +121,7 @@ public class DynamicScoreboard {
 	private String fixDuplicates(String text) {
 		
 		while (nameMap.containsKey(text))
-			text += "§r";
+			text += "ï¿½r";
 		
 		if (text.length() > 48)
 			text = text.substring(0, 47);
@@ -134,7 +134,7 @@ public class DynamicScoreboard {
 	class NameData {
 		
 		private String prefix, name, suffix;
-		private int idx;
+		private final int idx;
  
 		public NameData(String text) {
 			name = text;

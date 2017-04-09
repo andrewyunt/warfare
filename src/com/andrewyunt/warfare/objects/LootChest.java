@@ -35,15 +35,15 @@ import org.bukkit.potion.PotionEffectType;
 
 public class LootChest {
 	
-	private static ItemStack bow = new ItemStack(Material.BOW, 1);
-	private static ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
-	private static ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
-	private static ItemStack diamondChestplate = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-	private static ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
-	private static ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
-	private static ItemStack power3Bow = new ItemStack(Material.BOW, 1);
-	private static ItemStack frPotion = new ItemStack(Material.POTION, 3);
-	private static ItemStack speedPotion = new ItemStack(Material.POTION, 3);
+	private static final ItemStack bow = new ItemStack(Material.BOW, 1);
+	private static final ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
+	private static final ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static final ItemStack diamondChestplate = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+	private static final ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static final ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static final ItemStack power3Bow = new ItemStack(Material.BOW, 1);
+	private static final ItemStack frPotion = new ItemStack(Material.POTION, 3);
+	private static final ItemStack speedPotion = new ItemStack(Material.POTION, 3);
 	
 	static {
 		bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
@@ -139,8 +139,9 @@ public class LootChest {
 		LXII(1, 3, diamondBoots),
 		LXIII(1, 3, diamondBootsFalling);
 		
-		private int tier, group;
-		private ItemStack itemStack;
+		private final int tier;
+        private final int group;
+		private final ItemStack itemStack;
 		
 		LootItem(int tier, int group, ItemStack itemStack) {
 			

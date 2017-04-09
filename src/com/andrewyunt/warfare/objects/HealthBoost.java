@@ -24,8 +24,8 @@ public enum HealthBoost implements Purchasable{
 	HEALTH_BOOST_II("Health Boost II", 500000),
 	HEALTH_BOOST_III("Health Boost III", 1000000);
 
-	private String name;
-	private int price;
+	private final String name;
+	private final int price;
 	
 	HealthBoost(String name, int price) {
 		

@@ -107,7 +107,7 @@ public class TeleporterMenu implements Listener {
 		if (is.getType() == Material.STAINED_GLASS_PANE)
 			return;
 		
-		if(is == null || is.getType() == Material.AIR)
+		if(is.getType() == Material.AIR)
 			return;
 		
 		if (!is.hasItemMeta())

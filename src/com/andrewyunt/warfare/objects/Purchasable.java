@@ -29,15 +29,15 @@ public interface Purchasable {
 	/**
 	 * @return The display name of the Purchasable.
 	 */
-	public String getName();
+	String getName();
 	
 	/**
 	 * @return The price of the purchasable
 	 */
-	public int getPrice();
+	int getPrice();
 	
 	/**
 	 * @return The display item of the Purchasable.
 	 */
-	public ItemStack getDisplayItem();
+	ItemStack getDisplayItem();
 }

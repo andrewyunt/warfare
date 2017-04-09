@@ -56,12 +56,10 @@ public class SignDisplay {
 	 * 		The location of the display.
 	 * @param place
 	 * 		The place on the leaderboard the sign should display.
-	 * @param updateInterval
-	 * 		The update interval of the display in ticks.
 	 * @param load
 	 * 		Set this to true if the sign was loaded from a the configuration.
 	 */
-	public SignDisplay(int configNumber, Location loc, Type type, int place, long updateInterval, boolean load) {
+	public SignDisplay(int configNumber, Location loc, Type type, int place, boolean load) {
 		
 		this.configNumber = configNumber;
 		this.type = type;
@@ -87,7 +85,7 @@ public class SignDisplay {
 				
 				refresh = true;
 			}
-		}, 0L, updateInterval);
+		}, 0L, 6000L);
 	}
 	
 	public int getConfigNumber() {
@@ -146,7 +144,7 @@ public class SignDisplay {
 		int place = section.getInt("place");
 		Location loc = Utils.deserializeLocation(section.getConfigurationSection("location"));
 		
-		signDisplay = new SignDisplay(Integer.valueOf(section.getName()), loc, type, place, 6000L, true);
+		signDisplay = new SignDisplay(Integer.valueOf(section.getName()), loc, type, place, true);
 		
 		return signDisplay;
 	}

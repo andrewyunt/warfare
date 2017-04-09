@@ -256,13 +256,7 @@ public class Game {
 		}
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				
-				setStage(Stage.RESTART);
-			}
-		}, 200L);
+		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
 	}
 	
 	public Stage getStage() {
@@ -289,13 +283,7 @@ public class Game {
 			
 			end();
 			
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					
-					setStage(Stage.RESTART);
-				}
-			}, 200L);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
 			
 		} else if (stage == Stage.RESTART) {
 			
@@ -315,28 +303,18 @@ public class Game {
 			if (Warfare.getInstance().getArena().isEdit())
 				return;
 			
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					
-					Warfare.getInstance().getServer().shutdown();
-				}
-			}, 100L);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
 		}
 	}
 	
 	public void runCountdownTimer() {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				
-				countdownTime--;
-				
-				checkCountdownTime();
-			}
-		}, 0L, 20L);
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+            countdownTime--;
+
+            checkCountdownTime();
+        }, 0L, 20L);
 	}
 	
 	public void checkCountdownTime() {
@@ -369,15 +347,11 @@ public class Game {
 	public void runRefillTimer() {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				
-				refillCountdownTime--;
-				
-				checkRefillTime();
-			}
-		}, 0L, 20L);
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+            refillCountdownTime--;
+
+            checkRefillTime();
+        }, 0L, 20L);
 	}
 	
 	public void checkRefillTime() {

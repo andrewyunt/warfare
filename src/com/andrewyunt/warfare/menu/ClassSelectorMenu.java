@@ -48,7 +48,7 @@ public class ClassSelectorMenu implements Listener {
 		ULTIMATE("Ultimate"),
 		SKILL("Skill");
 		
-		private String name;
+		private final String name;
 		
 		Type(String name) {
 			

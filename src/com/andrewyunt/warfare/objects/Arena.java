@@ -127,15 +127,11 @@ public class Arena {
 		ConfigurationSection cagesSection = arenaConfig.getConfigurationSection("cages");
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				
-				for (String key : cagesSection.getKeys(false))
-					Warfare.getInstance().getGame().getCages().add(new Cage(key,
-							Utils.deserializeLocation(cagesSection.getConfigurationSection(key))));
-			}
-		}, 1L);
+		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+            for (String key : cagesSection.getKeys(false))
+                Warfare.getInstance().getGame().getCages().add(new Cage(key,
+                        Utils.deserializeLocation(cagesSection.getConfigurationSection(key))));
+        }, 1L);
 		
 		return arena;
 	}

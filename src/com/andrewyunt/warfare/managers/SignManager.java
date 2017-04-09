@@ -33,19 +33,18 @@ public class SignManager {
 	
 	public final Set<SignDisplay> signs = new HashSet<SignDisplay>();
 
-	public SignDisplay createSign(Location loc, Type type, int place, long updateInterval) throws SignException {
+	public void createSign(Location loc, Type type, int place) throws SignException {
 		
-		if (place == 0 || loc == null || updateInterval < 1)
+		if (place == 0 || loc == null)
 			throw new SignException();
 		
 		SignDisplay sign = new SignDisplay(
 				Utils.getHighestEntry(Warfare.getInstance().getSignConfig().getConfig()
 						.getConfigurationSection("signs")) + 1,
-				loc, type, place, updateInterval, false);
+				loc, type, place, false);
 		signs.add(sign);
-		
-		return sign;
-	}
+
+    }
 	
 	public void deleteSign(SignDisplay sign) throws SignException {
 
@@ -132,17 +131,21 @@ public class SignManager {
 	 * @return
 	 * 		The loaded sign from the specified configuration section.
 	 */
-	public SignDisplay loadSign(ConfigurationSection section) {
+	public void loadSign(ConfigurationSection section) {
 
 		SignDisplay sign = SignDisplay.loadFromConfig(section);
 
 		Location loc = Utils.deserializeLocation(section.getConfigurationSection("location"));
 		
-		if (signExists(loc))
-			signs.remove(loc);
+		if (!signExists(loc)) {
+			try {
+				signs.remove(getSign(loc));
+			} catch (SignException e) {
+				e.printStackTrace();
+			}
+		}
 
 		signs.add(sign);
 
-		return sign;
 	}
 }

@@ -54,7 +54,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
  */
 public class SpectatorsInteractionsListener implements Listener {
 	
-	private PlayerManager pm = Warfare.getInstance().getPlayerManager();
+	private final PlayerManager pm = Warfare.getInstance().getPlayerManager();
 
 	/* ** Blocks-related ** */
 
@@ -209,24 +209,18 @@ public class SpectatorsInteractionsListener implements Listener {
 						PlayerTeleportEvent.TeleportCause.PLUGIN);
 
 				// Prevents the arrow from bouncing on the entity
-				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), new Runnable() {
-					@Override
-					public void run() {
-						ev.getDamager().teleport(initialProjectileLocation);
-						ev.getDamager().setVelocity(initialProjectileVelocity);
-					}
-				}, 1L);
+				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
+                    ev.getDamager().teleport(initialProjectileLocation);
+                    ev.getDamager().setVelocity(initialProjectileVelocity);
+                }, 1L);
 
 				// Teleports back the spectator
-				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), new Runnable() {
-					@Override
-					public void run() {
-						spectatorInvolved.teleport(
-								initialSpectatorLocation.setDirection(spectatorInvolved.getLocation().getDirection()),
-								PlayerTeleportEvent.TeleportCause.PLUGIN);
-						spectatorInvolved.setFlying(wasFlying);
-					}
-				}, 5L);
+				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
+                    spectatorInvolved.teleport(
+                            initialSpectatorLocation.setDirection(spectatorInvolved.getLocation().getDirection()),
+                            PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    spectatorInvolved.setFlying(wasFlying);
+                }, 5L);
 			}
 		} catch (IllegalArgumentException | PlayerException e) {
 			e.printStackTrace();
@@ -304,49 +298,43 @@ public class SpectatorsInteractionsListener implements Listener {
 				final Vector initialProjectileVelocity = ev.getEntity().getVelocity();
 
 				// Prevents the potion from splashing on the entity
-				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), new Runnable() {
-					@Override
-					public void run() {
-						/*
-						 *  Because the original entity is, one tick later,
-						 *  destroyed, we need to spawn a new one.
-						 *  Cancelling the event only cancels the effect.
-						 */
-						ThrownPotion clonedEntity = (ThrownPotion) ev.getEntity().getWorld()
-								.spawnEntity(initialProjectileLocation, ev.getEntity().getType());
+				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), () -> {
+                    /*
+                     *  Because the original entity is, one tick later,
+                     *  destroyed, we need to spawn a new one.
+                     *  Cancelling the event only cancels the effect.
+                     */
+                    ThrownPotion clonedEntity = (ThrownPotion) ev.getEntity().getWorld()
+                            .spawnEntity(initialProjectileLocation, ev.getEntity().getType());
 
-						// For other plugins (may be used)
-						clonedEntity.setShooter(ev.getEntity().getShooter());
-						clonedEntity.setTicksLived(ev.getEntity().getTicksLived());
-						clonedEntity.setFallDistance(ev.getEntity().getFallDistance());
-						clonedEntity.setBounce(ev.getEntity().doesBounce());
-						if (ev.getEntity().getPassenger() != null) {
-							clonedEntity.setPassenger(ev.getEntity().getPassenger()); // hey, why not
-						}
+                    // For other plugins (may be used)
+                    clonedEntity.setShooter(ev.getEntity().getShooter());
+                    clonedEntity.setTicksLived(ev.getEntity().getTicksLived());
+                    clonedEntity.setFallDistance(ev.getEntity().getFallDistance());
+                    clonedEntity.setBounce(ev.getEntity().doesBounce());
+                    if (ev.getEntity().getPassenger() != null) {
+                        clonedEntity.setPassenger(ev.getEntity().getPassenger()); // hey, why not
+                    }
 
-						// Clones the effects
-						clonedEntity.setItem(ev.getEntity().getItem());
+                    // Clones the effects
+                    clonedEntity.setItem(ev.getEntity().getItem());
 
-						// Clones the speed/direction
-						clonedEntity.setVelocity(initialProjectileVelocity);
+                    // Clones the speed/direction
+                    clonedEntity.setVelocity(initialProjectileVelocity);
 
-						// Just in case
-						ev.getEntity().remove();
-					}
-				}, 1L);
+                    // Just in case
+                    ev.getEntity().remove();
+                }, 1L);
 
 				// Teleports back the spectators
-				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), new Runnable() {
-					@Override
-					public void run() {
-						for (UUID spectatorUUID : spectatorsAffected) {
-							Player spectator = Bukkit.getServer().getPlayer(spectatorUUID);
+				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), () -> {
+                    for (UUID spectatorUUID : spectatorsAffected) {
+                        Player spectator = Bukkit.getServer().getPlayer(spectatorUUID);
 
-							spectator.teleport(spectator.getLocation().add(0, -10, 0));
-							spectator.setFlying(oldFlyMode.get(spectatorUUID));
-						}
-					}
-				}, 5L);
+                        spectator.teleport(spectator.getLocation().add(0, -10, 0));
+                        spectator.setFlying(oldFlyMode.get(spectatorUUID));
+                    }
+                }, 5L);
 
 				/*
 				 * Cancels the effect for everyone (because the thrown potion is

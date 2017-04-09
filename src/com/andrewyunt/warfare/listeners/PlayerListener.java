@@ -57,7 +57,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -232,7 +231,7 @@ public class PlayerListener implements Listener {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("Connect");
 				out.writeUTF(mostPlayers);
-				player.sendPluginMessage((Plugin) Warfare.getInstance(), "BungeeCord", out.toByteArray());
+				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
 				
 				return true;
 			}
@@ -437,7 +436,7 @@ public class PlayerListener implements Listener {
 		if (!itemInHandMeta.hasDisplayName())
 			return;
 		
-		if (itemInHandMeta.getDisplayName() == "Booster Bow")
+		if (itemInHandMeta.getDisplayName().equals("Booster Bow"))
 			arrow.remove();
 	}
 	
@@ -527,7 +526,7 @@ public class PlayerListener implements Listener {
 		GamePlayer gp = null;
 		
 		try {
-			gp = Warfare.getInstance().getPlayerManager().getPlayer((Player) event.getPlayer());
+			gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
@@ -542,7 +541,7 @@ public class PlayerListener implements Listener {
 	public void onChat(AsyncPlayerChatEvent event) {
 		
 		for (Player player : event.getRecipients()) {
-			Conversable conversable = (Conversable) player;
+			Conversable conversable = player;
 			
 			if (conversable.isConversing())
 				event.getRecipients().remove(player);
@@ -592,8 +591,7 @@ public class PlayerListener implements Listener {
 			Warfare.getInstance().getSignManager().createSign(
 					event.getBlock().getLocation(),
 					type,
-					place,
-					6000L);
+					place);
 		} catch (SignException e) {
 			e.printStackTrace();
 			player.sendMessage(ChatColor.RED + e.getMessage());

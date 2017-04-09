@@ -40,16 +40,18 @@ import com.andrewyunt.warfare.objects.Skill;
 import com.andrewyunt.warfare.objects.Ultimate;
 
 public class MySQLManager {
-	
-	private String ip, database, user, pass;
+
+	private String database;
+	private String user;
+	private String pass;
 	private int port;
 	private Connection connection;
 	
 	public boolean connect() {
 		
 		FileConfiguration config = Warfare.getInstance().getConfig();
-		
-		ip = config.getString("database-ip");
+
+		String ip = config.getString("database-ip");
 		port = config.getInt("database-port");
 		database = config.getString("database-name");
 		user = config.getString("database-user");
@@ -75,6 +77,7 @@ public class MySQLManager {
 		try {
 			connection.close();
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -94,11 +97,10 @@ public class MySQLManager {
 		
 		if (Warfare.getInstance().isEnabled()) {
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.runTaskAsynchronously(Warfare.getInstance(), () -> {
-				savePlayer(player, uuid);
-			});
-		} else
+			scheduler.runTaskAsynchronously(Warfare.getInstance(), () -> savePlayer(player, uuid));
+		} else {
 			savePlayer(player, uuid);
+		}
 	}
 	
 	private void savePlayer(GamePlayer player, String uuid) {
@@ -311,7 +313,7 @@ public class MySQLManager {
 			
 			preparedStatement.setString(1, Warfare.getInstance().getConfig().getString("server-name"));
 			preparedStatement.setString(2, Warfare.getInstance().getGame().getStage().toString());
-			preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().length);
+			preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().size());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {

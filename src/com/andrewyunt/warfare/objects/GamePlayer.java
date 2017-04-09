@@ -261,25 +261,22 @@ public class GamePlayer {
 		
 		if (spectating) {
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					Player player = getBukkitPlayer();
-					
-					player.setAllowFlight(true);
-					player.setFireTicks(0);
-					
-					for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators())
-						player.showPlayer(toShow.getBukkitPlayer());
-					
-					for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers())
-						toHide.getBukkitPlayer().hidePlayer(player);
-					
-					updateDynamicScoreboard();
-					
-					updateHotbar();
-				}
-			}, 5L);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+                Player player = getBukkitPlayer();
+
+                player.setAllowFlight(true);
+                player.setFireTicks(0);
+
+                for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators())
+                    player.showPlayer(toShow.getBukkitPlayer());
+
+                for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers())
+                    toHide.getBukkitPlayer().hidePlayer(player);
+
+                updateDynamicScoreboard();
+
+                updateHotbar();
+            }, 5L);
 			
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
 			Chunk chunk = loc.getChunk();
@@ -437,25 +434,22 @@ public class GamePlayer {
 		if (spectating) {
 			// Delay so players don't accidentally click items after being set to spectator mode
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					
-					ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
-					ItemMeta teleporterMeta = teleporter.getItemMeta();
-					teleporterMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"));
-					teleporter.setItemMeta(teleporterMeta);
-					inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1,
-							teleporter);
-					
-					ItemStack bed = new ItemStack(Material.BED, 1);
-					ItemMeta bedMeta = bed.getItemMeta();
-					bedMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"));
-					bed.setItemMeta(bedMeta);
-					inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1,
-							bed);
-				}
-			}, 20L);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+
+                ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+                ItemMeta teleporterMeta = teleporter.getItemMeta();
+                teleporterMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"));
+                teleporter.setItemMeta(teleporterMeta);
+                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1,
+                        teleporter);
+
+                ItemStack bed = new ItemStack(Material.BED, 1);
+                ItemMeta bedMeta = bed.getItemMeta();
+                bedMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"));
+                bed.setItemMeta(bedMeta);
+                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1,
+                        bed);
+            }, 20L);
 		} else {
 			if (!isCaged()) {
 				ItemStack shop = new ItemStack(Material.EMERALD, 1);

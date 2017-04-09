@@ -142,6 +142,7 @@ public class WarfareCommand implements CommandExecutor {
 			try {
 				coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
 			} catch (PlayerException e) {
+				e.printStackTrace();
 			}
 			
 			int coins = 0;
@@ -175,6 +176,7 @@ public class WarfareCommand implements CommandExecutor {
 			try {
 				coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
 			} catch (PlayerException e) {
+				e.printStackTrace();
 			}
 			
 			int coins = 0;

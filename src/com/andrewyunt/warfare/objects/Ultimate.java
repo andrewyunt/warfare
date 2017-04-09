@@ -121,12 +121,12 @@ public enum Ultimate implements Purchasable {
 		
 		if (this == HEAL) {
 			
-			double newHealth = ((Damageable) bp).getHealth() + 6;
+			double newHealth = bp.getHealth() + 6;
 			
 			if (newHealth < 40)
-				((Damageable) bp).setHealth(newHealth);
+				bp.setHealth(newHealth);
 			else
-				((Damageable) bp).setHealth(40D);
+				bp.setHealth(40D);
 			
 			Location loc = bp.getEyeLocation().clone();
 			loc.getWorld().spigot().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.HEART);
@@ -152,7 +152,7 @@ public enum Ultimate implements Purchasable {
 					continue;
 				
 				entityPlayer.getWorld().strikeLightningEffect(entityPlayer.getLocation());
-				Damageable dmgVictim = (Damageable) entityPlayer;
+				Damageable dmgVictim = entityPlayer;
 				
 				if (dmgVictim.getHealth() <= 5)
 					dmgVictim.setHealth(0D);
@@ -173,14 +173,10 @@ public enum Ultimate implements Purchasable {
 			player.getGhasts().add(ghast.getUniqueId());
 			
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					
-					if (!ghast.isDead())
-						ghast.teleport(bp.getLocation().add(new Location(bp.getLocation().getWorld(), 0, 10, 0)));
-				}
-			}, 0L, 200L);
+			scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+                if (!ghast.isDead())
+                    ghast.teleport(bp.getLocation().add(new Location(bp.getLocation().getWorld(), 0, 10, 0)));
+            }, 0L, 200L);
 		
 		} else if (this == SONIC) {
 			
@@ -199,13 +195,7 @@ public enum Ultimate implements Purchasable {
 			player.setFlamingFeet(true);
 			
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), new Runnable() {
-				@Override
-				public void run() {
-					
-					player.setFlamingFeet(false);
-				}
-			}, 100);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> player.setFlamingFeet(false), 100);
 		}
 		
 		player.setEnergy(0);

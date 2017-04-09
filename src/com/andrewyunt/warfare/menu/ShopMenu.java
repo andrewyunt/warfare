@@ -51,9 +51,9 @@ public class ShopMenu implements Listener {
 	}
 	
 	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-	private ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
-	private ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-	private ItemStack healthBoosts = new ItemStack(Material.GOLDEN_APPLE, 1);
+	private final ItemStack ultimates = new ItemStack(Material.EYE_OF_ENDER, 1);
+	private final ItemStack skills = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+	private final ItemStack healthBoosts = new ItemStack(Material.GOLDEN_APPLE, 1);
 	
 	public ShopMenu() {
 		

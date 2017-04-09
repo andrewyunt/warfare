@@ -15,7 +15,6 @@
  */
 package com.andrewyunt.warfare.listeners;
 
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -76,7 +75,7 @@ public class PlayerSkillListener implements Listener {
 		GamePlayer killedGP = null;
 
 		try {
-			killedGP = Warfare.getInstance().getPlayerManager().getPlayer((Player) event.getEntity());
+			killedGP = Warfare.getInstance().getPlayerManager().getPlayer(event.getEntity());
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
@@ -90,7 +89,7 @@ public class PlayerSkillListener implements Listener {
 		
 		if (lastDamagerGP.getSelectedSkill() == Skill.JUGGERNAUT) {
 			
-			lastDamager.setMaxHealth(((Damageable) lastDamager).getMaxHealth() + 2);
+			lastDamager.setMaxHealth(lastDamager.getMaxHealth() + 2);
 		}
 		
 		if (lastDamagerGP.getSelectedSkill() == Skill.CONSUMPTION)

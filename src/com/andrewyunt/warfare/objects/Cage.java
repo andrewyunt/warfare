@@ -27,9 +27,10 @@ import org.bukkit.block.Block;
 public class Cage {
 	
 	private String name;
-	private Location location;
 	private GamePlayer player;
-	private Set<Block> blocks = new HashSet<Block>();
+
+	private final Location location;
+	private final Set<Block> blocks = new HashSet<Block>();
 	
 	public Cage(String name, Location location) {
 		

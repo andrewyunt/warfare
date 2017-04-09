@@ -63,6 +63,7 @@ public class PlayerUltimateListener implements Listener {
 		try {
 			gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 		} catch (PlayerException e) {
+			e.printStackTrace();
 		}
 		
 		if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
@@ -92,6 +93,7 @@ public class PlayerUltimateListener implements Listener {
 		try {
 			damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
 		} catch (PlayerException e) {
+			e.printStackTrace();
 		}
 		
 		final GamePlayer finalDamagedGP = damagedGP;
@@ -122,8 +124,6 @@ public class PlayerUltimateListener implements Listener {
 			}
 			
 			gpDamager.setEnergy(gpDamager.getEnergy() + gpDamager.getSelectedUltimate().getEnergyPerClick());
-			
-			return;
 		}
 	}
 	
@@ -145,6 +145,7 @@ public class PlayerUltimateListener implements Listener {
 		try {
 			damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
 		} catch (PlayerException e) {
+			e.printStackTrace();
 		}
 		
 		final GamePlayer finalDamagedGP = damagedGP;
@@ -207,13 +208,13 @@ public class PlayerUltimateListener implements Listener {
 			if (!nearbyGP.isInGame())
 				return;
 			
-			Damageable dmgPlayer = (Damageable) nearbyPlayer;
+			Damageable dmgPlayer = nearbyPlayer;
 			
 			if (dmgPlayer.getHealth() < 5) {
 				dmgPlayer.setHealth(0D);
 				return;
 			} else
-				nearbyPlayer.setHealth(((Damageable) nearbyPlayer).getHealth() - 5);
+				nearbyPlayer.setHealth(nearbyPlayer.getHealth() - 5);
 		}
 	}
 	

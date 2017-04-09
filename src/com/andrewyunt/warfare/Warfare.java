@@ -42,14 +42,15 @@ public class Warfare extends JavaPlugin implements Listener {
 	
 	private static Warfare instance;
 	
-	private MySQLManager mysqlManager = new MySQLManager();
-	private PlayerManager playerManager = new PlayerManager();
-	private SignManager signManager = new SignManager();
-	private ArenaConfiguration arenaConfig = new ArenaConfiguration();
-	private SignConfiguration signConfig = new SignConfiguration();
-	private ShopMenu shopMenu = new ShopMenu();
-	private ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
-	private TeleporterMenu teleporterMenu = new TeleporterMenu();
+	private final MySQLManager mysqlManager = new MySQLManager();
+	private final PlayerManager playerManager = new PlayerManager();
+	private final SignManager signManager = new SignManager();
+	private final ArenaConfiguration arenaConfig = new ArenaConfiguration();
+	private final SignConfiguration signConfig = new SignConfiguration();
+	private final ShopMenu shopMenu = new ShopMenu();
+	private final ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
+	private final TeleporterMenu teleporterMenu = new TeleporterMenu();
+
 	private Arena arena;
 	private Game game;
 	
@@ -112,6 +113,8 @@ public class Warfare extends JavaPlugin implements Listener {
 		
 		for (GamePlayer player : playerManager.getPlayers())
 			mysqlManager.savePlayer(player);
+
+		mysqlManager.disconnect();
 	}
 	
 	public static Warfare getInstance() {
