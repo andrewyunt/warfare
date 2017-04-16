@@ -74,30 +74,28 @@ public class Game {
 		
 		// Add the player to the players set
 		players.add(player);
-		
-		if (stage == Stage.WAITING) {
-			// Get the player's bukkit player
-			Player bp = player.getBukkitPlayer();
-			
-			// Set player's mode to survival
-			bp.setGameMode(GameMode.SURVIVAL);
-			
-			// Send the join message to the players, delayed for disguises
-			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-				for (Cage cage : getAvailableCages()) {
-					cage.setPlayer(player);
-					break;
-				}
-				
-				if (getAvailableCages().size() == 0)
-					setStage(Stage.COUNTDOWN);
-				
-				Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-						String.format("&7%s &ehas joined (&b%s&e/&b%s&e)!", bp.getDisplayName(),
-								players.size(), cages.size())));
-			}, 5L);
-		}
+
+		// Get the player's bukkit player
+		Player bp = player.getBukkitPlayer();
+
+		// Set player's mode to survival
+		bp.setGameMode(GameMode.SURVIVAL);
+
+		// Send the join message to the players, delayed for disguises
+		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+			for (Cage cage : getAvailableCages()) {
+				cage.setPlayer(player);
+				break;
+			}
+
+			if (getAvailableCages().size() == 0)
+				setStage(Stage.COUNTDOWN);
+
+			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+					String.format("&7%s &ehas joined (&b%s&e/&b%s&e)!", bp.getDisplayName(),
+							players.size(), cages.size())));
+		}, 5L);
 	}
 	
 	public void removePlayer(GamePlayer player) {

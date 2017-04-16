@@ -123,20 +123,21 @@ public class PlayerListener implements Listener {
 					return;
 				}
 				
-				if (game.getStage() == Stage.WAITING) {
-					player.sendMessage(ChatColor.GREEN + "You can use " + ChatColor.AQUA + "/lobby"
-							+ ChatColor.GREEN + " to return to the lobby.");
+				if (game.getStage() == Game.Stage.WAITING) {
 					game.addPlayer(finalGP);
+					return;
+				} else if (game.getStage() == Game.Stage.END) {
+					player.kickPlayer("You may not join once the game has ended.");
 					return;
 				} else if (game.getStage() == Stage.RESTART) {
 					player.kickPlayer("You may not join during a restart.");
 					return;
+				} else {
+					if (!player.hasPermission("warfare.spectatorjoin"))
+						player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
+					else
+						finalGP.setSpectating(true, false);
 				}
-				
-				if (game.getStage() != Stage.WAITING && !player.hasPermission("Warfare.spectatorjoin"))
-					player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
-				else
-					finalGP.setSpectating(true, false);
 			}
 		}, 2L);
 	}
@@ -209,30 +210,7 @@ public class PlayerListener implements Listener {
 				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
 				return true;
 			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"))) {
-				Map<String, Entry<Game.Stage, Integer>> servers = Warfare.getInstance().getMySQLManager().getServers();
-				Map<String, Integer> playableServers = new HashMap<String, Integer>();
-				
-				for (Entry<String, Entry<Stage, Integer>> entry : servers.entrySet())
-					if (entry.getValue().getKey() == Game.Stage.WAITING)
-						playableServers.put(entry.getKey(), entry.getValue().getValue());
-				
-				if (playableServers.size() == 0)  {
-					player.sendMessage(ChatColor.RED + "There are no available servers at the moment.");
-					return true;
-				}
-				
-				String mostPlayers = null;
-				int mostPlayersCount = 0;
-				
-				for (Entry<String, Integer> entry : playableServers.entrySet())
-					if (entry.getValue() >= mostPlayersCount)
-						mostPlayers = entry.getKey();
-				
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Connect");
-				out.writeUTF(mostPlayers);
-				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
-				
+				Warfare.getInstance().getPlayMenu().open(gp);
 				return true;
 			}
 		} else if (gp.isCaged()) {

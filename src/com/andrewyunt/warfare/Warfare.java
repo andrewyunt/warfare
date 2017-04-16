@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -43,15 +44,16 @@ public class Warfare extends JavaPlugin implements Listener {
 	
 	private static Warfare instance;
 	
-	private  MySQLManager mysqlManager;
-	private  PlayerManager playerManager;
-	private  SignManager signManager;
-	private  ArenaConfiguration arenaConfig;
-	private  SignConfiguration signConfig;
-	private  ShopMenu shopMenu;
-	private  ClassSelectorMenu classSelectorMenu;
-	private  TeleporterMenu teleporterMenu;
-	private  ScoreboardHandler scoreboardHandler;
+	private MySQLManager mysqlManager;
+	private PlayerManager playerManager;
+	private SignManager signManager;
+	private ArenaConfiguration arenaConfig;
+	private SignConfiguration signConfig;
+	private ShopMenu shopMenu;
+	private PlayMenu playMenu;
+	private ClassSelectorMenu classSelectorMenu;
+	private TeleporterMenu teleporterMenu;
+	private ScoreboardHandler scoreboardHandler;
 	private Arena arena;
 	private Game game;
 	
@@ -66,6 +68,7 @@ public class Warfare extends JavaPlugin implements Listener {
 		arenaConfig = new ArenaConfiguration();
 		signConfig = new SignConfiguration();
 		shopMenu = new ShopMenu();
+		playMenu = new PlayMenu();
 		classSelectorMenu = new ClassSelectorMenu();
 		teleporterMenu = new TeleporterMenu();
 		scoreboardHandler = new ScoreboardHandler();
@@ -97,8 +100,9 @@ public class Warfare extends JavaPlugin implements Listener {
 		if (getConfig().getBoolean("is-lobby")) {
 			signConfig.saveDefaultConfig();
 			signManager.loadSigns();
-			
+
 			pm.registerEvents(shopMenu, this);
+			pm.registerEvents(playMenu, this);
 		} else {
 			arenaConfig.saveDefaultConfig();
 			arena = Arena.loadFromConfig();
@@ -177,6 +181,11 @@ public class Warfare extends JavaPlugin implements Listener {
 	public ShopMenu getShopMenu() {
 		
 		return shopMenu;
+	}
+
+	public PlayMenu getPlayMenu() {
+
+		return playMenu;
 	}
 	
 	public ClassSelectorMenu getClassSelectorMenu() {
