@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -42,23 +43,33 @@ public class Warfare extends JavaPlugin implements Listener {
 	
 	private static Warfare instance;
 	
-	private final MySQLManager mysqlManager = new MySQLManager();
-	private final PlayerManager playerManager = new PlayerManager();
-	private final SignManager signManager = new SignManager();
-	private final ArenaConfiguration arenaConfig = new ArenaConfiguration();
-	private final SignConfiguration signConfig = new SignConfiguration();
-	private final ShopMenu shopMenu = new ShopMenu();
-	private final ClassSelectorMenu classSelectorMenu = new ClassSelectorMenu();
-	private final TeleporterMenu teleporterMenu = new TeleporterMenu();
-
+	private  MySQLManager mysqlManager;
+	private  PlayerManager playerManager;
+	private  SignManager signManager;
+	private  ArenaConfiguration arenaConfig;
+	private  SignConfiguration signConfig;
+	private  ShopMenu shopMenu;
+	private  ClassSelectorMenu classSelectorMenu;
+	private  TeleporterMenu teleporterMenu;
+	private  ScoreboardHandler scoreboardHandler;
 	private Arena arena;
 	private Game game;
 	
 	@Override
 	public void onEnable() {
-		
+
 		instance = this;
-		
+
+		mysqlManager = new MySQLManager();
+		playerManager = new PlayerManager();
+		signManager = new SignManager();
+		arenaConfig = new ArenaConfiguration();
+		signConfig = new SignConfiguration();
+		shopMenu = new ShopMenu();
+		classSelectorMenu = new ClassSelectorMenu();
+		teleporterMenu = new TeleporterMenu();
+		scoreboardHandler = new ScoreboardHandler();
+
 		saveDefaultConfig();
 		
 		PluginManager pm = getServer().getPluginManager();
@@ -80,6 +91,7 @@ public class Warfare extends JavaPlugin implements Listener {
 			}
 		
 		pm.registerEvents(classSelectorMenu, this);
+		pm.registerEvents(scoreboardHandler, this);
 		pm.registerEvents(new PlayerListener(), this);
 		
 		if (getConfig().getBoolean("is-lobby")) {
@@ -175,5 +187,10 @@ public class Warfare extends JavaPlugin implements Listener {
 	public TeleporterMenu getTeleporterMenu() {
 		
 		return teleporterMenu;
+	}
+
+	public ScoreboardHandler getScoreboardHandler() {
+
+		return scoreboardHandler;
 	}
 }

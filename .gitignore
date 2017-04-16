@@ -49,4 +49,5 @@ Temporary Items
 .classpath
 
 # IntelliJ
-.idea/
+/.idea/
+/out/

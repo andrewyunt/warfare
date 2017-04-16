@@ -45,7 +45,6 @@ public class GamePlayer {
 	private UUID uuid;
 	private int coins, earnedCoins, earnedCoinsGame, wins, energy, kills, killStreak;
 	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate, hasFallen;
-	private DynamicScoreboard dynamicScoreboard;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Skill selectedSkill;
@@ -57,17 +56,13 @@ public class GamePlayer {
 	public GamePlayer(UUID uuid) {
 		
 		this.uuid = uuid;
-		
-		// Set up scoreboard
-		dynamicScoreboard = new DynamicScoreboard(ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
-		getBukkitPlayer().setScoreboard(dynamicScoreboard.getScoreboard());
-		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
-			return;
-		
-		// Register health objective
-		Objective healthObjective = dynamicScoreboard.getScoreboard().registerNewObjective(ChatColor.RED + "â�¤", "health");
-		healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+
+		// Register health objective for game servers
+		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid).getScoreboard()
+					.registerNewObjective(ChatColor.RED + "â�¤", "health");
+			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+		}
 	}
 	
 	public UUID getUUID() {
@@ -83,8 +78,6 @@ public class GamePlayer {
 	public void setCoins(int coins) {
 		
 		this.coins = coins;
-		
-		updateDynamicScoreboard();
 	}
 	
 	public int getCoins() {
@@ -115,8 +108,6 @@ public class GamePlayer {
 	public void setWins(int wins) {
 		
 		this.wins = wins;
-		
-		updateDynamicScoreboard();
 	}
 	
 	public int getWins() {
@@ -162,12 +153,17 @@ public class GamePlayer {
 		
 		this.kills = kills;
 		
-		updateDynamicScoreboard();
+		Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid);
 	}
 	
 	public int getKills() {
 		
 		return kills;
+	}
+
+	public int getKillStreak() {
+
+		return killStreak;
 	}
 	
 	public void setCooldown(boolean cooldown) {
@@ -273,8 +269,6 @@ public class GamePlayer {
                 for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers())
                     toHide.getBukkitPlayer().hidePlayer(player);
 
-                updateDynamicScoreboard();
-
                 updateHotbar();
             }, 5L);
 			
@@ -345,86 +339,7 @@ public class GamePlayer {
 		
 		return null;
 	}
-	
-	public DynamicScoreboard getDynamicScoreboard() {
-		
-		return dynamicScoreboard;
-	}
-	
-	public void updateDynamicScoreboard() {
-		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")){
-			dynamicScoreboard.update(12, ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString()
-					+ "- - --- ------ --- --   - --");
-			
-			dynamicScoreboard.update(8, ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics"
-					+ ChatColor.GRAY + ChatColor.BOLD.toString() + ":");
-			
-			// Display player's wins
-			dynamicScoreboard.update(7, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Total Wins: "
-					+ ChatColor.GREEN + String.valueOf(wins));
-			
-			// Display player's kills
-			dynamicScoreboard.update(6, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Total Kills: "
-					+ ChatColor.GREEN + String.valueOf(kills));
-			
-			// Display player's coins
-			dynamicScoreboard.update(5, ChatColor.GOLD + "  » " + ChatColor.YELLOW + "Coin Balance: "
-					+ ChatColor.GREEN + String.valueOf(coins));
-			
-			dynamicScoreboard.blankLine(4);
-			
-			// Display player's chosen class 
-			dynamicScoreboard.update(3, ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit"
-					+ ChatColor.GRAY + ChatColor.BOLD.toString() + ":");
-			dynamicScoreboard.update(2, ChatColor.GOLD + "  » " + ChatColor.YELLOW + ChatColor.BOLD.toString()
-					+ (selectedKit == null ? "None" : selectedKit.getName()));
-			
-			dynamicScoreboard.update(1, ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString()
-					+ "-------------------------");
-		} else {
-			Game game = Warfare.getInstance().getGame();
-			Stage stage = game.getStage();
-			
-			if (stage == Stage.WAITING || stage == Stage.COUNTDOWN) {
-				
-				dynamicScoreboard.blankLine(8);
-				
-				// Display players
-				dynamicScoreboard.update(7, "Players: " + ChatColor.GREEN + game.getPlayers().size() + "/"
-						+ game.getCages().size());
-				
-				dynamicScoreboard.blankLine(6);
-				
-				// Display seconds left
-				if (stage == Stage.WAITING)
-					dynamicScoreboard.update(5, "Waiting...");
-				else
-					dynamicScoreboard.update(5, "Starting in " + ChatColor.GREEN + game.getCountdownTime() + "s");
-				
-				dynamicScoreboard.blankLine(4);
-				
-				// Display server name
-				dynamicScoreboard.update(3, "Server: " + ChatColor.GREEN + Warfare.getInstance().getConfig().getString("server-name"));
-			} else {
-				dynamicScoreboard.blankLine(9);
-				
-				dynamicScoreboard.update(8, "Next event:");
-				
-				dynamicScoreboard.update(7, ChatColor.GREEN + "Refill " + LocalTime.ofSecondOfDay(game
-						.getRefillCountdownTime()).toString().substring(3));
-				
-				dynamicScoreboard.blankLine(6);
-				
-				dynamicScoreboard.update(5, "Players Left: " + ChatColor.GREEN + game.getPlayers().size());
-				
-				dynamicScoreboard.blankLine(4);
-				
-				dynamicScoreboard.update(3, "Killstreak: " + ChatColor.GREEN + killStreak);
-			}
-		}
-	}
-	
+
 	public void updateHotbar() {
 		
 		PlayerInventory inv = getBukkitPlayer().getInventory();
@@ -440,45 +355,39 @@ public class GamePlayer {
                 ItemMeta teleporterMeta = teleporter.getItemMeta();
                 teleporterMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"));
                 teleporter.setItemMeta(teleporterMeta);
-                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1,
-                        teleporter);
+                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1, teleporter);
 
                 ItemStack bed = new ItemStack(Material.BED, 1);
                 ItemMeta bedMeta = bed.getItemMeta();
                 bedMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"));
                 bed.setItemMeta(bedMeta);
-                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1,
-                        bed);
+                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1, bed);
             }, 20L);
 		} else {
 			if (!isCaged()) {
-				ItemStack shop = new ItemStack(Material.EMERALD, 1);
+				ItemStack shop = new ItemStack(Material.CHEST, 1);
 				ItemMeta shopMeta = shop.getItemMeta();
 				shopMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"));
 				shop.setItemMeta(shopMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.shop.slot") - 1,
-						shop);
+				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.shop.slot") - 1, shop);
 				
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
 				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"));
 				classSelector.setItemMeta(classSelectorMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-selector.slot") - 1,
-						classSelector);
+				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-selector.slot") - 1, classSelector);
 				
 				ItemStack play = new ItemStack(Material.DIAMOND_SWORD, 1);
 				ItemMeta playMeta = play.getItemMeta();
 				playMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"));
 				play.setItemMeta(playMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.play.slot") - 1,
-						play);
+				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.play.slot") - 1, play);
 			} else {
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
 				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.cage-items.class-selector.title"));
 				classSelector.setItemMeta(classSelectorMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.cage-items.class-selector.slot") - 1,
-						classSelector);
+				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.cage-items.class-selector.slot") - 1, classSelector);
 			}
 		}
 	}

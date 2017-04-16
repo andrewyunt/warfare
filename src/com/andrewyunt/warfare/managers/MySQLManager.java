@@ -313,7 +313,7 @@ public class MySQLManager {
 			
 			preparedStatement.setString(1, Warfare.getInstance().getConfig().getString("server-name"));
 			preparedStatement.setString(2, Warfare.getInstance().getGame().getStage().toString());
-			preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().size());
+			preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().length);
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {

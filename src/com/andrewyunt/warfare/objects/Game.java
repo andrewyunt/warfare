@@ -82,10 +82,6 @@ public class Game {
 			// Set player's mode to survival
 			bp.setGameMode(GameMode.SURVIVAL);
 			
-			// Update player scoreboards
-			for (GamePlayer toUpdate : players)
-				toUpdate.updateDynamicScoreboard();
-			
 			// Send the join message to the players, delayed for disguises
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
@@ -115,10 +111,6 @@ public class Game {
 					String.format("&7%s &ehas quit!", player.getBukkitPlayer().getDisplayName())));
 		} else
 			checkPlayers();
-		
-		// Update player scoreboards
-		for (GamePlayer toUpdate : players)
-			toUpdate.updateDynamicScoreboard();
 	}
 	
 	public void checkPlayers() {
@@ -184,9 +176,6 @@ public class Game {
 			
 			// Give player speed 2 for 10 seconds if they have HEAD_START Skill
 			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
-			
-			// Update player's scoreboard
-			player.updateDynamicScoreboard();
 			
 			// Clear player's inventory to remove class selector
 			bp.getInventory().clear();
@@ -322,9 +311,6 @@ public class Game {
 		if (countdownTime > 0) {
 			Bukkit.getServer().broadcastMessage(ChatColor.RED + String.format("The game will start in %s seconds.",
 					countdownTime));
-			
-			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers())
-				player.updateDynamicScoreboard();
 		} else if (countdownTime == 0)
 			setStage(Stage.BATTLE);
 	}
@@ -363,9 +349,6 @@ public class Game {
 			
 			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Chests have been refilled. Next refill is in 5 minutes.");
 		}
-		
-		for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers())
-			player.updateDynamicScoreboard();
 	}
 	
 	public short getRefillCountdownTime() {

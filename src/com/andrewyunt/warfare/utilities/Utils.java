@@ -72,8 +72,7 @@ public class Utils {
 			if (toShow == toColor)
 				continue;
 
-			Scoreboard scoreboard = toShow.getDynamicScoreboard().getScoreboard();
-
+			Scoreboard scoreboard = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(toShow.getBukkitPlayer().getUniqueId()).getScoreboard();
 			Team team = scoreboard.getTeam("enemies");
 
 			if (team == null) {
