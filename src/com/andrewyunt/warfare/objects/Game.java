@@ -93,7 +93,7 @@ public class Game {
 				setStage(Stage.COUNTDOWN);
 
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&7%s &ehas joined (&b%s&e/&b%s&e)!", bp.getDisplayName(),
+					String.format("&7%s &6has joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
 							players.size(), cages.size())));
 		}, 5L);
 	}
@@ -106,7 +106,7 @@ public class Game {
 			player.getCage().setPlayer(null);
 			
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&7%s &ehas quit!", player.getBukkitPlayer().getDisplayName())));
+					String.format("&7%s &6has quit!", player.getBukkitPlayer().getDisplayName())));
 		} else
 			checkPlayers();
 	}
@@ -231,17 +231,9 @@ public class Game {
 					"You earned %s coins for winning the game.",
 					String.valueOf(winCoins)));
 		}
-		
-		// Send messages to all online players
-		for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-			if (player.getEarnedCoinsGame() > 0)
-				player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
-						"You earned %s coins total during the game.",
-						String.valueOf(player.getEarnedCoinsGame())));
-			
-			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + "Thanks for playing!");
-		}
-		
+
+		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Thanks for playing!");
+
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
 	}

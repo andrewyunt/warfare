@@ -9,6 +9,7 @@ import com.andrewyunt.warfare.scoreboard.SidebarProvider;
 import com.andrewyunt.warfare.utilities.DateTimeFormats;
 
 import com.faithfulmc.util.BukkitUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -49,7 +50,7 @@ public class TimerSidebarProvider implements SidebarProvider {
 
         lines.add(lines.size(), new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
 
-        if (Warfare.getInstance().getConfig().getBoolean("is-lobby")){
+        if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
             lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
 
             // Display player's wins
@@ -67,15 +68,11 @@ public class TimerSidebarProvider implements SidebarProvider {
             lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
             lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + ChatColor.BOLD.toString(),
                     (gp.getSelectedKit()) == null ? "None" : gp.getSelectedKit().getName()));
-
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
         } else {
             Game game = Warfare.getInstance().getGame();
             Game.Stage stage = game.getStage();
 
             if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN) {
-                lines.add(lines.size(), new SidebarEntry("   "));
-
                 // Display players
                 lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Players: " + ChatColor.GRAY + game.getPlayers().size() + "/"
                         + game.getCages().size()));
@@ -91,7 +88,7 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(lines.size(), new SidebarEntry(" "));
 
                 // Display server name
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Server: ", Warfare.getInstance().getConfig().getString("server-name")));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
             } else {
                 lines.add(lines.size(), new SidebarEntry("  "));
 

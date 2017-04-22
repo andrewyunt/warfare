@@ -76,77 +76,87 @@ public class ClassSelectorMenu implements Listener {
 		Player bp = player.getBukkitPlayer();
 		Inventory inv;
 		
-		inv = Bukkit.createInventory(null, 54, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector - " + type.getName());
-		
-		for (int i = 0; i < 9; i++)
-			inv.setItem(i, glassPane);
-		
-		for (int i = 9; i < 45; i = i + 9) {
-			inv.setItem(i, glassPane);
-			inv.setItem(i + 8, glassPane);
-		}
-		
-		for (int i = 45; i < 54; i++)
-			inv.setItem(i, glassPane);
-		
-		List<Purchasable> toAdd = new ArrayList<Purchasable>();
-		
-		
+		inv = Bukkit.createInventory(null, type == Type.KIT ? 27 : 54, ChatColor.LIGHT_PURPLE
+				+ ChatColor.BOLD.toString() + "Class Selector - " + type.getName());
+
 		if (type == Type.KIT) {
-			ItemStack uhc = new ItemStack(new ItemStack(Material.GOLDEN_APPLE));
+			for (int i = 0; i < 11; i++)
+				inv.setItem(i, glassPane);
+
+			ItemStack uhc = new ItemStack(Material.GOLDEN_APPLE, 1);
 			ItemMeta uhcMeta = uhc.getItemMeta();
 			uhcMeta.setDisplayName(ChatColor.GOLD + "UHC");
 			uhc.setItemMeta(uhcMeta);
-			inv.setItem(10, uhc);
-			
+			inv.setItem(11, uhc);
+
+			inv.setItem(12, glassPane);
+
 			Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
 			healPotion.setSplash(true);
 			ItemStack pot = healPotion.toItemStack(1);
 			ItemMeta potMeta = pot.getItemMeta();
 			potMeta.setDisplayName(ChatColor.GOLD + "Pot");
 			pot.setItemMeta(potMeta);
-			inv.setItem(11, pot);
-			
+			inv.setItem(13, pot);
+
+			inv.setItem(14, glassPane);
+
 			ItemStack soup = new ItemStack(Material.MUSHROOM_SOUP, 1);
 			ItemMeta soupMeta = soup.getItemMeta();
 			soupMeta.setDisplayName(ChatColor.GOLD + "Soup");
 			soup.setItemMeta(soupMeta);
-			inv.setItem(12, soup);
+			inv.setItem(15, soup);
+
+			for (int i = 16; i < 27; i++)
+				inv.setItem(i, glassPane);
 		} else {
+			for (int i = 0; i < 9; i++)
+				inv.setItem(i, glassPane);
+
+			for (int i = 9; i < 45; i = i + 9) {
+				inv.setItem(i, glassPane);
+				inv.setItem(i + 8, glassPane);
+			}
+
+			for (int i = 45; i < 54; i++)
+				inv.setItem(i, glassPane);
+
+			List<Purchasable> toAdd = new ArrayList<Purchasable>();
+
 			for (Purchasable purchase : player.getPurchases())
 				if (type == Type.ULTIMATE) {
 					if (purchase instanceof Ultimate)
 						toAdd.add(purchase);
-				} else if (type == Type.SKILL) { 
+				} else if (type == Type.SKILL) {
 					if (purchase instanceof Skill)
 						toAdd.add(purchase);
 				}
-			
+
 			for (int i = 0; i < inv.getSize(); i++) {
 				if (inv.getItem(i) != null)
 					continue;
-				
+
 				Purchasable purchase = null;
-				
+
 				try {
 					purchase = toAdd.get(0);
 				} catch (IndexOutOfBoundsException e) {
 					break;
 				}
-				
+
 				toAdd.remove(purchase);
-				
+
 				ItemStack displayItem = purchase.getDisplayItem().clone();
-				
+
 				for(Enchantment enchantment : displayItem.getEnchantments().keySet())
 					displayItem.removeEnchantment(enchantment);
-				
+
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
 				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
 				displayItemMeta.setLore(Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
 						"description-" + purchase.toString()), ChatColor.YELLOW));
 				displayItem.setItemMeta(displayItemMeta);
-				
+
 				inv.setItem(i, displayItem);
 			}
 		}
@@ -189,7 +199,8 @@ public class ClassSelectorMenu implements Listener {
 			
 			open(Type.KIT, gp);
 		} else {
-			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_')
+					.replace("'", ""));
 			
 			if (title.contains("Kit")) {
 				gp.setSelectedKit(Kit.valueOf(enumStr));

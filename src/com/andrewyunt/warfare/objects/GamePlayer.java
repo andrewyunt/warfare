@@ -43,8 +43,8 @@ import com.andrewyunt.warfare.utilities.Utils;
 public class GamePlayer {
 	
 	private UUID uuid;
-	private int coins, earnedCoins, earnedCoinsGame, wins, energy, kills, killStreak;
-	private boolean cooldown, hasSpeed, loaded, spectating, flamingFeet, sentActivate, hasFallen;
+	private int coins, earnedCoins, wins, energy, kills, killStreak;
+	private boolean epcCooldown, powerupCooldown, powerupActivated, loaded, spectating, flamingFeet, sentActivate, hasFallen;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Skill selectedSkill;
@@ -93,16 +93,6 @@ public class GamePlayer {
 	public int getEarnedCoins() {
 		
 		return earnedCoins;
-	}
-	
-	public void setEarnedCoinsGame(int earnedCoinsGame) {
-		
-		this.earnedCoinsGame = earnedCoinsGame;
-	}
-	
-	public int getEarnedCoinsGame() {
-		
-		return earnedCoinsGame;
 	}
 	
 	public void setWins(int wins) {
@@ -166,24 +156,34 @@ public class GamePlayer {
 		return killStreak;
 	}
 	
-	public void setCooldown(boolean cooldown) {
+	public void setEPCCooldown(boolean cooldown) {
 		
-		this.cooldown = cooldown;
+		this.epcCooldown = cooldown;
 	}
 	
-	public boolean isCooldown() {
+	public boolean isEPCCooldown() {
 		
-		return cooldown;
+		return epcCooldown;
 	}
-	
-	public void setHasSpeed(boolean hasSpeed) {
-		
-		this.hasSpeed = hasSpeed;
+
+	public void setPowerupCooldown(boolean powerupCooldown) {
+
+		this.powerupCooldown = powerupCooldown;
 	}
-	
-	public boolean hasSpeed() {
-		
-		return hasSpeed;
+
+	public boolean isPowerupCooldown() {
+
+		return powerupCooldown;
+	}
+
+	public void setPowerupActivated(boolean powerupActivated) {
+
+		this.powerupActivated = powerupActivated;
+	}
+
+	public boolean isPowerupActivated() {
+
+		return powerupActivated;
 	}
 	
 	public void setLoaded(boolean loaded) {

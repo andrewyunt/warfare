@@ -16,19 +16,17 @@
 package com.andrewyunt.warfare.listeners;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.andrewyunt.warfare.objects.Kit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,16 +46,13 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
@@ -78,25 +73,29 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		
-		// Update server status
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby"))
-			Warfare.getInstance().getMySQLManager().updateServerStatus();
-		
+
+		event.setJoinMessage(null);
+
 		Player player = event.getPlayer();
+
+		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+			// Update server status
+			Warfare.getInstance().getMySQLManager().updateServerStatus();
+		} else {
+			// Send welcome message
+			player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+					+ "-----------------------------------------------------");
+			player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD
+					+ ChatColor.BOLD.toString() + "Warfare");
+			player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: "
+					+ ChatColor.GRAY + "ts.faithfulmc.com");
+			player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: "
+					+ ChatColor.GRAY + "www.faithfulmc.com");
+			player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+					+ "-----------------------------------------------------");
+		}
+
 		GamePlayer gp = null;
-		
-		// Send welcome message
-		player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
-			+ "-----------------------------------------------------");
-		player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD
-				+ ChatColor.BOLD.toString() + "Warfare");
-		player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: "
-				+ ChatColor.GRAY + "ts.faithfulmc.com");
-		player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: "
-				+ ChatColor.GRAY + "www.faithfulmc.com");
-		player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
-			+ "-----------------------------------------------------");
 		
 		// Create the player's GamePlayer object
 		try {
@@ -144,7 +143,9 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		
+
+		event.setQuitMessage(null);
+
 		Player player = event.getPlayer();
 		GamePlayer gp = null;
 		
@@ -187,7 +188,7 @@ public class PlayerListener implements Listener {
 		
 		if (item == null || !item.hasItemMeta())
 			return;
-		
+
 		if (handleHotbarClick((Player) event.getWhoClicked(), item.getItemMeta().getDisplayName()))
 			event.setCancelled(true);
 	}
@@ -260,6 +261,12 @@ public class PlayerListener implements Listener {
 				return;
 			
 			damagedGP.setLastDamager(damagerGP);
+
+			if (damagerGP.getSelectedKit() == Kit.SOUP) {
+				damagedGP.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
+				damagerGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("You inflicted slowness II on %s for 10 seconds",
+						damagedGP.getBukkitPlayer().getDisplayName()));
+			}
 		}
 	}
 	
@@ -574,5 +581,89 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 			player.sendMessage(ChatColor.RED + e.getMessage());
 		}
+	}
+
+	// Event handlers for power ups
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onGrapple(PlayerFishEvent event) {
+
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
+
+		try {
+			gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+
+		gp.setPowerupCooldown(true);
+
+		GamePlayer finalGP = gp;
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+
+				finalGP.setPowerupCooldown(false);
+			}
+		}.runTaskLater(Warfare.getInstance(), 1200L);
+
+		if(!player.getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + ChatColor.BOLD.toString() + "Grappling Hook"))
+			return;
+
+		if(event.getState() == PlayerFishEvent.State.IN_GROUND  || event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT)
+			player.teleport(event.getHook().getLocation());
+	}
+
+	@EventHandler
+	public void onPowerup(PlayerInteractEvent event) {
+
+		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+			return;
+
+		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+
+		ItemStack item = event.getItem();
+
+		if (item == null || !item.hasItemMeta())
+			return;
+
+		if (item.getType() != Material.INK_SACK)
+			return;
+
+		if (!item.getItemMeta().getDisplayName().equalsIgnoreCase("Powerup"))
+			return;
+
+		Player player = event.getPlayer();
+		GamePlayer gp = null;
+
+		try {
+			gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+		} catch (PlayerException e) {
+			e.printStackTrace();
+		}
+
+		if (gp.getSelectedKit() == Kit.POT) {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 200));
+			player.sendMessage(ChatColor.YELLOW + "You have been given regen III for 10 seconds.");
+		}
+
+		player.setItemInHand(new ItemStack(Material.INK_SACK, 1, (short) 10));
+		gp.setPowerupActivated(true);
+
+		GamePlayer finalGP = gp;
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+
+				player.setItemInHand(new ItemStack(Material.INK_SACK, 1, (short) 8));
+				finalGP.setPowerupActivated(false);
+			}
+		}.runTaskLater(Warfare.getInstance(), 200L);
 	}
 }

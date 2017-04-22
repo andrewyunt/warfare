@@ -77,7 +77,7 @@ public class ShopMenu implements Listener {
 	
 	public void open(Type type, GamePlayer player) {
 		
-		Inventory inv = null;
+		Inventory inv;
 		
 		if (type == Type.MAIN) {
 			inv = Bukkit.createInventory(null, 27, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
@@ -136,8 +136,8 @@ public class ShopMenu implements Listener {
 				lore.add("");
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setGroupingUsed(true);
-				lore.add(ChatColor.GREEN + (player.getPurchases().contains(purchasable) ?
-						"Purchased" : "Price: $" + numberFormat.format(purchasable.getPrice())));
+				lore.add(player.getPurchases().contains(purchasable) ? ChatColor.GREEN + "Purchased"
+						: ChatColor.RED + "Price: $" + numberFormat.format(purchasable.getPrice()));
 				im.setLore(lore);
 				is.setItemMeta(im);
 				

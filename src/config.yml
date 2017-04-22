@@ -21,11 +21,11 @@ hotbar-items:
       slot: 3
       title: "&a&lShop"
     class-selector:
-      slot: 5
+      slot: 7
       title: "&b&lSelect Class"
     play:
-      slot: 7
-      title: "&c&lPlay"
+      slot: 5
+      title: "&c&lJoin Game"
   spectator-items:
     teleporter:
       slot: 1
@@ -35,7 +35,7 @@ hotbar-items:
       title: "&c&lReturn to Lobby"
   cage-items:
     class-selector:
-      slot: 1
+      slot: 5
       title: "&e&lClass Selector"
 
 # Ultimate Descriptions
@@ -43,7 +43,7 @@ description-HEAL:
   - "Heal yourself 3 \u2764"
 description-WRATH:
   - "Strike nearby enemies with lightning for 2.5 \u2764"
-description-HELL_SPAWNING:
+description-HELLS_SPAWNING:
   - "Spawn a Ghast to assist you in battle"
 description-LEAP:
   - "Leap forward & upward"
@@ -68,3 +68,11 @@ description-GUARD:
   - "Get Resistance II while in a chest"
 description-FLAME:
   - "10% chance for your arrows to be set on fire"
+
+# Health Boost Descriptions
+description-HEALTH_BOOST_I:
+  - "Gives you an extra heart when you spawn."
+description-HEALTH_BOOST_II:
+  - "Gives you an extra two hearts when you spawn."
+description-HEALTH_BOOST_III:
+  - "Gives you an extra three hearts when you spawn."
