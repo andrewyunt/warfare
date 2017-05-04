@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import org.bukkit.entity.Player;
@@ -97,7 +98,7 @@ public class Warfare extends JavaPlugin implements Listener {
 		pm.registerEvents(scoreboardHandler, this);
 		pm.registerEvents(new PlayerListener(), this);
 		
-		if (getConfig().getBoolean("is-lobby")) {
+		if (StaticConfiguration.LOBBY){
 			signConfig.saveDefaultConfig();
 			signManager.loadSigns();
 
@@ -124,7 +125,7 @@ public class Warfare extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		
-		if (!getConfig().getBoolean("is-lobby"))
+		if (!StaticConfiguration.LOBBY)
 			game.setStage(Game.Stage.END);
 		
 		for (GamePlayer player : playerManager.getPlayers())
