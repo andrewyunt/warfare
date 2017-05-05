@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Kit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -78,7 +79,7 @@ public class PlayerListener implements Listener {
 
 		Player player = event.getPlayer();
 
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+		if (!StaticConfiguration.LOBBY) {
 			// Update server status
 			Warfare.getInstance().getMySQLManager().updateServerStatus();
 		} else {
@@ -155,7 +156,7 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+		if (!StaticConfiguration.LOBBY) {
 			Warfare.getInstance().getGame().removePlayer(gp);
 			Warfare.getInstance().getMySQLManager().updateServerStatus();
 		}
@@ -203,7 +204,7 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+		if (StaticConfiguration.LOBBY) {
 			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"))) {
 				Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 				return true;
@@ -235,7 +236,7 @@ public class PlayerListener implements Listener {
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void onPlayerDamage(EntityDamageByEntityEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+		if (StaticConfiguration.LOBBY) {
 			event.setCancelled(true);
 		} else {
 			Entity damager = event.getDamager();
@@ -270,7 +271,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 		
 		event.setDroppedExp(0);
@@ -324,7 +325,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 		
 		Game game = Warfare.getInstance().getGame();
@@ -377,7 +378,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 		
 		GamePlayer player = null;
@@ -448,7 +449,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			event.setCancelled(true);
 		else
 			cancelCageInteractions(event, event.getPlayer());
@@ -457,7 +458,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			event.setCancelled(true);
 		else
 			cancelCageInteractions(event, event.getPlayer());
@@ -475,7 +476,7 @@ public class PlayerListener implements Listener {
 	
 	private void cancelCageInteractions(Cancellable cancellable, Player player) {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 		
 		GamePlayer gp = null;
@@ -493,7 +494,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (!StaticConfiguration.LOBBY)
 			return;
 		
 		Player player = event.getPlayer();
@@ -513,7 +514,7 @@ public class PlayerListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			event.setCancelled(true);
 		else if (gp.isCaged())
 			event.setCancelled(true);
@@ -541,7 +542,7 @@ public class PlayerListener implements Listener {
 		
 		Player player = event.getPlayer();
 		
-		if (!player.hasPermission("Warfare.sign.create")) {
+		if (!player.hasPermission("warfare.sign.create")) {
 			player.sendMessage(ChatColor.RED + "You do not have permission to create a leaderboard sign.");
 			return;
 		}
@@ -584,7 +585,7 @@ public class PlayerListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onGrapple(PlayerFishEvent event) {
 
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 
 		Player player = event.getPlayer();
@@ -618,7 +619,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPowerup(PlayerInteractEvent event) {
 
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return;
 
 		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)

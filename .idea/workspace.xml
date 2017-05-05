@@ -15,35 +15,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6648cfc-d6be-4543-ade3-63494403873d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/PartyCommand.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyCreateArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyDeinviteArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyDisbandArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyInviteArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyJoinArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyKickArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyLeaveArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/party/arguments/PartyOpenArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/AddCageArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/AddChestArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/AddCoinsArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/EditArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/RemoveCageArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/RemoveCoinsArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/RestartArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/StartArgument.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/PartyManager.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/objects/Party.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/WarfareCommand.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/WarfareCommand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/listeners/PlayerListener.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/listeners/PlayerListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/MySQLManager.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/MySQLManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/objects/GamePlayer.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/objects/GamePlayer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/andrewyunt/warfare/utilities/Utils.java" afterPath="$PROJECT_DIR$/src/com/andrewyunt/warfare/utilities/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/config.yml" afterPath="$PROJECT_DIR$/src/config.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/plugin.yml" afterPath="$PROJECT_DIR$/src/plugin.yml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -56,34 +28,13 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MySQLManager.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/MySQLManager.java">
+      <file leaf-file-name="Warfare.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="80" column="29" lean-forward="false" selection-start-line="80" selection-start-column="29" selection-end-line="80" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ClassSelectorMenu.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/ClassSelectorMenu.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="876">
-              <caret line="202" column="20" lean-forward="false" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PlayMenu.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="178" column="5" lean-forward="true" selection-start-line="178" selection-start-column="5" selection-end-line="178" selection-end-column="5" />
+            <state relative-caret-position="192">
+              <caret line="143" column="9" lean-forward="true" selection-start-line="143" selection-start-column="9" selection-end-line="143" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4898#4915#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -118,6 +69,7 @@
       <find>cooldown</find>
       <find>epcCooldown</find>
       <find>slowness</find>
+      <find>getPlayers</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -181,8 +133,8 @@
         <option value="$PROJECT_DIR$/src/config.yml" />
         <option value="$PROJECT_DIR$/src/com/andrewyunt/warfare/utilities/Utils.java" />
         <option value="$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java" />
-        <option value="$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java" />
         <option value="$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/MySQLManager.java" />
+        <option value="$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java" />
       </list>
     </option>
   </component>
@@ -274,6 +226,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="objects" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="warfare" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="warfare" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="warfare" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="managers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -559,7 +533,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="2" width="1932" height="1045" extended-state="1" />
+    <frame x="-7" y="2" width="1932" height="1045" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -578,6 +552,8 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23434238" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -588,9 +564,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980973" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -762,14 +736,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/PlayerManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1751">
-          <caret line="133" column="33" lean-forward="true" selection-start-line="133" selection-start-column="33" selection-end-line="133" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/command/warfare/arguments/AddCoinsArgument.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -917,28 +883,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="140" column="9" lean-forward="true" selection-start-line="140" selection-start-column="9" selection-end-line="140" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/objects/GamePlayer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="43" column="68" lean-forward="true" selection-start-line="43" selection-start-column="68" selection-end-line="43" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/ClassSelectorMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="876">
-          <caret line="202" column="20" lean-forward="false" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -948,17 +896,6 @@
         <state relative-caret-position="723">
           <caret line="137" column="62" lean-forward="true" selection-start-line="137" selection-start-column="62" selection-end-line="137" selection-end-column="62" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="178" column="5" lean-forward="true" selection-start-line="178" selection-start-column="5" selection-end-line="178" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4898#4915#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -975,6 +912,43 @@
         <state relative-caret-position="527">
           <caret line="80" column="29" lean-forward="false" selection-start-line="80" selection-start-column="29" selection-end-line="80" selection-end-column="29" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/ClassSelectorMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="876">
+          <caret line="202" column="20" lean-forward="false" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/menu/PlayMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="178" column="5" lean-forward="false" selection-start-line="178" selection-start-column="5" selection-end-line="178" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4898#4915#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/managers/PlayerManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="110" column="44" lean-forward="false" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/andrewyunt/warfare/Warfare.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="143" column="9" lean-forward="true" selection-start-line="143" selection-start-column="9" selection-end-line="143" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

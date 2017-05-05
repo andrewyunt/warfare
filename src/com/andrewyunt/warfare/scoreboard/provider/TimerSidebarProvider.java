@@ -1,6 +1,7 @@
 package com.andrewyunt.warfare.scoreboard.provider;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
@@ -50,7 +51,7 @@ public class TimerSidebarProvider implements SidebarProvider {
 
         lines.add(lines.size(), new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
 
-        if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+        if (StaticConfiguration.LOBBY) {
             lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
 
             // Display player's wins

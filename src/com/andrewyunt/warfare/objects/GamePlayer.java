@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -56,7 +57,7 @@ public class GamePlayer {
 		this.uuid = uuid;
 
 		// Register health objective for game servers
-		if (!Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+		if (!StaticConfiguration.LOBBY) {
 			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid).getScoreboard()
 					.registerNewObjective(ChatColor.RED + "â�¤", "health");
 			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
@@ -328,7 +329,7 @@ public class GamePlayer {
 	
 	public Cage getCage() {
 		
-		if (Warfare.getInstance().getConfig().getBoolean("is-lobby"))
+		if (StaticConfiguration.LOBBY)
 			return null;
 		
 		for (Cage cage : Warfare.getInstance().getGame().getCages())
