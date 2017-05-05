@@ -1,11 +1,7 @@
 package com.andrewyunt.warfare.menu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.andrewyunt.warfare.objects.Game;
+import com.andrewyunt.warfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
@@ -18,10 +14,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.GamePlayer;
+
+import java.util.*;
 
 public class PlayMenu implements Listener {
 
@@ -81,7 +78,7 @@ public class PlayMenu implements Listener {
             ItemStack spectate = new ItemStack(Material.STAINED_CLAY, 1, (short) 4);
             ItemMeta spectateMeta = spectate.getItemMeta();
             spectateMeta.setDisplayName(ChatColor.GOLD + entry.getKey());
-            List<String> lore = new ArrayList<String>();
+            List<String> lore = new ArrayList<>();
             lore.add(ChatColor.YELLOW + "Spectate");
             spectateMeta.setLore(lore);
             spectate.setItemMeta(spectateMeta);
@@ -139,6 +136,7 @@ public class PlayMenu implements Listener {
             return;
 
         Player player = (Player) event.getWhoClicked();
+        String sendServer = null;
 
         if (name.equals(ChatColor.GOLD + "Quick Join")) {
             Map<String, Map.Entry<Game.Stage, Integer>> servers = Warfare.getInstance().getMySQLManager().getServers();
@@ -160,16 +158,23 @@ public class PlayMenu implements Listener {
                 if (entry.getValue() >= mostPlayersCount)
                     mostPlayers = entry.getKey();
 
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("Connect");
-            out.writeUTF(mostPlayers);
-            player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
-            return;
+            sendServer = mostPlayers;
+        } else {
+            sendServer = ChatColor.stripColor(name);
         }
 
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Connect");
-        out.writeUTF(ChatColor.stripColor(name));
-        player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+        Utils.sendPlayerToServer(player, sendServer);
+
+        UUID uuid = player.getUniqueId();
+
+        if (Warfare.getInstance().getPartyManager().getParty(uuid).getLeader() == uuid) {
+            for(String server : Warfare.getInstance().getConfig().getStringList("lobby-servers")) {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("Forward");
+                out.writeUTF(server);
+                out.writeUTF("MOVEPARTY " + uuid + " " + sendServer);
+                player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+            }
+        }
     }
 }

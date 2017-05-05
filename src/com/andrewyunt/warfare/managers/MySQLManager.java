@@ -20,24 +20,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
+import com.andrewyunt.warfare.objects.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Game;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
-import com.andrewyunt.warfare.objects.Purchasable;
-import com.andrewyunt.warfare.objects.Skill;
-import com.andrewyunt.warfare.objects.Ultimate;
 
 public class MySQLManager {
 
@@ -86,6 +78,7 @@ public class MySQLManager {
 		createPlayersTable();
 		createPurchasesTable();
 		createGameServersTable();
+		createPartiesTable();
 	}
 	
 	public void savePlayer(GamePlayer player) {
@@ -107,10 +100,10 @@ public class MySQLManager {
 		
 		savePurchases(player);
 		
-		String query = "INSERT INTO Players (uuid, kit, ultimate, skill, coins, earned_coins, kills, wins)"
-				+ " VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE kit = VALUES(kit), ultimate = VALUES(ultimate),"
-				+ " skill = VALUES(skill), coins = VALUES(coins), earned_coins = VALUES(earned_coins),"
-				+ " kills = VALUES(kills), wins = VALUES(wins);";
+		String query = "INSERT INTO Players (uuid, party, kit, ultimate, skill, coins, earned_coins, kills, wins)"
+				+ " VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE party = VALUES(party), kit = VALUES(kit),"
+				+ " ultimate = VALUES(ultimate), skill = VALUES(skill), coins = VALUES(coins),"
+				+ " earned_coins = VALUES(earned_coins), kills = VALUES(kills), wins = VALUES(wins);";
 		
 		PreparedStatement preparedStatement = null;
 		
@@ -118,16 +111,18 @@ public class MySQLManager {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, player.getSelectedKit() == null ? "none"
+			preparedStatement.setString(2, Warfare.getInstance().getPartyManager().getParty(
+					UUID.fromString(uuid)).getLeader().toString());
+			preparedStatement.setString(3, player.getSelectedKit() == null ? "none"
 					: player.getSelectedKit().toString());
-			preparedStatement.setString(3, player.getSelectedUltimate() == null ? "none"
+			preparedStatement.setString(4, player.getSelectedUltimate() == null ? "none"
 					: player.getSelectedUltimate().toString());
-			preparedStatement.setString(4, player.getSelectedSkill() == null ? "none"
+			preparedStatement.setString(5, player.getSelectedSkill() == null ? "none"
 					: player.getSelectedSkill().toString());
-			preparedStatement.setInt(5, player.getCoins());
-			preparedStatement.setInt(6, player.getEarnedCoins());
-			preparedStatement.setInt(7, player.getKills());
-			preparedStatement.setInt(8, player.getWins());
+			preparedStatement.setInt(6, player.getCoins());
+			preparedStatement.setInt(7, player.getEarnedCoins());
+			preparedStatement.setInt(8, player.getKills());
+			preparedStatement.setInt(9, player.getWins());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
@@ -146,20 +141,19 @@ public class MySQLManager {
 		
 		loadPurchases(player);
 		
-		String uuid = player.getUUID().toString();
+		UUID uuid = player.getUUID();
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.runTaskAsynchronously(Warfare.getInstance(), () -> {
-			
 			String query = "SELECT * FROM Players WHERE uuid = ?;";
 			
 			PreparedStatement preparedStatement;
-			ResultSet resultSet = null;
+			ResultSet resultSet;
 			
 			try {
 				preparedStatement = connection.prepareStatement(query);
 				
-				preparedStatement.setString(1, uuid);
+				preparedStatement.setString(1, uuid.toString());
 				
 				resultSet = preparedStatement.executeQuery();
 			} catch (SQLException e) {
@@ -168,6 +162,8 @@ public class MySQLManager {
 			
 			try {
 				while (resultSet.next()) {
+					loadParty(resultSet.getString("party"));
+
 					String kitStr = resultSet.getString("kit");
 					String ultimateStr = resultSet.getString("ultimate");
 					String skillStr = resultSet.getString("skill");
@@ -178,7 +174,7 @@ public class MySQLManager {
 						player.setSelectedUltimate(Ultimate.valueOf(ultimateStr));
 					if (!skillStr.equals("none"))
 						player.setSelectedSkill(Skill.valueOf(skillStr));
-					
+
 					player.setCoins(resultSet.getInt("coins"));
 					player.setEarnedCoins(resultSet.getInt("earned_coins"));
 					player.setKills(resultSet.getInt("kills"));
@@ -233,8 +229,8 @@ public class MySQLManager {
 		
 		String query = "SELECT * FROM Purchases WHERE uuid = ?;";
 		
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
+		PreparedStatement preparedStatement;
+		ResultSet resultSet;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -278,8 +274,8 @@ public class MySQLManager {
 		
 		String query = "SELECT `name`, `stage`, `online_players` FROM `GameServers`;";
 		
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
+		PreparedStatement preparedStatement;
+		ResultSet resultSet;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -327,6 +323,81 @@ public class MySQLManager {
 				}
 		}
 	}
+
+	public void saveParty(Party party) {
+
+		String query = "INSERT INTO Players (leader, members) VALUES (?,?) ON DUPLICATE KEY UPDATE" +
+				" leader = VALUES(leader), members = VALUES(members);";
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			preparedStatement = connection.prepareStatement(query);
+
+			preparedStatement.setString(1, party.getLeader().toString());
+
+			String membersStr = "";
+			for (Iterator<UUID> iterator = party.getMembers().iterator(); iterator.hasNext();) {
+				membersStr += iterator.next().toString() + (iterator.hasNext() ? "," : "");
+			}
+
+			preparedStatement.setString(2, membersStr);
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+
+	public Party loadParty(String leaderUUID) {
+
+		String query = "SELECT * FROM Parties WHERE uuid = ?;";
+
+		PreparedStatement preparedStatement;
+		ResultSet resultSet;
+
+		try {
+			preparedStatement = connection.prepareStatement(query);
+
+			preparedStatement.setString(1, leaderUUID);
+
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			return null;
+		}
+
+		Party party = null;
+
+		try {
+			while (resultSet.next()) {
+				party = new Party(UUID.fromString(resultSet.getString("leader")));
+
+				for (String member : Arrays.asList(resultSet.getString("members").split("\\s*,\\s*"))) {
+					party.getMembers().add(UUID.fromString(member));
+				}
+
+				return party;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+
+		return party;
+	}
 	
 	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
 		
@@ -335,8 +406,8 @@ public class MySQLManager {
 		
 		String query = "SELECT `" + select + "`, " + orderBy + " FROM `" + tableName + "` ORDER BY " + orderBy + " DESC LIMIT 5;";
 		
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
+		PreparedStatement preparedStatement;
+		ResultSet resultSet;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -367,15 +438,16 @@ public class MySQLManager {
 
 		String query = "CREATE TABLE IF NOT EXISTS `Players`"
 				+ "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
+				+ "   `party`            CHAR(36) NOT NULL,"
 				+ "   `kit`              CHAR(20) NOT NULL,"
 				+ "   `ultimate`         CHAR(20) NOT NULL,"
 				+ "   `skill`            CHAR(20) NOT NULL,"
-				+ "   `coins`            INT,"
-				+ "   `earned_coins`     INT,"
+				+ "   `coins`            INT NOT NULL,"
+				+ "   `earned_coins`     INT NOT NULL,"
 				+ "   `kills`            INT,"
 				+ "   `wins`             INT);";
 		
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatement;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -416,13 +488,37 @@ public class MySQLManager {
 		String query = "CREATE TABLE IF NOT EXISTS `GameServers`"
 				+ "  (`name`            CHAR(20) PRIMARY KEY NOT NULL,"
 				+ "   `stage`           CHAR(20) NOT NULL,"
-				+ "   `online_players`     INT NOT NULL);";
+				+ "   `online_players`  INT NOT NULL);";
 		
 		PreparedStatement preparedStatement = null;
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null)
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+	}
+
+	public void createPartiesTable() {
+
+		String query = "CREATE TABLE IF NOT EXISTS `Parties`"
+				+ "  (`leader`            CHAR(36) PRIMARY KEY NOT NULL,"
+				+ "   `members`           TEXT);";
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			preparedStatement = connection.prepareStatement(query);
+
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -128,5 +131,13 @@ public class Utils {
 	public static String getFormattedMessage(String configPath) {
 		
 		return ChatColor.translateAlternateColorCodes('&', Warfare.getInstance().getConfig().getString(configPath));
+	}
+
+	public static void sendPlayerToServer(Player player, String serverName) {
+
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Connect");
+		out.writeUTF(serverName);
+		player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
 	}
 }

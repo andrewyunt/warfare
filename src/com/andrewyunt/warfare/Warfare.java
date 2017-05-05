@@ -15,13 +15,18 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.command.party.PartyCommand;
+import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
+import com.andrewyunt.warfare.utilities.Utils;
+import com.google.common.io.ByteStreams;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.andrewyunt.warfare.command.WarfareCommand;
+import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
@@ -39,14 +44,18 @@ import com.andrewyunt.warfare.menu.TeleporterMenu;
 import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public class Warfare extends JavaPlugin implements Listener {
+import java.util.UUID;
+
+public class Warfare extends JavaPlugin implements PluginMessageListener {
 	
 	private static Warfare instance;
 	
 	private MySQLManager mysqlManager;
 	private PlayerManager playerManager;
 	private SignManager signManager;
+	private PartyManager partyManager;
 	private ArenaConfiguration arenaConfig;
 	private SignConfiguration signConfig;
 	private ShopMenu shopMenu;
@@ -65,6 +74,7 @@ public class Warfare extends JavaPlugin implements Listener {
 		mysqlManager = new MySQLManager();
 		playerManager = new PlayerManager();
 		signManager = new SignManager();
+		partyManager = new PartyManager();
 		arenaConfig = new ArenaConfiguration();
 		signConfig = new SignConfiguration();
 		shopMenu = new ShopMenu();
@@ -86,12 +96,13 @@ public class Warfare extends JavaPlugin implements Listener {
 		
 		mysqlManager.updateDB();
 		
-		for (Player player : getServer().getOnlinePlayers())
+		for (Player player : getServer().getOnlinePlayers()) {
 			try {
 				Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
 			} catch (PlayerException e) {
 				e.printStackTrace();
 			}
+		}
 		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
@@ -119,18 +130,46 @@ public class Warfare extends JavaPlugin implements Listener {
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
+		getCommand("party").setExecutor(new PartyCommand());
 	}
 	
 	@Override
 	public void onDisable() {
 		
-		if (!getConfig().getBoolean("is-lobby"))
+		if (!getConfig().getBoolean("is-lobby")) {
 			game.setStage(Game.Stage.END);
+		}
 		
-		for (GamePlayer player : playerManager.getPlayers())
+		for (GamePlayer player : playerManager.getPlayers()) {
 			mysqlManager.savePlayer(player);
+		}
 
 		mysqlManager.disconnect();
+	}
+
+	@Override
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+
+		if (!channel.equals("BungeeCord")) {
+			return;
+		}
+
+		String received = ByteStreams.newDataInput(message).readUTF();
+
+		Bukkit.getServer().broadcastMessage(received);
+
+		if (!received.contains("MOVEPARTY")) {
+			String[] firstArray = received.split("\\\\W+");
+			String[] secondArray = firstArray[1].split("\\\\W+");
+
+			for (UUID sendUUID : partyManager.getParty(UUID.fromString(secondArray[0])).getMembers()) {
+				OfflinePlayer sendPlayer = Bukkit.getServer().getOfflinePlayer(sendUUID);
+
+				if (sendPlayer.isOnline()) {
+					Utils.sendPlayerToServer((Player) sendPlayer, secondArray[1]);
+				}
+			}
+		}
 	}
 	
 	public static Warfare getInstance() {
@@ -151,6 +190,11 @@ public class Warfare extends JavaPlugin implements Listener {
 	public SignManager getSignManager() {
 		
 		return signManager;
+	}
+
+	public PartyManager getPartyManager() {
+
+		return partyManager;
 	}
 
 	public ArenaConfiguration getArenaConfig() {

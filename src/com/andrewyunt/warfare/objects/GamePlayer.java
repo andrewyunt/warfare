@@ -15,7 +15,6 @@
  */
 package com.andrewyunt.warfare.objects;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Game.Stage;
 import com.andrewyunt.warfare.utilities.Utils;
 
 public class GamePlayer {

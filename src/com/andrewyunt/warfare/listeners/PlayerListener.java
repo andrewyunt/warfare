@@ -221,10 +221,7 @@ public class PlayerListener implements Listener {
 			}
 		} else if (gp.isSpectating()) {
 			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"))) {
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Connect");
-				out.writeUTF(Warfare.getInstance().getConfig().getString("lobby-server"));
-				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+				Utils.sendPlayerToServer(player, Warfare.getInstance().getConfig().getString("lobby-server"));
 				return true;
 			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"))) {
 				Warfare.getInstance().getTeleporterMenu().open(gp);
