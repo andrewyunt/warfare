@@ -4,9 +4,9 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public abstract interface SidebarProvider {
+public interface SidebarProvider {
 
-    public abstract String getTitle();
+    String getTitle();
 
-    public abstract List<SidebarEntry> getLines(Player paramPlayer, long now);
+    List<SidebarEntry> getLines(Player paramPlayer, long now);
 }

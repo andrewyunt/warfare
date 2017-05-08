@@ -33,10 +33,6 @@ import com.andrewyunt.warfare.Warfare;
 
 public class MySQLManager {
 
-	private String database;
-	private String user;
-	private String pass;
-	private int port;
 	private Connection connection;
 	
 	public boolean connect() {
@@ -44,10 +40,10 @@ public class MySQLManager {
 		FileConfiguration config = Warfare.getInstance().getConfig();
 
 		String ip = config.getString("database-ip");
-		port = config.getInt("database-port");
-		database = config.getString("database-name");
-		user = config.getString("database-user");
-		pass = config.getString("database-pass");
+		int port = config.getInt("database-port");
+		String database = config.getString("database-name");
+		String user = config.getString("database-user");
+		String pass = config.getString("database-pass");
 		
 		try {
 			if (connection != null && !connection.isClosed())
@@ -336,12 +332,12 @@ public class MySQLManager {
 
 			preparedStatement.setString(1, party.getLeader().toString());
 
-			String membersStr = "";
+			StringBuilder membersStr = new StringBuilder();
 			for (Iterator<UUID> iterator = party.getMembers().iterator(); iterator.hasNext();) {
-				membersStr += iterator.next().toString() + (iterator.hasNext() ? "," : "");
+				membersStr.append(iterator.next().toString()).append(iterator.hasNext() ? "," : "");
 			}
 
-			preparedStatement.setString(2, membersStr);
+			preparedStatement.setString(2, membersStr.toString());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {

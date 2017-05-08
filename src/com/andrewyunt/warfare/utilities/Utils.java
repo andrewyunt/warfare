@@ -128,9 +128,9 @@ public class Utils {
 		}
 	}
 	
-	public static String getFormattedMessage(String configPath) {
+	public static String formatMessage(String message) {
 		
-		return ChatColor.translateAlternateColorCodes('&', Warfare.getInstance().getConfig().getString(configPath));
+		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
 	public static void sendPlayerToServer(Player player, String serverName) {

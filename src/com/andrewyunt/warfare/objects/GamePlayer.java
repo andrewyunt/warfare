@@ -308,15 +308,6 @@ public class GamePlayer {
 		return purchases;
 	}
 	
-	public boolean hasPurchased(Purchasable purchasable) {
-		
-		for (Purchasable purchase : purchases)
-			if (purchase.toString().equals(purchasable.toString()))
-				return true;
-		
-		return false;
-	}
-	
 	public Set<UUID> getGhasts() {
 		
 		return ghasts;
@@ -352,41 +343,41 @@ public class GamePlayer {
 
                 ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
                 ItemMeta teleporterMeta = teleporter.getItemMeta();
-                teleporterMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"));
+                teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
                 teleporter.setItemMeta(teleporterMeta);
-                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.teleporter.slot") - 1, teleporter);
+                inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
 
                 ItemStack bed = new ItemStack(Material.BED, 1);
                 ItemMeta bedMeta = bed.getItemMeta();
-                bedMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"));
+                bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
                 bed.setItemMeta(bedMeta);
-                inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.spectator-items.return-to-lobby.slot") - 1, bed);
+                inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
             }, 20L);
 		} else {
-			if (!isCaged()) {
+			if (isCaged()) {
+				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+				ItemMeta classSelectorMeta = classSelector.getItemMeta();
+				classSelectorMeta.setDisplayName(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE);
+				classSelector.setItemMeta(classSelectorMeta);
+				inv.setItem(StaticConfiguration.CAGE_CLASS_SELECTOR_SLOT - 1, classSelector);
+			} else {
 				ItemStack shop = new ItemStack(Material.CHEST, 1);
 				ItemMeta shopMeta = shop.getItemMeta();
-				shopMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"));
+				shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
 				shop.setItemMeta(shopMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.shop.slot") - 1, shop);
-				
+				inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
+
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
-				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"));
+				classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE));
 				classSelector.setItemMeta(classSelectorMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.class-selector.slot") - 1, classSelector);
-				
+				inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
+
 				ItemStack play = new ItemStack(Material.DIAMOND_SWORD, 1);
 				ItemMeta playMeta = play.getItemMeta();
-				playMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"));
+				playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
 				play.setItemMeta(playMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.lobby-items.play.slot") - 1, play);
-			} else {
-				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
-				ItemMeta classSelectorMeta = classSelector.getItemMeta();
-				classSelectorMeta.setDisplayName(Utils.getFormattedMessage("hotbar-items.cage-items.class-selector.title"));
-				classSelector.setItemMeta(classSelectorMeta);
-				inv.setItem(Warfare.getInstance().getConfig().getInt("hotbar-items.cage-items.class-selector.slot") - 1, classSelector);
+				inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
 			}
 		}
 	}
