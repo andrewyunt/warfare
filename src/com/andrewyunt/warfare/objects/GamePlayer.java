@@ -357,7 +357,7 @@ public class GamePlayer {
 			if (isCaged()) {
 				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
-				classSelectorMeta.setDisplayName(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE);
+				classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE));
 				classSelector.setItemMeta(classSelectorMeta);
 				inv.setItem(StaticConfiguration.CAGE_CLASS_SELECTOR_SLOT - 1, classSelector);
 			} else {
