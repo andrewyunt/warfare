@@ -34,7 +34,6 @@ public class PlayMenu implements Listener, InventoryHolder {
     private final Inventory inventory;
     private List<Server> inventoryServers = new ArrayList<>();
     private List<Server> quickJoinServers = new ArrayList<>();
-    private List<PlayersEntity> quickJoin = new ArrayList<>();
 
     public PlayMenu() {
         inventory = Bukkit.createInventory(this, SIZE, ChatColor.YELLOW + "Join Game");
@@ -45,39 +44,7 @@ public class PlayMenu implements Listener, InventoryHolder {
             quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());
             quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) + server.getOnlinePlayers()));
             Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> inventory.setContents(getContents()));
-        }, 0, 5);
-        Bukkit.getScheduler().runTaskTimer(Warfare.getInstance(), () -> {
-            quickJoin.removeIf(PlayersEntity::hasFailed);
-            if(!quickJoin.isEmpty()) {
-                Iterator<PlayersEntity> quickJoinIterator = quickJoin.iterator();
-                for (Server server : quickJoinServers) {
-                    while (quickJoinIterator.hasNext()){
-                        if(server.getOnlinePlayers() == server.getMaxPlayers()){
-                            break;
-                        }
-                        PlayersEntity playerEntity = quickJoinIterator.next();
-                        int size = playerEntity.size();
-                        int amount = size == 1 ? 1 : size + 2;
-                        if(server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
-                            playerEntity.sendToServer(server.getName());
-                            server.setOnlinePlayers(server.getOnlinePlayers() + size);
-                            quickJoinIterator.remove();
-                        }
-                    }
-                    if(quickJoin.isEmpty()){
-                        break;
-                    }
-                    else {
-                        quickJoinIterator = quickJoin.iterator();
-                    }
-                }
-                while (quickJoinIterator.hasNext()){
-                    PlayersEntity playersEntity = quickJoinIterator.next();
-                    playersEntity.getPlayer().sendMessage(ChatColor.RED + "There are currently no available games");
-                    quickJoinIterator.remove();
-                }
-            }
-        }, 0, 10);
+        }, 0, 2);
     }
 
     public ItemStack[] getContents(){
@@ -164,8 +131,17 @@ public class PlayMenu implements Listener, InventoryHolder {
             }
 
             if (slot == QUICK_JOIN_SLOT) {
-                quickJoin.add(playerEntity);
                 player.closeInventory();
+                for(Server server: quickJoinServers){
+                    int size = playerEntity.size();
+                    int amount = size == 1 ? 1 : size + 2;
+                    if(server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
+                        playerEntity.sendToServer(server.getName());
+                        server.setOnlinePlayers(server.getOnlinePlayers() + size);
+                        return;
+                    }
+                }
+                player.sendMessage(ChatColor.RED + "There are currently no available games");
             } else {
                 int row = slot / 9;
                 int column = slot % 9;
