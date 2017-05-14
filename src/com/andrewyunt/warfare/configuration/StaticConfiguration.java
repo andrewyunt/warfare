@@ -3,6 +3,7 @@ package com.andrewyunt.warfare.configuration;
 import com.andrewyunt.warfare.Warfare;
 import org.bukkit.configuration.Configuration;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StaticConfiguration {
@@ -10,8 +11,19 @@ public class StaticConfiguration {
     private static Configuration config = Warfare.getInstance().getConfig();
 
     public static boolean LOBBY = config.getBoolean("is-lobby", false);
-    public static String LOBBY_SERVER = config.getString("lobby-server");
     public static String SERVER_NAME = config.getString("server-name");
+
+
+    public static List<String> LOBBY_SERVERS = (List<String>) config.get("lobby-server");
+
+    public static int CURRENT_LOBBY = 0;
+
+    public static String getNextLobby(){
+        CURRENT_LOBBY %= LOBBY_SERVERS.size();
+        String server = LOBBY_SERVERS.get(CURRENT_LOBBY);
+        CURRENT_LOBBY += 1;
+        return server;
+    }
 
     // hotbar items
     public static String SPECTATOR_TELEPORTER_TITLE = config.getString("hotbar-items.spectator-items.teleporter.title");

@@ -272,7 +272,7 @@ public class Game {
 					if (player.getBukkitPlayer().hasPermission("Warfare.edit"))
 						continue;
 
-				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.LOBBY_SERVER);
+				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
 			}
 			
 			if (Warfare.getInstance().getArena().isEdit())

@@ -1,5 +1,6 @@
 package com.andrewyunt.warfare.menu;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;
@@ -168,7 +169,7 @@ public class PlayMenu implements Listener {
         UUID uuid = player.getUniqueId();
 
         if (Warfare.getInstance().getPartyManager().getParty(uuid).getLeader() == uuid) {
-            for(String server : Warfare.getInstance().getConfig().getStringList("lobby-servers")) {
+            for(String server : StaticConfiguration.LOBBY_SERVERS) {
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();
                 out.writeUTF("Forward");
                 out.writeUTF(server);

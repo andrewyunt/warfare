@@ -217,7 +217,7 @@ public class PlayerListener implements Listener {
 			}
 		} else if (gp.isSpectating()) {
 			if (itemName.equals(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE))) {
-				Utils.sendPlayerToServer(player, StaticConfiguration.LOBBY_SERVER);
+				Utils.sendPlayerToServer(player, StaticConfiguration.getNextLobby());
 				return true;
 			} else if (itemName.equals(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE))) {
 				Warfare.getInstance().getTeleporterMenu().open(gp);
