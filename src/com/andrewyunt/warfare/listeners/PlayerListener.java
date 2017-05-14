@@ -15,10 +15,7 @@
  */
 package com.andrewyunt.warfare.listeners;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
@@ -67,8 +64,6 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.objects.SignDisplay.Type;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 
 public class PlayerListener implements Listener {
 	
@@ -109,7 +104,7 @@ public class PlayerListener implements Listener {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			if (Warfare.getInstance().getConfig().getBoolean("is-lobby")) {
+			if (StaticConfiguration.LOBBY) {
 				finalGP.updateHotbar();
 				
 				player.teleport(player.getLocation().getWorld().getSpawnLocation());
@@ -205,29 +200,26 @@ public class PlayerListener implements Listener {
 		}
 		
 		if (StaticConfiguration.LOBBY) {
-			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.shop.title"))) {
+			if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE))) {
 				Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
 				return true;
-			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.class-selector.title"))) {
+			} else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE))) {
 				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
 				return true;
-			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.lobby-items.play.title"))) {
+			} else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE))) {
 				Warfare.getInstance().getPlayMenu().open(gp);
 				return true;
 			}
 		} else if (gp.isCaged()) {
-			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.cage-items.class-selector.title"))) {
+			if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE))) {
 				Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
 				return true;
 			}
 		} else if (gp.isSpectating()) {
-			if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.return-to-lobby.title"))) {
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Connect");
-				out.writeUTF(Warfare.getInstance().getConfig().getString("lobby-server"));
-				player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+			if (itemName.equals(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE))) {
+				Utils.sendPlayerToServer(player, StaticConfiguration.LOBBY_SERVER);
 				return true;
-			} else if (itemName.equals(Utils.getFormattedMessage("hotbar-items.spectator-items.teleporter.title"))) {
+			} else if (itemName.equals(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE))) {
 				Warfare.getInstance().getTeleporterMenu().open(gp);
 				return true;
 			}

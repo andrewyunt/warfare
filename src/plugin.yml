@@ -5,3 +5,5 @@ depend: [Core]
 commands:
   warfare:
     description: The management command for Warfare.
+  party:
+    description: The command for parties.

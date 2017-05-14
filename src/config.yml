@@ -8,6 +8,10 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
+# List of lobby servers (only needed for lobby servers)
+lobby-servers:
+  - "server"
+
 # Set this to the BungeeCord server name (only needed for game servers)
 server-name: "server name"
 

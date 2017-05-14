@@ -69,7 +69,7 @@ public class BufferedObjective {
 
     public void setLine(final int lineNumber, final SidebarEntry sidebarEntry) {
 
-        final SidebarEntry value = (SidebarEntry) this.contents.get(lineNumber);
+        final SidebarEntry value = this.contents.get(lineNumber);
         if (value == null || !value.equals(sidebarEntry)) {
             this.contents.put(lineNumber, sidebarEntry);
             this.requiresUpdate = true;

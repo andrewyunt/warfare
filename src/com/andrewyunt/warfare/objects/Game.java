@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -34,8 +35,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 
 /**
  * The class used to store game attributes, placed blocks, and players.
@@ -81,7 +80,6 @@ public class Game {
 		// Set player's mode to survival
 		bp.setGameMode(GameMode.SURVIVAL);
 
-		// Send the join message to the players, delayed for disguises
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
 			for (Cage cage : getAvailableCages()) {
@@ -92,6 +90,7 @@ public class Game {
 			if (getAvailableCages().size() == 0)
 				setStage(Stage.COUNTDOWN);
 
+			// Send the join message to the players
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
 					String.format("&7%s &6has joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
 							players.size(), cages.size())));
@@ -272,11 +271,8 @@ public class Game {
 				if (Warfare.getInstance().getArena().isEdit())
 					if (player.getBukkitPlayer().hasPermission("Warfare.edit"))
 						continue;
-				
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Connect");
-				out.writeUTF(Warfare.getInstance().getConfig().getString("lobby-server"));
-				player.getBukkitPlayer().sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+
+				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.LOBBY_SERVER);
 			}
 			
 			if (Warfare.getInstance().getArena().isEdit())

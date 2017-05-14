@@ -17,6 +17,8 @@ package com.andrewyunt.warfare.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -153,8 +155,12 @@ public class ClassSelectorMenu implements Listener {
 
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
 				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
-				displayItemMeta.setLore(Utils.colorizeList(Warfare.getInstance().getConfig().getStringList(
-						"description-" + purchase.toString()), ChatColor.YELLOW));
+				try {
+					displayItemMeta.setLore(Utils.colorizeList((List<String>) StaticConfiguration.class.getDeclaredField(
+							"DESCRIPTION_" + purchase.toString()).get(null), ChatColor.YELLOW));
+				} catch (NoSuchFieldException | IllegalAccessException  e) {
+					e.printStackTrace();
+				}
 				displayItem.setItemMeta(displayItemMeta);
 
 				inv.setItem(i, displayItem);
@@ -194,7 +200,7 @@ public class ClassSelectorMenu implements Listener {
 		}
 		
 		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
-			if (name.equals(Utils.getFormattedMessage("no-perms-class-slot")))
+			if (name.equals(Utils.formatMessage(StaticConfiguration.NO_PERMS_CLASS_SLOT)))
 				return;
 			
 			open(Type.KIT, gp);
