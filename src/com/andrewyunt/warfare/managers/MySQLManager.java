@@ -107,8 +107,10 @@ public class MySQLManager {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.setString(1, uuid);
-			preparedStatement.setString(2, Warfare.getInstance().getPartyManager().getParty(
-					UUID.fromString(uuid)).getLeader().toString());
+
+			Party party = Warfare.getInstance().getPartyManager().getParty(UUID.fromString(uuid));
+
+			preparedStatement.setString(2, party == null ? "none" : party.getLeader().toString());
 			preparedStatement.setString(3, player.getSelectedKit() == null ? "none"
 					: player.getSelectedKit().toString());
 			preparedStatement.setString(4, player.getSelectedUltimate() == null ? "none"
@@ -158,7 +160,10 @@ public class MySQLManager {
 			
 			try {
 				while (resultSet.next()) {
-					loadParty(resultSet.getString("party"));
+
+					if (!resultSet.getString("party").equals("none")) {
+						loadParty(resultSet.getString("party"));
+					}
 
 					String kitStr = resultSet.getString("kit");
 					String ultimateStr = resultSet.getString("ultimate");
