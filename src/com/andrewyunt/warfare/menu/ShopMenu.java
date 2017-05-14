@@ -41,6 +41,7 @@ import com.andrewyunt.warfare.objects.Skill;
 import com.andrewyunt.warfare.objects.Ultimate;
 import com.andrewyunt.warfare.utilities.Utils;
 
+@Deprecated
 public class ShopMenu implements Listener {
 	
 	public enum Type {

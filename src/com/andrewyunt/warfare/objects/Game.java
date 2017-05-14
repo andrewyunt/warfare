@@ -21,11 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -44,12 +40,38 @@ import com.andrewyunt.warfare.utilities.Utils;
 public class Game {
 	
 	public enum Stage {
-		WAITING,
-		COUNTDOWN,
-		BATTLE,
-		END,
-		RESTART
-	}
+        COUNTDOWN(DyeColor.GREEN, ChatColor.GREEN, "Starting"),
+        WAITING(DyeColor.YELLOW, ChatColor.YELLOW, "Waiting for players"),
+		BATTLE(DyeColor.RED, ChatColor.RED, "Game in progress"),
+		END(DyeColor.RED, ChatColor.RED, "Game finished"),
+		RESTART(DyeColor.RED, ChatColor.RED, "Server restarting");
+
+		private final DyeColor dyeColor;
+		private final ChatColor color;
+		private final String description;
+
+        Stage(DyeColor dyeColor, ChatColor color, String description) {
+            this.dyeColor = dyeColor;
+            this.color = color;
+            this.description = description;
+        }
+
+        public DyeColor getDyeColor() {
+            return dyeColor;
+        }
+
+        public ChatColor getColor() {
+            return color;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getDisplay(){
+            return color + description;
+        }
+    }
 	
 	private short countdownTime = 10, refillCountdownTime = 300;
 	private Stage stage = Stage.WAITING;

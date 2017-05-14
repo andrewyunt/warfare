@@ -58,37 +58,21 @@ public class PlayMenu implements Listener {
 
         List<ItemStack> toAdd = new ArrayList<ItemStack>();
 
-        // There are separate loops for adding join and spectate items because we want to add spectate items last
-        for (Map.Entry<String, Map.Entry<Game.Stage, Integer>> entry : Warfare.getInstance().getMySQLManager().getServers().entrySet()) {
-            if (entry.getValue().getKey() != Game.Stage.WAITING) {
-                continue;
+        List<Map.Entry<String, Map.Entry<Game.Stage, Integer>>> entries = new ArrayList<>(Warfare.getInstance().getMySQLManager().getServers().entrySet());
+        entries.sort(Comparator.comparingInt((t -> t.getValue().getValue())));
+
+        for (Map.Entry<String, Map.Entry<Game.Stage, Integer>> entry : entries) {
+            Game.Stage stage = entry.getValue().getKey();
+            if(stage.ordinal() < Game.Stage.END.ordinal()) {
+                ItemStack join = new ItemStack(Material.STAINED_GLASS_PANE, 1, stage.getDyeColor().getData());
+                ItemMeta joinMeta = join.getItemMeta();
+                joinMeta.setDisplayName(ChatColor.GOLD + entry.getKey());
+                List<String> lore = new ArrayList<String>();
+                lore.add(entry.getValue().getKey().getDisplay());
+                joinMeta.setLore(lore);
+                join.setItemMeta(joinMeta);
+                toAdd.add(join);
             }
-
-            ItemStack join = new ItemStack(Material.STAINED_CLAY, 1, (short) 5);
-            ItemMeta joinMeta = join.getItemMeta();
-            joinMeta.setDisplayName(ChatColor.GOLD + entry.getKey());
-            List<String> lore = new ArrayList<String>();
-            lore.add(ChatColor.YELLOW + "Waiting for players...");
-            joinMeta.setLore(lore);
-            join.setItemMeta(joinMeta);
-
-            toAdd.add(join);
-        }
-
-        for (Map.Entry<String, Map.Entry<Game.Stage, Integer>> entry : Warfare.getInstance().getMySQLManager().getServers().entrySet()) {
-            if (entry.getValue().getKey() != Game.Stage.COUNTDOWN || entry.getValue().getKey() != Game.Stage.BATTLE) {
-                continue;
-            }
-
-            ItemStack spectate = new ItemStack(Material.STAINED_CLAY, 1, (short) 4);
-            ItemMeta spectateMeta = spectate.getItemMeta();
-            spectateMeta.setDisplayName(ChatColor.GOLD + entry.getKey());
-            List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.YELLOW + "Spectate");
-            spectateMeta.setLore(lore);
-            spectate.setItemMeta(spectateMeta);
-
-            toAdd.add(spectate);
         }
 
         for (int i = 0; i < 45; i++) {
