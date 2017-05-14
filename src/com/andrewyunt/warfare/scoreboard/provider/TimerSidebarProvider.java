@@ -52,21 +52,21 @@ public class TimerSidebarProvider implements SidebarProvider {
         lines.add(lines.size(), new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
 
         if (StaticConfiguration.LOBBY) {
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
+            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString(), "Statistics", ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
 
             // Display player's wins
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Total Wins: ", ChatColor.GRAY + String.valueOf(gp.getWins())));
+            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Total Wins", ": " + ChatColor.GRAY + String.valueOf(gp.getWins())));
 
             // Display player's kills
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + "Total Kills: ",ChatColor.GRAY + String.valueOf(gp.getKills())));
+            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + "Total Kills",": " + ChatColor.GRAY + String.valueOf(gp.getKills())));
 
             // Display player's coins
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Coin Balance: ",ChatColor.GRAY + String.valueOf(gp.getCoins())));
+            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Coin Balance",": " + ChatColor.GRAY + String.valueOf(gp.getCoins())));
 
             lines.add(lines.size(), new SidebarEntry(" "));
 
             // Display player's chosen class
-            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
+            lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString(), "Selected Kit", ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
             lines.add(lines.size(), new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + ChatColor.BOLD.toString(),
                     (gp.getSelectedKit()) == null ? "None" : gp.getSelectedKit().getName()));
         } else {
@@ -75,7 +75,7 @@ public class TimerSidebarProvider implements SidebarProvider {
 
             if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN) {
                 // Display players
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Players: " + ChatColor.GRAY + game.getPlayers().size() + "/"
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Players", ChatColor.GRAY.toString() + game.getPlayers().size() + "/"
                         + game.getCages().size()));
 
                 lines.add(lines.size(), new SidebarEntry("  "));
@@ -89,22 +89,22 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(lines.size(), new SidebarEntry(" "));
 
                 // Display server name
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Server", ": " + ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
             } else {
                 lines.add(lines.size(), new SidebarEntry("  "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Next event:"));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Next event", ":"));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Refill ", ChatColor.GRAY, LocalTime.ofSecondOfDay(game
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Refill", ": " + ChatColor.GRAY + LocalTime.ofSecondOfDay(game
                         .getRefillCountdownTime()).toString().substring(3)));
 
                 lines.add(lines.size(), new SidebarEntry("  "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Players Left: ", ChatColor.GRAY, game.getPlayers().size()));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(),"Players Left", ": " + ChatColor.GRAY.toString() + game.getPlayers().size()));
 
                 lines.add(lines.size(), new SidebarEntry(" "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Killstreak: ", ChatColor.GRAY, gp.getKillStreak()));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Killstreak", ": " + ChatColor.GRAY.toString() + gp.getKillStreak()));
             }
         }
 
