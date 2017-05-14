@@ -363,19 +363,21 @@ public class GamePlayer {
             }, 20L);
 		} else {
 			if (isCaged()) {
-				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+				ItemStack classSelector = new ItemStack(Material.IRON_AXE, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
 				classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE));
 				classSelector.setItemMeta(classSelectorMeta);
 				inv.setItem(StaticConfiguration.CAGE_CLASS_SELECTOR_SLOT - 1, classSelector);
 			} else {
+				/*
 				ItemStack shop = new ItemStack(Material.CHEST, 1);
 				ItemMeta shopMeta = shop.getItemMeta();
 				shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
 				shop.setItemMeta(shopMeta);
 				inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
+				*/
 
-				ItemStack classSelector = new ItemStack(Material.COMMAND, 1);
+				ItemStack classSelector = new ItemStack(Material.IRON_AXE, 1);
 				ItemMeta classSelectorMeta = classSelector.getItemMeta();
 				classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE));
 				classSelector.setItemMeta(classSelectorMeta);

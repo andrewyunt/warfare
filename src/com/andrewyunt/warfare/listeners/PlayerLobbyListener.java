@@ -86,10 +86,12 @@ public class PlayerLobbyListener extends PlayerListener {
             e.printStackTrace();
         }
 
+        /*
         if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE))) {
             Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
             return true;
-        } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE))) {
+        } else*/
+        if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE))) {
             Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
             return true;
         } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE))) {
