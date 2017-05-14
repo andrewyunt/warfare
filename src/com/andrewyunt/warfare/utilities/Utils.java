@@ -1,12 +1,10 @@
 package com.andrewyunt.warfare.utilities;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.objects.Party;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
@@ -122,10 +120,21 @@ public class Utils {
 	}
 
 	public static void sendPlayerToServer(Player player, String serverName) {
-
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Connect");
 		out.writeUTF(serverName);
 		player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+	}
+
+	public static void sendPartyToServer(Player player, Party party, String serverName) {
+		for(String lobby: StaticConfiguration.LOBBY_SERVERS){
+			ByteArrayDataOutput out = ByteStreams.newDataOutput();
+			out.writeUTF("Forward");
+			out.writeUTF(lobby);
+			out.writeUTF("SendParty");
+			out.writeUTF(party.getMembers().stream().map(UUID::toString).collect(Collectors.joining(",")));
+			out.writeUTF(serverName);
+			player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
+		}
 	}
 }

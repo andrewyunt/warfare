@@ -203,13 +203,16 @@ public class MySQLManager {
         }
     }
 
-    public Map<String, Entry<Game.Stage, Integer>> getServers() {
-
-        Map<String, Entry<Game.Stage, Integer>> servers = new HashMap<>();
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_SERVERS); ResultSet resultSet = preparedStatement.executeQuery()) {
+    public List<Server> getServers(){
+	    int id = 0;
+        List<Server> servers = new ArrayList<>();
+        try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_SERVERS); ResultSet resultSet = preparedStatement.executeQuery()){
             while (resultSet.next()) {
-                servers.put(resultSet.getString("name"), new AbstractMap.SimpleEntry<>(
-                        Game.Stage.valueOf(resultSet.getString("stage")), resultSet.getInt("online_players")));
+                servers.add(new Server(id++, resultSet.getString("name"),
+                        Server.ServerType.GAME, //assume it is a game
+                        Game.Stage.valueOf(resultSet.getString("stage")),
+                        resultSet.getInt("online_players")
+                ));
             }
         } catch (SQLException exception) {
             handleException(exception);
