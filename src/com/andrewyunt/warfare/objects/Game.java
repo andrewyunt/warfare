@@ -217,6 +217,7 @@ public class Game {
 	 * Method is executed to end the game.
 	 */
 	public void end() {
+
 		
 		// Only one player should be in-game when the game ends
 		for (GamePlayer player : players) {
@@ -243,8 +244,13 @@ public class Game {
 
 		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Thanks for playing!");
 
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
+		if(Warfare.getInstance().isEnabled()) {
+			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
+		}
+		else{
+			setStage(Stage.RESTART);
+		}
 	}
 	
 	public Stage getStage() {
@@ -270,9 +276,7 @@ public class Game {
 		} else if (stage == Stage.END) {
 			
 			end();
-			
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
-			
+
 		} else if (stage == Stage.RESTART) {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
@@ -287,7 +291,7 @@ public class Game {
 				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
 			}
 			
-			if (Warfare.getInstance().getArena().isEdit()) {
+			if (Warfare.getInstance().getArena().isEdit() || !Warfare.getInstance().isEnabled()) {
 				return;
 			}
 			
