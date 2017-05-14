@@ -16,7 +16,7 @@ public class AddChestArgument extends CommandArgument {
 
     public AddChestArgument() {
 
-        super("addcoins", "Adds a loot chest to the map");
+        super("addchest", "Adds a loot chest to the map");
 
         isPlayerOnly = true;
     }
