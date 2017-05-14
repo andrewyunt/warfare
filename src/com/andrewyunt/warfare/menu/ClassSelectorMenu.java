@@ -66,10 +66,9 @@ public class ClassSelectorMenu implements Listener {
 	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 	
 	public ClassSelectorMenu() {
-		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
 		glassPaneMeta.setDisplayName(" ");
-		glassPaneMeta.setLore(new ArrayList<String>());
+		glassPaneMeta.setLore(new ArrayList<>());
 		glassPane.setItemMeta(glassPaneMeta);
 	}
 	
@@ -223,14 +222,14 @@ public class ClassSelectorMenu implements Listener {
 			
 			if (title.contains("Kit")) {
 				gp.setSelectedKit(Kit.valueOf(enumStr));
-				open(Type.ULTIMATE, gp);
-			} else if (title.contains("Ultimate")) {
+				player.closeInventory();
+			} /*else if (title.contains("Ultimate")) {
 				gp.setSelectedUltimate(Ultimate.valueOf(enumStr));
 				open(Type.SKILL, gp);
 			} else if (title.contains("Skill")) {
 				gp.setSelectedSkill(Skill.valueOf(enumStr));
 				player.closeInventory();
-			}
+			}*/
 		}
 	}
 }

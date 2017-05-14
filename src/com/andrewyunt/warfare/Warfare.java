@@ -120,8 +120,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
-			pm.registerEvents(new PlayerUltimateListener(), this);
-			pm.registerEvents(new PlayerSkillListener(), this);
+			//pm.registerEvents(new PlayerUltimateListener(), this);
+			//pm.registerEvents(new PlayerSkillListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
 		}
 		

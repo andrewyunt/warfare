@@ -45,6 +45,8 @@ import com.andrewyunt.warfare.objects.GamePlayer;
  * 
  * @author Andrew Yunt
  */
+
+@Deprecated
 public class PlayerUltimateListener implements Listener {
 	
 	@EventHandler (priority = EventPriority.MONITOR)

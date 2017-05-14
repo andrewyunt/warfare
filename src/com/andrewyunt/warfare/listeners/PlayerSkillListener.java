@@ -40,6 +40,8 @@ import com.andrewyunt.warfare.objects.Skill;
  * 
  * @author Andrew Yunt
  */
+
+@Deprecated
 public class PlayerSkillListener implements Listener {
 
 	@EventHandler

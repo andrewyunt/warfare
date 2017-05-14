@@ -406,6 +406,7 @@ public class PlayerGameListener extends PlayerListener {
         }
     }
 
+    /*
     // Event handlers for power ups
     @EventHandler
     private void onPowerup(PlayerInteractEvent event) {
@@ -494,4 +495,5 @@ public class PlayerGameListener extends PlayerListener {
             player.teleport(event.getHook().getLocation());
         }
     }
+    */
 }
