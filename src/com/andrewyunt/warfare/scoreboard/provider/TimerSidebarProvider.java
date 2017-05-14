@@ -76,7 +76,7 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(new SidebarEntry(ChatColor.YELLOW + "Players: " + ChatColor.GRAY + game.getPlayers().size() + "/"
                         + game.getCages().size()));
 
-                lines.add(new SidebarEntry("  "));
+                lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 
                 // Display seconds left
                 if (stage == Game.Stage.WAITING)
@@ -89,25 +89,25 @@ public class TimerSidebarProvider implements SidebarProvider {
                 // Display server name
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
             } else {
-                lines.add(new SidebarEntry("  "));
+                lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Refill ", ChatColor.GRAY +  LocalTime.ofSecondOfDay(game
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + LocalTime.ofSecondOfDay(game
                         .getRefillCountdownTime()).toString().substring(3)));
 
                 lines.add(new SidebarEntry("  "));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Players Left: ", ChatColor.GRAY.toString() +  game.getPlayers().size()));
 
-                lines.add(new SidebarEntry(" "));
+                lines.add(new SidebarEntry(ChatColor.RESET + "  " + ChatColor.RESET));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Killstreak: ", ChatColor.GRAY.toString() + gp.getKillStreak()));
             }
         }
 
-        lines.add(new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
-        lines.add(new SidebarEntry(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString(), TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
+        lines.add(0, new SidebarEntry(ChatColor.GRAY, ChatColor.STRIKETHROUGH + TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
+        lines.add(lines.size(), new SidebarEntry(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString(), TimerSidebarProvider.STRAIGHT_LINE, TimerSidebarProvider.STRAIGHT_LINE));
 
         return lines;
     }
