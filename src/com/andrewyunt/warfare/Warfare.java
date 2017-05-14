@@ -28,8 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
-import com.andrewyunt.warfare.configuration.ArenaConfiguration;
-import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.managers.mysql.MySQLManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
@@ -52,8 +50,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	private PlayerManager playerManager;
 	private SignManager signManager;
 	private PartyManager partyManager;
-	private ArenaConfiguration arenaConfig;
-	private SignConfiguration signConfig;
 	private ShopMenu shopMenu;
 	private PlayMenu playMenu;
 	private ClassSelectorMenu classSelectorMenu;
@@ -71,8 +67,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		playerManager = new PlayerManager();
 		signManager = new SignManager();
 		partyManager = new PartyManager();
-		arenaConfig = new ArenaConfiguration();
-		signConfig = new SignConfiguration();
 		shopMenu = new ShopMenu();
 		playMenu = new PlayMenu();
 		classSelectorMenu = new ClassSelectorMenu();
@@ -104,15 +98,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		pm.registerEvents(scoreboardHandler, this);
 		
 		if (StaticConfiguration.LOBBY){
-			signConfig.saveDefaultConfig();
-			signManager.loadSigns();
+			mysqlManager.loadSigns();
 
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(playMenu, this);
 			pm.registerEvents(new PlayerLobbyListener(), this);
 		} else {
-			arenaConfig.saveDefaultConfig();
-			arena = Arena.loadFromConfig();
+			arena = mysqlManager.loadArena();
 			game = new Game();			
 			mysqlManager.updateServerStatus();
 			
@@ -197,16 +189,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		return partyManager;
 	}
 
-	public ArenaConfiguration getArenaConfig() {
-		
-		return arenaConfig;
-	}
-	
-	public SignConfiguration getSignConfig() {
-		
-		return signConfig;
-	}
-	
 	public Arena getArena() {
 		
 		return arena;

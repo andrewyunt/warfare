@@ -20,13 +20,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import com.andrewyunt.warfare.StaticConfiguration;
+import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.objects.*;
+import com.faithfulmc.framework.BasePlugin;
+import com.google.common.base.Joiner;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -266,6 +270,142 @@ public class MySQLManager {
         return null;
     }
 
+    public void saveSign(SignDisplay signDisplay) {
+
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_SIGN)) {
+            preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
+            preparedStatement.setString(2, serializeLocation(signDisplay.getBukkitSign().getLocation()));
+            preparedStatement.setString(3, signDisplay.getBukkitSign().getType().toString());
+            preparedStatement.setInt(4, signDisplay.getPlace());
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
+    }
+
+    public void deleteSign(SignDisplay signDisplay) {
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DELETE_SIGN)) {
+            preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
+            preparedStatement.setString(2, serializeLocation(signDisplay.getBukkitSign().getLocation()));
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
+    }
+
+    public void loadSigns() {
+
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_SIGNS)) {
+            preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                try {
+                    Warfare.getInstance().getSignManager().createSign(
+                            deserializeLocation(resultSet.getString("location")),
+                            SignDisplay.Type.valueOf(resultSet.getString("type")),
+                            resultSet.getInt("place"));
+                } catch (SignException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
+    }
+
+    private String serializeArray(Set<String> deserialized){
+        return "[" + Joiner.on(",").join(deserialized) + "]";
+    }
+
+    private Set<String> deserializeArray(String serialized){
+        serialized = serialized.substring(1, serialized.length() - 1);
+        String[] split = serialized.split(",");
+        return new HashSet<>(Arrays.asList(split));
+    }
+
+    private String serializeEntry(String[] entry){
+        return "{" + Joiner.on(":").join(entry) + "}";
+    }
+
+    private String[] deserializeEntry(String serialized){
+        serialized = serialized.substring(1, serialized.length() - 1);
+        return serialized.split(":");
+    }
+
+    private String serializeLocation(Location deserialized) {
+
+        return "[" + deserialized.getWorld().getName() + ";" + deserialized.getBlockX() + ";" + deserialized.getBlockY() + ";" + deserialized.getBlockZ() + "]";
+    }
+
+    private Location deserializeLocation(String serialized) {
+
+        serialized = serialized.substring(1, serialized.length() - 1);
+        String[] split = serialized.split(";");
+
+        return new Location(
+                Bukkit.getWorld(split[0]),
+                Integer.parseInt(split[1]),
+                Integer.parseInt(split[2]),
+                Integer.parseInt(split[3]));
+    }
+
+    public void saveArena() {
+
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_ARENA)) {
+            Arena arena = Warfare.getInstance().getArena();
+            preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
+            preparedStatement.setString(2, serializeLocation(arena.getMapLocation()));
+            preparedStatement.setString(3, serializeArray(
+                    arena.getCageLocations().entrySet()
+                            .stream()
+                            .map(entry -> serializeEntry(new String[]{
+                                    entry.getKey(),
+                                    serializeLocation(entry.getValue())
+                            }))
+                            .collect(Collectors.toSet())
+            ));
+            preparedStatement.setString(4, serializeArray(
+                    arena.getLootChests()
+                            .stream()
+                            .map(chest -> serializeEntry(new String[]{
+                                    String.valueOf(chest.getTier()),
+                                    serializeLocation(chest.getLocation())
+                            }))
+                            .collect(Collectors.toSet())
+            ));
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
+    }
+
+    public Arena loadArena() {
+
+        Arena arena = new Arena();
+
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_ARENA)) {
+            preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                arena.setMapLocation(deserializeLocation(resultSet.getString("map_location")));
+                deserializeArray(resultSet.getString("cages"))
+                        .stream()
+                        .map(this::deserializeEntry)
+                        .forEach(array -> arena.addCageLocation(array[0], deserializeLocation(array[1])));
+                arena.setLootChests(deserializeArray(resultSet.getString("loot_chests"))
+                        .stream()
+                        .map(this::deserializeEntry)
+                        .map(array -> new LootChest(deserializeLocation(array[0]), (byte) Integer.parseInt(array[1])))
+                        .collect(Collectors.toSet()));
+
+            }
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
+
+        return arena;
+    }
+
 	//TODO: REDO query selection
 	@Deprecated
 	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
@@ -305,7 +445,7 @@ public class MySQLManager {
 
 	public void createPlayersTable() {
 
-	    try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_PLAYER_CREATE)){
+	    try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_PLAYERS_CREATE)){
 	        preparedStatement.executeUpdate();
         } catch (SQLException exception) {
 	        handleException(exception);
@@ -341,6 +481,11 @@ public class MySQLManager {
 
     public void createSignsTable() {
 
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_SIGNS_CREATE)){
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            handleException(exception);
+        }
     }
 
     public void createArenasTable() {

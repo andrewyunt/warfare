@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare.objects;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,8 +41,8 @@ import java.util.UUID;
 public class Arena {
 	
 	private final Map<String, Location> cageLocations = new HashMap<String, Location>();
-	private final Set<LootChest> lootChests = new HashSet<LootChest>();
-	
+
+	private Set<LootChest> lootChests = new HashSet<LootChest>();
 	private boolean isEdit;
 	private Location mapLocation;
 	
@@ -58,85 +59,34 @@ public class Arena {
 	public void addCageLocation(String name, Location loc) {
 		
 		cageLocations.put(name, loc);
-		
-		save();
 	}
 	
 	public Map<String, Location> getCageLocations() {
 		
 		return cageLocations;
 	}
-	
+
+	public void setMapLocation(Location mapLocation) {
+
+		this.mapLocation = mapLocation;
+	}
+
 	public Location getMapLocation() {
 		
 		return mapLocation;
 	}
-	
+
+	public void setLootChests(Set<LootChest> lootChests) {
+		this.lootChests = lootChests;
+	}
+
 	public Set<LootChest> getLootChests() {
 		
 		return lootChests;
 	}
-	
+
 	public void save() {
-		
-		Warfare plugin = Warfare.getInstance();
-		FileConfiguration arenaConfig = plugin.getArenaConfig().getConfig();
-		
-		arenaConfig.createSection("map_location", Utils.serializeLocation(mapLocation));
-		
-		ConfigurationSection chestsSection = arenaConfig.createSection("chests");
-		
-		for (LootChest lootChest : lootChests) {
-			Map<String, Object> chestSection = Utils.serializeLocation(lootChest.getLocation());
-			
-			chestSection.put("tier", lootChest.getTier());
-			
-			chestsSection.createSection(UUID.randomUUID().toString(), chestSection);
-		}
-		
-		ConfigurationSection cagesSection = arenaConfig.createSection("cages");
-		
-		for (Entry<String, Location> entry : cageLocations.entrySet()) {
-            cagesSection.createSection(entry.getKey(), Utils.serializeLocation(entry.getValue()));
-        }
-		
-		plugin.getArenaConfig().saveConfig();
-	}
-	
-	public static Arena loadFromConfig() {
-		
-		Arena arena = new Arena();
-		
-		FileConfiguration arenaConfig = Warfare.getInstance().getArenaConfig().getConfig();
-		arena.mapLocation = Utils.deserializeLocation(arenaConfig.getConfigurationSection("map_location"));
-		
-		ConfigurationSection chestsSection = arenaConfig.getConfigurationSection("chests");
-		
-		for (String key : chestsSection.getKeys(false)) {
-			ConfigurationSection chestSection = chestsSection.getConfigurationSection(key);
-			Block block = Utils.deserializeLocation(chestSection).getBlock();
-			
-			if (block == null) {
-                continue;
-            }
-			
-			if (block.getType() != Material.CHEST) {
-                continue;
-            }
-			
-			arena.lootChests.add(new LootChest(block.getLocation(), (byte) chestSection.getInt("tier")));
-		}
-		
-		ConfigurationSection cagesSection = arenaConfig.getConfigurationSection("cages");
-		
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            for (String key : cagesSection.getKeys(false)) {
-                Warfare.getInstance().getGame().getCages().add(new Cage(key,
-                        Utils.deserializeLocation(cagesSection.getConfigurationSection(key))));
-            }
-        }, 1L);
-		
-		return arena;
+
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveArena());
 	}
 }

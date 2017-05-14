@@ -12,7 +12,7 @@ is-lobby: true
 lobby-servers:
   - "server"
 
-# Set this to the BungeeCord server name (only needed for game servers)
+# Set this to the BungeeCord server name
 server-name: "server name"
 
 # GUI menu message for no class slot permission

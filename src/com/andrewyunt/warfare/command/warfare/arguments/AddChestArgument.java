@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -70,7 +71,7 @@ public class AddChestArgument extends CommandArgument {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
         }
 
-        arena.save();
+        Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveArena());
 
         return true;
     }

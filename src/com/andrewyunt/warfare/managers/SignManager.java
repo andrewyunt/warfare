@@ -15,18 +15,16 @@
  */
 package com.andrewyunt.warfare.managers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.objects.SignDisplay.Type;
 import com.andrewyunt.warfare.utilities.Utils;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class SignManager {
@@ -39,13 +37,11 @@ public class SignManager {
             throw new SignException();
         }
 		
-		SignDisplay sign = new SignDisplay(
-				Utils.getHighestEntry(Warfare.getInstance().getSignConfig().getConfig()
-						.getConfigurationSection("signs")) + 1,
-				loc, type, place, false);
+		SignDisplay sign = new SignDisplay(loc, type, place, false);
 		signs.add(sign);
 
-    }
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveSign(sign));
+	}
 	
 	public void deleteSign(SignDisplay sign) throws SignException {
 
@@ -54,11 +50,8 @@ public class SignManager {
         }
 
 		signs.remove(sign);
-		
-		SignConfiguration signConfig = Warfare.getInstance().getSignConfig();
-		
-		signConfig.getConfig().set("signs." + String.valueOf(sign.getConfigNumber()), null);
-		signConfig.saveConfig();
+
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().deleteSign(sign));
 	}
 
 	/**
@@ -104,56 +97,5 @@ public class SignManager {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Iterates through all signs in the signs.yml file and loads them.
-	 */
-	public void loadSigns() {
-
-		signs.clear(); // Clear the current signs list
-
-		if (!Warfare.getInstance().getSignConfig().getConfig().contains("signs")) {
-            return;
-        }
-
-		ConfigurationSection signs = Warfare.getInstance().getSignConfig().getConfig()
-				.getConfigurationSection("signs");
-		
-		if (signs == null) {
-            return;
-        }
-
-		Map<String, Object> cfgValues = signs.getValues(false);
-		
-		for (String name : cfgValues.keySet()) {
-            loadSign(signs.getConfigurationSection(name));
-        }
-	}
-
-	/**
-	 * Loads the sign from the specified configuration section.
-	 * 
-	 * @param section
-	 * 		The configuration section for the sign to be loaded.
-	 * @return
-	 * 		The loaded sign from the specified configuration section.
-	 */
-	public void loadSign(ConfigurationSection section) {
-
-		SignDisplay sign = SignDisplay.loadFromConfig(section);
-
-		Location loc = Utils.deserializeLocation(section.getConfigurationSection("location"));
-		
-		if (!signExists(loc)) {
-			try {
-				signs.remove(getSign(loc));
-			} catch (SignException e) {
-				e.printStackTrace();
-			}
-		}
-
-		signs.add(sign);
-
 	}
 }

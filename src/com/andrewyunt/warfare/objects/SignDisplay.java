@@ -36,8 +36,7 @@ import com.andrewyunt.warfare.utilities.Utils;
  * @author Andrew Yunt
  */
 public class SignDisplay {
-	
-	private final int configNumber;
+
 	private Sign bukkitSign;
 	private final Type type;
 	private final int place;
@@ -49,9 +48,7 @@ public class SignDisplay {
 	
 	/**
 	 * Creates a sign display with the specified location and update interval.
-	 * 
-	 * @param configNumber
-	 * 		The number for the sign in the signs configuration section;
+	 *
 	 * @param loc
 	 * 		The location of the display.
 	 * @param place
@@ -59,9 +56,8 @@ public class SignDisplay {
 	 * @param load
 	 * 		Set this to true if the sign was loaded from a the configuration.
 	 */
-	public SignDisplay(int configNumber, Location loc, Type type, int place, boolean load) {
-		
-		this.configNumber = configNumber;
+	public SignDisplay(Location loc, Type type, int place, boolean load) {
+
 		this.type = type;
 		this.place = place;
 		
@@ -72,7 +68,7 @@ public class SignDisplay {
         }
 		
 		if (!load) {
-            save();
+			Warfare.getInstance().getMySQLManager().saveSign(this);
         }
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
@@ -91,11 +87,6 @@ public class SignDisplay {
 		}, 0L, 6000L);
 	}
 	
-	public int getConfigNumber() {
-		
-		return configNumber;
-	}
-	
 	public Type getType() {
 		
 		return type;
@@ -104,6 +95,11 @@ public class SignDisplay {
 	public Sign getBukkitSign() {
 		
 		return bukkitSign;
+	}
+
+	public int getPlace() {
+
+		return place;
 	}
 	
 	public void refresh() {
@@ -119,34 +115,5 @@ public class SignDisplay {
 		bukkitSign.setLine(3, place + Utils.getNumberSuffix(place) + " Place");
 
 		bukkitSign.update();
-	}
-	
-	public void save() {
-		
-		Warfare plugin = Warfare.getInstance();
-		FileConfiguration signConfig = plugin.getSignConfig().getConfig();
-		
-		signConfig.set("signs." + configNumber + ".type", type.toString());
-		signConfig.set("signs." + configNumber + ".place", place);
-		
-		signConfig.createSection("signs." + configNumber + ".location",
-				Utils.serializeLocation(bukkitSign.getLocation()));
-		
-		Warfare.getInstance().getSignConfig().saveConfig();
-		
-		Warfare.getInstance().getSignManager().loadSign(
-				signConfig.getConfigurationSection("signs." + String.valueOf(configNumber)));
-	}
-	
-	public static SignDisplay loadFromConfig(ConfigurationSection section) {
-		
-		SignDisplay signDisplay = null;
-		Type type = Type.valueOf(section.getString("type"));
-		int place = section.getInt("place");
-		Location loc = Utils.deserializeLocation(section.getConfigurationSection("location"));
-		
-		signDisplay = new SignDisplay(Integer.valueOf(section.getName()), loc, type, place, true);
-		
-		return signDisplay;
 	}
 }
