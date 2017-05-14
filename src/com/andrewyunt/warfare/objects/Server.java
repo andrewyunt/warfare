@@ -5,15 +5,18 @@ public class Server {
     private final String name;
     private final ServerType serverType;
     private final Game.Stage gameStage;
+    private final String mapName;
     private int onlinePlayers;
-    private final int maxPlayers = 12;
+    private final int maxPlayers;
 
-    public Server(int id, String name, ServerType serverType, Game.Stage gameStage, int onlinePlayers) {
+    public Server(int id, String name, ServerType serverType, Game.Stage gameStage, String mapName, int onlinePlayers, int maxPlayers) {
+        this.id = id;
         this.name = name;
         this.serverType = serverType;
         this.gameStage = gameStage;
+        this.mapName = mapName;
         this.onlinePlayers = onlinePlayers;
-        this.id = id;
+        this.maxPlayers = maxPlayers;
     }
 
     public int getId() {
@@ -42,6 +45,10 @@ public class Server {
 
     public int getMaxPlayers() {
         return maxPlayers;
+    }
+
+    public String getMapName() {
+        return mapName;
     }
 
     public enum ServerType{
