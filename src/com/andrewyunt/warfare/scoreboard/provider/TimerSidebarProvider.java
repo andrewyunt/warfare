@@ -89,11 +89,10 @@ public class TimerSidebarProvider implements SidebarProvider {
                 // Display server name
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
             } else {
-                lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + LocalTime.ofSecondOfDay(game
+                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + LocalTime.ofSecondOfDay(game
                         .getRefillCountdownTime()).toString().substring(3)));
 
                 lines.add(new SidebarEntry("  "));

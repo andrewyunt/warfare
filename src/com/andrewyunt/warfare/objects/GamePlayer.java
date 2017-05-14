@@ -59,7 +59,7 @@ public class GamePlayer {
 		// Register health objective for game servers
 		if (!StaticConfiguration.LOBBY) {
 			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid).getScoreboard()
-					.registerNewObjective(ChatColor.RED + "â�¤", "health");
+					.registerNewObjective(ChatColor.RED + "❤", "health");
 			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 		}
 	}
