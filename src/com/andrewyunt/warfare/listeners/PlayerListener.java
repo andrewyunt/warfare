@@ -576,6 +576,8 @@ public class PlayerListener implements Listener {
 		}
 	}
 
+	private final String GRAPPLING_HOOK = ChatColor.GOLD + ChatColor.BOLD.toString() + "Grappling Hook";
+
 	// Event handlers for power ups
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onGrapple(PlayerFishEvent event) {
@@ -604,11 +606,14 @@ public class PlayerListener implements Listener {
 			}
 		}.runTaskLater(Warfare.getInstance(), 1200L);
 
-		if(!player.getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.GOLD + ChatColor.BOLD.toString() + "Grappling Hook"))
-			return;
-
-		if(event.getState() == PlayerFishEvent.State.IN_GROUND  || event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT)
-			player.teleport(event.getHook().getLocation());
+		ItemStack hand = player.getItemInHand();
+		if(hand != null && hand.hasItemMeta()){
+			ItemMeta itemMeta = hand.getItemMeta();
+			if(itemMeta.hasDisplayName() && itemMeta.getDisplayName().equals(GRAPPLING_HOOK)){
+				if(event.getState() == PlayerFishEvent.State.IN_GROUND  || event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT)
+					player.teleport(event.getHook().getLocation());
+			}
+		}
 	}
 
 	@EventHandler
