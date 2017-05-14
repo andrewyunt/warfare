@@ -27,8 +27,11 @@ public class SQLStatements {
             + "   PRIMARY KEY (`uuid`, `purchasable`));";
     public static final String DB_SERVERS_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_SERVERS + "`"
             + "  (`name`             CHAR(20) PRIMARY KEY NOT NULL,"
+            + "   `type`            CHAR(20) NOT NULL,"
             + "   `stage`            CHAR(20) NOT NULL,"
-            + "   `online_players`   INT NOT NULL);"; //TODO: Maximum players & map_name
+            + "   `map_name`            CHAR(30) NOT NULL,"
+            + "   `online_players`   INT NOT NULL),"
+            + "   `max_players`   INT NOT NULL);";
     public static final String DB_PARTIES_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_PARTIES + "`"
             + "  (`leader`           CHAR(36) PRIMARY KEY NOT NULL,"
             + "   `members`          TEXT);";
@@ -48,8 +51,8 @@ public class SQLStatements {
     public static final String SAVE_PLAYER = "REPLACE INTO " + DB_PLAYERS + " (uuid, party, kit, ultimate, skill, coins, earned_coins, kills, wins) VALUES (?,?,?,?,?,?,?,?,?);";
     public static final String LOAD_PURCHASES = "SELECT * FROM " + DB_PURCHASES + " WHERE uuid = ?;";
     public static final String SAVE_PURCHASES = "REPLACE INTO " + DB_PURCHASES + " (uuid, purchasable) VALUES (?,?);";
-    public static final String LOAD_SERVERS = "SELECT `name`, `stage`, `online_players` FROM `" + DB_SERVERS + "`;";
-    public static final String SAVE_SERVER = "REPLACE INTO " + DB_SERVERS + " (name, stage, online_players) VALUES (?,?,?);";
+    public static final String LOAD_SERVERS = "SELECT * FROM " + DB_SERVERS + ";";
+    public static final String SAVE_SERVER = "REPLACE INTO " + DB_SERVERS + " (name, type, stage, map_name, online_players, max_players) VALUES (?,?,?);";
     public static final String LOAD_PARTY = "SELECT * FROM " + DB_PARTIES + " WHERE uuid = ?;";
     public static final String SAVE_PARTY = "REPLACE INTO " + DB_PARTIES + " (leader, members) VALUES (?,?);";
     public static final String LOAD_SIGNS = "SELECT * FROM " + DB_SIGNS + " WHERE server_name = ?;";

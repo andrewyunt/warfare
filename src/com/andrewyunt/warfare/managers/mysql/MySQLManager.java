@@ -213,9 +213,11 @@ public class MySQLManager {
         try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_SERVERS); ResultSet resultSet = preparedStatement.executeQuery()){
             while (resultSet.next()) {
                 servers.add(new Server(id++, resultSet.getString("name"),
-                        Server.ServerType.GAME, //assume it is a game
+                        Server.ServerType.valueOf(resultSet.getString("type")),
                         Game.Stage.valueOf(resultSet.getString("stage")),
-                        resultSet.getInt("online_players")
+                        resultSet.getString("map_name"),
+                        resultSet.getInt("online_players"),
+                        resultSet.getInt("max_players")
                 ));
             }
         } catch (SQLException exception) {
@@ -225,11 +227,13 @@ public class MySQLManager {
     }
 
 	public void updateServerStatus() {
-
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_SERVER)) {
             preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
-            preparedStatement.setString(2, Warfare.getInstance().getGame().getStage().toString());
-            preparedStatement.setInt(3, Bukkit.getServer().getOnlinePlayers().size());
+            preparedStatement.setString(2, (StaticConfiguration.LOBBY ? Server.ServerType.LOBBY : Server.ServerType.GAME).name());
+            preparedStatement.setString(3, Warfare.getInstance().getGame().getStage().toString());
+            preparedStatement.setString(4, ""); //TODO: Arena name
+            preparedStatement.setInt(5, Bukkit.getServer().getOnlinePlayers().size());
+            preparedStatement.setInt(6, Bukkit.getMaxPlayers());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             handleException(exception);
