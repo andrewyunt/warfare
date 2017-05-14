@@ -8,7 +8,7 @@ database-pass: password
 # Setting this to false will put the plugin in game server mode
 is-lobby: true
 
-# List of lobby servers (only needed for lobby servers)
+# List of lobby servers
 lobby-servers:
   - "server"
 

@@ -63,8 +63,9 @@ public class Cage {
 		world.getBlockAt(new Location(world, X, Y + 1, Z)).setType(Material.AIR);
 		world.getBlockAt(new Location(world, X, Y + 2, Z)).setType(Material.AIR);
 		
-		for (Block block : blocks)
-			block.setType(Material.GLASS);
+		for (Block block : blocks) {
+            block.setType(Material.GLASS);
+        }
 	}
 	
 	public String getName() {
@@ -76,14 +77,16 @@ public class Cage {
 		
 		this.player = player;
 		
-		if (player == null)
-			return;
+		if (player == null) {
+            return;
+        }
 		
 		// Teleport the player to the location;
 		Chunk chunk = location.getChunk();
 		
-		if (!chunk.isLoaded())
-			chunk.load();
+		if (!chunk.isLoaded()) {
+            chunk.load();
+        }
 		
 		location.setY(location.getY() + 1);
 		
@@ -114,7 +117,8 @@ public class Cage {
 		
 		player = null;
 		
-		for (Block block : blocks)
-			block.setType(Material.AIR);
+		for (Block block : blocks) {
+            block.setType(Material.AIR);
+        }
 	}
 }

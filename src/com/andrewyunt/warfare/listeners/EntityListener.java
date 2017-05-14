@@ -28,18 +28,20 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 public class EntityListener implements Listener {
 	
 	@EventHandler
-	public void onEntitySpawn(EntitySpawnEvent event) {
+	private void onEntitySpawn(EntitySpawnEvent event) {
 		
 		if (event.getEntityType() != EntityType.GHAST && event.getEntityType() != EntityType.PLAYER
-				&& event.getEntityType() != EntityType.DROPPED_ITEM)
-			event.getEntity().remove();
+				&& event.getEntityType() != EntityType.DROPPED_ITEM) {
+            event.getEntity().remove();
+        }
 	}
 	
 	@EventHandler
-	public void onEntityTarget(EntityTargetEvent event) {
+	private void onEntityTarget(EntityTargetEvent event) {
 		
-		if (event.getEntityType() != EntityType.GHAST || event.getTarget().getType() != EntityType.PLAYER)
-			return;
+		if (event.getEntityType() != EntityType.GHAST || event.getTarget().getType() != EntityType.PLAYER) {
+            return;
+        }
 		
 		GamePlayer gp = null;
 		

@@ -54,8 +54,9 @@ public class PlayerManager {
 	 */
 	public GamePlayer createPlayer(UUID uuid) throws PlayerException {
 		
-		if (players.containsKey(uuid))
-			throw new PlayerException(String.format("The player with the UUID %s already exists.", uuid));
+		if (players.containsKey(uuid)) {
+            throw new PlayerException(String.format("The player with the UUID %s already exists.", uuid));
+        }
 		
 		final GamePlayer player = new GamePlayer(uuid);
 		
@@ -65,17 +66,22 @@ public class PlayerManager {
 			
 			List<Purchasable> purchases = player.getPurchases();
 	
-			if (!purchases.contains(Ultimate.HEAL))
-				purchases.add(Ultimate.HEAL);
-			if (!purchases.contains(Skill.GUARD))
-				purchases.add(Skill.GUARD);
+			if (!purchases.contains(Ultimate.HEAL)) {
+                purchases.add(Ultimate.HEAL);
+            }
+			if (!purchases.contains(Skill.GUARD)) {
+                purchases.add(Skill.GUARD);
+            }
 			
-			if (player.getSelectedKit() == null)
-				player.setSelectedKit(Kit.UHC);
-			if (player.getSelectedUltimate() == null)
-				player.setSelectedUltimate(Ultimate.HEAL);
-			if (player.getSelectedSkill() == null)
-				player.setSelectedSkill(Skill.GUARD);
+			if (player.getSelectedKit() == null) {
+                player.setSelectedKit(Kit.UHC);
+            }
+			if (player.getSelectedUltimate() == null) {
+                player.setSelectedUltimate(Ultimate.HEAL);
+            }
+			if (player.getSelectedSkill() == null) {
+                player.setSelectedSkill(Skill.GUARD);
+            }
 		}, 20L);
 		
 		// Add player to plugin's player map
@@ -94,8 +100,9 @@ public class PlayerManager {
 	 */
 	public void deletePlayer(GamePlayer player) throws PlayerException {
 		
-		if (!players.containsKey(player.getUUID()))
-			throw new PlayerException("The player specified is not in the plugin's records.");
+		if (!players.containsKey(player.getUUID())) {
+            throw new PlayerException("The player specified is not in the plugin's records.");
+        }
 		
 		Warfare.getInstance().getMySQLManager().savePlayer(player);
 		
@@ -128,8 +135,9 @@ public class PlayerManager {
 
 		UUID uuid = Bukkit.getPlayer(name).getUniqueId();
 		
-		if (!players.containsKey(uuid))
-			throw new PlayerException("The specified player does not exist.");
+		if (!players.containsKey(uuid)) {
+            throw new PlayerException("The specified player does not exist.");
+        }
 
 		return players.get(uuid);
 	}
@@ -141,9 +149,10 @@ public class PlayerManager {
 	
 	public GamePlayer getPlayer(UUID uuid) throws PlayerException {
 		
-		if (players.containsKey(uuid))
-			return players.get(uuid);
-		else
-			throw new PlayerException("No player with the specified UUID exists.");
+		if (players.containsKey(uuid)) {
+            return players.get(uuid);
+        } else {
+            throw new PlayerException("No player with the specified UUID exists.");
+        }
 	}
 }

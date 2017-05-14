@@ -3,7 +3,6 @@ package com.andrewyunt.warfare.configuration;
 import com.andrewyunt.warfare.Warfare;
 import org.bukkit.configuration.Configuration;
 
-import java.util.Collections;
 import java.util.List;
 
 public class StaticConfiguration {
@@ -14,11 +13,12 @@ public class StaticConfiguration {
     public static String SERVER_NAME = config.getString("server-name");
 
 
-    public static List<String> LOBBY_SERVERS = (List<String>) config.get("lobby-server");
+    public static List<String> LOBBY_SERVERS = config.getStringList("lobby-servers");
 
     public static int CURRENT_LOBBY = 0;
 
-    public static String getNextLobby(){
+    public static String getNextLobby() {
+
         CURRENT_LOBBY %= LOBBY_SERVERS.size();
         String server = LOBBY_SERVERS.get(CURRENT_LOBBY);
         CURRENT_LOBBY += 1;
@@ -49,7 +49,7 @@ public class StaticConfiguration {
     public static List<String> DESCRIPTION_WITHERING = config.getStringList("description-WITHERING");
     public static List<String> DESCRIPTION_FLAMING_FEET = config.getStringList("description-FLAMING_FEET");
 
-    //skill descriptions
+    // skill descriptions
     public static List<String> DESCRIPTION_RESISTANCE = config.getStringList("description-RESISTANCE");
     public static List<String> DESCRIPTION_JUGGERNAUT = config.getStringList("description-JUGGERNAUT");
     public static List<String> DESCRIPTION_CONSUMPTION = config.getStringList("description-CONSUMPTION");

@@ -48,12 +48,13 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 public class PlayerUltimateListener implements Listener {
 	
 	@EventHandler (priority = EventPriority.MONITOR)
-	public void onPlayerInteract(PlayerInteractEvent event) {
+	private void onPlayerInteract(PlayerInteractEvent event) {
 		
 		ItemStack item = event.getItem();
 		
-		if (item == null)
-			return;
+		if (item == null) {
+            return;
+        }
 		
 		Material type = item.getType();
 		Action action = event.getAction();
@@ -68,24 +69,28 @@ public class PlayerUltimateListener implements Listener {
 		
 		if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
 			
-			if (!gp.isInGame())
-				return;
+			if (!gp.isInGame()) {
+                return;
+            }
 			
-			if (!type.toString().toLowerCase().contains("sword"))
-				return;
+			if (!type.toString().toLowerCase().contains("sword")) {
+                return;
+            }
 			
 			gp.getSelectedUltimate().use(gp);
 		}
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void EPC(EntityDamageByEntityEvent event) {
+	private void EPC(EntityDamageByEntityEvent event) {
 		
-		if (event.getCause() == DamageCause.FALL)
-			return;
+		if (event.getCause() == DamageCause.FALL) {
+            return;
+        }
 		
-		if (!(event.getEntity() instanceof Player))
-			return;
+		if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
 		
 		Player damaged = (Player) event.getEntity();
 		GamePlayer damagedGP = null;
@@ -98,9 +103,9 @@ public class PlayerUltimateListener implements Listener {
 		
 		final GamePlayer finalDamagedGP = damagedGP;
 		
-		if (damagedGP.isEPCCooldown())
-			event.setCancelled(true);
-		else {
+		if (damagedGP.isEPCCooldown()) {
+            event.setCancelled(true);
+        } else {
 			damagedGP.setEPCCooldown(true);
 			
 			new BukkitRunnable() {
@@ -128,16 +133,19 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void EPC(EntityDamageEvent event) {
+	private void EPC(EntityDamageEvent event) {
 		
-		if (event.getCause() == DamageCause.FALL)
-			return;
+		if (event.getCause() == DamageCause.FALL) {
+            return;
+        }
 		
-		if (event instanceof EntityDamageByEntityEvent)
-			return;
+		if (event instanceof EntityDamageByEntityEvent) {
+            return;
+        }
 		
-		if (!(event.getEntity() instanceof Player))
-			return;
+		if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
 		
 		Player damaged = (Player) event.getEntity();
 		GamePlayer damagedGP = null;
@@ -150,9 +158,9 @@ public class PlayerUltimateListener implements Listener {
 		
 		final GamePlayer finalDamagedGP = damagedGP;
 		
-		if (damagedGP.isEPCCooldown())
-			event.setCancelled(true);
-		else {
+		if (damagedGP.isEPCCooldown()) {
+            event.setCancelled(true);
+        } else {
 			damagedGP.setEPCCooldown(true);
 			
 			new BukkitRunnable() {
@@ -166,22 +174,25 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageByEntityEvent event) {
+	private void onEntityDamage(EntityDamageByEntityEvent event) {
 		
-		if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT))
-				event.setCancelled(true);
+		if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT)) {
+            event.setCancelled(true);
+        }
 	}
 	
 	@EventHandler
-	public void onProjectileHit(ProjectileHitEvent event) {
+	private void onProjectileHit(ProjectileHitEvent event) {
 		
 		Entity entity = event.getEntity();
 		
-		if (!(entity instanceof Arrow))
-			return;
+		if (!(entity instanceof Arrow)) {
+            return;
+        }
 		
-		if (!entity.hasMetadata("MegaTW"))
-			return;
+		if (!entity.hasMetadata("MegaTW")) {
+            return;
+        }
 		
 		Player shooter = (Player) ((Projectile) entity).getShooter();
 		
@@ -190,11 +201,13 @@ public class PlayerUltimateListener implements Listener {
 		loc.getWorld().createExplosion(loc, 5);
 		
 		for (Entity nearby : entity.getNearbyEntities(5D, 3D, 5D)) {
-			if (!(nearby instanceof Player))
-				continue;
+			if (!(nearby instanceof Player)) {
+                continue;
+            }
 			
-			if (nearby == shooter)
-				continue;
+			if (nearby == shooter) {
+                continue;
+            }
 			
 			Player nearbyPlayer = (Player) nearby;
 			GamePlayer nearbyGP = null;
@@ -205,21 +218,23 @@ public class PlayerUltimateListener implements Listener {
 				e.printStackTrace();
 			}
 			
-			if (!nearbyGP.isInGame())
-				return;
+			if (!nearbyGP.isInGame()) {
+                return;
+            }
 			
 			Damageable dmgPlayer = nearbyPlayer;
 			
 			if (dmgPlayer.getHealth() < 5) {
 				dmgPlayer.setHealth(0D);
 				return;
-			} else
-				nearbyPlayer.setHealth(nearbyPlayer.getHealth() - 5);
+			} else {
+                nearbyPlayer.setHealth(nearbyPlayer.getHealth() - 5);
+            }
 		}
 	}
 	
 	@EventHandler
-	public void onFlamingFeetMove(PlayerMoveEvent event) {
+	private void onFlamingFeetMove(PlayerMoveEvent event) {
 		
 		Player player = event.getPlayer();
 		GamePlayer gp = null;
@@ -230,12 +245,14 @@ public class PlayerUltimateListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (!gp.hasFlamingFeet())
-			return;
+		if (!gp.hasFlamingFeet()) {
+            return;
+        }
 		
 		Block block = player.getLocation().getBlock();
 		
-		if (block.getType() == Material.AIR)
-			block.setType(Material.FIRE);
+		if (block.getType() == Material.AIR) {
+            block.setType(Material.FIRE);
+        }
 	}
 }

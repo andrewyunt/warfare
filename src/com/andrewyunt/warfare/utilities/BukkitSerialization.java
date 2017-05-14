@@ -58,8 +58,9 @@ public class BukkitSerialization {
 			dataOutput.writeInt(items.length);
 
 			// Save every element in the list
-			for (int i = 0; i < items.length; i++)
-				dataOutput.writeObject(items[i]);
+			for (int i = 0; i < items.length; i++) {
+                dataOutput.writeObject(items[i]);
+            }
 
 			// Serialize that array
 			dataOutput.close();
@@ -94,8 +95,9 @@ public class BukkitSerialization {
 			dataOutput.writeInt(inventory.getSize());
 
 			// Save every element in the list
-			for (int i = 0; i < inventory.getSize(); i++)
-				dataOutput.writeObject(inventory.getItem(i));
+			for (int i = 0; i < inventory.getSize(); i++) {
+                dataOutput.writeObject(inventory.getItem(i));
+            }
 
 			// Serialize that array
 			dataOutput.close();
@@ -129,8 +131,9 @@ public class BukkitSerialization {
 			Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
 			
 			// Read the serialized inventory
-			for (int i = 0; i < inventory.getSize(); i++)
-				inventory.setItem(i, (ItemStack) dataInput.readObject());
+			for (int i = 0; i < inventory.getSize(); i++) {
+                inventory.setItem(i, (ItemStack) dataInput.readObject());
+            }
 
 			dataInput.close();
 			return inventory;
@@ -159,8 +162,9 @@ public class BukkitSerialization {
 			ItemStack[] items = new ItemStack[dataInput.readInt()];
 
 			// Read the serialized inventory
-			for (int i = 0; i < items.length; i++)
-				items[i] = (ItemStack) dataInput.readObject();
+			for (int i = 0; i < items.length; i++) {
+                items[i] = (ItemStack) dataInput.readObject();
+            }
 
 			dataInput.close();
 			return items;

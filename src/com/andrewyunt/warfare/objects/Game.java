@@ -59,8 +59,9 @@ public class Game {
 	
 	public Game() {
 		
-		for (Entry<String, Location> entry : Warfare.getInstance().getArena().getCageLocations().entrySet())
+		for (Entry<String, Location> entry : Warfare.getInstance().getArena().getCageLocations().entrySet()) {
 			cages.add(new Cage(entry.getKey(), entry.getValue()));
+		}
 	}
 	
 	/**
@@ -82,13 +83,11 @@ public class Game {
 
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			for (Cage cage : getAvailableCages()) {
-				cage.setPlayer(player);
-				break;
-			}
+			getAvailableCages().iterator().next().setPlayer(player);
 
-			if (getAvailableCages().size() == 0)
+			if (getAvailableCages().size() == 0) {
 				setStage(Stage.COUNTDOWN);
+			}
 
 			// Send the join message to the players
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
@@ -106,16 +105,18 @@ public class Game {
 			
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
 					String.format("&7%s &6has quit!", player.getBukkitPlayer().getDisplayName())));
-		} else
+		} else {
 			checkPlayers();
+		}
 	}
 	
 	public void checkPlayers() {
 		
-		if (players.size() == 1 && (stage != Stage.WAITING && stage != Stage.END && stage != Stage.RESTART))
+		if (players.size() == 1 && (stage != Stage.WAITING && stage != Stage.END && stage != Stage.RESTART)) {
 			setStage(Stage.END);
-		else if (players.size() == 0 && stage != Stage.WAITING)
+		} else if (players.size() == 0 && stage != Stage.WAITING) {
 			setStage(Stage.RESTART);
+		}
 	}
 	
 	/**
@@ -138,9 +139,11 @@ public class Game {
 		
 		Set<Cage> availableCages = new HashSet<Cage>();
 		
-		for (Cage cage : cages)
-			if (!cage.hasPlayer())
+		for (Cage cage : cages) {
+			if (!cage.hasPlayer()) {
 				availableCages.add(cage);
+			}
+		}
 		
 		return availableCages;
 	}
@@ -149,21 +152,25 @@ public class Game {
 		
 		Set<GamePlayer> spectators = new HashSet<GamePlayer>(Warfare.getInstance().getPlayerManager().getPlayers());
 		
-		for (GamePlayer player : players)
+		for (GamePlayer player : players) {
 			spectators.remove(player);
+		}
 		
 		return spectators;
 	}
 	
 	public void start() {
 		
-		for (Entity entity : Warfare.getInstance().getArena().getMapLocation().getWorld().getEntities())
-			if (entity.getType() != EntityType.PLAYER)
+		for (Entity entity : Warfare.getInstance().getArena().getMapLocation().getWorld().getEntities()) {
+			if (entity.getType() != EntityType.PLAYER) {
 				entity.remove();
+			}
+		}
 		
 		// Destroy cages
-		for (Cage cage : cages)
+		for (Cage cage : cages) {
 			cage.destroy();
+		}
 		
 		for (GamePlayer player : players) {
 			Player bp = player.getBukkitPlayer();
@@ -187,12 +194,13 @@ public class Game {
 			List<Purchasable> purchases = player.getPurchases();
 			double health = 24;
 			
-			if (purchases.contains(HealthBoost.HEALTH_BOOST_I))
+			if (purchases.contains(HealthBoost.HEALTH_BOOST_I)) {
 				health = 26;
-			else if (purchases.contains(HealthBoost.HEALTH_BOOST_II))
+			} else if (purchases.contains(HealthBoost.HEALTH_BOOST_II)) {
 				health = 28;
-			else if (purchases.contains(HealthBoost.HEALTH_BOOST_III))
+			} else if (purchases.contains(HealthBoost.HEALTH_BOOST_III)) {
 				health = 30;
+			}
 			
 			bp.setMaxHealth(health);
 			bp.setHealth(health);
@@ -217,11 +225,13 @@ public class Game {
 			
 			int winCoins = 200;
 			
-			if (player.getBukkitPlayer().hasPermission("Warfare.coins.double"))
+			if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
 				winCoins = 400;
+			}
 			
-			if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple"))
+			if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple")) {
 				winCoins = 600;
+			}
 			
 			player.setCoins(player.getCoins() + winCoins);
 			player.setWins(player.getWins() + 1);
@@ -268,15 +278,18 @@ public class Game {
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
 				Warfare.getInstance().getMySQLManager().savePlayer(player);
 				
-				if (Warfare.getInstance().getArena().isEdit())
-					if (player.getBukkitPlayer().hasPermission("Warfare.edit"))
+				if (Warfare.getInstance().getArena().isEdit()) {
+					if (player.getBukkitPlayer().hasPermission("Warfare.edit")) {
 						continue;
+					}
+				}
 
 				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
 			}
 			
-			if (Warfare.getInstance().getArena().isEdit())
+			if (Warfare.getInstance().getArena().isEdit()) {
 				return;
+			}
 			
 			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
 		}
@@ -297,8 +310,9 @@ public class Game {
 		if (countdownTime > 0) {
 			Bukkit.getServer().broadcastMessage(ChatColor.RED + String.format("The game will start in %s seconds.",
 					countdownTime));
-		} else if (countdownTime == 0)
+		} else if (countdownTime == 0) {
 			setStage(Stage.BATTLE);
+		}
 	}
 
 	public short getCountdownTime() {
@@ -309,8 +323,9 @@ public class Game {
 	public void fillChests() {
 		
 		for (LootChest lootChest : Warfare.getInstance().getArena().getLootChests()) {
-			if (lootChest.getLocation().getBlock().getType() != Material.CHEST)
+			if (lootChest.getLocation().getBlock().getType() != Material.CHEST) {
 				continue;
+			}
 			
 			lootChest.fill();
 		}

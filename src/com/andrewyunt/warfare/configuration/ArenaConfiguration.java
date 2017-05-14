@@ -40,8 +40,9 @@ public class ArenaConfiguration {
 	
 	public void reloadConfig() {
 		
-		if (configFile == null)
-			configFile = new File(Warfare.getInstance().getDataFolder(), "arena.yml");
+		if (configFile == null) {
+            configFile = new File(Warfare.getInstance().getDataFolder(), "arena.yml");
+        }
 		
 		config = YamlConfiguration.loadConfiguration(configFile);
 		
@@ -61,16 +62,18 @@ public class ArenaConfiguration {
 	
 	public FileConfiguration getConfig() {
 		
-		if (config == null)
-			reloadConfig();
+		if (config == null) {
+            reloadConfig();
+        }
 		
 		return config;
 	}
 	
 	public void saveConfig() {
 		
-		if (config == null || configFile == null)
-			return;
+		if (config == null || configFile == null) {
+            return;
+        }
 		
 		try {
 			getConfig().save(configFile);
@@ -81,10 +84,12 @@ public class ArenaConfiguration {
 	
 	public void saveDefaultConfig() {
 		
-		if (configFile == null)
-			configFile = new File(Warfare.getInstance().getDataFolder(), "arena.yml");
+		if (configFile == null) {
+            configFile = new File(Warfare.getInstance().getDataFolder(), "arena.yml");
+        }
 		
-		if (!configFile.exists())
-			Warfare.getInstance().saveResource("arena.yml", false);
+		if (!configFile.exists()) {
+            Warfare.getInstance().saveResource("arena.yml", false);
+        }
 	}
 }

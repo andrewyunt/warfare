@@ -82,8 +82,9 @@ public class ShopMenu implements Listener {
 		if (type == Type.MAIN) {
 			inv = Bukkit.createInventory(null, 27, ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop");
 			
-			for (int i = 0; i < 11; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 0; i < 11; i++) {
+                inv.setItem(i, glassPane);
+            }
 			
 			inv.setItem(11, ultimates);
 			inv.setItem(12, glassPane);
@@ -91,22 +92,25 @@ public class ShopMenu implements Listener {
 			inv.setItem(14, glassPane);
 			inv.setItem(15, healthBoosts);
 			
-			for (int i = 16; i < 27; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 16; i < 27; i++) {
+                inv.setItem(i, glassPane);
+            }
 		} else {
 			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.ULTIMATES
 					? "Ultimates" : type == Type.SKILLS ? "Skills" : "Health Boosts"));
 			
-			for (int i = 0; i < 9; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 0; i < 9; i++) {
+                inv.setItem(i, glassPane);
+            }
 			
 			for (int i = 9; i < 45; i = i + 9) {
 				inv.setItem(i, glassPane);
 				inv.setItem(i + 8, glassPane);
 			}
 			
-			for (int i = 45; i < 54; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 45; i < 54; i++) {
+                inv.setItem(i, glassPane);
+            }
 			
 			List<Purchasable> purchasables = Arrays.asList(type == Type.ULTIMATES ? Ultimate.values()
 					: type == Type.SKILLS ? Skill.values() : HealthBoost.values());
@@ -114,11 +118,13 @@ public class ShopMenu implements Listener {
 			int purchasableNum = 0;
 			
 			for (int i = 0; i < inv.getSize(); i++) {
-				if (inv.getItem(i) != null)
-					continue;
+				if (inv.getItem(i) != null) {
+                    continue;
+                }
 				
-				if (purchasableNum > purchasables.size() - 1)
-					break;
+				if (purchasableNum > purchasables.size() - 1) {
+                    break;
+                }
 				
 				Purchasable purchasable = purchasables.get(purchasableNum);
 				
@@ -126,8 +132,9 @@ public class ShopMenu implements Listener {
 				
 				ItemStack is = purchasable.getDisplayItem().clone();
 				
-				for(Enchantment enchantment : is.getEnchantments().keySet())
-					is.removeEnchantment(enchantment);
+				for(Enchantment enchantment : is.getEnchantments().keySet()) {
+                    is.removeEnchantment(enchantment);
+                }
 				
 				ItemMeta im = is.getItemMeta();
 				im.setDisplayName(ChatColor.GOLD + purchasable.getName());
@@ -161,15 +168,17 @@ public class ShopMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains("Shop"))
-			return;
+		if (!title.contains("Shop")) {
+            return;
+        }
 		
 		event.setCancelled(true);
 		
 		ItemStack is = event.getCurrentItem();
 		
-		if (!is.hasItemMeta())
-			return;
+		if (!is.hasItemMeta()) {
+            return;
+        }
 		
 		ItemMeta im = is.getItemMeta();
 		String name = im.getDisplayName();
@@ -183,27 +192,31 @@ public class ShopMenu implements Listener {
 		}
 		
 		if (title.equals(ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop")) {
-			if (name.equals(ChatColor.GOLD + "Ultimates"))
-				open(Type.ULTIMATES, gp);
-			else if (name.equals(ChatColor.GOLD + "Skills"))
-				open(Type.SKILLS, gp);
-			else if (name.equals(ChatColor.GOLD + "Health Boosts"))
-				open(Type.HEALTH_BOOSTS, gp);
+			if (name.equals(ChatColor.GOLD + "Ultimates")) {
+                open(Type.ULTIMATES, gp);
+            } else if (name.equals(ChatColor.GOLD + "Skills")) {
+                open(Type.SKILLS, gp);
+            } else if (name.equals(ChatColor.GOLD + "Health Boosts")) {
+                open(Type.HEALTH_BOOSTS, gp);
+            }
 		} else {
 			if (name.equals(ChatColor.RED + "Go Back")) {
 				open(Type.MAIN, gp);
 				return;
 			}
 			
-			if (name.equals(" "))
-				return;
+			if (name.equals(" ")) {
+                return;
+            }
 			
 			if (name.equals(ChatColor.GOLD + "Ultimtes") || name.equals(" ") || name.equals(ChatColor.GOLD + "Skills")
-					|| name.equals(ChatColor.GOLD + "Health Boosts"))
-				return;
+					|| name.equals(ChatColor.GOLD + "Health Boosts")) {
+                return;
+            }
 			
-			if (!im.hasLore())
-				return;
+			if (!im.hasLore()) {
+                return;
+            }
 			
 			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {
 				player.sendMessage(ChatColor.RED + "You have already purchased that item.");

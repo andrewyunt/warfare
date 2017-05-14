@@ -33,8 +33,9 @@ public class EditArgument extends CommandArgument {
 
         Arena arena = Warfare.getInstance().getArena();
 
-        if (arena == null)
+        if (arena == null) {
             return false;
+        }
 
         if (arena.isEdit()) {
             arena.setEdit(false);
@@ -45,15 +46,18 @@ public class EditArgument extends CommandArgument {
         } else {
             Game game = Warfare.getInstance().getGame();
 
-            if (game != null)
+            if (game != null) {
                 game.end();
+            }
 
             arena.setEdit(true);
             sender.sendMessage(ChatColor.GOLD + "You have enabled edit mode for the arena.");
 
-            for (GamePlayer gp : game.getPlayers())
-                if (gp.isCaged())
+            for (GamePlayer gp : game.getPlayers()) {
+                if (gp.isCaged()) {
                     gp.getCage().setPlayer(null);
+                }
+            }
         }
 
         return true;

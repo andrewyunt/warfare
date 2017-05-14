@@ -69,11 +69,13 @@ public class Utils {
 	public static void colorPlayerName(GamePlayer toColor, Collection<GamePlayer> toShowPlayers) {
 
 		for (GamePlayer toShow : toShowPlayers) {
-			if (!toShow.isInGame())
-				continue;
+			if (!toShow.isInGame()) {
+                continue;
+            }
 
-			if (toShow == toColor)
-				continue;
+			if (toShow == toColor) {
+                continue;
+            }
 
 			Scoreboard scoreboard = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(toShow.getBukkitPlayer().getUniqueId()).getScoreboard();
 			Team team = scoreboard.getTeam("enemies");
@@ -91,19 +93,22 @@ public class Utils {
 		
 		int highest = 0;
 		
-		if (section == null)
-			return 1;
+		if (section == null) {
+            return 1;
+        }
 		
 		Set<String> keys = section.getKeys(false);
 		
-		if (keys.size() == 0)
-			return 0;
+		if (keys.size() == 0) {
+            return 0;
+        }
 		
 		for (String key : section.getKeys(false)) {
 			int num = Integer.valueOf(key);
 			
-			if (highest < num)
-				highest = num;
+			if (highest < num) {
+                highest = num;
+            }
 		}
 		
 		return highest;
@@ -113,8 +118,9 @@ public class Utils {
 		
 		num = num % 100;
 		
-		if (num >= 11 && num <= 13)
-			return "th";
+		if (num >= 11 && num <= 13) {
+            return "th";
+        }
 		
 		switch (num % 10) {
 		case 1:
