@@ -82,29 +82,29 @@ public class TimerSidebarProvider implements SidebarProvider {
 
                 // Display seconds left
                 if (stage == Game.Stage.WAITING)
-                    lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Waiting..."));
+                    lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Waiting...", ""));
                 else
-                    lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Starting in ", game.getCountdownTime() + "s"));
+                    lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(),  "Starting in ", game.getCountdownTime() + "s"));
 
                 lines.add(lines.size(), new SidebarEntry(" "));
 
                 // Display server name
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW, "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
             } else {
                 lines.add(lines.size(), new SidebarEntry("  "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Next event:"));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Refill ", ChatColor.GRAY, LocalTime.ofSecondOfDay(game
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Refill ", ChatColor.GRAY +  LocalTime.ofSecondOfDay(game
                         .getRefillCountdownTime()).toString().substring(3)));
 
                 lines.add(lines.size(), new SidebarEntry("  "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Players Left: ", ChatColor.GRAY, game.getPlayers().size()));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Players Left: ", ChatColor.GRAY.toString() +  game.getPlayers().size()));
 
                 lines.add(lines.size(), new SidebarEntry(" "));
 
-                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW + "Killstreak: ", ChatColor.GRAY, gp.getKillStreak()));
+                lines.add(lines.size(), new SidebarEntry(ChatColor.YELLOW.toString(), "Killstreak: ", ChatColor.GRAY.toString() + gp.getKillStreak()));
             }
         }
 
