@@ -40,17 +40,19 @@ import com.andrewyunt.warfare.utilities.Utils;
 public class Game {
 	
 	public enum Stage {
-        COUNTDOWN(DyeColor.GREEN, ChatColor.GREEN, "Starting"),
-        WAITING(DyeColor.YELLOW, ChatColor.YELLOW, "Waiting for players"),
-		BATTLE(DyeColor.RED, ChatColor.RED, "Game in progress"),
-		END(DyeColor.RED, ChatColor.RED, "Game finished"),
-		RESTART(DyeColor.RED, ChatColor.RED, "Server restarting");
+        COUNTDOWN(1, DyeColor.GREEN, ChatColor.GREEN, "Starting"),
+        WAITING(0, DyeColor.YELLOW, ChatColor.YELLOW, "Waiting for players"),
+		BATTLE(2, DyeColor.RED, ChatColor.RED, "Game in progress"),
+		END(3, DyeColor.RED, ChatColor.RED, "Game finished"),
+		RESTART(4, DyeColor.RED, ChatColor.RED, "Server restarting");
 
+        private final int order;
 		private final DyeColor dyeColor;
 		private final ChatColor color;
 		private final String description;
 
-        Stage(DyeColor dyeColor, ChatColor color, String description) {
+        Stage(int order, DyeColor dyeColor, ChatColor color, String description) {
+            this.order = order;
             this.dyeColor = dyeColor;
             this.color = color;
             this.description = description;
@@ -70,6 +72,10 @@ public class Game {
 
         public String getDisplay(){
             return color + description;
+        }
+
+        public int getOrder() {
+            return order;
         }
     }
 	

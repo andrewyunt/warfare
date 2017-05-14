@@ -1,10 +1,10 @@
 package com.andrewyunt.warfare.menu;
 
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Game;
+import com.andrewyunt.warfare.objects.Party;
+import com.andrewyunt.warfare.objects.Server;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+import com.faithfulmc.util.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,169 +13,233 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.GamePlayer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class PlayMenu implements Listener {
+public class PlayMenu implements Listener, InventoryHolder {
 
-    private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
+    private final int SIZE = 6 * 9;
+
+    private final int QUICK_JOIN_SLOT = 49;
+    private final ItemStack QUICK_JOIN_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join").lore(ChatColor.GRAY + "Click to join a game").build();
+
+    private final ItemStack PANE = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).displayName(" ").build();
+
+    private final Inventory inventory;
+    private List<Server> inventoryServers = new ArrayList<>();
+    private List<Server> quickJoinServers = new ArrayList<>();
+    private List<PlayersEntity> quickJoin = new ArrayList<>();
 
     public PlayMenu() {
-
-        ItemMeta glassPaneMeta = glassPane.getItemMeta();
-        glassPaneMeta.setDisplayName("  ");
-        glassPaneMeta.setLore(new ArrayList<String>());
-        glassPane.setItemMeta(glassPaneMeta);
+        inventory = Bukkit.createInventory(this, SIZE, ChatColor.YELLOW + "Join Game");
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
+            List<Server> serverList = Warfare.getInstance().getMySQLManager().getServers();
+            inventoryServers = new ArrayList<>(serverList);
+            inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) + server.getOnlinePlayers()));
+            quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());
+            quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) + server.getOnlinePlayers()));
+            Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> inventory.setContents(getContents()));
+        }, 0, 5);
+        Bukkit.getScheduler().runTaskTimer(Warfare.getInstance(), () -> {
+            quickJoin.removeIf(PlayersEntity::hasFailed);
+            if(!quickJoin.isEmpty()) {
+                Iterator<PlayersEntity> quickJoinIterator = quickJoin.iterator();
+                for (Server server : quickJoinServers) {
+                    while (quickJoinIterator.hasNext()){
+                        if(server.getOnlinePlayers() == server.getMaxPlayers()){
+                            break;
+                        }
+                        PlayersEntity playerEntity = quickJoinIterator.next();
+                        int size = playerEntity.size();
+                        int amount = size == 1 ? 1 : size + 2;
+                        if(server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
+                            playerEntity.sendToServer(server.getName());
+                            server.setOnlinePlayers(server.getOnlinePlayers() + size);
+                            quickJoinIterator.remove();
+                        }
+                    }
+                    if(quickJoin.isEmpty()){
+                        break;
+                    }
+                    else {
+                        quickJoinIterator = quickJoin.iterator();
+                    }
+                }
+                while (quickJoinIterator.hasNext()){
+                    PlayersEntity playersEntity = quickJoinIterator.next();
+                    playersEntity.getPlayer().sendMessage(ChatColor.RED + "There are currently no available games");
+                    quickJoinIterator.remove();
+                }
+            }
+        }, 0, 10);
     }
 
-    public void open(GamePlayer player) {
-
-        Inventory inv = Bukkit.createInventory(null, 54, ChatColor.RED + ChatColor.BOLD.toString() + "Join Game");
-
+    public ItemStack[] getContents(){
+        ItemStack[] itemStacks = new ItemStack[SIZE];
         for (int i = 0; i < 9; i++) {
-            inv.setItem(i, glassPane);
+            itemStacks[i] = PANE.clone();
         }
-
         for (int i = 9; i < 45; i = i + 9) {
-            inv.setItem(i, glassPane);
-            inv.setItem(i + 8, glassPane);
+            itemStacks[i] = PANE.clone();
+            itemStacks[i + 8] = PANE.clone();
         }
-
         for (int i = 45; i < 54; i++) {
-            inv.setItem(i, glassPane);
+            itemStacks[i] = PANE.clone();
         }
 
-        ItemStack quickJoin = new ItemStack(Material.IRON_SWORD);
-        ItemMeta quickJoinMeta = quickJoin.getItemMeta();
-        quickJoinMeta.setDisplayName(ChatColor.GOLD + "Quick Join");
-        quickJoin.setItemMeta(quickJoinMeta);
-        inv.setItem(49, quickJoin);
+        List<ItemStack> toAdd = new ArrayList<>();
 
-        List<ItemStack> toAdd = new ArrayList<ItemStack>();
-
-        List<Map.Entry<String, Map.Entry<Game.Stage, Integer>>> entries = new ArrayList<>(Warfare.getInstance().getMySQLManager().getServers().entrySet());
-        entries.sort(Comparator.comparingInt((t -> t.getValue().getValue())));
-
-        for (Map.Entry<String, Map.Entry<Game.Stage, Integer>> entry : entries) {
-            Game.Stage stage = entry.getValue().getKey();
-            if(stage.ordinal() < Game.Stage.END.ordinal()) {
-                ItemStack join = new ItemStack(Material.STAINED_GLASS_PANE, 1, stage.getDyeColor().getData());
-                ItemMeta joinMeta = join.getItemMeta();
-                joinMeta.setDisplayName(ChatColor.GOLD + entry.getKey());
-                List<String> lore = new ArrayList<String>();
-                lore.add(entry.getValue().getKey().getDisplay());
-                joinMeta.setLore(lore);
-                join.setItemMeta(joinMeta);
-                toAdd.add(join);
+        for(Server server: inventoryServers){
+            ItemStack itemStack = createServerItem(server);
+            if(itemStack != null){
+                toAdd.add(itemStack);
             }
         }
 
         for (int i = 0; i < 45; i++) {
-            ItemStack is = inv.getItem(i);
-
+            ItemStack is = itemStacks[i];
             if (is == null || is.getType() == Material.AIR) {
                 try {
-                    inv.setItem(i, toAdd.get(0));
-                    toAdd.remove(0);
+                    itemStacks[i] = toAdd.remove(0);
                 } catch (IndexOutOfBoundsException e) {
                     break;
                 }
             }
         }
 
-        player.getBukkitPlayer().openInventory(inv);
+        itemStacks[QUICK_JOIN_SLOT] = QUICK_JOIN_ITEM.clone();
+
+        return itemStacks;
+    }
+
+    public Inventory getInventory(){
+        return inventory;
+    }
+
+    public ItemStack createServerItem(Server server){
+        if(server.getServerType() == Server.ServerType.GAME && server.getGameStage().ordinal() < Game.Stage.END.ordinal()){
+            return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
+                    .displayName(ChatColor.GOLD + "Warfare Server #" + server.getId())
+                    .lore(
+                            ChatColor.GREEN.toString() + server.getOnlinePlayers() + ChatColor.GRAY + "/" + server.getMaxPlayers(),
+                            server.getGameStage().getDisplay()
+                    )
+                    .build();
+        }
+        return null;
+    }
+
+    public void open(GamePlayer player) {
+        player.getBukkitPlayer().openInventory(getInventory());
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-
         Inventory inv = event.getClickedInventory();
+        if(inv != null && inv.getHolder() == this) {
+            event.setCancelled(true);
 
-        if (inv == null) {
-            return;
-        }
+            int slot = event.getSlot();
 
-        String title = inv.getTitle();
+            Player player = (Player) event.getWhoClicked();
 
-        if (title == null) {
-            return;
-        }
-
-        if (!title.equals(ChatColor.RED + ChatColor.BOLD.toString() + "Join Game")) {
-            return;
-        }
-
-        event.setCancelled(true);
-
-        ItemStack is = event.getCurrentItem();
-
-        if (is.getType() == Material.STAINED_GLASS_PANE) {
-            return;
-        }
-
-        if(is.getType() == Material.AIR) {
-            return;
-        }
-
-        if (!is.hasItemMeta()) {
-            return;
-        }
-
-        String name = is.getItemMeta().getDisplayName();
-
-        if (name == null) {
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-        String sendServer = null;
-
-        if (name.equals(ChatColor.GOLD + "Quick Join")) {
-            Map<String, Map.Entry<Game.Stage, Integer>> servers = Warfare.getInstance().getMySQLManager().getServers();
-            Map<String, Integer> playableServers = new HashMap<String, Integer>();
-
-            for (Map.Entry<String, Map.Entry<Game.Stage, Integer>> entry : servers.entrySet()) {
-                if (entry.getValue().getKey() == Game.Stage.WAITING) {
-                    playableServers.put(entry.getKey(), entry.getValue().getValue());
+            PlayersEntity playerEntity;
+            Party party = Warfare.getInstance().getPartyManager().getParty(player.getUniqueId());
+            if (party == null) {
+                playerEntity = new SinglePlayerEntity(player.getUniqueId());
+            } else {
+                if (party.getLeader() == player.getUniqueId()) {
+                    playerEntity = new PartyPlayerEntity(player.getUniqueId());
+                } else {
+                    player.sendMessage(ChatColor.RED + "You must be the party leader to do this");
+                    player.closeInventory();
+                    return;
                 }
             }
 
-            if (playableServers.size() == 0)  {
-                player.sendMessage(ChatColor.RED + "There are no available servers at the moment.");
-                return;
-            }
-
-            String mostPlayers = null;
-            int mostPlayersCount = 0;
-
-            for (Map.Entry<String, Integer> entry : playableServers.entrySet()) {
-                if (entry.getValue() >= mostPlayersCount) {
-                    mostPlayers = entry.getKey();
+            if (slot == QUICK_JOIN_SLOT) {
+                quickJoin.add(playerEntity);
+                player.closeInventory();
+            } else {
+                int row = slot / 9;
+                int column = slot % 9;
+                if(row > 0 && row < 5){
+                    if(column > 0 && column < 8){
+                        int serverID = (row - 1) * 7 + column - 1;
+                        Server server = serverID < inventoryServers.size() ? inventoryServers.get(serverID) : null;
+                        if(server != null){
+                            playerEntity.sendToServer(server.getName());
+                            player.closeInventory();
+                        }
+                    }
                 }
             }
+        }
+    }
 
-            sendServer = mostPlayers;
-        } else {
-            sendServer = ChatColor.stripColor(name);
+    public abstract class PlayersEntity{
+        private int ticks = 0;
+        protected UUID player;
+
+        public PlayersEntity(UUID player) {
+            this.player = player;
         }
 
-        Utils.sendPlayerToServer(player, sendServer);
+        public boolean hasFailed(){
+            return Bukkit.getPlayer(player) == null;
+        }
 
-        UUID uuid = player.getUniqueId();
+        public int ticks(){
+            return ticks++;
+        }
 
-        if (Warfare.getInstance().getPartyManager().getParty(uuid).getLeader() == uuid) {
-            for(String server : StaticConfiguration.LOBBY_SERVERS) {
-                ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                out.writeUTF("Forward");
-                out.writeUTF(server);
-                out.writeUTF("MOVEPARTY " + uuid + " " + sendServer);
-                player.sendPluginMessage(Warfare.getInstance(), "BungeeCord", out.toByteArray());
-            }
+        public UUID getPlayerUUID(){
+            return player;
+        }
+
+        public Player getPlayer(){
+            return Bukkit.getPlayer(player);
+        }
+
+        public abstract void sendToServer(String servername);
+        public abstract int size();
+    }
+
+    public class SinglePlayerEntity extends PlayersEntity{
+        public SinglePlayerEntity(UUID player) {
+            super(player);
+        }
+
+        public int size() {
+            return 1;
+        }
+
+        public void sendToServer(String servername) {
+            Utils.sendPlayerToServer(Bukkit.getPlayer(player), servername);
+        }
+    }
+
+    public class PartyPlayerEntity extends PlayersEntity{
+        public PartyPlayerEntity(UUID partyLeader) {
+            super(partyLeader);
+        }
+
+        public boolean hasFailed(){
+            return Bukkit.getPlayer(player) == null || Warfare.getInstance().getPartyManager().getParty(player) == null;
+        }
+
+        public int size(){
+            return Warfare.getInstance().getPartyManager().getParty(player).getMembers().size();
+        }
+
+        public void sendToServer(String servername) {
+            Utils.sendPartyToServer(Bukkit.getPlayer(player), Warfare.getInstance().getPartyManager().getParty(player), servername);
         }
     }
 }
