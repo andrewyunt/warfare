@@ -32,7 +32,7 @@ import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
-import com.andrewyunt.warfare.managers.MySQLManager;
+import com.andrewyunt.warfare.managers.mysql.MySQLManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
@@ -142,7 +142,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		}
 
 		for (GamePlayer player : playerManager.getPlayers()) {
-			mysqlManager.savePlayer(player);
+			mysqlManager.savePlayerAsync(player);
 		}
 
 		mysqlManager.disconnect();

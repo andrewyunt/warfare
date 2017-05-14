@@ -62,7 +62,7 @@ public class PlayerManager {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			Warfare.getInstance().getMySQLManager().loadPlayer(player);
+			Warfare.getInstance().getMySQLManager().loadPlayerAsync(player);
 			
 			List<Purchasable> purchases = player.getPurchases();
 	
@@ -104,7 +104,7 @@ public class PlayerManager {
             throw new PlayerException("The player specified is not in the plugin's records.");
         }
 		
-		Warfare.getInstance().getMySQLManager().savePlayer(player);
+		Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
 		
 		players.remove(player.getUUID());
 	}

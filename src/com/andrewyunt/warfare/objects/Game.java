@@ -276,7 +276,7 @@ public class Game {
 		} else if (stage == Stage.RESTART) {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-				Warfare.getInstance().getMySQLManager().savePlayer(player);
+				Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
 				
 				if (Warfare.getInstance().getArena().isEdit()) {
 					if (player.getBukkitPlayer().hasPermission("Warfare.edit")) {
