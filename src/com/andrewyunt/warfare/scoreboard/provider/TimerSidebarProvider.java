@@ -10,7 +10,6 @@ import com.andrewyunt.warfare.scoreboard.SidebarProvider;
 import com.andrewyunt.warfare.utilities.DateTimeFormats;
 
 import com.faithfulmc.util.BukkitUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -87,7 +86,7 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(new SidebarEntry(" "));
 
                 // Display server name
-                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + Warfare.getInstance().getConfig().getString("server-name")));
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + StaticConfiguration.SERVER_NAME));
             } else {
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));

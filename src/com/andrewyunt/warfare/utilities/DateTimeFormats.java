@@ -20,24 +20,9 @@ public final class DateTimeFormats {
     public static final FastDateFormat MIN_SECS = FastDateFormat.getInstance("mm:ss", SERVER_TIME_ZONE, Locale.ENGLISH);
     public static final FastDateFormat KOTH_FORMAT = FastDateFormat.getInstance("m:ss", SERVER_TIME_ZONE, Locale.ENGLISH);
 
-    public static final ThreadLocal<DecimalFormat> SECONDS = new ThreadLocal<DecimalFormat>() {
+    public static final ThreadLocal<DecimalFormat> SECONDS = ThreadLocal.withInitial(() -> new DecimalFormat("0"));
 
-        protected DecimalFormat initialValue() {
-            return new DecimalFormat("0");
-        }
-    };
+    public static final ThreadLocal<DecimalFormat> REMAINING_SECONDS = ThreadLocal.withInitial(() -> new DecimalFormat("0.#"));
 
-    public static final ThreadLocal<DecimalFormat> REMAINING_SECONDS = new ThreadLocal<DecimalFormat>() {
-
-        protected DecimalFormat initialValue() {
-            return new DecimalFormat("0.#");
-        }
-    };
-
-    public static final ThreadLocal<DecimalFormat> REMAINING_SECONDS_TRAILING = new ThreadLocal<DecimalFormat>() {
-
-        protected DecimalFormat initialValue() {
-            return new DecimalFormat("0.0");
-        }
-    };
+    public static final ThreadLocal<DecimalFormat> REMAINING_SECONDS_TRAILING = ThreadLocal.withInitial(() -> new DecimalFormat("0.0"));
 }

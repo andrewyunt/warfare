@@ -120,13 +120,10 @@ public class PlayerListener implements Listener {
 				
 				if (game.getStage() == Game.Stage.WAITING) {
 					game.addPlayer(finalGP);
-					return;
 				} else if (game.getStage() == Game.Stage.END) {
 					player.kickPlayer("You may not join once the game has ended.");
-					return;
 				} else if (game.getStage() == Stage.RESTART) {
 					player.kickPlayer("You may not join during a restart.");
-					return;
 				} else {
 					if (!player.hasPermission("warfare.spectatorjoin"))
 						player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");

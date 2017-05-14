@@ -82,10 +82,7 @@ public class Game {
 
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			for (Cage cage : getAvailableCages()) {
-				cage.setPlayer(player);
-				break;
-			}
+			getAvailableCages().iterator().next().setPlayer(player);
 
 			if (getAvailableCages().size() == 0)
 				setStage(Stage.COUNTDOWN);

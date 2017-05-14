@@ -82,41 +82,39 @@ public class BufferedObjective {
             return;
         }
         final Set<String> adding = new HashSet<String>();
-        this.contents.forEachEntry( new TIntObjectProcedure<SidebarEntry>() {
-            public boolean execute(final int i, final SidebarEntry sidebarEntry) {
-                String name = sidebarEntry.name;
-                if (name.length() > 16) {
-                    name = name.substring(0, 16);
-                }
-                Team team = BufferedObjective.this.scoreboard.getTeam(name);
-                if (team == null) {
-                    team = BufferedObjective.this.scoreboard.registerNewTeam(name);
-                }
-                String prefix = sidebarEntry.prefix;
-                if (prefix != null) {
-                    if (prefix.length() > 16) {
-                        prefix = prefix.substring(0, 16);
-                    }
-                    if (!team.getPrefix().equals(prefix)) {
-                        team.setPrefix(prefix);
-                    }
-                }
-                String suffix = sidebarEntry.suffix;
-                if (suffix != null) {
-                    if (suffix.length() > 16) {
-                        suffix = suffix.substring(0, 16);
-                    }
-                    if (!team.getSuffix().equals(suffix)) {
-                        team.setSuffix(suffix);
-                    }
-                }
-                adding.add(name);
-                if (!team.hasEntry(name)) {
-                    team.addEntry(name);
-                }
-                BufferedObjective.this.current.getScore(name).setScore(i);
-                return true;
+        this.contents.forEachEntry((i, sidebarEntry) -> {
+            String name = sidebarEntry.name;
+            if (name.length() > 16) {
+                name = name.substring(0, 16);
             }
+            Team team = BufferedObjective.this.scoreboard.getTeam(name);
+            if (team == null) {
+                team = BufferedObjective.this.scoreboard.registerNewTeam(name);
+            }
+            String prefix = sidebarEntry.prefix;
+            if (prefix != null) {
+                if (prefix.length() > 16) {
+                    prefix = prefix.substring(0, 16);
+                }
+                if (!team.getPrefix().equals(prefix)) {
+                    team.setPrefix(prefix);
+                }
+            }
+            String suffix = sidebarEntry.suffix;
+            if (suffix != null) {
+                if (suffix.length() > 16) {
+                    suffix = suffix.substring(0, 16);
+                }
+                if (!team.getSuffix().equals(suffix)) {
+                    team.setSuffix(suffix);
+                }
+            }
+            adding.add(name);
+            if (!team.hasEntry(name)) {
+                team.addEntry(name);
+            }
+            BufferedObjective.this.current.getScore(name).setScore(i);
+            return true;
         });
         this.previousLines.removeAll(adding);
         final Iterator<String> iterator = this.previousLines.iterator();
