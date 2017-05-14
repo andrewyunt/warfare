@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.StaticConfiguration;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

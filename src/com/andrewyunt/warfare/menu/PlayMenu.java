@@ -1,6 +1,6 @@
 package com.andrewyunt.warfare.menu;
 
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.google.common.io.ByteArrayDataOutput;

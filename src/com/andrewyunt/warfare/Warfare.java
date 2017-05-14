@@ -18,7 +18,6 @@ package com.andrewyunt.warfare;
 import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.managers.PartyManager;
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.andrewyunt.warfare.utilities.Utils;

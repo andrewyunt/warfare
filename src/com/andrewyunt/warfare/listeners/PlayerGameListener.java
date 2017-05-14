@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.StaticConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.objects.Game;
@@ -15,7 +15,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -29,7 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Map;

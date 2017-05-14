@@ -21,24 +21,6 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.GamePlayer;
 
 public class Utils {
-
-	public static Location deserializeLocation(ConfigurationSection section) {
-
-		return new Location(Bukkit.getWorld(section.getString("w")), section.getDouble("x"), section.getDouble("y"),
-				section.getDouble("z"));
-	}
-
-	public static Map<String, Object> serializeLocation(Location loc) {
-
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		map.put("w", loc.getWorld().getName());
-		map.put("x", loc.getX());
-		map.put("y", loc.getY());
-		map.put("z", loc.getZ());
-
-		return map;
-	}
 	
 	public static List<String> colorizeList(List<String> list, ChatColor color) {
 

@@ -1,11 +1,10 @@
 package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.StaticConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
-import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.utilities.Utils;
