@@ -36,6 +36,7 @@ public class PartyLeaveArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You must disband your party");
         } else {
             party.getMembers().remove(player.getUniqueId());
+            player.sendMessage(ChatColor.YELLOW + "You left the party");
         }
 
         return true;

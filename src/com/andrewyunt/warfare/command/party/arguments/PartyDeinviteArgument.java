@@ -45,7 +45,7 @@ public class PartyDeinviteArgument extends CommandArgument {
             return false;
         }
 
-        UUID removeUUID = Bukkit.getServer().getOfflinePlayer(args[1]).getUniqueId();
+        UUID removeUUID = Bukkit.getServer().getOfflinePlayer(args[1]).getUniqueId(); //TODO: Don't use Bukkit.getOfflinePlayer()
 
         if (!party.getInvites().contains(removeUUID)) {
             player.sendMessage(ChatColor.YELLOW + "That player was not invited");

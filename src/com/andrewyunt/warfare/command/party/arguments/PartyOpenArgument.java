@@ -34,6 +34,7 @@ public class PartyOpenArgument extends CommandArgument {
 
         if (party.getLeader() == player.getUniqueId()) {
             party.setOpen(!party.isOpen());
+            player.sendMessage(ChatColor.YELLOW + "The party is now " + (party.isOpen() ? ChatColor.GREEN + "open" : ChatColor.RED + "closed"));
         } else {
             player.sendMessage(ChatColor.YELLOW + "You need to be the leader of a party to toggle whether it is open.");
         }

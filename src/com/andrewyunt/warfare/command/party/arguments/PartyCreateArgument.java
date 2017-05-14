@@ -30,6 +30,7 @@ public class PartyCreateArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You are already in a party");
         } else {
             Warfare.getInstance().getPartyManager().createParty(player.getUniqueId());
+            player.sendMessage(ChatColor.YELLOW + "You created a party");
         }
 
         return true;

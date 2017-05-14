@@ -40,7 +40,7 @@ public class PartyKickArgument extends CommandArgument{
             return false;
         }
 
-        UUID kick = Bukkit.getServer().getOfflinePlayer(args[1]).getUniqueId();
+        UUID kick = Bukkit.getServer().getOfflinePlayer(args[1]).getUniqueId(); //TODO: Don't use Bukkit.getOfflinePlayer()
 
         if (kick == null) {
             player.sendMessage(ChatColor.YELLOW + "Player not found");
