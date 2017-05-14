@@ -18,7 +18,7 @@ package com.andrewyunt.warfare.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.StaticConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
