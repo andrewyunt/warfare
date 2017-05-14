@@ -46,16 +46,18 @@ public class TeleporterMenu implements Listener {
 		
 		Inventory inv = Bukkit.createInventory(null, 54, "Teleporter");
 		
-		for (int i = 0; i < 9; i++)
-			inv.setItem(i, glassPane);
+		for (int i = 0; i < 9; i++) {
+            inv.setItem(i, glassPane);
+        }
 		
 		for (int i = 9; i < 45; i = i + 9) {
 			inv.setItem(i, glassPane);
 			inv.setItem(i + 8, glassPane);
 		}
 		
-		for (int i = 45; i < 54; i++)
-			inv.setItem(i, glassPane);
+		for (int i = 45; i < 54; i++) {
+            inv.setItem(i, glassPane);
+        }
 		
 		List<ItemStack> toAdd = new ArrayList<ItemStack>();
 		
@@ -72,13 +74,14 @@ public class TeleporterMenu implements Listener {
 		for (int i = 0; i < 45; i++) {
 			ItemStack is = inv.getItem(i);
 			
-			if (is == null || is.getType() == Material.AIR)
-				try {
-					inv.setItem(i, toAdd.get(0));
-					toAdd.remove(0);
-				} catch (IndexOutOfBoundsException e) {
-					break;
-				}
+			if (is == null || is.getType() == Material.AIR) {
+                try {
+                    inv.setItem(i, toAdd.get(0));
+                    toAdd.remove(0);
+                } catch (IndexOutOfBoundsException e) {
+                    break;
+                }
+            }
 		}
 		
 		player.getBukkitPlayer().openInventory(inv);
@@ -89,34 +92,41 @@ public class TeleporterMenu implements Listener {
 		
 		Inventory inv = event.getClickedInventory();
 		
-		if (inv == null)
-			return;
+		if (inv == null) {
+            return;
+        }
 		
 		String title = inv.getTitle();
 		
-		if (title == null)
-			return;
+		if (title == null) {
+            return;
+        }
 		
-		if (!title.equals("Teleporter"))
-			return;
+		if (!title.equals("Teleporter")) {
+            return;
+        }
 		
 		event.setCancelled(true);
 		
 		ItemStack is = event.getCurrentItem();
 		
-		if (is.getType() == Material.STAINED_GLASS_PANE)
-			return;
+		if (is.getType() == Material.STAINED_GLASS_PANE) {
+            return;
+        }
 		
-		if(is.getType() == Material.AIR)
-			return;
+		if(is.getType() == Material.AIR) {
+            return;
+        }
 		
-		if (!is.hasItemMeta())
-			return;
+		if (!is.hasItemMeta()) {
+            return;
+        }
 		
 		String name = is.getItemMeta().getDisplayName();
 		
-		if (name == null)
-			return;
+		if (name == null) {
+            return;
+        }
 		
 		event.getWhoClicked().teleport(Bukkit.getPlayer(name));
 	}

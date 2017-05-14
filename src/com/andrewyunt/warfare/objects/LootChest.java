@@ -176,9 +176,11 @@ public class LootChest {
 		
 		Collections.shuffle(lootItems);
 		
-		for (LootItem lootItem : lootItems)
-			if (lootItem.tier == tier && lootItem.group == group)
-				return lootItem;
+		for (LootItem lootItem : lootItems) {
+            if (lootItem.tier == tier && lootItem.group == group) {
+                return lootItem;
+            }
+        }
 		
 		return null;
 	}
@@ -193,28 +195,34 @@ public class LootChest {
 		if (tier == 3) {
 			lootItems.add(getRandomLootItem(1));
 			lootItems.add(getRandomLootItem(2));
-		} else if (tier == 2)
-			lootItems.add(getRandomLootItem(1));
+		} else if (tier == 2) {
+            lootItems.add(getRandomLootItem(1));
+        }
 		
 		int random = new Random().nextInt(4 - 3 + 1) + 3;
 		
 		for (int i = 0; i <= 5; i++) {
-			if (lootItems.size() >= random)
-				continue;
+			if (lootItems.size() >= random) {
+                continue;
+            }
 			
 			boolean containsGroup = false;
 			
-			for (LootItem lootItem : lootItems)
-				if (lootItem.group == i)
-					containsGroup = true;
+			for (LootItem lootItem : lootItems) {
+                if (lootItem.group == i) {
+                    containsGroup = true;
+                }
+            }
 			
-			if (containsGroup)
-				continue;
+			if (containsGroup) {
+                continue;
+            }
 			
 			LootItem randomItem = getRandomLootItem(i);
 			
-			if (randomItem != null)
-				lootItems.add(randomItem);
+			if (randomItem != null) {
+                lootItems.add(randomItem);
+            }
 		}
 		
 		for (LootItem lootItem : lootItems) {

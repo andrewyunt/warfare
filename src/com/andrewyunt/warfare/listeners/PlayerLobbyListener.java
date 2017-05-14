@@ -129,18 +129,21 @@ public class PlayerLobbyListener extends PlayerListener {
 
         Player player = event.getPlayer();
 
-        if (player.getLocation().getY() < 0)
+        if (player.getLocation().getY() < 0) {
             player.teleport(player.getLocation().getWorld().getSpawnLocation());
+        }
     }
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
 
-        if (event.getLine(0) == null || event.getLine(1) == null || event.getLine(2) == null)
+        if (event.getLine(0) == null || event.getLine(1) == null || event.getLine(2) == null) {
             return;
+        }
 
-        if (!event.getLine(0).equalsIgnoreCase("[Leaderboard]"))
+        if (!event.getLine(0).equalsIgnoreCase("[Leaderboard]")) {
             return;
+        }
 
         Player player = event.getPlayer();
 
@@ -151,12 +154,13 @@ public class PlayerLobbyListener extends PlayerListener {
 
         SignDisplay.Type type = null;
 
-        if (event.getLine(1).equalsIgnoreCase("kills"))
+        if (event.getLine(1).equalsIgnoreCase("kills")) {
             type = SignDisplay.Type.KILLS_LEADERBOARD;
-        else if (event.getLine(1).equalsIgnoreCase("wins"))
+        } else if (event.getLine(1).equalsIgnoreCase("wins")) {
             type = SignDisplay.Type.WINS_LEADERBOARD;
-        else
+        } else {
             return;
+        }
 
         int place;
 

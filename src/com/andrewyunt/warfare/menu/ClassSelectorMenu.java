@@ -82,8 +82,9 @@ public class ClassSelectorMenu implements Listener {
 				+ ChatColor.BOLD.toString() + "Class Selector - " + type.getName());
 
 		if (type == Type.KIT) {
-			for (int i = 0; i < 11; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 0; i < 11; i++) {
+                inv.setItem(i, glassPane);
+            }
 
 			ItemStack uhc = new ItemStack(Material.GOLDEN_APPLE, 1);
 			ItemMeta uhcMeta = uhc.getItemMeta();
@@ -109,34 +110,41 @@ public class ClassSelectorMenu implements Listener {
 			soup.setItemMeta(soupMeta);
 			inv.setItem(15, soup);
 
-			for (int i = 16; i < 27; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 16; i < 27; i++) {
+                inv.setItem(i, glassPane);
+            }
 		} else {
-			for (int i = 0; i < 9; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 0; i < 9; i++) {
+                inv.setItem(i, glassPane);
+            }
 
 			for (int i = 9; i < 45; i = i + 9) {
 				inv.setItem(i, glassPane);
 				inv.setItem(i + 8, glassPane);
 			}
 
-			for (int i = 45; i < 54; i++)
-				inv.setItem(i, glassPane);
+			for (int i = 45; i < 54; i++) {
+                inv.setItem(i, glassPane);
+            }
 
 			List<Purchasable> toAdd = new ArrayList<Purchasable>();
 
-			for (Purchasable purchase : player.getPurchases())
-				if (type == Type.ULTIMATE) {
-					if (purchase instanceof Ultimate)
-						toAdd.add(purchase);
-				} else if (type == Type.SKILL) {
-					if (purchase instanceof Skill)
-						toAdd.add(purchase);
-				}
+			for (Purchasable purchase : player.getPurchases()) {
+                if (type == Type.ULTIMATE) {
+                    if (purchase instanceof Ultimate) {
+                        toAdd.add(purchase);
+                    }
+                } else if (type == Type.SKILL) {
+                    if (purchase instanceof Skill) {
+                        toAdd.add(purchase);
+                    }
+                }
+            }
 
 			for (int i = 0; i < inv.getSize(); i++) {
-				if (inv.getItem(i) != null)
-					continue;
+				if (inv.getItem(i) != null) {
+                    continue;
+                }
 
 				Purchasable purchase = null;
 
@@ -150,8 +158,9 @@ public class ClassSelectorMenu implements Listener {
 
 				ItemStack displayItem = purchase.getDisplayItem().clone();
 
-				for(Enchantment enchantment : displayItem.getEnchantments().keySet())
-					displayItem.removeEnchantment(enchantment);
+				for(Enchantment enchantment : displayItem.getEnchantments().keySet()) {
+                    displayItem.removeEnchantment(enchantment);
+                }
 
 				ItemMeta displayItemMeta = displayItem.getItemMeta();
 				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
@@ -175,18 +184,21 @@ public class ClassSelectorMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector"))
-			return;
+		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
+            return;
+        }
 		
 		event.setCancelled(true);
 		
 		ItemStack is = event.getCurrentItem();
 		
-		if (is.getType() == Material.STAINED_GLASS_PANE)
-			return;
+		if (is.getType() == Material.STAINED_GLASS_PANE) {
+            return;
+        }
 		
-		if (!is.hasItemMeta())
-			return;
+		if (!is.hasItemMeta()) {
+            return;
+        }
 		
 		ItemMeta im = is.getItemMeta();
 		String name = im.getDisplayName();
@@ -200,8 +212,9 @@ public class ClassSelectorMenu implements Listener {
 		}
 		
 		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
-			if (name.equals(Utils.formatMessage(StaticConfiguration.NO_PERMS_CLASS_SLOT)))
-				return;
+			if (name.equals(Utils.formatMessage(StaticConfiguration.NO_PERMS_CLASS_SLOT))) {
+                return;
+            }
 			
 			open(Type.KIT, gp);
 		} else {

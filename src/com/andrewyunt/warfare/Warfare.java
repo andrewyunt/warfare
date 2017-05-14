@@ -136,8 +136,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	public void onDisable() {
 
 		if (!getConfig().getBoolean("is-lobby")) {
-			if (!StaticConfiguration.LOBBY)
+			if (!StaticConfiguration.LOBBY) {
 				game.setStage(Game.Stage.END);
+			}
 		}
 
 		for (GamePlayer player : playerManager.getPlayers()) {

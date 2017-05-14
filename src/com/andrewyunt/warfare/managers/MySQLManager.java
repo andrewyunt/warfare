@@ -46,8 +46,9 @@ public class MySQLManager {
 		String pass = config.getString("database-pass");
 		
 		try {
-			if (connection != null && !connection.isClosed())
-				return true;
+			if (connection != null && !connection.isClosed()) {
+                return true;
+            }
 			
 			synchronized (this) {
 				java.lang.Class.forName("com.mysql.jdbc.Driver");
@@ -79,8 +80,9 @@ public class MySQLManager {
 	
 	public void savePlayer(GamePlayer player) {
 		
-		if (!player.isLoaded())
-			return;
+		if (!player.isLoaded()) {
+            return;
+        }
 		
 		String uuid = player.getUUID().toString();
 		
@@ -126,12 +128,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 	
@@ -169,12 +172,15 @@ public class MySQLManager {
 					String ultimateStr = resultSet.getString("ultimate");
 					String skillStr = resultSet.getString("skill");
 					
-					if (!kitStr.equals("none"))
-						player.setSelectedKit(Kit.valueOf(kitStr));
-					if (!ultimateStr.equals("none"))
-						player.setSelectedUltimate(Ultimate.valueOf(ultimateStr));
-					if (!skillStr.equals("none"))
-						player.setSelectedSkill(Skill.valueOf(skillStr));
+					if (!kitStr.equals("none")) {
+                        player.setSelectedKit(Kit.valueOf(kitStr));
+                    }
+					if (!ultimateStr.equals("none")) {
+                        player.setSelectedUltimate(Ultimate.valueOf(ultimateStr));
+                    }
+					if (!skillStr.equals("none")) {
+                        player.setSelectedSkill(Skill.valueOf(skillStr));
+                    }
 
 					player.setCoins(resultSet.getInt("coins"));
 					player.setEarnedCoins(resultSet.getInt("earned_coins"));
@@ -184,12 +190,13 @@ public class MySQLManager {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-				if (preparedStatement != null)
-					try {
-						preparedStatement.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 			}
 			
 			player.setLoaded(true);
@@ -216,12 +223,13 @@ public class MySQLManager {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-				if (preparedStatement != null)
-					try {
-						preparedStatement.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+				if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
 			}
 		}
 	}
@@ -247,23 +255,28 @@ public class MySQLManager {
 			while (resultSet.next()) {
 				String purchasable = resultSet.getString("purchasable");
 				
-				for (Ultimate ultimate : Ultimate.values())
-					if (ultimate.toString().equals(purchasable))
-						player.getPurchases().add(Ultimate.valueOf(purchasable));
+				for (Ultimate ultimate : Ultimate.values()) {
+                    if (ultimate.toString().equals(purchasable)) {
+                        player.getPurchases().add(Ultimate.valueOf(purchasable));
+                    }
+                }
 				
-				for (Skill skill : Skill.values())
-					if (skill.toString().equals(purchasable))
-						player.getPurchases().add(Skill.valueOf(purchasable));
+				for (Skill skill : Skill.values()) {
+                    if (skill.toString().equals(purchasable)) {
+                        player.getPurchases().add(Skill.valueOf(purchasable));
+                    }
+                }
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 		
 		player.setLoaded(true);
@@ -288,9 +301,10 @@ public class MySQLManager {
 		}
 		
 		try {
-			while (resultSet.next())
-				servers.put(resultSet.getString("name"), new AbstractMap.SimpleEntry<Game.Stage, Integer>(
-						Game.Stage.valueOf(resultSet.getString("stage")), resultSet.getInt("online_players")));
+			while (resultSet.next()) {
+                servers.put(resultSet.getString("name"), new AbstractMap.SimpleEntry<Game.Stage, Integer>(
+                        Game.Stage.valueOf(resultSet.getString("stage")), resultSet.getInt("online_players")));
+            }
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -316,12 +330,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 
@@ -348,12 +363,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 
@@ -389,12 +405,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 
 		return party;
@@ -475,12 +492,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 	
@@ -500,12 +518,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 
@@ -524,12 +543,13 @@ public class MySQLManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null)
-				try {
-					preparedStatement.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		}
 	}
 }

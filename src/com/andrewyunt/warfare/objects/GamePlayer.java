@@ -108,10 +108,11 @@ public class GamePlayer {
 		
 		this.energy = energy;
 		
-		if (this.energy > 100)
-			this.energy = 100;
-		else
-			sentActivate = false;
+		if (this.energy > 100) {
+            this.energy = 100;
+        } else {
+            sentActivate = false;
+        }
 		
 		Player player = getBukkitPlayer();
 		
@@ -262,11 +263,13 @@ public class GamePlayer {
                 player.setAllowFlight(true);
                 player.setFireTicks(0);
 
-                for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators())
+                for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators()) {
                     player.showPlayer(toShow.getBukkitPlayer());
+                }
 
-                for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers())
+                for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers()) {
                     toHide.getBukkitPlayer().hidePlayer(player);
+                }
 
                 updateHotbar();
             }, 5L);
@@ -274,15 +277,17 @@ public class GamePlayer {
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
 			Chunk chunk = loc.getChunk();
 			
-			if (!chunk.isLoaded())
-				chunk.load();
+			if (!chunk.isLoaded()) {
+                chunk.load();
+            }
 			
 			loc.setY(loc.getY() + 1);
 			
-			if (respawn)
-				return loc;
-			else
-				getBukkitPlayer().teleport(loc, TeleportCause.COMMAND);
+			if (respawn) {
+                return loc;
+            } else {
+                getBukkitPlayer().teleport(loc, TeleportCause.COMMAND);
+            }
 		}
 		
 		return null;
@@ -320,12 +325,15 @@ public class GamePlayer {
 	
 	public Cage getCage() {
 		
-		if (StaticConfiguration.LOBBY)
-			return null;
+		if (StaticConfiguration.LOBBY) {
+            return null;
+        }
 		
-		for (Cage cage : Warfare.getInstance().getGame().getCages())
-			if (cage.hasPlayer() && cage.getPlayer() == this)
-				return cage;
+		for (Cage cage : Warfare.getInstance().getGame().getCages()) {
+            if (cage.hasPlayer() && cage.getPlayer() == this) {
+                return cage;
+            }
+        }
 		
 		return null;
 	}

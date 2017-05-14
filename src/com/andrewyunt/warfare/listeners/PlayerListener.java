@@ -13,13 +13,15 @@ public abstract class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
+        }
 
         ItemStack item = event.getItem();
 
-        if (item == null || !item.hasItemMeta())
+        if (item == null || !item.hasItemMeta()) {
             return;
+        }
 
         handleHotbarClick(event.getPlayer(), item.getItemMeta().getDisplayName());
     }
@@ -29,11 +31,13 @@ public abstract class PlayerListener implements Listener {
 
         ItemStack item = event.getCurrentItem();
 
-        if (item == null || !item.hasItemMeta())
+        if (item == null || !item.hasItemMeta()) {
             return;
+        }
 
-        if (handleHotbarClick((Player) event.getWhoClicked(), item.getItemMeta().getDisplayName()))
+        if (handleHotbarClick((Player) event.getWhoClicked(), item.getItemMeta().getDisplayName())) {
             event.setCancelled(true);
+        }
     }
 
     protected abstract boolean handleHotbarClick(Player player, String itemName);

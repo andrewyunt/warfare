@@ -96,8 +96,9 @@ public class Arena {
 		
 		ConfigurationSection cagesSection = arenaConfig.createSection("cages");
 		
-		for (Entry<String, Location> entry : cageLocations.entrySet())
-			cagesSection.createSection(entry.getKey(), Utils.serializeLocation(entry.getValue()));
+		for (Entry<String, Location> entry : cageLocations.entrySet()) {
+            cagesSection.createSection(entry.getKey(), Utils.serializeLocation(entry.getValue()));
+        }
 		
 		plugin.getArenaConfig().saveConfig();
 	}
@@ -115,11 +116,13 @@ public class Arena {
 			ConfigurationSection chestSection = chestsSection.getConfigurationSection(key);
 			Block block = Utils.deserializeLocation(chestSection).getBlock();
 			
-			if (block == null)
-				continue;
+			if (block == null) {
+                continue;
+            }
 			
-			if (block.getType() != Material.CHEST)
-				continue;
+			if (block.getType() != Material.CHEST) {
+                continue;
+            }
 			
 			arena.lootChests.add(new LootChest(block.getLocation(), (byte) chestSection.getInt("tier")));
 		}
@@ -128,9 +131,10 @@ public class Arena {
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            for (String key : cagesSection.getKeys(false))
+            for (String key : cagesSection.getKeys(false)) {
                 Warfare.getInstance().getGame().getCages().add(new Cage(key,
                         Utils.deserializeLocation(cagesSection.getConfigurationSection(key))));
+            }
         }, 1L);
 		
 		return arena;

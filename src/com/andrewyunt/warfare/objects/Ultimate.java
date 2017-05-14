@@ -114,8 +114,9 @@ public enum Ultimate implements Purchasable {
 	
 	public void use(GamePlayer player) {
 		
-		if (player.getEnergy() < 100)
-			return;
+		if (player.getEnergy() < 100) {
+            return;
+        }
 		
 		Player bp = player.getBukkitPlayer();
 		
@@ -123,10 +124,11 @@ public enum Ultimate implements Purchasable {
 			
 			double newHealth = bp.getHealth() + 6;
 			
-			if (newHealth < 40)
-				bp.setHealth(newHealth);
-			else
-				bp.setHealth(40D);
+			if (newHealth < 40) {
+                bp.setHealth(newHealth);
+            } else {
+                bp.setHealth(40D);
+            }
 			
 			Location loc = bp.getEyeLocation().clone();
 			loc.getWorld().spigot().playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.HEART);
@@ -136,8 +138,9 @@ public enum Ultimate implements Purchasable {
 			int count = 0;
 			
 			for (Entity entity : player.getBukkitPlayer().getNearbyEntities(3, 3, 3)) {
-				if (!(entity instanceof Player))
-					continue;
+				if (!(entity instanceof Player)) {
+                    continue;
+                }
 				
 				Player entityPlayer = (Player) entity;
 				GamePlayer entityAP = null;
@@ -148,22 +151,25 @@ public enum Ultimate implements Purchasable {
 					e.printStackTrace();
 				}
 
-				if (!entityAP.isInGame())
-					continue;
+				if (!entityAP.isInGame()) {
+                    continue;
+                }
 				
 				entityPlayer.getWorld().strikeLightningEffect(entityPlayer.getLocation());
 				Damageable dmgVictim = entityPlayer;
 				
-				if (dmgVictim.getHealth() <= 5)
-					dmgVictim.setHealth(0D);
-				else
-					dmgVictim.setHealth(dmgVictim.getHealth() - 5);
+				if (dmgVictim.getHealth() <= 5) {
+                    dmgVictim.setHealth(0D);
+                } else {
+                    dmgVictim.setHealth(dmgVictim.getHealth() - 5);
+                }
 				
 				count++;
 			}
 			
-			if (count == 0)
-				player.getBukkitPlayer().sendMessage(ChatColor.RED + "No targets within range found!");
+			if (count == 0) {
+                player.getBukkitPlayer().sendMessage(ChatColor.RED + "No targets within range found!");
+            }
 			
 		} else if (this == HELLS_SPAWNING) {
 			
@@ -174,8 +180,9 @@ public enum Ultimate implements Purchasable {
 			
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 			scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
-                if (!ghast.isDead())
+                if (!ghast.isDead()) {
                     ghast.teleport(bp.getLocation().add(new Location(bp.getLocation().getWorld(), 0, 10, 0)));
+                }
             }, 0L, 200L);
 		
 		} else if (this == SONIC) {

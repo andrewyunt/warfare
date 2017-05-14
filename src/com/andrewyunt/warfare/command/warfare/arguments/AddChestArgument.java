@@ -45,8 +45,9 @@ public class AddChestArgument extends CommandArgument {
         while (iterator.hasNext()) {
             block = iterator.next();
 
-            if (!block.getType().equals(Material.AIR))
+            if (!block.getType().equals(Material.AIR)) {
                 break;
+            }
         }
 
         if (block == null || block.getType() != Material.CHEST) {

@@ -67,11 +67,13 @@ public class SignDisplay {
 		
 		Block block = loc.getWorld().getBlockAt(loc);
 		
-		if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN)
-			bukkitSign =(Sign) block.getState();
+		if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+            bukkitSign = (Sign) block.getState();
+        }
 		
-		if (!load)
-			save();
+		if (!load) {
+            save();
+        }
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
@@ -80,8 +82,9 @@ public class SignDisplay {
 			@Override
 			public void run() {
 				
-				if (refresh)
-					refresh();
+				if (refresh) {
+                    refresh();
+                }
 				
 				refresh = true;
 			}

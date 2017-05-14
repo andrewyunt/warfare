@@ -31,15 +31,17 @@ public class EntityListener implements Listener {
 	private void onEntitySpawn(EntitySpawnEvent event) {
 		
 		if (event.getEntityType() != EntityType.GHAST && event.getEntityType() != EntityType.PLAYER
-				&& event.getEntityType() != EntityType.DROPPED_ITEM)
-			event.getEntity().remove();
+				&& event.getEntityType() != EntityType.DROPPED_ITEM) {
+            event.getEntity().remove();
+        }
 	}
 	
 	@EventHandler
 	private void onEntityTarget(EntityTargetEvent event) {
 		
-		if (event.getEntityType() != EntityType.GHAST || event.getTarget().getType() != EntityType.PLAYER)
-			return;
+		if (event.getEntityType() != EntityType.GHAST || event.getTarget().getType() != EntityType.PLAYER) {
+            return;
+        }
 		
 		GamePlayer gp = null;
 		

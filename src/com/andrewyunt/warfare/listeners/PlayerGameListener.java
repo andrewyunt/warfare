@@ -76,10 +76,11 @@ public class PlayerGameListener extends PlayerListener {
             } else if (game.getStage() == Game.Stage.RESTART) {
                 player.kickPlayer("You may not join during a restart.");
             } else {
-                if (!player.hasPermission("warfare.spectatorjoin"))
+                if (!player.hasPermission("warfare.spectatorjoin")) {
                     player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
-                else
+                } else {
                     finalGP.setSpectating(true, false);
+                }
             }
         }, 2L);
     }
@@ -137,8 +138,9 @@ public class PlayerGameListener extends PlayerListener {
         Entity damager = event.getDamager();
         Entity damaged = event.getEntity();
 
-        if (!(damager instanceof Player) || !(damaged instanceof Player))
+        if (!(damager instanceof Player) || !(damaged instanceof Player)) {
             return;
+        }
 
         GamePlayer damagedGP = null;
         GamePlayer damagerGP = null;
@@ -150,8 +152,9 @@ public class PlayerGameListener extends PlayerListener {
             e.printStackTrace();
         }
 
-        if (!damagerGP.isInGame() || !damagedGP.isInGame())
+        if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
             return;
+        }
 
         damagedGP.setLastDamager(damagerGP);
 
@@ -205,32 +208,38 @@ public class PlayerGameListener extends PlayerListener {
             e.printStackTrace();
         }
 
-        if (!playerGP.isInGame())
+        if (!playerGP.isInGame()) {
             return;
+        }
 
         Warfare.getInstance().getGame().removePlayer(playerGP);
 
         GamePlayer lastDamager = playerGP.getLastDamager();
 
-        if (lastDamager == null)
+        if (lastDamager == null) {
             return;
+        }
 
-        if (lastDamager == playerGP)
+        if (lastDamager == playerGP) {
             return;
+        }
 
-        if (!(lastDamager.isInGame()))
+        if (!(lastDamager.isInGame())) {
             return;
+        }
 
         lastDamager.addKill();
 
         Player lastDamagerBP = lastDamager.getBukkitPlayer();
         int killCoins = 20;
 
-        if (lastDamagerBP.hasPermission("megatw.coins.double"))
+        if (lastDamagerBP.hasPermission("megatw.coins.double")) {
             killCoins = 40;
+        }
 
-        if (lastDamagerBP.hasPermission("megatw.coins.triple"))
+        if (lastDamagerBP.hasPermission("megatw.coins.triple")) {
             killCoins = 60;
+        }
 
         lastDamager.setCoins(lastDamager.getCoins() + killCoins);
 
@@ -246,8 +255,9 @@ public class PlayerGameListener extends PlayerListener {
 
         Game game = Warfare.getInstance().getGame();
 
-        if (game == null || game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN)
+        if (game == null || game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) {
             return;
+        }
 
         GamePlayer gp = null;
         UUID uuid = event.getPlayer().getUniqueId();
@@ -265,8 +275,9 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     private void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
 
-        for (HumanEntity he : event.getViewers())
+        for (HumanEntity he : event.getViewers()) {
             ((Player) he).setLevel(100);
+        }
     }
 
     @EventHandler
@@ -280,13 +291,14 @@ public class PlayerGameListener extends PlayerListener {
 
         if (type == Material.IRON_HELMET || type == Material.IRON_CHESTPLATE || type == Material.IRON_LEGGINGS
                 || type == Material.IRON_BOOTS || type == Material.DIAMOND_HELMET || type == Material.DIAMOND_CHESTPLATE
-                || type == Material.DIAMOND_LEGGINGS || type == Material.DIAMOND_BOOTS)
+                || type == Material.DIAMOND_LEGGINGS || type == Material.DIAMOND_BOOTS) {
             enchants.put(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-        else if (type == Material.WOOD_SWORD || type == Material.STONE_SWORD || type == Material.IRON_SWORD
-                || type == Material.DIAMOND_SWORD)
+        } else if (type == Material.WOOD_SWORD || type == Material.STONE_SWORD || type == Material.IRON_SWORD
+                || type == Material.DIAMOND_SWORD) {
             enchants.put(Enchantment.DAMAGE_ALL, 1);
-        else if (type == Material.BOW)
+        } else if (type == Material.BOW) {
             enchants.put(Enchantment.ARROW_DAMAGE, 1);
+        }
 
         event.setExpLevelCost(0);
     }
@@ -304,46 +316,54 @@ public class PlayerGameListener extends PlayerListener {
 
         Game.Stage stage = Warfare.getInstance().getGame().getStage();
 
-        if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN)
+        if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN) {
             event.setCancelled(true);
-        else if (player.isSpectating())
+        } else if (player.isSpectating()) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler
     private void onProjectileLaunch(ProjectileLaunchEvent event) {
 
-        if (event.getEntityType() != EntityType.ARROW)
+        if (event.getEntityType() != EntityType.ARROW) {
             return;
+        }
 
         Projectile arrow = event.getEntity();
         ProjectileSource ps = arrow.getShooter();
 
-        if (!(ps instanceof Player))
+        if (!(ps instanceof Player)) {
             return;
+        }
 
         ItemStack itemInHand = ((Player) ps).getItemInHand();
 
-        if (itemInHand == null || !itemInHand.hasItemMeta())
+        if (itemInHand == null || !itemInHand.hasItemMeta()) {
             return;
+        }
 
         ItemMeta itemInHandMeta = itemInHand.getItemMeta();
 
-        if (!itemInHandMeta.hasDisplayName())
+        if (!itemInHandMeta.hasDisplayName()) {
             return;
+        }
 
-        if (itemInHandMeta.getDisplayName().equals("Booster Bow"))
+        if (itemInHandMeta.getDisplayName().equals("Booster Bow")) {
             arrow.remove();
+        }
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
     private void onPlayerFall(EntityDamageEvent event) {
 
-        if (event.getCause() != EntityDamageEvent.DamageCause.FALL)
+        if (event.getCause() != EntityDamageEvent.DamageCause.FALL) {
             return;
+        }
 
-        if (!(event.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player)) {
             return;
+        }
 
         GamePlayer gp = null;
 
@@ -369,37 +389,44 @@ public class PlayerGameListener extends PlayerListener {
             e.printStackTrace();
         }
 
-        if (gp.isCaged())
+        if (gp.isCaged()) {
             cancellable.setCancelled(true);
+        }
     }
 
     @EventHandler
     private void onInventoryOpen(InventoryOpenEvent event) {
 
-        if (event.getInventory().getType() == InventoryType.PLAYER)
+        if (event.getInventory().getType() == InventoryType.PLAYER) {
             return;
+        }
 
-        if (!event.getInventory().getTitle().contains("Class Selector"))
+        if (!event.getInventory().getTitle().contains("Class Selector")) {
             cancelCageInteractions(event, (Player) event.getPlayer());
+        }
     }
 
     // Event handlers for power ups
     @EventHandler
     private void onPowerup(PlayerInteractEvent event) {
 
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
+        }
 
         ItemStack item = event.getItem();
 
-        if (item == null || !item.hasItemMeta())
+        if (item == null || !item.hasItemMeta()) {
             return;
+        }
 
-        if (item.getType() != Material.INK_SACK)
+        if (item.getType() != Material.INK_SACK) {
             return;
+        }
 
-        if (!item.getItemMeta().getDisplayName().equalsIgnoreCase("Powerup"))
+        if (!item.getItemMeta().getDisplayName().equalsIgnoreCase("Powerup")) {
             return;
+        }
 
         Player player = event.getPlayer();
         GamePlayer gp = null;

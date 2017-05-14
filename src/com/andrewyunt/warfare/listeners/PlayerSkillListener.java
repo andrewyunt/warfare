@@ -45,8 +45,9 @@ public class PlayerSkillListener implements Listener {
 	@EventHandler
 	private void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
-		if (!(event.getDamager() instanceof Player) || !(event.getEntity() instanceof Player))
-			return;
+		if (!(event.getDamager() instanceof Player) || !(event.getEntity() instanceof Player)) {
+            return;
+        }
 
 		Player damaged = (Player) event.getEntity();
 		GamePlayer damagedGP = null;
@@ -57,11 +58,13 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (damagedGP.getSelectedSkill() != Skill.RESISTANCE)
-			return;
+		if (damagedGP.getSelectedSkill() != Skill.RESISTANCE) {
+            return;
+        }
 
-		if (Math.random() > 0.20D)
-			return;
+		if (Math.random() > 0.20D) {
+            return;
+        }
 		
 		damaged.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 1));
 	}
@@ -69,8 +72,9 @@ public class PlayerSkillListener implements Listener {
 	@EventHandler
 	private void onPlayerDeath(PlayerDeathEvent event) {
 
-		if (!(event.getEntity() instanceof Player))
-			return;
+		if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
 
 		GamePlayer killedGP = null;
 
@@ -82,8 +86,9 @@ public class PlayerSkillListener implements Listener {
 		
 		GamePlayer lastDamagerGP = killedGP.getLastDamager();
 		
-		if (lastDamagerGP == null)
-			return;
+		if (lastDamagerGP == null) {
+            return;
+        }
 		
 		Player lastDamager = lastDamagerGP.getBukkitPlayer();
 		
@@ -92,15 +97,17 @@ public class PlayerSkillListener implements Listener {
 			lastDamager.setMaxHealth(lastDamager.getMaxHealth() + 2);
 		}
 		
-		if (lastDamagerGP.getSelectedSkill() == Skill.CONSUMPTION)
-			lastDamager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 2));
+		if (lastDamagerGP.getSelectedSkill() == Skill.CONSUMPTION) {
+            lastDamager.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 2));
+        }
 	}
 	
 	@EventHandler
 	private void onInventoryOpen(InventoryOpenEvent event) {
 		
-		if (event.getInventory().getType() != InventoryType.CHEST)
-			return;
+		if (event.getInventory().getType() != InventoryType.CHEST) {
+            return;
+        }
 		
 		Player player = (Player) event.getPlayer();
 		GamePlayer gp = null;
@@ -111,8 +118,9 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getSelectedSkill() == Skill.GUARD)
-			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
+		if (gp.getSelectedSkill() == Skill.GUARD) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 2));
+        }
 	}
 	
 	@EventHandler
@@ -127,11 +135,13 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (event.getInventory().getType() == InventoryType.ENCHANTING)
-			gp.setEnergy(gp.getEnergy());
-		else if (event.getInventory().getType() == InventoryType.CHEST)
-			if (gp.getSelectedSkill() == Skill.GUARD)
-				player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		if (event.getInventory().getType() == InventoryType.ENCHANTING) {
+            gp.setEnergy(gp.getEnergy());
+        } else if (event.getInventory().getType() == InventoryType.CHEST) {
+            if (gp.getSelectedSkill() == Skill.GUARD) {
+                player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+            }
+        }
 	}
 	
 	@EventHandler
@@ -139,13 +149,15 @@ public class PlayerSkillListener implements Listener {
 		
 		Projectile projectile = event.getEntity();
 		
-		if (projectile.getType() != EntityType.ARROW)
-			return;
+		if (projectile.getType() != EntityType.ARROW) {
+            return;
+        }
 		
 		ProjectileSource ps = projectile.getShooter();
 		
-		if (!(ps instanceof Player))
-			return;
+		if (!(ps instanceof Player)) {
+            return;
+        }
 		
 		GamePlayer gp = null;
 		
@@ -155,10 +167,12 @@ public class PlayerSkillListener implements Listener {
 			e.printStackTrace();
 		}
 		
-		if (gp.getSelectedSkill() != Skill.FLAME)
-			return;
+		if (gp.getSelectedSkill() != Skill.FLAME) {
+            return;
+        }
 		
-		if (Math.random() <= 0.10D)
-			projectile.setFireTicks(Integer.MAX_VALUE);
+		if (Math.random() <= 0.10D) {
+            projectile.setFireTicks(Integer.MAX_VALUE);
+        }
 	}
 }

@@ -78,10 +78,11 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 
                 // Display seconds left
-                if (stage == Game.Stage.WAITING)
+                if (stage == Game.Stage.WAITING) {
                     lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Waiting...", ""));
-                else
-                    lines.add(new SidebarEntry(ChatColor.YELLOW.toString(),  "Starting in ", game.getCountdownTime() + "s"));
+                } else {
+                    lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Starting in ", game.getCountdownTime() + "s"));
+                }
 
                 lines.add(new SidebarEntry(" "));
 
