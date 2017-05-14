@@ -48,7 +48,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 public class PlayerUltimateListener implements Listener {
 	
 	@EventHandler (priority = EventPriority.MONITOR)
-	public void onPlayerInteract(PlayerInteractEvent event) {
+	private void onPlayerInteract(PlayerInteractEvent event) {
 		
 		ItemStack item = event.getItem();
 		
@@ -79,7 +79,7 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void EPC(EntityDamageByEntityEvent event) {
+	private void EPC(EntityDamageByEntityEvent event) {
 		
 		if (event.getCause() == DamageCause.FALL)
 			return;
@@ -128,7 +128,7 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
-	public void EPC(EntityDamageEvent event) {
+	private void EPC(EntityDamageEvent event) {
 		
 		if (event.getCause() == DamageCause.FALL)
 			return;
@@ -166,14 +166,14 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageByEntityEvent event) {
+	private void onEntityDamage(EntityDamageByEntityEvent event) {
 		
 		if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT))
 				event.setCancelled(true);
 	}
 	
 	@EventHandler
-	public void onProjectileHit(ProjectileHitEvent event) {
+	private void onProjectileHit(ProjectileHitEvent event) {
 		
 		Entity entity = event.getEntity();
 		
@@ -219,7 +219,7 @@ public class PlayerUltimateListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onFlamingFeetMove(PlayerMoveEvent event) {
+	private void onFlamingFeetMove(PlayerMoveEvent event) {
 		
 		Player player = event.getPlayer();
 		GamePlayer gp = null;

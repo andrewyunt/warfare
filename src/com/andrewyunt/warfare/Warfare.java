@@ -16,6 +16,7 @@
 package com.andrewyunt.warfare;
 
 import com.andrewyunt.warfare.command.party.PartyCommand;
+import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.menu.PlayMenu;
@@ -31,11 +32,6 @@ import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ArenaConfiguration;
 import com.andrewyunt.warfare.configuration.SignConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
-import com.andrewyunt.warfare.listeners.EntityListener;
-import com.andrewyunt.warfare.listeners.PlayerListener;
-import com.andrewyunt.warfare.listeners.PlayerSkillListener;
-import com.andrewyunt.warfare.listeners.PlayerUltimateListener;
-import com.andrewyunt.warfare.listeners.SpectatorsInteractionsListener;
 import com.andrewyunt.warfare.managers.MySQLManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
@@ -107,7 +103,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
-		pm.registerEvents(new PlayerListener(), this);
 		
 		if (StaticConfiguration.LOBBY){
 			signConfig.saveDefaultConfig();
@@ -115,6 +110,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(playMenu, this);
+			pm.registerEvents(new PlayerLobbyListener(), this);
 		} else {
 			arenaConfig.saveDefaultConfig();
 			arena = Arena.loadFromConfig();
@@ -123,6 +119,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
+			pm.registerEvents(new PlayerGameListener(), this);
 			pm.registerEvents(new PlayerUltimateListener(), this);
 			pm.registerEvents(new PlayerSkillListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);

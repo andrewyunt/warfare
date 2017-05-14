@@ -43,7 +43,7 @@ import com.andrewyunt.warfare.objects.Skill;
 public class PlayerSkillListener implements Listener {
 
 	@EventHandler
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+	private void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
 		if (!(event.getDamager() instanceof Player) || !(event.getEntity() instanceof Player))
 			return;
@@ -67,7 +67,7 @@ public class PlayerSkillListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent event) {
+	private void onPlayerDeath(PlayerDeathEvent event) {
 
 		if (!(event.getEntity() instanceof Player))
 			return;
@@ -97,7 +97,7 @@ public class PlayerSkillListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onInventoryOpen(InventoryOpenEvent event) {
+	private void onInventoryOpen(InventoryOpenEvent event) {
 		
 		if (event.getInventory().getType() != InventoryType.CHEST)
 			return;
@@ -116,7 +116,7 @@ public class PlayerSkillListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
+	private void onInventoryClose(InventoryCloseEvent event) {
 		
 		Player player = (Player) event.getPlayer();
 		GamePlayer gp = null;
@@ -135,7 +135,7 @@ public class PlayerSkillListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onProjectileLaunch(ProjectileLaunchEvent event) {
+	private void onProjectileLaunch(ProjectileLaunchEvent event) {
 		
 		Projectile projectile = event.getEntity();
 		
