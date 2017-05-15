@@ -333,9 +333,6 @@ public class Game {
                         }
                     }
                 }
-                else{
-                    System.out.println(player.getUUID().toString() + " not found");
-                }
 			}
 			
 			if (Warfare.getInstance().getArena().isEdit()) {
