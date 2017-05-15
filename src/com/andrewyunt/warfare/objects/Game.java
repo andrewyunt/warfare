@@ -250,8 +250,8 @@ public class Game {
 		
 		// Only one player should be in-game when the game ends
 		for (GamePlayer player : players) {
-			Bukkit.getServer().broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() +
-					String.format("%s has won the game!", player.getBukkitPlayer().getDisplayName()));
+			Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
+					String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
 			
 			int winCoins = 200;
 			
@@ -266,8 +266,8 @@ public class Game {
 			player.setCoins(player.getCoins() + winCoins);
 			player.setWins(player.getWins() + 1);
 			
-			player.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format(
-					"You earned %s coins for winning the game.",
+			player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
+					"You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
 					String.valueOf(winCoins)));
 		}
 
@@ -275,7 +275,7 @@ public class Game {
 
 		if(Warfare.getInstance().isEnabled()) {
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 200L);
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 120L);
 		}
 		else{
 			setStage(Stage.RESTART);
@@ -310,7 +310,6 @@ public class Game {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
                 Player bukkitPlayer = player.getBukkitPlayer();
-
                 if(bukkitPlayer != null) {
                     Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
                     if(!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
@@ -330,6 +329,9 @@ public class Game {
                             }
                         }
                     }
+                }
+                else{
+                    System.out.println(player.getUUID().toString() + " not found");
                 }
 			}
 			

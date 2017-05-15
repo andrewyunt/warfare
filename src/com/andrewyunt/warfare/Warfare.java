@@ -128,7 +128,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		if (!getConfig().getBoolean("is-lobby")) {
 			if (!StaticConfiguration.LOBBY) {
-				game.setStage(Game.Stage.END);
+				game.setStage(Game.Stage.RESTART);
 			}
 		}
 
@@ -150,6 +150,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		Bukkit.getServer().broadcastMessage(received);
 
+		//TODO: Recode
+		/*
 		if (!received.contains("MOVEPARTY")) {
 			String[] firstArray = received.split("\\\\W+");
 			String[] secondArray = firstArray[1].split("\\\\W+");
@@ -162,6 +164,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 				}
 			}
 		}
+		*/
 	}
 	
 	public static Warfare getInstance() {
