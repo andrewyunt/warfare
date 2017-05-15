@@ -42,7 +42,7 @@ public class EditArgument extends CommandArgument {
 
             Warfare.getInstance().setGame(new Game());
 
-            sender.sendMessage(ChatColor.GOLD + "You have disabled edit mode for the arena.");
+            sender.sendMessage(ChatColor.YELLOW + "You have disabled edit mode for the arena.");
         } else {
             Game game = Warfare.getInstance().getGame();
 
@@ -51,7 +51,7 @@ public class EditArgument extends CommandArgument {
             }
 
             arena.setEdit(true);
-            sender.sendMessage(ChatColor.GOLD + "You have enabled edit mode for the arena.");
+            sender.sendMessage(ChatColor.YELLOW + "You have enabled edit mode for the arena.");
 
             for (GamePlayer gp : game.getPlayers()) {
                 if (gp.isCaged()) {

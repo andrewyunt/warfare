@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import com.andrewyunt.warfare.StaticConfiguration;
 import org.bukkit.*;
@@ -308,15 +309,28 @@ public class Game {
 		} else if (stage == Stage.RESTART) {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-				Warfare.getInstance().getMySQLManager().savePlayerAsync(player); //TODO: Continous saving
-				
-				if (Warfare.getInstance().getArena().isEdit()) {
-					if (player.getBukkitPlayer() != null && player.getBukkitPlayer().hasPermission("Warfare.edit")) {
-						continue;
-					}
-				}
+                Player bukkitPlayer = player.getBukkitPlayer();
 
-				Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
+                if(bukkitPlayer != null) {
+                    Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
+                    if(!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
+                        Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
+                        if (party == null) {
+                            Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
+                        } else {
+                            UUID leader = party.getLeader();
+                            if (leader == player.getUUID()) {
+                                String lobby = StaticConfiguration.getNextLobby();
+                                for (UUID member : party.getMembers()) {
+                                    Player other = Bukkit.getPlayer(member);
+                                    Utils.sendPlayerToServer(other, lobby);
+                                }
+                            } else if (Bukkit.getPlayer(leader) == null) {
+                                Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
+                            }
+                        }
+                    }
+                }
 			}
 			
 			if (Warfare.getInstance().getArena().isEdit() || !Warfare.getInstance().isEnabled()) {
@@ -380,7 +394,7 @@ public class Game {
 			
 			refillCountdownTime = 300;
 			
-			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Chests have been refilled. Next refill is in 5 minutes.");
+			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Chests have been refilled. Next refill is in 5 minutes.");
 		}
 	}
 	

@@ -52,10 +52,10 @@ public class RemoveCoinsArgument extends CommandArgument {
 
         coinsGP.setCoins(coinsGP.getCoins() - coins);
 
-        coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("%s took away %s of your coins.",
+        coinsGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("%s " + ChatColor.YELLOW + "took away " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "of your coins.",
                 ((Player) sender).getDisplayName(),
                 String.valueOf(coins)));
-        sender.sendMessage(ChatColor.GOLD + String.format("You took %s coins from %s.",
+        sender.sendMessage(ChatColor.YELLOW + String.format("You took " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins from " + ChatColor.GOLD + "%s.",
                 String.valueOf(coins),
                 coinsGP.getBukkitPlayer().getDisplayName()));
 

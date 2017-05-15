@@ -52,10 +52,10 @@ public class AddCoinsArgument extends CommandArgument {
 
         coinsGP.setCoins(coinsGP.getCoins() + coins);
 
-        coinsGP.getBukkitPlayer().sendMessage(ChatColor.GOLD + String.format("You received %s coins from %s.",
+        coinsGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("You received " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "coins from " + ChatColor.GOLD + "%s.",
                 String.valueOf(coins),
                 ((Player) sender).getDisplayName()));
-        sender.sendMessage(ChatColor.GOLD + String.format("You gave %s coins to %s.",
+        sender.sendMessage(ChatColor.YELLOW + String.format("You gave " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "coins to " + ChatColor.GOLD + "%s.",
                 String.valueOf(coins),
                 coinsGP.getBukkitPlayer().getDisplayName()));
 

@@ -50,7 +50,7 @@ public class RemoveCageArgument extends CommandArgument {
         arena.getCageLocations().remove(args[1]);
         arena.save();
 
-        sender.sendMessage(String.format(ChatColor.GOLD + "You removed the cage %s.", args[1]));
+        sender.sendMessage(String.format(ChatColor.YELLOW + "You removed the cage " + ChatColor.GOLD + "%s.", args[1]));
 
         return true;
     }

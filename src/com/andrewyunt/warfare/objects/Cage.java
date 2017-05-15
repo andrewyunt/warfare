@@ -87,12 +87,13 @@ public class Cage {
 		if (!chunk.isLoaded()) {
             chunk.load();
         }
-		
-		location.setY(location.getY() + 1);
+
+        Location location = this.location.clone();
+		location.setX(location.getBlockX() + 0.5);
+		location.setY(location.getBlockY() + 1);
+		location.setZ(location.getBlockZ() + 0.5);
 		
 		player.getBukkitPlayer().teleport(location);
-		
-		location.setY(location.getY() - 1);
 		
 		// Update player's hotbar
 		player.updateHotbar();
