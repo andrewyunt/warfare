@@ -23,10 +23,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import com.andrewyunt.warfare.StaticConfiguration;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.objects.*;
-import com.faithfulmc.framework.BasePlugin;
 import com.google.common.base.Joiner;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.bukkit.Bukkit;

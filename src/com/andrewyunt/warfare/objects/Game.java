@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import com.andrewyunt.warfare.StaticConfiguration;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -247,7 +247,6 @@ public class Game {
 	 */
 	public void end() {
 
-		
 		// Only one player should be in-game when the game ends
 		for (GamePlayer player : players) {
 			Bukkit.getServer().broadcastMessage(ChatColor.GOLD +

@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.scoreboard.provider;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.StaticConfiguration;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;

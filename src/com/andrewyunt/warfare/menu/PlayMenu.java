@@ -1,6 +1,5 @@
 package com.andrewyunt.warfare.menu;
 
-import com.andrewyunt.warfare.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.Party;
 import com.andrewyunt.warfare.objects.Server;

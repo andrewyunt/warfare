@@ -51,12 +51,11 @@ public enum Kit {
 			inv.setItem(4, new ItemStack(Material.GOLDEN_APPLE, 6));
 		} else if (this == POT) {
 			inv.setItem(0, new ItemStack(Material.WOOD_SWORD, 1));
-			inv.setItem(1, new ItemStack(Material.ENDER_PEARL, 1));
 			Potion speedPotion = new Potion(PotionType.SPEED, 2);
-			inv.setItem(2, speedPotion.toItemStack(1));
+			inv.setItem(1, speedPotion.toItemStack(1));
 			Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
 			healPotion.setSplash(true);
-			for (int i = 3; i < 8; i++) {
+			for (int i = 2; i < 7; i++) {
                 inv.setItem(i, healPotion.toItemStack(1));
             }
 			inv.setItem(8, new ItemStack(Material.BAKED_POTATO, 5));

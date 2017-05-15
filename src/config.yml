@@ -12,9 +12,6 @@ is-lobby: true
 lobby-servers:
   - "server"
 
-# Set this to the BungeeCord server name
-server-name: "server name"
-
 # GUI menu message for no class slot permission
 no-perms-class-slot: "&cNo access"
 
@@ -37,10 +34,6 @@ hotbar-items:
     return-to-lobby:
       slot: 9
       title: "&c&lReturn to Lobby"
-  cage-items:
-    class-selector:
-      slot: 5
-      title: "&e&lClass Selector"
 
 # Ultimate Descriptions
 description-HEAL:

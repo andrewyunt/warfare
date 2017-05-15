@@ -3,7 +3,7 @@ package com.andrewyunt.warfare.utilities;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.andrewyunt.warfare.StaticConfiguration;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.objects.Party;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;

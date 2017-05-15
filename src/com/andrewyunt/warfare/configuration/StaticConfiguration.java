@@ -1,4 +1,4 @@
-package com.andrewyunt.warfare;
+package com.andrewyunt.warfare.configuration;
 
 import com.andrewyunt.warfare.Warfare;
 import org.bukkit.configuration.Configuration;
