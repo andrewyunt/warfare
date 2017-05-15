@@ -2,7 +2,6 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.StaticConfiguration;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.objects.GamePlayer;
@@ -44,20 +43,11 @@ public class PlayerLobbyListener extends PlayerListener {
         player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
                 + "-----------------------------------------------------");
 
-        GamePlayer gp = null;
-
-        // Create the player's GamePlayer object
-        try {
-            gp = Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
-
-        final GamePlayer finalGP = gp;
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            finalGP.updateHotbar();
+            gp.updateHotbar();
             player.teleport(player.getLocation().getWorld().getSpawnLocation());
         }, 2L);
     }
@@ -68,23 +58,12 @@ public class PlayerLobbyListener extends PlayerListener {
         event.setQuitMessage(null);
 
         Player player = event.getPlayer();
-
-        try {
-            Warfare.getInstance().getPlayerManager().deletePlayer(Warfare.getInstance().getPlayerManager().getPlayer(player.getName()));
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        Warfare.getInstance().getPlayerManager().deletePlayer(Warfare.getInstance().getPlayerManager().getPlayer(player));
     }
 
     protected boolean handleHotbarClick(Player player, String itemName) {
 
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
         /*
         if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE))) {

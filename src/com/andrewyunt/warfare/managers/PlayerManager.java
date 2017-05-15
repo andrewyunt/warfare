@@ -16,22 +16,15 @@
 package com.andrewyunt.warfare.managers;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
-import com.andrewyunt.warfare.objects.Purchasable;
-import com.andrewyunt.warfare.objects.Skill;
-import com.andrewyunt.warfare.objects.Ultimate;
 
 /**
  * The class used to cache players, create players, and perform operations on them.
@@ -40,119 +33,38 @@ import com.andrewyunt.warfare.objects.Ultimate;
  */
 public class PlayerManager {
 
-	private final Map<UUID, GamePlayer> players = new HashMap<UUID, GamePlayer>();
+	private final Map<UUID, GamePlayer> players = new ConcurrentHashMap<>();
 
-	/**
-	 * Creates a GamePlayer with the specified name and adds it to the players map.
-	 * 
-	 * @param uuid
-	 * 		The UUID of the player to be created.
-	 * @return
-	 * 		The player created with the specified UUID.
-	 * @throws PlayerException
-	 * 		If a player with the specified UUID already exists, throw PlayerException.
-	 */
-	public GamePlayer createPlayer(UUID uuid) throws PlayerException {
-		
-		if (players.containsKey(uuid)) {
-            throw new PlayerException(String.format("The player with the UUID %s already exists.", uuid));
-        }
-		
-		final GamePlayer player = new GamePlayer(uuid);
-		
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			Warfare.getInstance().getMySQLManager().loadPlayerAsync(player);
-			
-			List<Purchasable> purchases = player.getPurchases();
-	
-			if (!purchases.contains(Ultimate.HEAL)) {
-                purchases.add(Ultimate.HEAL);
-            }
-			if (!purchases.contains(Skill.GUARD)) {
-                purchases.add(Skill.GUARD);
-            }
-			
-			if (player.getSelectedKit() == null) {
-                player.setSelectedKit(Kit.UHC);
-            }
-			if (player.getSelectedUltimate() == null) {
-                player.setSelectedUltimate(Ultimate.HEAL);
-            }
-			if (player.getSelectedSkill() == null) {
-                player.setSelectedSkill(Skill.GUARD);
-            }
-		}, 20L);
-		
-		// Add player to plugin's player map
+	private GamePlayer createPlayer(UUID uuid){
+		GamePlayer player = new GamePlayer(uuid);
+        Warfare.getInstance().getMySQLManager().loadPlayerAsync(player);
 		players.put(uuid, player);
-		
 		return player;
 	}
-	
-	/**
-	 * Deletes a specified player by removing it from the players map.
-	 * 
-	 * @param player
-	 * 		The player to be deleted from the plugin's records.
-	 * @throws PlayerException
-	 * 		If the players map does not contain the specified player, throw PlayerException.
-	 */
-	public void deletePlayer(GamePlayer player) throws PlayerException {
-		
-		if (!players.containsKey(player.getUUID())) {
-            throw new PlayerException("The player specified is not in the plugin's records.");
-        }
-		
-		Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
-		
-		players.remove(player.getUUID());
-	}
-	
-	/**
-	 * Gets a collection of all registered players from the players map.
-	 * 
-	 * @return
-	 * 		A collection of players fetched from the players map.
-	 */
-	public Collection<GamePlayer> getPlayers() {
 
+	public void deletePlayer(GamePlayer player) {
+	    if(players.remove(player.getUUID()) == player) {
+            Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
+        }
+	}
+
+	public Collection<GamePlayer> getPlayers() {
 		return players.values();
 	}
 
-	/**
-	 * Gets a player with the specified name from the players map.
-	 * 
-	 * @param name
-	 * 		The name of the player to be fetched from the players map.
-	 * @return
-	 * 		The player instance fetched from the players map.
-	 * @throws PlayerException
-	 * 		If the players map does not contain a player with the specified 
-	 * 		name, throw PlayerException.
-	 */
-	public GamePlayer getPlayer(String name) throws PlayerException {
-
+	public GamePlayer getPlayer(String name){
 		UUID uuid = Bukkit.getPlayer(name).getUniqueId();
-		
-		if (!players.containsKey(uuid)) {
-            throw new PlayerException("The specified player does not exist.");
-        }
-
 		return players.get(uuid);
 	}
 	
-	public GamePlayer getPlayer(Player player) throws PlayerException {
-		
-		return getPlayer(player.getName());
+	public GamePlayer getPlayer(Player player){
+		return getPlayer(player.getUniqueId());
 	}
 	
-	public GamePlayer getPlayer(UUID uuid) throws PlayerException {
-		
+	public GamePlayer getPlayer(UUID uuid) {
 		if (players.containsKey(uuid)) {
             return players.get(uuid);
-        } else {
-            throw new PlayerException("No player with the specified UUID exists.");
         }
+        return createPlayer(uuid);
 	}
 }

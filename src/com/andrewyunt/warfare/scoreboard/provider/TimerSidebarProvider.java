@@ -2,7 +2,6 @@ package com.andrewyunt.warfare.scoreboard.provider;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.StaticConfiguration;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.scoreboard.SidebarEntry;
@@ -40,13 +39,7 @@ public class TimerSidebarProvider implements SidebarProvider {
 
         List<SidebarEntry> lines = new ArrayList<>();
 
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         if (StaticConfiguration.LOBBY) {
             lines.add(new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));

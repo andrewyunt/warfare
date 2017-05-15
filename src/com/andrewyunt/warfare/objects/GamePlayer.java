@@ -46,8 +46,6 @@ public class GamePlayer {
 	private boolean epcCooldown, powerupCooldown, powerupActivated, loaded, spectating, flamingFeet, sentActivate, hasFallen;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
-	private Skill selectedSkill;
-	private Ultimate selectedUltimate;
 	
 	private final List<Purchasable> purchases = new ArrayList<Purchasable>();
 	private final Set<UUID> ghasts = new HashSet<UUID>();
@@ -227,29 +225,12 @@ public class GamePlayer {
 	}
 	
 	public Kit getSelectedKit() {
-		
 		return selectedKit;
 	}
-	
-	public void setSelectedSkill(Skill selectedSkill) {
-		
-		this.selectedSkill = selectedSkill;
-	}
-	
-	public Skill getSelectedSkill() {
-		
-		return selectedSkill;
-	}
-	
-	public void setSelectedUltimate(Ultimate selectedUltimate) {
-		
-		this.selectedUltimate = selectedUltimate;
-	}
-	
-	public Ultimate getSelectedUltimate() {
-		
-		return selectedUltimate;
-	}
+
+	public Kit getSelectedKitOrPot(){
+        return selectedKit == null ? Kit.POT : selectedKit;
+    }
 	
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		

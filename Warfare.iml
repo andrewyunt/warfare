@@ -11,5 +11,6 @@
     <orderEntry type="library" name="Base" level="project" />
     <orderEntry type="library" name="paperspigot-1.7.10-R0.1-SNAPSHOT1" level="project" />
     <orderEntry type="library" name="g113c" level="project" />
+    <orderEntry type="library" name="ProtocolLibOld1.71.8" level="project" />
   </component>
 </module>

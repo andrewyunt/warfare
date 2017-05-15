@@ -40,7 +40,6 @@ import org.bukkit.material.TrapDoor;
 import org.bukkit.util.Vector;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.objects.GamePlayer;
 
@@ -81,15 +80,11 @@ public class SpectatorsInteractionsListener implements Listener {
 							&& playerLocation.getZ() < blockLocation.getBlockZ() + 1
 							&& playerLocation.getY() > blockLocation.getBlockY() - 2
 							&& playerLocation.getY() < blockLocation.getBlockY() + 1) {
-						try {
-							if (pm.getPlayer(target).isSpectating()) {
-								allowed = true;
-							} else {
-								allowed = false;
-								break;
-							}
-						} catch (PlayerException e) {
-							e.printStackTrace();
+						if (pm.getPlayer(target).isSpectating()) {
+							allowed = true;
+						} else {
+							allowed = false;
+							break;
 						}
 					}
 				}
@@ -105,33 +100,28 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(final BlockPlaceEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
-				ev.setCancelled(true);
-				return;
-			}
-			
-			// Get location of the block that is going to be placed
-			Location blockL = ev.getBlock().getLocation();
+		if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
+			return;
+		}
 
-			for (Player target : Bukkit.getServer().getOnlinePlayers()) {
-				// Player spectating & in same world?
-				if (pm.getPlayer(target).isSpectating() && target.getWorld().equals(ev.getBlock().getWorld())) {
-					Location playerL = target.getLocation();
+		// Get location of the block that is going to be placed
+		Location blockL = ev.getBlock().getLocation();
 
-					// Is this player at the location of the block being placed?
-					if (playerL.getX() > blockL.getBlockX() - 1 && playerL.getX() < blockL.getBlockX() + 1
-							&& playerL.getZ() > blockL.getBlockZ() - 1 && playerL.getZ() < blockL.getBlockZ() + 1
-							&& playerL.getY() > blockL.getBlockY() - 2 && playerL.getY() < blockL.getBlockY() + 1) {
-						// The location of the player placing the block is a safe location
-						target.teleport(ev.getPlayer(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-						target.sendMessage("You were teleported away from a placed block.");
-					}
+		for (Player target : Bukkit.getServer().getOnlinePlayers()) {
+			// Player spectating & in same world?
+			if (pm.getPlayer(target).isSpectating() && target.getWorld().equals(ev.getBlock().getWorld())) {
+				Location playerL = target.getLocation();
+
+				// Is this player at the location of the block being placed?
+				if (playerL.getX() > blockL.getBlockX() - 1 && playerL.getX() < blockL.getBlockX() + 1
+						&& playerL.getZ() > blockL.getBlockZ() - 1 && playerL.getZ() < blockL.getBlockZ() + 1
+						&& playerL.getY() > blockL.getBlockY() - 2 && playerL.getY() < blockL.getBlockY() + 1) {
+					// The location of the player placing the block is a safe location
+					target.teleport(ev.getPlayer(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+					target.sendMessage("You were teleported away from a placed block.");
 				}
 			}
-		} catch (PlayerException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -140,13 +130,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(final BlockBreakEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -158,13 +143,7 @@ public class SpectatorsInteractionsListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		
-		GamePlayer damagerGP = null;
-		
-		try  {
-			damagerGP = pm.getPlayer((event.getDamager()).getUniqueId());
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
+		GamePlayer damagerGP = pm.getPlayer((event.getDamager()).getUniqueId());
 		
 		if (damagerGP != null) {
             if (damagerGP.isSpectating()) {
@@ -173,13 +152,7 @@ public class SpectatorsInteractionsListener implements Listener {
             }
         }
 		
-		GamePlayer damagedGP = null;
-		
-		try  {
-			damagedGP = pm.getPlayer((event.getEntity()).getUniqueId());
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
+		GamePlayer damagedGP = pm.getPlayer((event.getEntity()).getUniqueId());
 		
 		if (damagedGP != null) {
             if (damagedGP.isSpectating()) {
@@ -226,7 +199,7 @@ public class SpectatorsInteractionsListener implements Listener {
                     spectatorInvolved.setFlying(wasFlying);
                 }, 5L);
 			}
-		} catch (IllegalArgumentException | PlayerException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 	}
@@ -240,14 +213,10 @@ public class SpectatorsInteractionsListener implements Listener {
 		final ArrayList<UUID> spectatorsAffected = new ArrayList<>();
 
 		for (LivingEntity player : ev.getAffectedEntities()) {
-            try {
-                if (player instanceof Player && !player.hasMetadata("NPC")
-                        && pm.getPlayer(((Player) player)).isSpectating()) {
-                    spectatorsAffected.add(player.getUniqueId());
-                }
-            } catch (PlayerException e) {
-                e.printStackTrace();
-            }
+			if (player instanceof Player && !player.hasMetadata("NPC")
+					&& pm.getPlayer(((Player) player)).isSpectating()) {
+				spectatorsAffected.add(player.getUniqueId());
+			}
         }
 
 		/*
@@ -273,16 +242,12 @@ public class SpectatorsInteractionsListener implements Listener {
 			Boolean teleportationNeeded = false;
 
 			for (Entity entity : ev.getEntity().getNearbyEntities(2, 2, 2)) {
-                try {
-                    if (entity instanceof Player && !entity.hasMetadata("NPC")
-                            && pm.getPlayer(((Player) entity)).isSpectating())
-                    // The potion hits a spectator
-                    {
-                        teleportationNeeded = true;
-                    }
-                } catch (PlayerException e) {
-                    e.printStackTrace();
-                }
+				if (entity instanceof Player && !entity.hasMetadata("NPC")
+						&& pm.getPlayer(((Player) entity)).isSpectating())
+				// The potion hits a spectator
+				{
+					teleportationNeeded = true;
+				}
             }
 
 			final HashMap<UUID, Boolean> oldFlyMode = new HashMap<>();
@@ -369,13 +334,9 @@ public class SpectatorsInteractionsListener implements Listener {
 	public void onEntityTarget(final EntityTargetEvent ev) {
 		
 		// Check to make sure it isn't an NPC
-		try {
-			if (ev.getTarget() instanceof Player && !ev.getTarget().hasMetadata("NPC")
-					&& pm.getPlayer(((Player) ev.getTarget())).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (ev.getTarget() instanceof Player && !ev.getTarget().hasMetadata("NPC")
+				&& pm.getPlayer(((Player) ev.getTarget())).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -387,14 +348,10 @@ public class SpectatorsInteractionsListener implements Listener {
 	public void onEntityDamage(final EntityDamageEvent ev) {
 		
 		// Check to make sure it isn't an NPC
-		try {
-			if (ev.getEntity() instanceof Player && !ev.getEntity().hasMetadata("NPC")
-					&& pm.getPlayer((Player) ev.getEntity()).isSpectating()) {
-				ev.setCancelled(true);
-				ev.getEntity().setFireTicks(0);
-			}
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (ev.getEntity() instanceof Player && !ev.getEntity().hasMetadata("NPC")
+				&& pm.getPlayer((Player) ev.getEntity()).isSpectating()) {
+			ev.setCancelled(true);
+			ev.getEntity().setFireTicks(0);
 		}
 	}
 
@@ -403,13 +360,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteractEntity(final PlayerInteractEntityEvent ev) {
-		
-		try {
-			if (!ev.getPlayer().hasMetadata("NPC") && pm.getPlayer(ev.getPlayer()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (!ev.getPlayer().hasMetadata("NPC") && pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -419,13 +371,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(final PlayerInteractEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -435,13 +382,9 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onHangingBreakByEntity(final HangingBreakByEntityEvent ev) {
-		
-		try {
-			if (ev.getRemover() instanceof Player && pm.getPlayer((Player) ev.getRemover()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+
+		if (ev.getRemover() instanceof Player && pm.getPlayer((Player) ev.getRemover()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -452,13 +395,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(final PlayerDropItemEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -467,13 +405,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(final PlayerPickupItemEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
-                ev.setCancelled(true);
-            }
-		} catch (PlayerException e) {
-			e.printStackTrace();
+		if (pm.getPlayer(ev.getPlayer()).isSpectating()) {
+			ev.setCancelled(true);
 		}
 	}
 
@@ -488,33 +421,32 @@ public class SpectatorsInteractionsListener implements Listener {
 	@SuppressWarnings("incomplete-switch")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerUseDoor(final PlayerInteractEvent ev) {
-		
-		try {
-			if (pm.getPlayer(ev.getPlayer()).isSpectating() && ev.hasBlock()) {
-				final Material clickedType = ev.getClickedBlock().getType();
 
-				// Allows spectators to pass through doors.
-				if (clickedType == Material.WOODEN_DOOR || clickedType == Material.IRON_DOOR_BLOCK
-						|| clickedType == Material.FENCE_GATE) {
-					Player spectator = ev.getPlayer();
-					Location doorLocation = ev.getClickedBlock().getLocation()
-							.setDirection(spectator.getLocation().getDirection());
+		if (pm.getPlayer(ev.getPlayer()).isSpectating() && ev.hasBlock()) {
+			final Material clickedType = ev.getClickedBlock().getType();
 
-					int relativeHeight = 0;
-					
-					if (clickedType == Material.WOODEN_DOOR || clickedType == Material.IRON_DOOR_BLOCK) {
-						Material belowBlockType = ev.getClickedBlock().getLocation().add(0, -1, 0).getBlock().getType();
+			// Allows spectators to pass through doors.
+			if (clickedType == Material.WOODEN_DOOR || clickedType == Material.IRON_DOOR_BLOCK
+					|| clickedType == Material.FENCE_GATE) {
+				Player spectator = ev.getPlayer();
+				Location doorLocation = ev.getClickedBlock().getLocation()
+						.setDirection(spectator.getLocation().getDirection());
 
-						if (belowBlockType == Material.WOODEN_DOOR || belowBlockType == Material.IRON_DOOR_BLOCK) {
-							// The spectator clicked the top part of the door.
-							relativeHeight = -1;
-						}
+				int relativeHeight = 0;
+
+				if (clickedType == Material.WOODEN_DOOR || clickedType == Material.IRON_DOOR_BLOCK) {
+					Material belowBlockType = ev.getClickedBlock().getLocation().add(0, -1, 0).getBlock().getType();
+
+					if (belowBlockType == Material.WOODEN_DOOR || belowBlockType == Material.IRON_DOOR_BLOCK) {
+						// The spectator clicked the top part of the door.
+						relativeHeight = -1;
 					}
+				}
 
 					/*
 					 * North: small Z South: big Z East: big X West: small X
 					 */
-					switch (ev.getBlockFace()) {
+				switch (ev.getBlockFace()) {
 					case EAST:
 						spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5),
 								PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -548,42 +480,42 @@ public class SpectatorsInteractionsListener implements Listener {
 							 * teleportation.
 							 */
 							switch (fenceGate.getFacing()) {
-							case NORTH:
-							case SOUTH:
-								if (spectator.getLocation().getX() > doorLocation.getX()) {
-									spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5),
-											PlayerTeleportEvent.TeleportCause.PLUGIN);
-								} else {
-									spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5),
-											PlayerTeleportEvent.TeleportCause.PLUGIN);
-								}
-								break;
+								case NORTH:
+								case SOUTH:
+									if (spectator.getLocation().getX() > doorLocation.getX()) {
+										spectator.teleport(doorLocation.add(-0.5, relativeHeight, 0.5),
+												PlayerTeleportEvent.TeleportCause.PLUGIN);
+									} else {
+										spectator.teleport(doorLocation.add(1.5, relativeHeight, 0.5),
+												PlayerTeleportEvent.TeleportCause.PLUGIN);
+									}
+									break;
 
-							case EAST:
-							case WEST:
-								if (spectator.getLocation().getZ() > doorLocation.getZ()) {
-									spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5),
-											PlayerTeleportEvent.TeleportCause.PLUGIN);
-								} else {
-									spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5),
-											PlayerTeleportEvent.TeleportCause.PLUGIN);
-								}
-								break;
+								case EAST:
+								case WEST:
+									if (spectator.getLocation().getZ() > doorLocation.getZ()) {
+										spectator.teleport(doorLocation.add(0.5, relativeHeight, -0.5),
+												PlayerTeleportEvent.TeleportCause.PLUGIN);
+									} else {
+										spectator.teleport(doorLocation.add(0.5, relativeHeight, 1.5),
+												PlayerTeleportEvent.TeleportCause.PLUGIN);
+									}
+									break;
 							}
 						}
 
 						break;
-					}
 				}
+			}
 
-				// Allows spectators to pass through trap doors
-				else if (clickedType == Material.TRAP_DOOR) {
-					if (!((TrapDoor) ev.getClickedBlock().getState().getData()).isOpen()) {
-						Player spectator = ev.getPlayer();
-						Location doorLocation = ev.getClickedBlock().getLocation()
-								.setDirection(spectator.getLocation().getDirection());
+			// Allows spectators to pass through trap doors
+			else if (clickedType == Material.TRAP_DOOR) {
+				if (!((TrapDoor) ev.getClickedBlock().getState().getData()).isOpen()) {
+					Player spectator = ev.getPlayer();
+					Location doorLocation = ev.getClickedBlock().getLocation()
+							.setDirection(spectator.getLocation().getDirection());
 
-						switch (ev.getBlockFace()) {
+					switch (ev.getBlockFace()) {
 						case UP:
 							spectator.teleport(doorLocation.add(0.5, -1, 0.5), PlayerTeleportEvent.TeleportCause.PLUGIN);
 							break;
@@ -594,12 +526,9 @@ public class SpectatorsInteractionsListener implements Listener {
 
 						default:
 							break;
-						}
 					}
 				}
 			}
-		} catch (PlayerException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -610,13 +539,8 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onVehicleEnter(final VehicleEnterEvent e) {
-		
-		try {
-			if (e.getEntered() instanceof Player && pm.getPlayer((Player) e.getEntered()).isSpectating()) {
-                e.setCancelled(true);
-            }
-		} catch (PlayerException e1) {
-			e1.printStackTrace();
+		if (e.getEntered() instanceof Player && pm.getPlayer((Player) e.getEntered()).isSpectating()) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -625,26 +549,15 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onVehicleDamage(final VehicleDamageEvent e) {
-		
-		try {
-			if (e.getAttacker() instanceof Player && pm.getPlayer((Player) e.getAttacker()).isSpectating()) {
-                e.setCancelled(true);
-            }
-		} catch (PlayerException e1) {
-			e1.printStackTrace();
+		if (e.getAttacker() instanceof Player && pm.getPlayer((Player) e.getAttacker()).isSpectating()) {
+			e.setCancelled(true);
 		}
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onInventoryClick(InventoryClickEvent event) {
 		
-		GamePlayer gp = null;
-		
-		try  {
-			gp = pm.getPlayer((Player) event.getWhoClicked());
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
+		GamePlayer gp = pm.getPlayer((Player) event.getWhoClicked());
 		
 		if (gp.isSpectating()) {
             event.setCancelled(true);

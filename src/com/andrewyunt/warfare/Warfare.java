@@ -20,15 +20,13 @@ import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
-import com.andrewyunt.warfare.utilities.Utils;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.managers.mysql.MySQLManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
@@ -39,8 +37,6 @@ import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-
-import java.util.UUID;
 
 public class Warfare extends JavaPlugin implements PluginMessageListener {
 	
@@ -86,14 +82,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		mysqlManager.updateDB();
 		
-		for (Player player : getServer().getOnlinePlayers()) {
-			try {
-				Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
-			} catch (PlayerException e) {
-				e.printStackTrace();
-			}
-		}
-		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
 		
@@ -111,12 +99,11 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
-			//pm.registerEvents(new PlayerUltimateListener(), this);
-			//pm.registerEvents(new PlayerSkillListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
 		}
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
@@ -126,9 +113,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	@Override
 	public void onDisable() {
 
+		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+
 		if (!getConfig().getBoolean("is-lobby")) {
 			if (!StaticConfiguration.LOBBY) {
-				game.setStage(Game.Stage.RESTART);
+			    if(game.getStage() != Game.Stage.RESTART) {
+                    game.setStage(Game.Stage.RESTART);
+                }
 			}
 		}
 

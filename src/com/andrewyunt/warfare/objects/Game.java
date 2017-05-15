@@ -126,7 +126,7 @@ public class Game {
 	}
 	
 	public void removePlayer(GamePlayer player) {
-		
+
 		players.remove(player);
 		
 		if (stage == Stage.WAITING) {
@@ -214,7 +214,7 @@ public class Game {
 			bp.getInventory().clear();
 			
 			// Give player kit items
-			player.getSelectedKit().giveItems(player);
+			player.getSelectedKitOrPot().giveItems(player);
 			
 			// Close player's inventory to keep them from using the class selector in-game
 			bp.closeInventory();
@@ -288,6 +288,10 @@ public class Game {
 	}
 	
 	public void setStage(Stage stage) {
+
+	    if(this.stage != null) {
+            Bukkit.broadcastMessage(this.stage.name() + " -> " + stage.name());
+        }
 		
 		this.stage = stage;
 		Warfare.getInstance().getMySQLManager().updateServerStatus();
@@ -307,18 +311,25 @@ public class Game {
 			end();
 
 		} else if (stage == Stage.RESTART) {
-			
+
+            if(!Warfare.getInstance().isEnabled()){
+                return;
+            }
+
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
                 Player bukkitPlayer = player.getBukkitPlayer();
                 if(bukkitPlayer != null) {
+                    Bukkit.broadcastMessage("Sending " + bukkitPlayer.getName());
                     Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
                     if(!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
                         Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
                         if (party == null) {
+                            Bukkit.broadcastMessage("No Party " + bukkitPlayer.getName());
                             Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
                         } else {
                             UUID leader = party.getLeader();
                             if (leader == player.getUUID()) {
+                                Bukkit.broadcastMessage("Party " + bukkitPlayer.getName());
                                 String lobby = StaticConfiguration.getNextLobby();
                                 for (UUID member : party.getMembers()) {
                                     Player other = Bukkit.getPlayer(member);
@@ -326,6 +337,7 @@ public class Game {
                                 }
                             } else if (Bukkit.getPlayer(leader) == null) {
                                 Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
+                                Bukkit.broadcastMessage("Party No Leader" + bukkitPlayer.getName());
                             }
                         }
                     }
@@ -335,7 +347,7 @@ public class Game {
                 }
 			}
 			
-			if (Warfare.getInstance().getArena().isEdit() || !Warfare.getInstance().isEnabled()) {
+			if (Warfare.getInstance().getArena().isEdit()) {
 				return;
 			}
 			

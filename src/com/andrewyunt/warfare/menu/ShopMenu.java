@@ -33,12 +33,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.HealthBoost;
 import com.andrewyunt.warfare.objects.Purchasable;
-import com.andrewyunt.warfare.objects.Skill;
-import com.andrewyunt.warfare.objects.Ultimate;
 import com.andrewyunt.warfare.utilities.Utils;
 
 @Deprecated
@@ -46,8 +43,6 @@ public class ShopMenu implements Listener {
 	
 	public enum Type {
 		MAIN,
-		ULTIMATES,
-		SKILLS,
 		HEALTH_BOOSTS
 	}
 	
@@ -97,8 +92,7 @@ public class ShopMenu implements Listener {
                 inv.setItem(i, glassPane);
             }
 		} else {
-			inv = Bukkit.createInventory(null, 54, "Shop - " + (type == Type.ULTIMATES
-					? "Ultimates" : type == Type.SKILLS ? "Skills" : "Health Boosts"));
+			inv = Bukkit.createInventory(null, 54, "Shop - Health Boosts");
 			
 			for (int i = 0; i < 9; i++) {
                 inv.setItem(i, glassPane);
@@ -113,8 +107,7 @@ public class ShopMenu implements Listener {
                 inv.setItem(i, glassPane);
             }
 			
-			List<Purchasable> purchasables = Arrays.asList(type == Type.ULTIMATES ? Ultimate.values()
-					: type == Type.SKILLS ? Skill.values() : HealthBoost.values());
+			List<Purchasable> purchasables = Arrays.asList(HealthBoost.values());
 			
 			int purchasableNum = 0;
 			
@@ -152,7 +145,7 @@ public class ShopMenu implements Listener {
 				inv.setItem(i, is);
 			}
 			
-			inv.setItem(4,(type == Type.ULTIMATES ? ultimates : type == Type.SKILLS ? skills : healthBoosts));
+			inv.setItem(4,healthBoosts);
 			
 			ItemStack goBack = new ItemStack(Material.ARROW, 1);
 			ItemMeta goBackMeta = goBack.getItemMeta();
@@ -184,20 +177,10 @@ public class ShopMenu implements Listener {
 		ItemMeta im = is.getItemMeta();
 		String name = im.getDisplayName();
 		Player player = (Player) event.getWhoClicked();
-		GamePlayer gp = null;
-		
-		try {
-			gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
+		GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 		
 		if (title.equals(ChatColor.GREEN + ChatColor.BOLD.toString() + "Shop")) {
-			if (name.equals(ChatColor.GOLD + "Ultimates")) {
-                open(Type.ULTIMATES, gp);
-            } else if (name.equals(ChatColor.GOLD + "Skills")) {
-                open(Type.SKILLS, gp);
-            } else if (name.equals(ChatColor.GOLD + "Health Boosts")) {
+			if (name.equals(ChatColor.GOLD + "Health Boosts")) {
                 open(Type.HEALTH_BOOSTS, gp);
             }
 		} else {
@@ -227,14 +210,8 @@ public class ShopMenu implements Listener {
 			Purchasable purchasable = null;
 			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
 			Type type = null;
-			
-			if (title.contains("Ultimates")){
-				purchasable = Ultimate.valueOf(enumStr);
-				type = Type.ULTIMATES;
-			} else if (title.contains("Skills")) {
-				purchasable = Skill.valueOf(enumStr);
-				type = Type.SKILLS;
-			} else if (title.contains("Health Boosts")) {
+
+			if (title.contains("Health Boosts")) {
 				purchasable = HealthBoost.valueOf(enumStr);
 				type = Type.HEALTH_BOOSTS;
 			}
