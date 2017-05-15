@@ -40,7 +40,7 @@ public class SQLStatements {
             + "   `location`         CHAR(30) PRIMARY KEY NOT NULL,"
             + "   `type`             CHAR(20) NOT NULL,"
             + "   `place`            INT NOT NULL);";
-    public static final String DB_ARENAS_CREATE = "CREATE CREATE TABLE IF NOT EXISTS `" + DB_ARENAS + "`"
+    public static final String DB_ARENAS_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_ARENAS + "`"
             + "  (`server_name`     CHAR(20) PRIMARY KEY NOT NULL,"
             + "   `map_location`    CHAR(30) NOT NULL,"
             + "   `cages`           TEXT NOT NULL,"
@@ -52,7 +52,7 @@ public class SQLStatements {
     public static final String LOAD_PURCHASES = "SELECT * FROM " + DB_PURCHASES + " WHERE uuid = ?;";
     public static final String SAVE_PURCHASES = "REPLACE INTO " + DB_PURCHASES + " (uuid, purchasable) VALUES (?,?);";
     public static final String LOAD_SERVERS = "SELECT * FROM " + DB_SERVERS + ";";
-    public static final String SAVE_SERVER = "REPLACE INTO " + DB_SERVERS + " (name, type, stage, map_name, online_players, max_players) VALUES (?,?,?);";
+    public static final String SAVE_SERVER = "REPLACE INTO " + DB_SERVERS + " (name, type, stage, map_name, online_players, max_players) VALUES (?,?,?,?,?,?);";
     public static final String LOAD_PARTY = "SELECT * FROM " + DB_PARTIES + " WHERE uuid = ?;";
     public static final String SAVE_PARTY = "REPLACE INTO " + DB_PARTIES + " (leader, members) VALUES (?,?);";
     public static final String LOAD_SIGNS = "SELECT * FROM " + DB_SIGNS + " WHERE server_name = ?;";

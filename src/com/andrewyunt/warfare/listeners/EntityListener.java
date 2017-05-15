@@ -19,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import com.andrewyunt.warfare.Warfare;
@@ -34,6 +35,11 @@ public class EntityListener implements Listener {
 				&& event.getEntityType() != EntityType.DROPPED_ITEM) {
             event.getEntity().remove();
         }
+	}
+
+	@EventHandler
+	public void onCreatureSpawn(CreatureSpawnEvent event){
+        event.setCancelled(true);
 	}
 	
 	@EventHandler

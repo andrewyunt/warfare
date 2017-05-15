@@ -18,6 +18,7 @@ package com.andrewyunt.warfare.objects;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.andrewyunt.warfare.exception.SignException;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -51,38 +52,19 @@ public class SignDisplay {
 	 * 		The location of the display.
 	 * @param place
 	 * 		The place on the leaderboard the sign should display.
-	 * @param load
-	 * 		Set this to true if the sign was loaded from a the configuration.
 	 */
-	public SignDisplay(Location loc, Type type, int place, boolean load) {
+	public SignDisplay(Location loc, Type type, int place) {
 
 		this.type = type;
 		this.place = place;
 		
 		Block block = loc.getWorld().getBlockAt(loc);
-		
-		if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+
+		if(block.getState() instanceof Sign){
             bukkitSign = (Sign) block.getState();
+            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+            scheduler.runTaskTimer(Warfare.getInstance(), this::refresh, 0L, 6000L);
         }
-		
-		if (!load) {
-			Warfare.getInstance().getMySQLManager().saveSign(this);
-        }
-		
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), new Runnable() {
-			boolean refresh = !load;
-			
-			@Override
-			public void run() {
-				
-				if (refresh) {
-                    refresh();
-                }
-				
-				refresh = true;
-			}
-		}, 0L, 6000L);
 	}
 	
 	public Type getType() {
@@ -103,7 +85,7 @@ public class SignDisplay {
 	public void refresh() {
 		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
 			Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = Warfare.getInstance().getMySQLManager()
-					.getTopFiveColumn("uuid", "Players", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
+					.getTopFiveColumn("Players", "uuid", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
 			Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
 			OfflinePlayer op = entry.getKey();
 			String name = op.getName();

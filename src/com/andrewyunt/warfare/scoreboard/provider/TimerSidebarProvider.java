@@ -72,8 +72,7 @@ public class TimerSidebarProvider implements SidebarProvider {
 
             if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN) {
                 // Display players
-                lines.add(new SidebarEntry(ChatColor.YELLOW + "Players: " + ChatColor.GRAY + game.getPlayers().size() + "/"
-                        + game.getCages().size()));
+                lines.add(new SidebarEntry(ChatColor.YELLOW, "Players: " + ChatColor.GRAY, game.getPlayers().size() + "/" + game.getCages().size()));
 
                 lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 

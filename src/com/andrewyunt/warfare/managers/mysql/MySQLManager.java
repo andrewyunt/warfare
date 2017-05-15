@@ -234,8 +234,8 @@ public class MySQLManager {
             preparedStatement.setString(2, (StaticConfiguration.LOBBY ? Server.ServerType.LOBBY : Server.ServerType.GAME).name());
             preparedStatement.setString(3, Warfare.getInstance().getGame().getStage().toString());
             preparedStatement.setString(4, ""); //TODO: Arena name
-            preparedStatement.setInt(5, Bukkit.getServer().getOnlinePlayers().size());
-            preparedStatement.setInt(6, Bukkit.getMaxPlayers());
+            preparedStatement.setInt(5, Warfare.getInstance().getGame().getPlayers().size());
+            preparedStatement.setInt(6, Warfare.getInstance().getGame().getCages().size());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             handleException(exception);
@@ -281,7 +281,7 @@ public class MySQLManager {
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_SIGN)) {
             preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
             preparedStatement.setString(2, serializeLocation(signDisplay.getBukkitSign().getLocation()));
-            preparedStatement.setString(3, signDisplay.getBukkitSign().getType().toString());
+            preparedStatement.setString(3, signDisplay.getType().name());
             preparedStatement.setInt(4, signDisplay.getPlace());
             preparedStatement.executeUpdate();
         } catch (SQLException exception) {
@@ -309,7 +309,8 @@ public class MySQLManager {
                     Warfare.getInstance().getSignManager().createSign(
                             deserializeLocation(resultSet.getString("location")),
                             SignDisplay.Type.valueOf(resultSet.getString("type")),
-                            resultSet.getInt("place"));
+                            resultSet.getInt("place"),
+                            true);
                 } catch (SignException e) {
                     e.printStackTrace();
                 }
@@ -325,6 +326,9 @@ public class MySQLManager {
 
     private Set<String> deserializeArray(String serialized){
         serialized = serialized.substring(1, serialized.length() - 1);
+        if(serialized.isEmpty()){
+            return Collections.emptySet();
+        }
         String[] split = serialized.split(",");
         return new HashSet<>(Arrays.asList(split));
     }
@@ -360,7 +364,7 @@ public class MySQLManager {
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_ARENA)) {
             Arena arena = Warfare.getInstance().getArena();
             preparedStatement.setString(1, StaticConfiguration.SERVER_NAME);
-            preparedStatement.setString(2, serializeLocation(arena.getMapLocation()));
+            preparedStatement.setString(2, arena.getMapLocation() == null ? "none" : serializeLocation(arena.getMapLocation()));
             preparedStatement.setString(3, serializeArray(
                     arena.getCageLocations().entrySet()
                             .stream()
@@ -394,15 +398,23 @@ public class MySQLManager {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 arena.setMapLocation(deserializeLocation(resultSet.getString("map_location")));
-                deserializeArray(resultSet.getString("cages"))
-                        .stream()
-                        .map(this::deserializeEntry)
-                        .forEach(array -> arena.addCageLocation(array[0], deserializeLocation(array[1])));
-                arena.setLootChests(deserializeArray(resultSet.getString("loot_chests"))
-                        .stream()
-                        .map(this::deserializeEntry)
-                        .map(array -> new LootChest(deserializeLocation(array[0]), (byte) Integer.parseInt(array[1])))
-                        .collect(Collectors.toSet()));
+                String cages = resultSet.getString("cages");
+                if(!cages.isEmpty()) {
+                    Set<String> array = deserializeArray(cages);
+                    if(!array.isEmpty()) {
+                        array.stream()
+                                .map(this::deserializeEntry)
+                                .forEach(entry -> arena.addCageLocation(entry[0], deserializeLocation(entry[1])));
+                    }
+                }
+                String lootchests = resultSet.getString("loot_chests");
+                if(!lootchests.isEmpty()) {
+                    arena.setLootChests(deserializeArray(lootchests)
+                            .stream()
+                            .map(this::deserializeEntry)
+                            .map(array -> new LootChest(deserializeLocation(array[1]), (byte) Integer.parseInt(array[0])))
+                            .collect(Collectors.toSet()));
+                }
 
             }
         } catch (SQLException exception) {

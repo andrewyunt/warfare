@@ -31,16 +31,18 @@ public class SignManager {
 	
 	public final Set<SignDisplay> signs = new HashSet<SignDisplay>();
 
-	public void createSign(Location loc, Type type, int place) throws SignException {
+	public void createSign(Location loc, Type type, int place, boolean load) throws SignException {
 		
 		if (place == 0 || loc == null) {
             throw new SignException();
         }
 		
-		SignDisplay sign = new SignDisplay(loc, type, place, false);
+		SignDisplay sign = new SignDisplay(loc, type, place);
 		signs.add(sign);
 
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveSign(sign));
+		if(!load) {
+			Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveSign(sign));
+		}
 	}
 	
 	public void deleteSign(SignDisplay sign) throws SignException {

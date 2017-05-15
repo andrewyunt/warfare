@@ -308,10 +308,10 @@ public class Game {
 		} else if (stage == Stage.RESTART) {
 			
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-				Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
+				Warfare.getInstance().getMySQLManager().savePlayerAsync(player); //TODO: Continous saving
 				
 				if (Warfare.getInstance().getArena().isEdit()) {
-					if (player.getBukkitPlayer().hasPermission("Warfare.edit")) {
+					if (player.getBukkitPlayer() != null && player.getBukkitPlayer().hasPermission("Warfare.edit")) {
 						continue;
 					}
 				}

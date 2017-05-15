@@ -25,6 +25,7 @@ public class WarfareCommand extends ArgumentExecutor {
 		super("warfare");
 
 		addArgument(new AddCoinsArgument());
+		addArgument(new SetMapLocationArgument());
 		addArgument(new RemoveCoinsArgument());
 		addArgument(new AddCageArgument());
 		addArgument(new RemoveCageArgument());

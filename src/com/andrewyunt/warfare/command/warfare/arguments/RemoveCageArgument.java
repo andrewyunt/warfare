@@ -42,8 +42,8 @@ public class RemoveCageArgument extends CommandArgument {
             return false;
         }
 
-        if (arena.getCageLocations().containsKey(args[1])) {
-            sender.sendMessage(ChatColor.RED + "A cage with that name already exists.");
+        if (!arena.getCageLocations().containsKey(args[1])) {
+            sender.sendMessage(ChatColor.RED + "A cage with that name does not already exist.");
             return false;
         }
 

@@ -66,12 +66,12 @@ public class AddChestArgument extends CommandArgument {
         try {
             arena.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1])));
 
-            sender.sendMessage(ChatColor.GOLD + "Loot chest has been added successfully.");
+            sender.sendMessage(ChatColor.YELLOW + "Loot chest has been added successfully.");
         } catch (NumberFormatException e) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveArena());
+        arena.save();
 
         return true;
     }

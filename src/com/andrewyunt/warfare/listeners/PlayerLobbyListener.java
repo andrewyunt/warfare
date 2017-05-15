@@ -185,7 +185,8 @@ public class PlayerLobbyListener extends PlayerListener {
             Warfare.getInstance().getSignManager().createSign(
                     event.getBlock().getLocation(),
                     type,
-                    place);
+                    place,
+                    false);
         } catch (SignException e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + e.getMessage());
