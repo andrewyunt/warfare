@@ -199,7 +199,7 @@ public class LootChest {
             lootItems.add(getRandomLootItem(1));
         }
 		
-		int random = new Random().nextInt(4 - 3 + 1) + 3;
+		int random = new Random().nextInt(4 - 3 + 1) + 4;
 		
 		for (int i = 0; i <= 5; i++) {
 			if (lootItems.size() >= random) {

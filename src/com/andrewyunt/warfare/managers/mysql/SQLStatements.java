@@ -15,8 +15,6 @@ public class SQLStatements {
             + "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
             + "   `party`            CHAR(36) NOT NULL,"
             + "   `kit`              CHAR(20) NOT NULL,"
-            + "   `ultimate`         CHAR(20) NOT NULL,"
-            + "   `skill`            CHAR(20) NOT NULL,"
             + "   `coins`            INT NOT NULL,"
             + "   `earned_coins`     INT NOT NULL,"
             + "   `kills`            INT NOT NULL,"
@@ -48,7 +46,7 @@ public class SQLStatements {
 
     // Data
     public static final String LOAD_PLAYER = "SELECT * FROM " + DB_PLAYERS + " WHERE uuid = ?;";
-    public static final String SAVE_PLAYER = "REPLACE INTO " + DB_PLAYERS + " (uuid, party, kit, ultimate, skill, coins, earned_coins, kills, wins) VALUES (?,?,?,?,?,?,?,?,?);";
+    public static final String SAVE_PLAYER = "REPLACE INTO " + DB_PLAYERS + " (uuid, party, kit,  coins, earned_coins, kills, wins) VALUES (?,?,?,?,?,?,?);";
     public static final String LOAD_PURCHASES = "SELECT * FROM " + DB_PURCHASES + " WHERE uuid = ?;";
     public static final String SAVE_PURCHASES = "REPLACE INTO " + DB_PURCHASES + " (uuid, purchasable) VALUES (?,?);";
     public static final String LOAD_SERVERS = "SELECT * FROM " + DB_SERVERS + ";";

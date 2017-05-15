@@ -109,14 +109,10 @@ public class MySQLManager {
 			preparedStatement.setString(2, party == null ? "none" : party.getLeader().toString());
 			preparedStatement.setString(3, player.getSelectedKit() == null ? "none"
 					: player.getSelectedKit().toString());
-			preparedStatement.setString(4, player.getSelectedUltimate() == null ? "none"
-					: player.getSelectedUltimate().toString());
-			preparedStatement.setString(5, player.getSelectedSkill() == null ? "none"
-					: player.getSelectedSkill().toString());
-			preparedStatement.setInt(6, player.getCoins());
-			preparedStatement.setInt(7, player.getEarnedCoins());
-			preparedStatement.setInt(8, player.getKills());
-			preparedStatement.setInt(9, player.getWins());
+			preparedStatement.setInt(4, player.getCoins());
+			preparedStatement.setInt(5, player.getEarnedCoins());
+			preparedStatement.setInt(6, player.getKills());
+			preparedStatement.setInt(7, player.getWins());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException exception) {
@@ -143,17 +139,9 @@ public class MySQLManager {
                 }
 
                 String kitStr = resultSet.getString("kit");
-                String ultimateStr = resultSet.getString("ultimate");
-                String skillStr = resultSet.getString("skill");
 
                 if (!kitStr.equals("none")) {
                     gamePlayer.setSelectedKit(Kit.valueOf(kitStr));
-                }
-                if (!ultimateStr.equals("none")) {
-                    gamePlayer.setSelectedUltimate(Ultimate.valueOf(ultimateStr));
-                }
-                if (!skillStr.equals("none")) {
-                    gamePlayer.setSelectedSkill(Skill.valueOf(skillStr));
                 }
 
                 gamePlayer.setCoins(resultSet.getInt("coins"));
@@ -191,17 +179,6 @@ public class MySQLManager {
             while (resultSet.next()) {
                 String purchasable = resultSet.getString("purchasable");
 
-                for (Ultimate ultimate : Ultimate.values()) {
-                    if (ultimate.toString().equals(purchasable)) {
-                        gamePlayer.getPurchases().add(Ultimate.valueOf(purchasable));
-                    }
-                }
-
-                for (Skill skill : Skill.values()) {
-                    if (skill.toString().equals(purchasable)) {
-                        gamePlayer.getPurchases().add(Skill.valueOf(purchasable));
-                    }
-                }
             }
         } catch (SQLException exception) {
             handleException(exception);

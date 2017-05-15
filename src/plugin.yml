@@ -1,7 +1,7 @@
 name: Warfare
 main: com.andrewyunt.warfare.Warfare
 version: 1.0
-depend: [Core]
+depend: [Framework]
 commands:
   warfare:
     description: The management command for Warfare.

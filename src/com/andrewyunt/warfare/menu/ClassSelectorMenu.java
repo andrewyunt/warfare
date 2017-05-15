@@ -16,13 +16,11 @@
 package com.andrewyunt.warfare.menu;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,21 +32,14 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
-import com.andrewyunt.warfare.objects.Purchasable;
-import com.andrewyunt.warfare.objects.Skill;
-import com.andrewyunt.warfare.objects.Ultimate;
 import com.andrewyunt.warfare.utilities.Utils;
 
 public class ClassSelectorMenu implements Listener {
 	
 	public enum Type {
-		
-		KIT("Kit"),
-		ULTIMATE("Ultimate"),
-		SKILL("Skill");
+		KIT("Kit");
 		
 		private final String name;
 		
@@ -112,67 +103,6 @@ public class ClassSelectorMenu implements Listener {
 			for (int i = 16; i < 27; i++) {
                 inv.setItem(i, glassPane);
             }
-		} else {
-			for (int i = 0; i < 9; i++) {
-                inv.setItem(i, glassPane);
-            }
-
-			for (int i = 9; i < 45; i = i + 9) {
-				inv.setItem(i, glassPane);
-				inv.setItem(i + 8, glassPane);
-			}
-
-			for (int i = 45; i < 54; i++) {
-                inv.setItem(i, glassPane);
-            }
-
-			List<Purchasable> toAdd = new ArrayList<Purchasable>();
-
-			for (Purchasable purchase : player.getPurchases()) {
-                if (type == Type.ULTIMATE) {
-                    if (purchase instanceof Ultimate) {
-                        toAdd.add(purchase);
-                    }
-                } else if (type == Type.SKILL) {
-                    if (purchase instanceof Skill) {
-                        toAdd.add(purchase);
-                    }
-                }
-            }
-
-			for (int i = 0; i < inv.getSize(); i++) {
-				if (inv.getItem(i) != null) {
-                    continue;
-                }
-
-				Purchasable purchase = null;
-
-				try {
-					purchase = toAdd.get(0);
-				} catch (IndexOutOfBoundsException e) {
-					break;
-				}
-
-				toAdd.remove(purchase);
-
-				ItemStack displayItem = purchase.getDisplayItem().clone();
-
-				for(Enchantment enchantment : displayItem.getEnchantments().keySet()) {
-                    displayItem.removeEnchantment(enchantment);
-                }
-
-				ItemMeta displayItemMeta = displayItem.getItemMeta();
-				displayItemMeta.setDisplayName(ChatColor.GOLD + purchase.getName());
-				try {
-					displayItemMeta.setLore(Utils.colorizeList((List<String>) StaticConfiguration.class.getDeclaredField(
-							"DESCRIPTION_" + purchase.toString()).get(null), ChatColor.YELLOW));
-				} catch (NoSuchFieldException | IllegalAccessException  e) {
-					e.printStackTrace();
-				}
-				displayItem.setItemMeta(displayItemMeta);
-
-				inv.setItem(i, displayItem);
-			}
 		}
 		
 		bp.openInventory(inv);
@@ -202,34 +132,19 @@ public class ClassSelectorMenu implements Listener {
 		ItemMeta im = is.getItemMeta();
 		String name = im.getDisplayName();
 		Player player = (Player) event.getWhoClicked();
-		GamePlayer gp = null;
-		
-		try {
-			gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
+		GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 		
 		if (title.equals(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
 			if (name.equals(Utils.formatMessage(StaticConfiguration.NO_PERMS_CLASS_SLOT))) {
                 return;
             }
-			
 			open(Type.KIT, gp);
 		} else {
-			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_')
-					.replace("'", ""));
-			
+			String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_').replace("'", ""));
 			if (title.contains("Kit")) {
 				gp.setSelectedKit(Kit.valueOf(enumStr));
 				player.closeInventory();
-			} /*else if (title.contains("Ultimate")) {
-				gp.setSelectedUltimate(Ultimate.valueOf(enumStr));
-				open(Type.SKILL, gp);
-			} else if (title.contains("Skill")) {
-				gp.setSelectedSkill(Skill.valueOf(enumStr));
-				player.closeInventory();
-			}*/
+			}
 		}
 	}
 }

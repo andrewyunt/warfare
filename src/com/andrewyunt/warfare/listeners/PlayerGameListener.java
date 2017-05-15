@@ -2,7 +2,6 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
@@ -31,13 +30,11 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
-
         event.setJoinMessage(null);
 
         Player player = event.getPlayer();
@@ -45,21 +42,10 @@ public class PlayerGameListener extends PlayerListener {
         // Update server status
         Warfare.getInstance().getMySQLManager().updateServerStatus();
 
-        GamePlayer gp = null;
-
-        // Create the player's GamePlayer object
-        try {
-            gp = Warfare.getInstance().getPlayerManager().createPlayer(player.getUniqueId());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
-
-        final GamePlayer finalGP = gp;
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            player.setMaximumNoDamageTicks(0); // Part of the EPC
-
             Game game = Warfare.getInstance().getGame();
 
             if (Warfare.getInstance().getArena().isEdit()) {
@@ -68,7 +54,7 @@ public class PlayerGameListener extends PlayerListener {
             }
 
             if (game.getStage() == Game.Stage.WAITING) {
-                game.addPlayer(finalGP);
+                game.addPlayer(gp);
             } else if (game.getStage() == Game.Stage.END) {
                 player.kickPlayer("You may not join once the game has ended.");
             } else if (game.getStage() == Game.Stage.RESTART) {
@@ -77,10 +63,10 @@ public class PlayerGameListener extends PlayerListener {
                 if (!player.hasPermission("warfare.spectatorjoin")) {
                     player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
                 } else {
-                    finalGP.setSpectating(true, false);
+                    gp.setSpectating(true, false);
                 }
             }
-        }, 2L);
+        }, 1);
     }
 
     @EventHandler
@@ -89,13 +75,7 @@ public class PlayerGameListener extends PlayerListener {
         event.setQuitMessage(null);
 
         Player player = event.getPlayer();
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         Warfare.getInstance().getGame().removePlayer(gp);
         Warfare.getInstance().getMySQLManager().updateServerStatus();
@@ -103,14 +83,7 @@ public class PlayerGameListener extends PlayerListener {
 
     @Override
     protected boolean handleHotbarClick(Player player, String itemName) {
-
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         if (gp.isCaged()) {
             if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE))) {
@@ -132,34 +105,23 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler (priority = EventPriority.LOWEST)
     private void onPlayerDamage(EntityDamageByEntityEvent event) {
-
         Entity damager = event.getDamager();
         Entity damaged = event.getEntity();
 
-        if (!(damager instanceof Player) || !(damaged instanceof Player)) {
-            return;
-        }
+        if(damager instanceof Player && damaged instanceof Player) {
+            GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer((damaged).getUniqueId());
+            GamePlayer damagerGP = Warfare.getInstance().getPlayerManager().getPlayer((damager).getUniqueId());
 
-        GamePlayer damagedGP = null;
-        GamePlayer damagerGP = null;
+            if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+                return;
+            }
 
-        try {
-            damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damaged).getName());
-            damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+            damagedGP.setLastDamager(damagerGP);
 
-        if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
-            return;
-        }
-
-        damagedGP.setLastDamager(damagerGP);
-
-        if (damagerGP.getSelectedKit() == Kit.SOUP) {
-            damagedGP.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
-            damagerGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("You inflicted slowness II on %s for 10 seconds",
-                    damagedGP.getBukkitPlayer().getDisplayName()));
+            if (damagerGP.getSelectedKit() == Kit.SOUP) {
+                damagedGP.getBukkitPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 1));
+                damagerGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("You inflicted slowness II on %s for 10 seconds", damagedGP.getBukkitPlayer().getDisplayName()));
+            }
         }
     }
 
@@ -178,13 +140,7 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     private void onPlayerDropItem(PlayerDropItemEvent event) {
 
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
 
         if (gp.isCaged()) {
             event.setCancelled(true);
@@ -198,13 +154,7 @@ public class PlayerGameListener extends PlayerListener {
         event.setDeathMessage(null);
 
         Player player = event.getEntity();
-        GamePlayer playerGP = null;
-
-        try {
-            playerGP = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer playerGP = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
         if (!playerGP.isInGame()) {
             return;
@@ -257,15 +207,7 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
-        GamePlayer gp = null;
-        UUID uuid = event.getPlayer().getUniqueId();
-
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(uuid);
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
 
         event.setRespawnLocation(gp.setSpectating(true, true));
     }
@@ -304,13 +246,7 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     private void onFoodLevelChange(FoodLevelChangeEvent event) {
 
-        GamePlayer player = null;
-
-        try {
-            player = Warfare.getInstance().getPlayerManager().getPlayer(event.getEntity().getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer player = Warfare.getInstance().getPlayerManager().getPlayer(event.getEntity().getName());
 
         Game.Stage stage = Warfare.getInstance().getGame().getStage();
 
@@ -363,13 +299,7 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(((Player) event.getEntity()).getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(((Player) event.getEntity()).getName());
 
         if (gp.isInGame() && !gp.hasFallen()) {
             gp.setHasFallen(true);
@@ -379,13 +309,7 @@ public class PlayerGameListener extends PlayerListener {
 
     private void cancelCageInteractions(Cancellable cancellable, Player player) {
 
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         if (gp.isCaged()) {
             cancellable.setCancelled(true);
@@ -394,104 +318,11 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onInventoryOpen(InventoryOpenEvent event) {
-
         if (event.getInventory().getType() == InventoryType.PLAYER) {
             return;
         }
-
         if (!event.getInventory().getTitle().contains("Class Selector")) {
             cancelCageInteractions(event, (Player) event.getPlayer());
         }
     }
-
-    /*
-    // Event handlers for power ups
-    @EventHandler
-    private void onPowerup(PlayerInteractEvent event) {
-
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-
-        ItemStack item = event.getItem();
-
-        if (item == null || !item.hasItemMeta()) {
-            return;
-        }
-
-        if (item.getType() != Material.INK_SACK) {
-            return;
-        }
-
-        if (!item.getItemMeta().getDisplayName().equalsIgnoreCase("Powerup")) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
-
-        if (gp.getSelectedKit() == Kit.POT) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 200));
-            player.sendMessage(ChatColor.YELLOW + "You have been given regen III for 10 seconds.");
-        }
-
-        player.setItemInHand(new ItemStack(Material.INK_SACK, 1, (short) 10));
-        gp.setPowerupActivated(true);
-
-        GamePlayer finalGP = gp;
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-
-                player.setItemInHand(new ItemStack(Material.INK_SACK, 1, (short) 8));
-                finalGP.setPowerupActivated(false);
-            }
-        }.runTaskLater(Warfare.getInstance(), 200L);
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
-    private void onGrapple(PlayerFishEvent event) {
-
-        Player player = event.getPlayer();
-        GamePlayer gp = null;
-
-        try {
-            gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
-
-        gp.setPowerupCooldown(true);
-
-        GamePlayer finalGP = gp;
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                finalGP.setPowerupCooldown(false);
-            }
-        }.runTaskLater(Warfare.getInstance(), 1200L);
-
-        ItemStack hand = player.getItemInHand();
-        if (hand == null || !hand.hasItemMeta()) {
-            return;
-        }
-
-        ItemMeta handMeta = hand.getItemMeta();
-        if (!handMeta.hasDisplayName() || !handMeta.getDisplayName().equals(ChatColor.GOLD + ChatColor.BOLD.toString() + "Grappling Hook")) {
-            return;
-        }
-
-        if(event.getState() == PlayerFishEvent.State.IN_GROUND  || event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
-            player.teleport(event.getHook().getLocation());
-        }
-    }
-    */
 }

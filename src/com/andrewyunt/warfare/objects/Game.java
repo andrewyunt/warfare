@@ -126,7 +126,7 @@ public class Game {
 	}
 	
 	public void removePlayer(GamePlayer player) {
-		
+
 		players.remove(player);
 		
 		if (stage == Stage.WAITING) {
@@ -214,7 +214,7 @@ public class Game {
 			bp.getInventory().clear();
 			
 			// Give player kit items
-			player.getSelectedKit().giveItems(player);
+			player.getSelectedKitOrPot().giveItems(player);
 			
 			// Close player's inventory to keep them from using the class selector in-game
 			bp.closeInventory();
@@ -287,7 +287,6 @@ public class Game {
 	}
 	
 	public void setStage(Stage stage) {
-		
 		this.stage = stage;
 		Warfare.getInstance().getMySQLManager().updateServerStatus();
 		
@@ -306,7 +305,11 @@ public class Game {
 			end();
 
 		} else if (stage == Stage.RESTART) {
-			
+
+            if(!Warfare.getInstance().isEnabled()){
+                return;
+            }
+
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
                 Player bukkitPlayer = player.getBukkitPlayer();
                 if(bukkitPlayer != null) {
@@ -329,12 +332,9 @@ public class Game {
                         }
                     }
                 }
-                else{
-                    System.out.println(player.getUUID().toString() + " not found");
-                }
 			}
 			
-			if (Warfare.getInstance().getArena().isEdit() || !Warfare.getInstance().isEnabled()) {
+			if (Warfare.getInstance().getArena().isEdit()) {
 				return;
 			}
 			

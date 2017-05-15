@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.PlayerException;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.Bukkit;
@@ -33,13 +32,7 @@ public class AddCoinsArgument extends CommandArgument {
         }
 
         Player coinsPlayer = Bukkit.getServer().getPlayer(args[1]);
-        GamePlayer coinsGP = null;
-
-        try {
-            coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
-        } catch (PlayerException e) {
-            e.printStackTrace();
-        }
+        GamePlayer coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
 
         int coins;
 
