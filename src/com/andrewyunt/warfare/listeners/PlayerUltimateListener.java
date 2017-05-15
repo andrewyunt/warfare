@@ -113,7 +113,7 @@ public class PlayerUltimateListener implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					
+
 					finalDamagedGP.setEPCCooldown(false);
 				}
 			}.runTaskLater(Warfare.getInstance(), 10L);
@@ -134,46 +134,7 @@ public class PlayerUltimateListener implements Listener {
 		}
 	}
 	
-	@EventHandler (priority = EventPriority.HIGHEST)
-	private void EPC(EntityDamageEvent event) {
-		
-		if (event.getCause() == DamageCause.FALL) {
-            return;
-        }
-		
-		if (event instanceof EntityDamageByEntityEvent) {
-            return;
-        }
-		
-		if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-		
-		Player damaged = (Player) event.getEntity();
-		GamePlayer damagedGP = null;
-		
-		try {
-			damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
-		} catch (PlayerException e) {
-			e.printStackTrace();
-		}
-		
-		final GamePlayer finalDamagedGP = damagedGP;
-		
-		if (damagedGP.isEPCCooldown()) {
-            event.setCancelled(true);
-        } else {
-			damagedGP.setEPCCooldown(true);
-			
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					
-					finalDamagedGP.setEPCCooldown(false);
-				}
-			}.runTaskLater(Warfare.getInstance(), 10L);
-		}
-	}
+
 	
 	@EventHandler
 	private void onEntityDamage(EntityDamageByEntityEvent event) {

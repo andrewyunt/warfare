@@ -28,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Map;
@@ -58,7 +59,7 @@ public class PlayerGameListener extends PlayerListener {
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            player.setMaximumNoDamageTicks(0); // Part of the EPC
+            //player.setMaximumNoDamageTicks(0); // Part of the EPC
 
             Game game = Warfare.getInstance().getGame();
 
@@ -81,6 +82,45 @@ public class PlayerGameListener extends PlayerListener {
                 }
             }
         }, 2L);
+    }
+
+    //@EventHandler (priority = EventPriority.HIGHEST)
+    private void EPC(EntityDamageEvent event) {
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            return;
+        }
+
+        if (event instanceof EntityDamageByEntityEvent) {
+            return;
+        }
+
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player damaged = (Player) event.getEntity();
+        GamePlayer damagedGP = null;
+
+        try {
+            damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
+        } catch (PlayerException e) {
+            e.printStackTrace();
+        }
+
+        final GamePlayer finalDamagedGP = damagedGP;
+
+        if (damagedGP.isEPCCooldown()) {
+            event.setCancelled(true);
+        } else {
+            damagedGP.setEPCCooldown(true);
+
+            new BukkitRunnable() {
+                public void run() {
+                    finalDamagedGP.setEPCCooldown(false);
+                }
+            }.runTaskLater(Warfare.getInstance(), 20);
+        }
     }
 
     @EventHandler
@@ -144,8 +184,8 @@ public class PlayerGameListener extends PlayerListener {
         GamePlayer damagerGP = null;
 
         try {
-            damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damaged).getName());
-            damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(((Player) damager).getName());
+            damagedGP = Warfare.getInstance().getPlayerManager().getPlayer((damaged).getUniqueId());
+            damagerGP = Warfare.getInstance().getPlayerManager().getPlayer((damager).getUniqueId());
         } catch (PlayerException e) {
             e.printStackTrace();
         }

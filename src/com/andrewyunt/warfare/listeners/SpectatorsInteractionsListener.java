@@ -161,7 +161,7 @@ public class SpectatorsInteractionsListener implements Listener {
 		GamePlayer damagerGP = null;
 		
 		try  {
-			damagerGP = pm.getPlayer(((Player) event.getDamager()).getName());
+			damagerGP = pm.getPlayer((event.getDamager()).getUniqueId());
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
@@ -176,7 +176,7 @@ public class SpectatorsInteractionsListener implements Listener {
 		GamePlayer damagedGP = null;
 		
 		try  {
-			damagedGP = pm.getPlayer(((Player) event.getEntity()).getName());
+			damagedGP = pm.getPlayer((event.getEntity()).getUniqueId());
 		} catch (PlayerException e) {
 			e.printStackTrace();
 		}
