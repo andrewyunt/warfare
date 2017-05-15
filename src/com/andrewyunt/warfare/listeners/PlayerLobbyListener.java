@@ -9,6 +9,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -109,14 +110,17 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-
-        event.setCancelled(true);
+        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
 
-        event.setCancelled(true);
+        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler

@@ -86,6 +86,8 @@ public class MySQLManager {
 		createPurchasesTable();
 		createGameServersTable();
 		createPartiesTable();
+		createSignsTable();
+		createArenasTable();
 	}
 
 	public void savePlayerAsync(GamePlayer player) {
@@ -459,7 +461,7 @@ public class MySQLManager {
     public void createPurchasesTable() {
 
 	    try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_PURCHASES_CREATE)){
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         } catch (SQLException exception) {
             handleException(exception);
         }
@@ -468,7 +470,7 @@ public class MySQLManager {
     public void createGameServersTable() {
 
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_SERVERS_CREATE)){
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         } catch (SQLException exception) {
             handleException(exception);
         }
@@ -477,7 +479,7 @@ public class MySQLManager {
     public void createPartiesTable() {
 
         try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.DB_PARTIES_CREATE)){
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         } catch (SQLException exception) {
             handleException(exception);
         }

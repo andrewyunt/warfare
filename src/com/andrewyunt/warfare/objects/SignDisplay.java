@@ -18,9 +18,7 @@ package com.andrewyunt.warfare.objects;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
@@ -103,17 +101,18 @@ public class SignDisplay {
 	}
 	
 	public void refresh() {
-		
-		Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = Warfare.getInstance().getMySQLManager()
-				.getTopFiveColumn("uuid", "Players", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
-		Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
-		
-		OfflinePlayer op = entry.getKey();
-		
-		bukkitSign.setLine(0, op.getName());
-		bukkitSign.setLine(1, entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
-		bukkitSign.setLine(3, place + Utils.getNumberSuffix(place) + " Place");
-
-		bukkitSign.update();
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
+			Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = Warfare.getInstance().getMySQLManager()
+					.getTopFiveColumn("uuid", "Players", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
+			Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
+			OfflinePlayer op = entry.getKey();
+			String name = op.getName();
+			Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
+				bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
+				bukkitSign.setLine(1, name);
+				bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
+				bukkitSign.update();
+			});
+		});
 	}
 }

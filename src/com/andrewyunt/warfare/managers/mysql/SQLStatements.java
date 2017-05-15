@@ -30,21 +30,21 @@ public class SQLStatements {
             + "   `type`            CHAR(20) NOT NULL,"
             + "   `stage`            CHAR(20) NOT NULL,"
             + "   `map_name`            CHAR(30) NOT NULL,"
-            + "   `online_players`   INT NOT NULL),"
+            + "   `online_players`   INT NOT NULL,"
             + "   `max_players`   INT NOT NULL);";
     public static final String DB_PARTIES_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_PARTIES + "`"
             + "  (`leader`           CHAR(36) PRIMARY KEY NOT NULL,"
             + "   `members`          TEXT);";
     public static final String DB_SIGNS_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_SIGNS + "`"
-            + "  (`server_name       CHAR(20) NOT NULL,"
-            + "   `location`         CHAR(20) PRIMARY KEY NOT NULL,"
+            + "  (`server_name`      CHAR(20) NOT NULL,"
+            + "   `location`         CHAR(30) PRIMARY KEY NOT NULL,"
             + "   `type`             CHAR(20) NOT NULL,"
             + "   `place`            INT NOT NULL);";
     public static final String DB_ARENAS_CREATE = "CREATE CREATE TABLE IF NOT EXISTS `" + DB_ARENAS + "`"
             + "  (`server_name`     CHAR(20) PRIMARY KEY NOT NULL,"
-            + "   `map_location`    JSON NOT NULL,"
-            + "   `cages`           JSON NOT NULL,"
-            + "   `loot_chests`     JSON NOT NULL);";
+            + "   `map_location`    CHAR(30) NOT NULL,"
+            + "   `cages`           TEXT NOT NULL,"
+            + "   `loot_chests`     TEXT NOT NULL);";
 
     // Data
     public static final String LOAD_PLAYER = "SELECT * FROM " + DB_PLAYERS + " WHERE uuid = ?;";
