@@ -73,3 +73,29 @@ description-HEALTH_BOOST_II:
   - "Gives you an extra two hearts when you spawn."
 description-HEALTH_BOOST_III:
   - "Gives you an extra three hearts when you spawn."
+
+death-messages:
+  melee:
+    - "&c%s&7 is victorious over &c%s&7!"
+    - "&c%s&7 has overpowered &c%s&7 in combat!"
+    - "&c%s&7 evicerated &c%s&7!"
+    - "&c%s&7 had fun slicing and dicing &c%s&7!"
+    - "&c%s&7 sent &c%s&7 to pay Charon!"
+    - "&c%s&7 destroyed &c%s&7!"
+    - "&c%s&7 gutted the unfortunate &c%s&7!"
+    - "&c%s&7 has sent &c%s&7 to the heavenly realm!"
+    - "&c%s&7 showed &c%s&7 the meaning of pain!"
+    - "&c%s&7 split &c%s&7 in twain!"
+    - "&c%s&7 overcame &c%s&7 in battle!"
+    - "&c%s&7 defeated &c%s&7 in mighty struggle!"
+    - "&c%s&7 ended all dreams for &c%s&7!"
+  bow:
+    - "&c%s&7 feathered &c%s&7 with arrows!"
+    - "&c%s&7 pierced &c%s&7 using their arrow!"
+  diamond_sword:
+    - "&c%s&7 sliced through &c%s&7 with a diamond sword!"
+    - "&c%s&7 split &c%s&7 in two using a diamond sword!"
+  iron_sword:
+    - "&c%s&7 slayed &c%s&7 with an iron sword!"
+  stone_sword:
+    - "&c%s&7 violently bashed the face of &c%s&7 in with a stone sword!"
