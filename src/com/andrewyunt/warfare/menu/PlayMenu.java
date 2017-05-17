@@ -5,6 +5,7 @@ import com.andrewyunt.warfare.objects.Party;
 import com.andrewyunt.warfare.objects.Server;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.faithfulmc.util.ItemBuilder;
+import com.google.common.primitives.Ints;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -92,10 +93,12 @@ public class PlayMenu implements Listener, InventoryHolder {
     public ItemStack createServerItem(Server server){
         if(server.getServerType() == Server.ServerType.GAME && server.getGameStage().ordinal() < Game.Stage.END.ordinal()){
             return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
-                    .displayName(ChatColor.GOLD + "Warfare Server #" + server.getId())
+                    .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + server.getName())
                     .lore(
-                            ChatColor.GRAY.toString() + server.getOnlinePlayers() + ChatColor.GRAY + "/" + server.getMaxPlayers(),
-                            server.getGameStage().getDisplay()
+                            "",
+                            ChatColor.GOLD + "Players: " + ChatColor.GRAY + " " + server.getOnlinePlayers() + "/" + server.getMaxPlayers(),
+                            ChatColor.GOLD + "Stage: " + ChatColor.GRAY + server.getGameStage().getDisplay(),
+                            ""
                     )
                     .build();
         }
@@ -125,7 +128,7 @@ public class PlayMenu implements Listener, InventoryHolder {
                     playerEntity = new PartyPlayerEntity(player.getUniqueId());
                 } else {
                     player.sendMessage(ChatColor.RED + "You must be the party leader to do this");
-                    player.closeInventory();
+                    Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
                     return;
                 }
             }
@@ -151,7 +154,7 @@ public class PlayMenu implements Listener, InventoryHolder {
                         Server server = serverID < inventoryServers.size() ? inventoryServers.get(serverID) : null;
                         if(server != null){
                             playerEntity.sendToServer(server.getName());
-                            player.closeInventory();
+                            Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
                         }
                     }
                 }

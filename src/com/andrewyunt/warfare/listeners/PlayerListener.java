@@ -12,29 +12,23 @@ public abstract class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-
         ItemStack item = event.getItem();
-
         if (item == null || !item.hasItemMeta()) {
             return;
         }
-
         handleHotbarClick(event.getPlayer(), item.getItemMeta().getDisplayName());
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-
         ItemStack item = event.getCurrentItem();
 
         if (item == null || !item.hasItemMeta()) {
             return;
         }
-
         if (handleHotbarClick((Player) event.getWhoClicked(), item.getItemMeta().getDisplayName())) {
             event.setCancelled(true);
         }

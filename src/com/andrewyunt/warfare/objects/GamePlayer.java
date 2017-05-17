@@ -15,11 +15,7 @@
  */
 package com.andrewyunt.warfare.objects;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.Bukkit;
@@ -83,8 +79,10 @@ public class GamePlayer {
 	}
 	
 	public void setEarnedCoins(int earnedCoins) {
-		
-		this.earnedCoins = earnedCoins;
+		if(!Objects.equals(earnedCoins, this.earnedCoins)) {
+            this.earnedCoins = earnedCoins;
+            update();
+        }
 	}
 	
 	public int getEarnedCoins() {
@@ -93,17 +91,17 @@ public class GamePlayer {
 	}
 	
 	public void setWins(int wins) {
-		
-		this.wins = wins;
+	    if(!Objects.equals(wins, this.wins)) {
+            this.wins = wins;
+            update();
+        }
 	}
 	
 	public int getWins() {
-		
 		return wins;
 	}
 	
 	public void setEnergy(int energy) {
-		
 		this.energy = energy;
 		
 		if (this.energy > 100) {
@@ -138,10 +136,10 @@ public class GamePlayer {
 	}
 	
 	public void setKills(int kills) {
-		
-		this.kills = kills;
-		
-		Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid);
+	    if(!Objects.equals(kills, this.kills)) {
+            this.kills = kills;
+            update();
+        }
 	}
 	
 	public int getKills() {
@@ -220,8 +218,10 @@ public class GamePlayer {
 	}
 	
 	public void setSelectedKit(Kit selectedKit) {
-		
-		this.selectedKit = selectedKit;
+	    if(!Objects.equals(selectedKit, this.selectedKit)) {
+            this.selectedKit = selectedKit;
+            update();
+        }
 	}
 	
 	public Kit getSelectedKit() {
@@ -233,12 +233,11 @@ public class GamePlayer {
     }
 	
 	public Location setSpectating(boolean spectating, boolean respawn) {
-		
 		this.spectating = spectating;
 		
 		if (spectating) {
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+			scheduler.runTask(Warfare.getInstance(), () -> {
                 Player player = getBukkitPlayer();
 
                 player.setAllowFlight(true);
@@ -253,7 +252,7 @@ public class GamePlayer {
                 }
 
                 updateHotbar();
-            }, 5L);
+            });
 			
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
 			Chunk chunk = loc.getChunk();
@@ -320,15 +319,11 @@ public class GamePlayer {
 	}
 
 	public void updateHotbar() {
-		
 		PlayerInventory inv = getBukkitPlayer().getInventory();
-		
 		inv.clear();
-		
-		if (spectating) {
-			// Delay so players don't accidentally click items after being set to spectator mode
+        if (spectating) {
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+			scheduler.runTask(Warfare.getInstance(), () -> {
 
                 ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
                 ItemMeta teleporterMeta = teleporter.getItemMeta();
@@ -341,7 +336,7 @@ public class GamePlayer {
                 bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
                 bed.setItemMeta(bedMeta);
                 inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-            }, 20L);
+            });
 		} else {
 			ItemStack shop = new ItemStack(Material.CHEST, 1);
 			ItemMeta shopMeta = shop.getItemMeta();
@@ -362,4 +357,8 @@ public class GamePlayer {
 			inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
 		}
 	}
+
+	public void update(){
+	    Warfare.getInstance().getMySQLManager().savePlayerAsync(this);
+    }
 }

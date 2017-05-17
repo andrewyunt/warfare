@@ -43,9 +43,7 @@ public class PlayerManager {
 	}
 
 	public void deletePlayer(GamePlayer player) {
-	    if(players.remove(player.getUUID()) == player) {
-            Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
-        }
+	    players.remove(player.getUUID());
 	}
 
 	public Collection<GamePlayer> getPlayers() {

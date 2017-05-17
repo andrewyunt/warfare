@@ -13,13 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class PlayerLobbyListener extends PlayerListener {
@@ -82,13 +81,17 @@ public class PlayerLobbyListener extends PlayerListener {
     }
 
     @EventHandler (priority = EventPriority.LOWEST)
-    public void onPlayerDamage(EntityDamageByEntityEvent event) {
+    public void onPlayerDamage(EntityDamageEvent event) {
+        event.setCancelled(true);
+    }
 
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onPlayerInteract(PlayerInteractEvent event) {
         event.setCancelled(true);
     }
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockDamage(BlockBreakEvent event) {
         if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
@@ -96,7 +99,13 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
+    }
 
+    @EventHandler
+    public void onBlockPlace(BlockDamageEvent event) {
         if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
@@ -104,15 +113,12 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-
         event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-
         Player player = event.getPlayer();
-
         if (player.getLocation().getY() < 0) {
             player.teleport(player.getLocation().getWorld().getSpawnLocation());
         }
