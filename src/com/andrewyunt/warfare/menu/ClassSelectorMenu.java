@@ -113,7 +113,7 @@ public class ClassSelectorMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Class Selector")) {
+		if (!title.contains(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Class Selector")) {
             return;
         }
 		
