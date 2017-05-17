@@ -8,6 +8,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -370,6 +371,18 @@ public class PlayerGameListener extends PlayerListener {
             }
 
             item.setType(Material.BOWL);
+        }
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent event) {
+
+        Location playerLoc = event.getPlayer().getLocation();
+        Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
+
+        if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 75 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 75) {
+            event.getPlayer().sendMessage(ChatColor.YELLOW + "You may not go past the world border!");
+            event.getPlayer().teleport(centerLoc);
         }
     }
 
