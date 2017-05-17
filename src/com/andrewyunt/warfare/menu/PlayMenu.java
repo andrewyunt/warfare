@@ -134,7 +134,7 @@ public class PlayMenu implements Listener, InventoryHolder {
             }
 
             if (slot == QUICK_JOIN_SLOT) {
-                player.closeInventory();
+                Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
                 for(Server server: quickJoinServers){
                     int size = playerEntity.size();
                     int amount = size == 1 ? 1 : size + 2;
