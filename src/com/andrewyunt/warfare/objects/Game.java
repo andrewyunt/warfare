@@ -206,9 +206,8 @@ public class Game {
 			
 			// Update player's name color
 			Utils.colorPlayerName(player, Warfare.getInstance().getGame().getPlayers());
-			
-			// Give player speed 2 for 10 seconds if they have HEAD_START Skill
-			bp.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
+
+			bp.setWalkSpeed(bp.getWalkSpeed() * 1.25f);
 			
 			// Clear player's inventory to remove class selector
 			bp.getInventory().clear();
@@ -233,6 +232,10 @@ public class Game {
 			
 			bp.setMaxHealth(health);
 			bp.setHealth(health);
+
+			Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
+				bp.setWalkSpeed(bp.getWalkSpeed() / 1.25f);
+			}, 20 * 10);
 		}
 		
 		// Fill chests
