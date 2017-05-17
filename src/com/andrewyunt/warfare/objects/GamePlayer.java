@@ -343,25 +343,23 @@ public class GamePlayer {
                 inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
             }, 20L);
 		} else {
-			/*
 			ItemStack shop = new ItemStack(Material.CHEST, 1);
 			ItemMeta shopMeta = shop.getItemMeta();
 			shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
 			shop.setItemMeta(shopMeta);
 			inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
-			*/
 
-			ItemStack classSelector = new ItemStack(Material.IRON_AXE, 1);
-			ItemMeta classSelectorMeta = classSelector.getItemMeta();
-			classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE));
-			classSelector.setItemMeta(classSelectorMeta);
-			inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
-
-			ItemStack play = new ItemStack(Material.DIAMOND_SWORD, 1);
+			ItemStack play = new ItemStack(Material.COMPASS, 1);
 			ItemMeta playMeta = play.getItemMeta();
 			playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
 			play.setItemMeta(playMeta);
 			inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
+
+			ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
+			ItemMeta classSelectorMeta = classSelector.getItemMeta();
+			classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE));
+			classSelector.setItemMeta(classSelectorMeta);
+			inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
 		}
 	}
 }

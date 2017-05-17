@@ -20,13 +20,13 @@ hotbar-items:
   lobby-items:
     shop:
       slot: 3
-      title: "&a&lShop"
+      title: "&a&lPerk Shop"
     class-selector:
       slot: 7
       title: "&b&lSelect Class"
     play:
       slot: 5
-      title: "&c&lJoin Game"
+      title: "&6&lJoin Game"
   spectator-items:
     teleporter:
       slot: 1

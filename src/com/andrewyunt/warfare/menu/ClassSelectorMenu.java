@@ -68,7 +68,7 @@ public class ClassSelectorMenu implements Listener {
 		Player bp = player.getBukkitPlayer();
 		Inventory inv;
 		
-		inv = Bukkit.createInventory(null, type == Type.KIT ? 27 : 54, ChatColor.LIGHT_PURPLE
+		inv = Bukkit.createInventory(null, type == Type.KIT ? 27 : 54, ChatColor.YELLOW
 				+ ChatColor.BOLD.toString() + "Class Selector - " + type.getName());
 
 		if (type == Type.KIT) {
