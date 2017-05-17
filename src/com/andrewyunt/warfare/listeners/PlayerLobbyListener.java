@@ -85,7 +85,7 @@ public class PlayerLobbyListener extends PlayerListener {
         event.setCancelled(true);
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
         event.setCancelled(true);
     }
