@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a6648cfc-d6be-4543-ade3-63494403873d" name="Default" comment="Use walk speed instead of speed potion" />
-    <list id="8599cfe2-3e0a-4568-ae39-f5076c91c5b2" name="IntellIJ" comment="IntellIJ">
+    <list default="true" id="a6648cfc-d6be-4543-ade3-63494403873d" name="Default" comment="Use walk speed instead of speed potion">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/paperspigot_1_7_10_R0_1_SNAPSHOT.xml" afterPath="$PROJECT_DIR$/.idea/libraries/paperspigot_1_7_10_R0_1_SNAPSHOT.xml" />
     </list>
@@ -593,7 +592,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="a6648cfc-d6be-4543-ade3-63494403873d" name="Default" comment="" />
-      <changelist id="8599cfe2-3e0a-4568-ae39-f5076c91c5b2" name="IntellIJ" comment="" />
+      <changelist id="" name="IntellIJ" comment="" />
       <created>1491699866956</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
