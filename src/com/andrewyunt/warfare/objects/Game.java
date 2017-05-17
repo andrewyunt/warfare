@@ -308,7 +308,6 @@ public class Game {
 			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
                 Player bukkitPlayer = player.getBukkitPlayer();
                 if(bukkitPlayer != null) {
-                    Warfare.getInstance().getMySQLManager().savePlayerAsync(player);
                     if(!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
                         Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
                         if (party == null) {

@@ -186,14 +186,14 @@ public class MySQLManager {
     }
 
     public List<Server> getServers(){
-	    int id = 0;
         List<Server> servers = new ArrayList<>();
         try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_SERVERS); ResultSet resultSet = preparedStatement.executeQuery()){
             while (resultSet.next()) {
-                servers.add(new Server(id++, resultSet.getString("name"),
+                servers.add(new Server(
+                        resultSet.getString("name"),
                         Server.ServerType.valueOf(resultSet.getString("type")),
                         Game.Stage.valueOf(resultSet.getString("stage")),
-                        resultSet.getString("map_name"),
+                        "",
                         resultSet.getInt("online_players"),
                         resultSet.getInt("max_players")
                 ));

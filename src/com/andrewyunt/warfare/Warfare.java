@@ -126,10 +126,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			}
 		}
 
-		for (GamePlayer player : playerManager.getPlayers()) {
-			mysqlManager.savePlayerAsync(player);
-		}
-
 		mysqlManager.disconnect();
 	}
 

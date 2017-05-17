@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.objects;
 
 public class Server {
-    private final int id;
     private final String name;
     private final ServerType serverType;
     private final Game.Stage gameStage;
@@ -9,18 +8,13 @@ public class Server {
     private int onlinePlayers;
     private final int maxPlayers;
 
-    public Server(int id, String name, ServerType serverType, Game.Stage gameStage, String mapName, int onlinePlayers, int maxPlayers) {
-        this.id = id;
+    public Server(String name, ServerType serverType, Game.Stage gameStage, String mapName, int onlinePlayers, int maxPlayers) {
         this.name = name;
         this.serverType = serverType;
         this.gameStage = gameStage;
         this.mapName = mapName;
         this.onlinePlayers = onlinePlayers;
         this.maxPlayers = maxPlayers;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
