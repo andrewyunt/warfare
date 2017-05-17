@@ -84,8 +84,12 @@ public class TimerSidebarProvider implements SidebarProvider {
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + LocalTime.ofSecondOfDay(game
-                        .getRefillCountdownTime()).toString().substring(3)));
+                String time = LocalTime.ofSecondOfDay(game.getRefillCountdownTime()).toString().substring(4);
+                if (time.length() == 1) {
+                    time = time + ":00";
+                }
+
+                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + time));
 
                 lines.add(new SidebarEntry("  "));
 
