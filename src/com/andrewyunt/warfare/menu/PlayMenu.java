@@ -94,7 +94,7 @@ public class PlayMenu implements Listener, InventoryHolder {
             return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
                     .displayName(ChatColor.GOLD + "Warfare Server #" + server.getId())
                     .lore(
-                            ChatColor.GREEN.toString() + server.getOnlinePlayers() + ChatColor.GRAY + "/" + server.getMaxPlayers(),
+                            ChatColor.GRAY.toString() + server.getOnlinePlayers() + ChatColor.GRAY + "/" + server.getMaxPlayers(),
                             server.getGameStage().getDisplay()
                     )
                     .build();

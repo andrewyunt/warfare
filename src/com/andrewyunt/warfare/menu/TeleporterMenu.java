@@ -18,6 +18,7 @@ package com.andrewyunt.warfare.menu;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,44 +45,26 @@ public class TeleporterMenu implements Listener {
 	
 	public void open(GamePlayer player) {
 		
-		Inventory inv = Bukkit.createInventory(null, 54, "Teleporter");
-		
-		for (int i = 0; i < 9; i++) {
-            inv.setItem(i, glassPane);
-        }
-		
-		for (int i = 9; i < 45; i = i + 9) {
-			inv.setItem(i, glassPane);
-			inv.setItem(i + 8, glassPane);
-		}
-		
-		for (int i = 45; i < 54; i++) {
-            inv.setItem(i, glassPane);
-        }
-		
+		Inventory inv = Bukkit.createInventory(null, 27, "Teleporter");
 		List<ItemStack> toAdd = new ArrayList<ItemStack>();
 		
 		for (GamePlayer inGame : Warfare.getInstance().getGame().getPlayers()) {
 			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 			skullMeta.setOwner(inGame.getBukkitPlayer().getName());
-			skullMeta.setDisplayName(inGame.getBukkitPlayer().getName());
+			skullMeta.setDisplayName(ChatColor.GRAY + inGame.getBukkitPlayer().getDisplayName());
 			skull.setItemMeta(skullMeta);
 			
 			toAdd.add(skull);
 		}
 		
 		for (int i = 0; i < 45; i++) {
-			ItemStack is = inv.getItem(i);
-			
-			if (is == null || is.getType() == Material.AIR) {
-                try {
-                    inv.setItem(i, toAdd.get(0));
-                    toAdd.remove(0);
-                } catch (IndexOutOfBoundsException e) {
-                    break;
-                }
-            }
+			try {
+				inv.setItem(i, toAdd.get(0));
+				toAdd.remove(0);
+			} catch (IndexOutOfBoundsException e) {
+				break;
+			}
 		}
 		
 		player.getBukkitPlayer().openInventory(inv);

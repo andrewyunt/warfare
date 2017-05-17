@@ -10,7 +10,7 @@ import com.andrewyunt.warfare.Warfare;
 
 /**
  *
- * The class used for the servers.yml configuration file.
+ * The class used for the server.yml configuration file.
  *
  * @author Andrew Yunt
  */
@@ -22,7 +22,7 @@ public class ServerConfiguration {
     public void reloadConfig() {
 
         if (configFile == null) {
-            configFile = new File("servers.yml");
+            configFile = new File("server.yml");
         }
 
         config = YamlConfiguration.loadConfiguration(configFile);
@@ -30,7 +30,7 @@ public class ServerConfiguration {
         Reader defConfigStream = null;
 
         try {
-            defConfigStream = new InputStreamReader(new FileInputStream(new File("servers.yml")), "UTF8");
+            defConfigStream = new InputStreamReader(new FileInputStream(new File("server.yml")), "UTF8");
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -66,11 +66,18 @@ public class ServerConfiguration {
     public void saveDefaultConfig() {
 
         if (configFile == null) {
-            configFile = new File("servers.yml");
+            configFile = new File("server.yml");
         }
 
         if (!configFile.exists()) {
-            Warfare.getInstance().saveResource("servers.yml", false);
+            try {
+                configFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            getConfig().set("server-name", "server name");
+            saveConfig();
         }
     }
 }

@@ -200,6 +200,11 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		this.game = game;
 	}
+
+	public ServerConfiguration getServerConfiguration() {
+
+		return serverConfiguration;
+	}
 	
 	public ShopMenu getShopMenu() {
 		

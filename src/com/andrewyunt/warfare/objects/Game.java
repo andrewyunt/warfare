@@ -87,10 +87,15 @@ public class Game {
 	private final Set<Cage> cages = new HashSet<Cage>();
 	
 	public Game() {
+
+		Arena arena = Warfare.getInstance().getArena();
 		
-		for (Entry<String, Location> entry : Warfare.getInstance().getArena().getCageLocations().entrySet()) {
+		for (Entry<String, Location> entry : arena.getCageLocations().entrySet()) {
 			cages.add(new Cage(entry.getKey(), entry.getValue()));
 		}
+
+		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> arena.getMapLocation().getWorld().setTime(6000), 20L, 0L);
 	}
 	
 	/**
@@ -120,7 +125,7 @@ public class Game {
 
 			// Send the join message to the players
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&7%s &6has joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
+					String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
 							players.size(), cages.size())));
 		}, 5L);
 	}
@@ -398,7 +403,7 @@ public class Game {
 			
 			refillCountdownTime = 300;
 			
-			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Chests have been refilled. Next refill is in 5 minutes.");
+			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
 	}
 	

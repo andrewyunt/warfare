@@ -8,12 +8,15 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -29,6 +32,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerGameListener extends PlayerListener {
@@ -151,7 +156,6 @@ public class PlayerGameListener extends PlayerListener {
     private void onPlayerDeath(PlayerDeathEvent event) {
 
         event.setDroppedExp(0);
-        event.setDeathMessage(null);
 
         Player player = event.getEntity();
         GamePlayer playerGP = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
@@ -193,9 +197,47 @@ public class PlayerGameListener extends PlayerListener {
 
         lastDamagerBP.sendMessage(ChatColor.GOLD + String.format("You killed %s and received %s coins.",
                 playerGP.getBukkitPlayer().getDisplayName(), String.valueOf(killCoins)));
+    }
 
-        playerGP.getBukkitPlayer().sendMessage(ChatColor.RED + String.format("You were killed by %s",
-                lastDamager.getBukkitPlayer().getDisplayName()));
+    @EventHandler
+    private void onDeathMessage(PlayerDeathEvent event) {
+
+        event.setDeathMessage(null);
+
+        Player killed = event.getEntity();
+        Player killer = event.getEntity().getKiller();
+        EntityDamageEvent entityDamageEvent = killed.getLastDamageCause();
+
+        if (entityDamageEvent.getEntityType() == null) {
+            return;
+        }
+
+        String msg = null;
+
+        if (entityDamageEvent.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        if (!(killer instanceof Player) || !(killed instanceof Player)) {
+            return;
+        }
+
+        ConfigurationSection deathMessagesSection = Warfare.getInstance().getConfig()
+                .getConfigurationSection("death-messages");
+        Material tool = killer.getItemInHand().getType();
+        List<String> msgList;
+
+        if (tool == Material.IRON_SWORD || tool == Material.DIAMOND_SWORD || tool == Material.STONE_SWORD
+                || tool == Material.BOW) {
+            msgList = deathMessagesSection.getStringList(tool.toString().toLowerCase());
+        } else {
+            msgList = deathMessagesSection.getStringList("melee");
+        }
+
+        Collections.shuffle(msgList);
+        msg = String.format(msgList.get(0), killer.getDisplayName(), killed.getDisplayName());
+
+        event.setDeathMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
 
     @EventHandler
@@ -307,12 +349,39 @@ public class PlayerGameListener extends PlayerListener {
         }
     }
 
-    private void cancelCageInteractions(Cancellable cancellable, Player player) {
+    @EventHandler
+    private void onSoup(PlayerInteractEvent event) {
 
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
 
-        if (gp.isCaged()) {
-            cancellable.setCancelled(true);
+        ItemStack item = event.getItem();
+
+        if (item == null) {
+            return;
+        }
+
+        if (item.getType() == Material.MUSHROOM_SOUP) {
+            Player player = event.getPlayer();
+            if (player.getHealth() + 6 > player.getMaxHealth()) {
+                player.setHealth(player.getMaxHealth());
+            } else {
+                event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
+            }
+
+            item.setType(Material.BOWL);
+        }
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent event) {
+
+        Location playerLoc = event.getPlayer().getLocation();
+        Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
+
+        if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 100 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 100) {
+            event.getPlayer().teleport(centerLoc);
         }
     }
 
@@ -323,6 +392,15 @@ public class PlayerGameListener extends PlayerListener {
         }
         if (!event.getInventory().getTitle().contains("Class Selector")) {
             cancelCageInteractions(event, (Player) event.getPlayer());
+        }
+    }
+
+    private void cancelCageInteractions(Cancellable cancellable, Player player) {
+
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+
+        if (gp.isCaged()) {
+            cancellable.setCancelled(true);
         }
     }
 }

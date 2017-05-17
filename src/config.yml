@@ -73,3 +73,29 @@ description-HEALTH_BOOST_II:
   - "Gives you an extra two hearts when you spawn."
 description-HEALTH_BOOST_III:
   - "Gives you an extra three hearts when you spawn."
+
+death-messages:
+  melee:
+    - "&6%s&e is victorious over &6%s&e!"
+    - "&6%s&e has overpowered &6%s&e in combat!"
+    - "&6%s&e evicerated &6%s&e!"
+    - "&6%s&e had fun slicing and dicing &6%s&e!"
+    - "&6%s&e sent &6%s&e to pay Charon!"
+    - "&6%s&e destroyed &6%s&e!"
+    - "&6%s&e gutted the unfortunate &6%s&e!"
+    - "&6%s&e has sent &6%s&e to the heavenly realm!"
+    - "&6%s&e showed &6%s&e the meaning of pain!"
+    - "&6%s&e split &6%s&e in twain!"
+    - "&6%s&e overcame &6%s&e in battle!"
+    - "&6%s&e defeated &6%s&e in mighty struggle!"
+    - "&6%s&e ended all dreams for &6%s&e!"
+  bow:
+    - "&6%s&e feathered &6%s&e with arrows!"
+    - "&6%s&e pierced &6%s&e using their arrow!"
+  diamond_sword:
+    - "&6%s&e sliced through &6%s&e with a diamond sword!"
+    - "&6%s&e split &6%s&e in two using a diamond sword!"
+  iron_sword:
+    - "&6%s&e slayed &6%s&e with an iron sword!"
+  stone_sword:
+    - "&6%s&e violently bashed the face of &6%s&e in with a stone sword!"
