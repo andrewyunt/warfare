@@ -120,7 +120,7 @@ public class Game {
 
 			// Send the join message to the players
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&7%s &6has joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
+					String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
 							players.size(), cages.size())));
 		}, 5L);
 	}
@@ -395,7 +395,7 @@ public class Game {
 			
 			refillCountdownTime = 300;
 			
-			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Chests have been refilled. Next refill is in 5 minutes.");
+			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
 	}
 	
