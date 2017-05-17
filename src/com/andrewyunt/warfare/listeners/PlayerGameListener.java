@@ -376,12 +376,13 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
-
-        Location playerLoc = event.getPlayer().getLocation();
-        Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
-
-        if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 100 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 100) {
-            event.getPlayer().teleport(centerLoc);
+        GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
+        if(gamePlayer.isSpectating()) {
+            Location playerLoc = event.getPlayer().getLocation();
+            Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
+            if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 300 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 300) {
+                event.getPlayer().teleport(centerLoc);
+            }
         }
     }
 
