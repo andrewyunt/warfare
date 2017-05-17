@@ -87,10 +87,15 @@ public class Game {
 	private final Set<Cage> cages = new HashSet<Cage>();
 	
 	public Game() {
+
+		Arena arena = Warfare.getInstance().getArena();
 		
-		for (Entry<String, Location> entry : Warfare.getInstance().getArena().getCageLocations().entrySet()) {
+		for (Entry<String, Location> entry : arena.getCageLocations().entrySet()) {
 			cages.add(new Cage(entry.getKey(), entry.getValue()));
 		}
+
+		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> arena.getMapLocation().getWorld().setTime(6000), 20L, 0L);
 	}
 	
 	/**
