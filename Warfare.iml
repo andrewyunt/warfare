@@ -8,10 +8,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="paperspigot-1.7.10-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Base" level="project" />
     <orderEntry type="library" name="paperspigot-1.7.10-R0.1-SNAPSHOT1" level="project" />
     <orderEntry type="library" exported="" name="g113c" level="project" />
     <orderEntry type="library" name="g113c" level="project" />
     <orderEntry type="library" name="ProtocolLibOld1.71.8" level="project" />
+    <orderEntry type="library" name="Base" level="project" />
   </component>
 </module>
