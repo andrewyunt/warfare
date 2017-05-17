@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import org.bukkit.*;
@@ -170,26 +171,12 @@ public class Game {
 	}
 	
 	public Set<Cage> getAvailableCages() {
-		
-		Set<Cage> availableCages = new HashSet<Cage>();
-		
-		for (Cage cage : cages) {
-			if (!cage.hasPlayer()) {
-				availableCages.add(cage);
-			}
-		}
-		
-		return availableCages;
+		return cages.stream().filter(cage -> !cage.hasPlayer()).collect(Collectors.toSet());
 	}
 	
 	public Set<GamePlayer> getSpectators() {
-		
-		Set<GamePlayer> spectators = new HashSet<GamePlayer>(Warfare.getInstance().getPlayerManager().getPlayers());
-		
-		for (GamePlayer player : players) {
-			spectators.remove(player);
-		}
-		
+		Set<GamePlayer> spectators = new HashSet<>(Warfare.getInstance().getPlayerManager().getPlayers());
+		spectators.removeAll(players);
 		return spectators;
 	}
 	

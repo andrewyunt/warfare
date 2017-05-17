@@ -18,11 +18,13 @@ package com.andrewyunt.warfare.objects;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.andrewyunt.warfare.Warfare;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.util.Vector;
 
 public class Cage {
 	
@@ -92,17 +94,20 @@ public class Cage {
 		location.setX(location.getBlockX() + 0.5);
 		location.setY(location.getBlockY() + 1);
 		location.setZ(location.getBlockZ() + 0.5);
+
+		Vector vector = Warfare.getInstance().getArena().getMapLocation().toVector().subtract(location.toVector()).normalize();
+		vector.setY(0.5);
+
+		location.setDirection(vector);
 		
 		player.getBukkitPlayer().teleport(location);
 	}
 	
 	public GamePlayer getPlayer() {
-		
 		return player;
 	}
 	
 	public boolean hasPlayer() {
-		
 		return player != null;
 	}
 	
