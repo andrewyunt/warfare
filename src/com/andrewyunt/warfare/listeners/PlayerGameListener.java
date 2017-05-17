@@ -15,6 +15,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -344,6 +345,31 @@ public class PlayerGameListener extends PlayerListener {
         if (gp.isInGame() && !gp.hasFallen()) {
             gp.setHasFallen(true);
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onSoup(PlayerInteractEvent event) {
+
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
+
+        if (item == null) {
+            return;
+        }
+
+        if (item.getType() == Material.MUSHROOM_SOUP) {
+            Player player = event.getPlayer();
+            if (player.getHealth() + 6 > player.getMaxHealth()) {
+                player.setHealth(player.getMaxHealth());
+            } else {
+                event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
+            }
+
+            item.setType(Material.BOWL);
         }
     }
 
