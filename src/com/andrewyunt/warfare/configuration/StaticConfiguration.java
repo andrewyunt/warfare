@@ -10,7 +10,8 @@ public class StaticConfiguration {
     private static Configuration config = Warfare.getInstance().getConfig();
 
     public static boolean LOBBY = config.getBoolean("is-lobby", false);
-    public static String SERVER_NAME = config.getString("server-name");
+    public static String SERVER_NAME = Warfare.getInstance().getServerConfiguration()
+            .getConfig().getString("server-name");
 
 
     public static List<String> LOBBY_SERVERS = config.getStringList("lobby-servers");
