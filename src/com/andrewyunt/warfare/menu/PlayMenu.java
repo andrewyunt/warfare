@@ -5,7 +5,6 @@ import com.andrewyunt.warfare.objects.Party;
 import com.andrewyunt.warfare.objects.Server;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.faithfulmc.util.ItemBuilder;
-import com.google.common.primitives.Ints;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

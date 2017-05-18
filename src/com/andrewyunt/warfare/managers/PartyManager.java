@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class PartyManager {
 
-    private Set<Party> parties = new HashSet<Party>();
+    private Set<Party> parties = new HashSet<>();
 
     public Party createParty(UUID leader) {
 

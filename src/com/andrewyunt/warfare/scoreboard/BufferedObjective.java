@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.scoreboard;
 
 import net.minecraft.util.gnu.trove.map.hash.TIntObjectHashMap;
-import net.minecraft.util.gnu.trove.procedure.TIntObjectProcedure;
 import net.minecraft.util.org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -29,7 +28,7 @@ public class BufferedObjective {
 
     public BufferedObjective(final Scoreboard scoreboard) {
 
-        this.previousLines = new HashSet<String>();
+        this.previousLines = new HashSet<>();
         this.contents = (TIntObjectHashMap<SidebarEntry>) new TIntObjectHashMap();
         this.requiresUpdate = false;
         this.scoreboard = scoreboard;
@@ -81,7 +80,7 @@ public class BufferedObjective {
         if (!this.requiresUpdate) {
             return;
         }
-        final Set<String> adding = new HashSet<String>();
+        final Set<String> adding = new HashSet<>();
         this.contents.forEachEntry((i, sidebarEntry) -> {
             String name = sidebarEntry.name;
             if (name.length() > 16) {

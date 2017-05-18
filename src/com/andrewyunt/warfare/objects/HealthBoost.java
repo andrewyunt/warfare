@@ -18,7 +18,7 @@ package com.andrewyunt.warfare.objects;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public enum HealthBoost implements Purchasable{
+public enum HealthBoost implements Purchasable {
 	
 	HEALTH_BOOST_I("Health Boost I", 250000),
 	HEALTH_BOOST_II("Health Boost II", 500000),
@@ -40,7 +40,7 @@ public enum HealthBoost implements Purchasable{
 	}
 
 	@Override
-	public int getPrice() {
+	public int getPrice(int level) {
 		
 		return price;
 	}

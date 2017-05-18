@@ -9,8 +9,8 @@ public class Party {
     private UUID leader;
     private boolean open;
 
-    private final Set<UUID> members = new HashSet<UUID>();
-    private final Set<UUID> invites = new HashSet<UUID>();
+    private final Set<UUID> members = new HashSet<>();
+    private final Set<UUID> invites = new HashSet<>();
 
     public Party(UUID leader) {
 
