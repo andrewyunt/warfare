@@ -111,6 +111,6 @@ public class TeleporterMenu implements Listener {
             return;
         }
 		
-		event.getWhoClicked().teleport(Bukkit.getPlayer(name));
+		event.getWhoClicked().teleport(Bukkit.getPlayer(ChatColor.stripColor(name)));
 	}
 }
