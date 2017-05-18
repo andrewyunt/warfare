@@ -41,9 +41,9 @@ public class PlayMenu implements Listener, InventoryHolder {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
             List<Server> serverList = Warfare.getInstance().getMySQLManager().getServers();
             inventoryServers = new ArrayList<>(serverList);
-            inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) + server.getOnlinePlayers()));
+            inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) - server.getOnlinePlayers()));
             quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());
-            quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) + server.getOnlinePlayers()));
+            quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) - server.getOnlinePlayers()));
             Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> inventory.setContents(getContents()));
         }, 0, 2);
     }

@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.command.LobbyCommand;
 import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
@@ -165,6 +166,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
+			getCommand("lobby").setExecutor(new LobbyCommand(this));
 		}
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

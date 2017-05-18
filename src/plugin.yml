@@ -7,3 +7,6 @@ commands:
     description: The management command for Warfare.
   party:
     description: The command for parties.
+  lobby:
+    aliases: ['hub']
+    description: Go to the lobby
