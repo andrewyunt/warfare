@@ -242,7 +242,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
-
         Game game = Warfare.getInstance().getGame();
 
         if (game == null || game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) {
@@ -250,7 +249,6 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-
         event.setRespawnLocation(gp.setSpectating(true, true));
     }
 

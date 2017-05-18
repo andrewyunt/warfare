@@ -239,19 +239,22 @@ public class GamePlayer {
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 			scheduler.runTask(Warfare.getInstance(), () -> {
                 Player player = getBukkitPlayer();
+                if(player != null) {
+                    player.spigot().setCollidesWithEntities(false);
 
-                player.setAllowFlight(true);
-                player.setFireTicks(0);
+                    player.setAllowFlight(true);
+                    player.setFireTicks(0);
 
-                for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators()) {
-                    player.showPlayer(toShow.getBukkitPlayer());
+                    for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators()) {
+                        player.showPlayer(toShow.getBukkitPlayer());
+                    }
+
+                    for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers()) {
+                        toHide.getBukkitPlayer().hidePlayer(player);
+                    }
+
+                    updateHotbar();
                 }
-
-                for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers()) {
-                    toHide.getBukkitPlayer().hidePlayer(player);
-                }
-
-                updateHotbar();
             });
 			
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
@@ -323,8 +326,7 @@ public class GamePlayer {
 		inv.clear();
         if (spectating) {
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.runTask(Warfare.getInstance(), () -> {
-
+			scheduler.runTaskLater(Warfare.getInstance(), () -> {
                 ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
                 ItemMeta teleporterMeta = teleporter.getItemMeta();
                 teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
@@ -336,7 +338,7 @@ public class GamePlayer {
                 bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
                 bed.setItemMeta(bedMeta);
                 inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-            });
+            }, 20);
 		} else {
 			ItemStack shop = new ItemStack(Material.CHEST, 1);
 			ItemMeta shopMeta = shop.getItemMeta();
@@ -356,6 +358,7 @@ public class GamePlayer {
 			classSelector.setItemMeta(classSelectorMeta);
 			inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
 		}
+		getBukkitPlayer().updateInventory();
 	}
 
 	public void update(){

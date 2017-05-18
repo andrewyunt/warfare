@@ -142,186 +142,23 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-		
-		GamePlayer damagerGP = pm.getPlayer((event.getDamager()).getUniqueId());
-		
-		if (damagerGP != null) {
-            if (damagerGP.isSpectating()) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-		
-		GamePlayer damagedGP = pm.getPlayer((event.getEntity()).getUniqueId());
-		
-		if (damagedGP != null) {
-            if (damagedGP.isSpectating()) {
-                event.setCancelled(true);
-            }
-        }
-	}
+		if(event.getDamager() instanceof Player) {
 
-	/**
-	 * Makes non-potions projectiles fly through the spectators.
-	 */
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityHitByProjectileEvent(final EntityDamageByEntityEvent ev) {
-		
-		// splash potions are cancelled in PotionSplashEvent
-		try {
-			if (ev.getDamager() instanceof Projectile && !(ev.getDamager() instanceof ThrownPotion)
-					&& ev.getEntity() instanceof Player && !ev.getEntity().hasMetadata("NPC") // Check sometimes...
-					&& pm.getPlayer(((Player) ev.getEntity())).isSpectating()) {
-				ev.setCancelled(true);
+			GamePlayer damagerGP = pm.getPlayer((Player) event.getDamager());
 
-				final Player spectatorInvolved = (Player) ev.getEntity();
-				final boolean wasFlying = spectatorInvolved.isFlying();
-				final Location initialSpectatorLocation = spectatorInvolved.getLocation();
-
-				final Vector initialProjectileVelocity = ev.getDamager().getVelocity();
-				final Location initialProjectileLocation = ev.getDamager().getLocation();
-
-				spectatorInvolved.setFlying(true);
-				spectatorInvolved.teleport(initialSpectatorLocation.clone().add(0, 6, 0),
-						PlayerTeleportEvent.TeleportCause.PLUGIN);
-
-				// Prevents the arrow from bouncing on the entity
-				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
-                    ev.getDamager().teleport(initialProjectileLocation);
-                    ev.getDamager().setVelocity(initialProjectileVelocity);
-                }, 1L);
-
-				// Teleports back the spectator
-				Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
-                    spectatorInvolved.teleport(
-                            initialSpectatorLocation.setDirection(spectatorInvolved.getLocation().getDirection()),
-                            PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    spectatorInvolved.setFlying(wasFlying);
-                }, 5L);
-			}
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Used to make splash potions flew by the spectators.
-	 */
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPotionSplash(final PotionSplashEvent ev) {
-		
-		final ArrayList<UUID> spectatorsAffected = new ArrayList<>();
-
-		for (LivingEntity player : ev.getAffectedEntities()) {
-			if (player instanceof Player && !player.hasMetadata("NPC")
-					&& pm.getPlayer(((Player) player)).isSpectating()) {
-				spectatorsAffected.add(player.getUniqueId());
-			}
-        }
-
-		/*
-		 * If there isn't any spectator affected, it's a splash on players only
-		 * and the spectators cannot
-		 * affect the behavior of the potion.
-		 * So, in this case, we don't care about the event.
-		 */
-		if (!spectatorsAffected.isEmpty()) {
-			
-			/*
-			 * If there are some spectators involved, we try to find how they
-			 * are involved.
-			 * If all the spectators involved are far away from the impact
-			 * point, there isn't any needed action.
-			 * Else, if a spectator is the impact point, he perturbed the launch
-			 * of the potion, and
-			 * the same thing is done as for the non-potions projectiles
-			 * (teleport the spectators up, etc.).
-			 * In all cases, the effect is removed from the spectators.
-			 */
-
-			Boolean teleportationNeeded = false;
-
-			for (Entity entity : ev.getEntity().getNearbyEntities(2, 2, 2)) {
-				if (entity instanceof Player && !entity.hasMetadata("NPC")
-						&& pm.getPlayer(((Player) entity)).isSpectating())
-				// The potion hits a spectator
-				{
-					teleportationNeeded = true;
-				}
-            }
-
-			final HashMap<UUID, Boolean> oldFlyMode = new HashMap<>();
-
-			for (UUID spectatorUUID : spectatorsAffected) {
-				Player spectator = Bukkit.getServer().getPlayer(spectatorUUID);
-
-				// The effect is removed
-				ev.setIntensity(spectator, 0);
-
-				if (teleportationNeeded) {
-					oldFlyMode.put(spectator.getUniqueId(), spectator.isFlying());
-					spectator.setFlying(true);
-
-					// High teleportation because the potions can be thrown up
-					spectator.teleport(spectator.getLocation().add(0, 10, 0));
+			if (damagerGP != null) {
+				if (damagerGP.isSpectating()) {
+					event.setCancelled(true);
+					return;
 				}
 			}
 
-			if (teleportationNeeded) {
-				final Location initialProjectileLocation = ev.getEntity().getLocation();
-				final Vector initialProjectileVelocity = ev.getEntity().getVelocity();
+			GamePlayer damagedGP = pm.getPlayer((event.getEntity()).getUniqueId());
 
-				// Prevents the potion from splashing on the entity
-				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), () -> {
-                    /*
-                     *  Because the original entity is, one tick later,
-                     *  destroyed, we need to spawn a new one.
-                     *  Cancelling the event only cancels the effect.
-                     */
-                    ThrownPotion clonedEntity = (ThrownPotion) ev.getEntity().getWorld()
-                            .spawnEntity(initialProjectileLocation, ev.getEntity().getType());
-
-                    // For other plugins (may be used)
-                    clonedEntity.setShooter(ev.getEntity().getShooter());
-                    clonedEntity.setTicksLived(ev.getEntity().getTicksLived());
-                    clonedEntity.setFallDistance(ev.getEntity().getFallDistance());
-                    clonedEntity.setBounce(ev.getEntity().doesBounce());
-                    if (ev.getEntity().getPassenger() != null) {
-                        clonedEntity.setPassenger(ev.getEntity().getPassenger()); // hey, why not
-                    }
-
-                    // Clones the effects
-                    clonedEntity.setItem(ev.getEntity().getItem());
-
-                    // Clones the speed/direction
-                    clonedEntity.setVelocity(initialProjectileVelocity);
-
-                    // Just in case
-                    ev.getEntity().remove();
-                }, 1L);
-
-				// Teleports back the spectators
-				Bukkit.getServer().getScheduler().runTaskLater(Warfare.getInstance(), () -> {
-                    for (UUID spectatorUUID : spectatorsAffected) {
-                        Player spectator = Bukkit.getServer().getPlayer(spectatorUUID);
-
-                        spectator.teleport(spectator.getLocation().add(0, -10, 0));
-                        spectator.setFlying(oldFlyMode.get(spectatorUUID));
-                    }
-                }, 5L);
-
-				/*
-				 * Cancels the effect for everyone (because the thrown potion is
-				 * re-spawned, avoids a double effect for some players).
-				 */
-				
-				ev.setCancelled(true);
-
-				/*
-				 * Side note: there is a visual glitch (the players will see a
-				 * double splash, the real one plus the splash on the spectator), but the
-				 * behavior is preserved and the effect is applied once, on the players.
-				 */
+			if (damagedGP != null) {
+				if (damagedGP.isSpectating()) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

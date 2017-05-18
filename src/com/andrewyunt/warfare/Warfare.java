@@ -19,13 +19,18 @@ import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.listeners.*;
+import com.andrewyunt.warfare.listeners.fixes.*;
 import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.google.common.io.ByteStreams;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.managers.mysql.MySQLManager;
@@ -42,6 +47,48 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 public class Warfare extends JavaPlugin implements PluginMessageListener {
 	
 	private static Warfare instance;
+
+    public static Permission permission = null;
+    public static Economy economy = null;
+    public static Chat chat = null;
+
+    public static Permission getPermission() {
+        return permission;
+    }
+
+    public static Economy getEconomy() {
+        return economy;
+    }
+
+    public static Chat getChat() {
+        return chat;
+    }
+
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
+
+    private boolean setupChat() {
+        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+        if (chatProvider != null) {
+            chat = chatProvider.getProvider();
+        }
+
+        return (chat != null);
+    }
+
+    private boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 	
 	private MySQLManager mysqlManager;
 	private PlayerManager playerManager;
@@ -58,6 +105,12 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	
 	@Override
 	public void onEnable() {
+
+	    Bukkit.getScheduler().runTask(this, () -> {
+            setupChat();
+            setupEconomy();
+            setupPermissions();
+        });
 
 		instance = this;
 
@@ -87,6 +140,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
+
+        pm.registerEvents(new MobFixer(this), this);
+        pm.registerEvents(new PotFixListener(this), this);
+        pm.registerEvents(new ColonCommandFix(this), this);
+        pm.registerEvents(new WeatherFixListener(), this);
+        pm.registerEvents(new InfinityArrowFixListener(), this);
+        pm.registerEvents(new ChatListener(this), this);
 		
 		if (StaticConfiguration.LOBBY){
 			mysqlManager.loadSigns();
