@@ -38,13 +38,15 @@ import com.andrewyunt.warfare.utilities.Utils;
 public class GamePlayer {
 	
 	private UUID uuid;
-	private int coins, earnedCoins, wins, energy, kills, killStreak;
-	private boolean epcCooldown, powerupCooldown, powerupActivated, loaded, spectating, flamingFeet, sentActivate, hasFallen;
+	private int coins, earnedCoins, wins, kills, killStreak, energy;
+	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
+	private Powerup selectedPowerup;
+	private Perk selectedPerk;
 	
-	private final List<Purchasable> purchases = new ArrayList<Purchasable>();
-	private final Set<UUID> ghasts = new HashSet<UUID>();
+	private final Map<Purchasable, Integer> purchases = new HashMap<>();
+	private final Set<UUID> ghasts = new HashSet<>();
 	
 	public GamePlayer(UUID uuid) {
 		
@@ -79,7 +81,7 @@ public class GamePlayer {
 	}
 	
 	public void setEarnedCoins(int earnedCoins) {
-		if(!Objects.equals(earnedCoins, this.earnedCoins)) {
+		if (!Objects.equals(earnedCoins, this.earnedCoins)) {
             this.earnedCoins = earnedCoins;
             update();
         }
@@ -91,7 +93,7 @@ public class GamePlayer {
 	}
 	
 	public void setWins(int wins) {
-	    if(!Objects.equals(wins, this.wins)) {
+	    if (!Objects.equals(wins, this.wins)) {
             this.wins = wins;
             update();
         }
@@ -100,33 +102,7 @@ public class GamePlayer {
 	public int getWins() {
 		return wins;
 	}
-	
-	public void setEnergy(int energy) {
-		this.energy = energy;
-		
-		if (this.energy > 100) {
-            this.energy = 100;
-        } else {
-            sentActivate = false;
-        }
-		
-		Player player = getBukkitPlayer();
-		
-		if (this.energy == 100) {
-			if (!sentActivate) {
-				sentActivate = true;
-				player.sendMessage(ChatColor.GOLD + "Right click using your sword to activate your ultimate!");
-			}
-		}
-		
-		getBukkitPlayer().setLevel(this.energy);
-		getBukkitPlayer().setExp(this.energy / 100.0F);
-	}
-	
-	public int getEnergy() {
-		
-		return energy;
-	}
+
 	
 	public void addKill() {
 		
@@ -136,7 +112,7 @@ public class GamePlayer {
 	}
 	
 	public void setKills(int kills) {
-	    if(!Objects.equals(kills, this.kills)) {
+	    if (!Objects.equals(kills, this.kills)) {
             this.kills = kills;
             update();
         }
@@ -151,6 +127,46 @@ public class GamePlayer {
 
 		return killStreak;
 	}
+
+	public void addEnergy(int energy) {
+
+		setEnergy(this.energy + energy);
+	}
+
+	public void removeEnergy(int energy) {
+
+		setEnergy(this.energy - energy);
+	}
+
+	public void setEnergy(int energy) {
+
+		this.energy = energy;
+
+		if (this.energy > 100) {
+			this.energy = 100;
+		} else {
+			sentActivate = false;
+		}
+
+		if (this.energy == 100) {
+			if (!sentActivate) {
+				sentActivate = true;
+				if (selectedPowerup == Powerup.EXPLOSIVE_ARROW) {
+					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " using your bow to activate your ability!");
+				} else {
+					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " using your sword to activate your ability!");
+				}
+			}
+		}
+
+		getBukkitPlayer().setLevel(this.energy);
+		getBukkitPlayer().setExp(this.energy / 100.0F);
+	}
+
+	public int getEnergy() {
+
+		return this.energy;
+	}
 	
 	public void setEPCCooldown(boolean cooldown) {
 		
@@ -160,26 +176,6 @@ public class GamePlayer {
 	public boolean isEPCCooldown() {
 		
 		return epcCooldown;
-	}
-
-	public void setPowerupCooldown(boolean powerupCooldown) {
-
-		this.powerupCooldown = powerupCooldown;
-	}
-
-	public boolean isPowerupCooldown() {
-
-		return powerupCooldown;
-	}
-
-	public void setPowerupActivated(boolean powerupActivated) {
-
-		this.powerupActivated = powerupActivated;
-	}
-
-	public boolean isPowerupActivated() {
-
-		return powerupActivated;
 	}
 	
 	public void setLoaded(boolean loaded) {
@@ -200,6 +196,26 @@ public class GamePlayer {
 	public boolean hasFallen() {
 		
 		return hasFallen;
+	}
+
+	public void setHasBloodEffect(boolean hasBloodEffect) {
+
+		this.hasBloodEffect = hasBloodEffect;
+	}
+
+	public boolean getHasBloodEffect() {
+
+		return hasBloodEffect;
+	}
+
+	public void setExplosiveWeaknessCooldown(boolean explosiveWeaknessCooldown) {
+
+		this.explosiveWeaknessCooldown = explosiveWeaknessCooldown;
+	}
+
+	public boolean isExplosiveWeaknessCooldown() {
+
+		return explosiveWeaknessCooldown;
 	}
 	
 	public boolean isInGame() {
@@ -231,7 +247,29 @@ public class GamePlayer {
 	public Kit getSelectedKitOrPot(){
         return selectedKit == null ? Kit.POT : selectedKit;
     }
-	
+
+	public void setSelectedPowerup(Powerup selectedPowerup) {
+		if(!Objects.equals(selectedPowerup, this.selectedPowerup)) {
+			this.selectedPowerup = selectedPowerup;
+			update();
+		}
+	}
+
+	public Powerup getSelectedPowerup() {
+		return selectedPowerup;
+	}
+
+	public void setSelectedPerk(Perk selectedPerk) {
+		if(!Objects.equals(selectedPerk, this.selectedPerk)) {
+			this.selectedPerk = selectedPerk;
+			update();
+		}
+	}
+
+	public Perk getSelectedPerk() {
+		return selectedPerk;
+	}
+
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		this.spectating = spectating;
 		
@@ -280,19 +318,14 @@ public class GamePlayer {
 		return spectating;
 	}
 	
-	public void setFlamingFeet(boolean flamingFeet) {
+	public Set<Purchasable> getPurchases() {
 		
-		this.flamingFeet = flamingFeet;
+		return purchases.keySet();
 	}
-	
-	public boolean hasFlamingFeet() {
-		
-		return flamingFeet;
-	}
-	
-	public List<Purchasable> getPurchases() {
-		
-		return purchases;
+
+	public int getLevel(Purchasable purchasable) {
+
+		return purchases.get(purchasable);
 	}
 	
 	public Set<UUID> getGhasts() {

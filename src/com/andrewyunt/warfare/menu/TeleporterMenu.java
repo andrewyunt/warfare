@@ -39,14 +39,14 @@ public class TeleporterMenu implements Listener {
 		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
 		glassPaneMeta.setDisplayName("  ");
-		glassPaneMeta.setLore(new ArrayList<String>());
+		glassPaneMeta.setLore(new ArrayList<>());
 		glassPane.setItemMeta(glassPaneMeta);
 	}
 	
 	public void open(GamePlayer player) {
 		
 		Inventory inv = Bukkit.createInventory(null, 27, "Teleporter");
-		List<ItemStack> toAdd = new ArrayList<ItemStack>();
+		List<ItemStack> toAdd = new ArrayList<>();
 		
 		for (GamePlayer inGame : Warfare.getInstance().getGame().getPlayers()) {
 			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
@@ -111,6 +111,6 @@ public class TeleporterMenu implements Listener {
             return;
         }
 		
-		event.getWhoClicked().teleport(Bukkit.getPlayer(name));
+		event.getWhoClicked().teleport(Bukkit.getPlayer(ChatColor.stripColor(name)));
 	}
 }

@@ -15,6 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
+import com.andrewyunt.warfare.command.BloodToggleCommand;
 import com.andrewyunt.warfare.command.LobbyCommand;
 import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
@@ -42,7 +43,6 @@ import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.menu.TeleporterMenu;
 import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.Game;
-import com.andrewyunt.warfare.objects.GamePlayer;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class Warfare extends JavaPlugin implements PluginMessageListener {
@@ -165,7 +165,10 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
+			pm.registerEvents(new PlayerPowerupListener(), this);
+			pm.registerEvents(new PlayerPerkListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
+
 			getCommand("lobby").setExecutor(new LobbyCommand(this));
 		}
 		
@@ -174,6 +177,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
+		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
 	}
 
 

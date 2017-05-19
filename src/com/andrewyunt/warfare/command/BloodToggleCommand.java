@@ -13,32 +13,47 @@
  * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
  * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
  */
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.command;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.objects.GamePlayer;
 
 /**
- * The Purchasable interface is used to guarantee that the classes / enums
- * implementing it will have the same methods and will be able to be used
- * for the methods that use Purchasable as a parameter.
- * 
+ * The bloodtoggle command class which is used as a Bukkit CommandExecutor
+ * to toggle blood particles on or off.
+ *
  * @author Andrew Yunt
  */
-public interface Purchasable {
-	
-	/**
-	 * @return The display name of the Purchasable.
-	 */
-	String getName();
-	
-	/**
-	 * @param level The level of the upgradable if applicable. If not applicable, then enter 0.
-	 * @return The price of the purchasable
-	 */
-	int getPrice(int level);
-	
-	/**
-	 * @return The display item of the Purchasable.
-	 */
-	ItemStack getDisplayItem();
+public class BloodToggleCommand implements CommandExecutor {
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if (!(sender instanceof Player)) {
+            System.out.println("You may not execute that command from the console.");
+            return false;
+        }
+
+        if (!sender.hasPermission("warfare.bloodtoggle")) {
+            sender.sendMessage(ChatColor.YELLOW + "You do not have access to that command.");
+            return false;
+        }
+
+        GamePlayer player = Warfare.getInstance().getPlayerManager().getPlayer(sender.getName());
+
+        boolean hasBloodEffect = !player.getHasBloodEffect();
+
+        player.setHasBloodEffect(hasBloodEffect);
+
+        player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
+                "Blood particles toggled %s successfully",
+                ChatColor.GOLD + (hasBloodEffect ? "on" : "off") + ChatColor.YELLOW));
+
+        return true;
+    }
 }

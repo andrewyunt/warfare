@@ -27,8 +27,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
@@ -84,8 +82,8 @@ public class Game {
 	private short countdownTime = 10, refillCountdownTime = 300;
 	private Stage stage = Stage.WAITING;
 	
-	private final Set<GamePlayer> players = new HashSet<GamePlayer>();
-	private final Set<Cage> cages = new HashSet<Cage>();
+	private final Set<GamePlayer> players = new HashSet<>();
+	private final Set<Cage> cages = new HashSet<>();
 	
 	public Game() {
 
@@ -211,7 +209,7 @@ public class Game {
 			bp.closeInventory();
 			
 			// Set player's health
-			List<Purchasable> purchases = player.getPurchases();
+			Set<Purchasable> purchases = player.getPurchases();
 			double health = 24;
 			
 			if (purchases.contains(HealthBoost.HEALTH_BOOST_I)) {
@@ -225,9 +223,7 @@ public class Game {
 			bp.setMaxHealth(health);
 			bp.setHealth(health);
 
-			Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> {
-				bp.setWalkSpeed(bp.getWalkSpeed() / 1.25f);
-			}, 20 * 10);
+			Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> bp.setWalkSpeed(bp.getWalkSpeed() / 1.25f), 20 * 10);
 		}
 		
 		// Fill chests

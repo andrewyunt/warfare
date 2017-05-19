@@ -2,16 +2,11 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.Arena;
-import com.andrewyunt.warfare.objects.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
 
 public class SetMapLocationArgument extends CommandArgument {
 

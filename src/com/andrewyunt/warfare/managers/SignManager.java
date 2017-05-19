@@ -22,14 +22,13 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.objects.SignDisplay.Type;
-import com.andrewyunt.warfare.utilities.Utils;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class SignManager {
 	
-	public final Set<SignDisplay> signs = new HashSet<SignDisplay>();
+	public final Set<SignDisplay> signs = new HashSet<>();
 
 	public void createSign(Location loc, Type type, int place, boolean load) throws SignException {
 		

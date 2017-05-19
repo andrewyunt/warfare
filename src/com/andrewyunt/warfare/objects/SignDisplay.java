@@ -18,16 +18,12 @@ package com.andrewyunt.warfare.objects;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.andrewyunt.warfare.exception.SignException;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.utilities.Utils;
 
 /**
  * The object used to perform operations on signs in the Warfare plugin.

@@ -56,7 +56,7 @@ public class LootChest {
 		
 		PotionMeta frMeta = (PotionMeta) frPotion.getItemMeta();
 		PotionEffect frEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 9600, 1, false);
-		List<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.RESET + "Fire Resistance 2" + ChatColor.RED + "\u2764");
 		frMeta.setLore(lore);
 		frMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Fire Resistance Potion");
@@ -66,7 +66,7 @@ public class LootChest {
 		
 		PotionMeta speedPotionMeta = (PotionMeta) speedPotion.getItemMeta();
 		PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
-		lore = new ArrayList<String>();
+		lore = new ArrayList<>();
 		lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
 		speedPotionMeta.setLore(lore);
 		speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
@@ -190,7 +190,7 @@ public class LootChest {
 		Chest chest = ((Chest) location.getBlock().getState());
 		Inventory inv = chest.getBlockInventory();
 		
-		List<LootItem> lootItems = new ArrayList<LootItem>();
+		List<LootItem> lootItems = new ArrayList<>();
 		
 		if (tier == 3) {
 			lootItems.add(getRandomLootItem(1));

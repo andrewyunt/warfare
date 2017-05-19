@@ -17,21 +17,13 @@ package com.andrewyunt.warfare.objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.utilities.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * The class used to store arena information.
@@ -40,9 +32,9 @@ import java.util.UUID;
  */
 public class Arena {
 	
-	private final Map<String, Location> cageLocations = new HashMap<String, Location>();
+	private final Map<String, Location> cageLocations = new HashMap<>();
 
-	private Set<LootChest> lootChests = new HashSet<LootChest>();
+	private Set<LootChest> lootChests = new HashSet<>();
 	private boolean isEdit;
 	private Location mapLocation;
 	

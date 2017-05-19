@@ -63,7 +63,7 @@ public class ShopMenu implements Listener {
 		skillsMeta.setDisplayName(ChatColor.GOLD + "Skills");
 		healthBoostsMeta.setDisplayName(ChatColor.GOLD + "Health Boosts");
 		
-		glassPaneMeta.setLore(new ArrayList<String>());
+		glassPaneMeta.setLore(new ArrayList<>());
 		
 		glassPane.setItemMeta(glassPaneMeta);
 		ultimates.setItemMeta(ultimatesMeta);
@@ -138,7 +138,7 @@ public class ShopMenu implements Listener {
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setGroupingUsed(true);
 				lore.add(player.getPurchases().contains(purchasable) ? ChatColor.GREEN + "Purchased"
-						: ChatColor.RED + "Price: $" + numberFormat.format(purchasable.getPrice()));
+						: ChatColor.RED + "Price: $" + numberFormat.format(purchasable.getPrice(0)));
 				im.setLore(lore);
 				is.setItemMeta(im);
 				
@@ -216,17 +216,17 @@ public class ShopMenu implements Listener {
 				type = Type.HEALTH_BOOSTS;
 			}
 			
-			if (gp.getCoins() < purchasable.getPrice()) {
+			if (gp.getCoins() < purchasable.getPrice(0)) {
 				player.sendMessage(ChatColor.RED + String.format("You do not have enough coins to purchase %s.",
 						purchasable.getName()));
 				return;
 			}
 			
-			gp.setCoins(gp.getCoins() - purchasable.getPrice());
+			gp.setCoins(gp.getCoins() - purchasable.getPrice(0));
 			gp.getPurchases().add(purchasable);
 			
 			player.sendMessage(ChatColor.GOLD + String.format("You purchased %s for %s coins.",
-					purchasable.getName(), purchasable.getPrice()));
+					purchasable.getName(), purchasable.getPrice(0)));
 			
 			open(type, gp);
 		}

@@ -32,7 +32,7 @@ public class Cage {
 	private GamePlayer player;
 
 	private final Location location;
-	private final Set<Block> blocks = new HashSet<Block>();
+	private final Set<Block> blocks = new HashSet<>();
 	
 	public Cage(String name, Location location) {
 		
