@@ -275,6 +275,7 @@ public class PlayerGameListener extends PlayerListener {
         event.setRespawnLocation(gp.setSpectating(true, true));
     }
 
+    /*
     @EventHandler
     private void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
 
@@ -282,6 +283,7 @@ public class PlayerGameListener extends PlayerListener {
             ((Player) he).setLevel(100);
         }
     }
+    */
 
     @EventHandler
     private void onEnchantItem(EnchantItemEvent event) {
@@ -303,7 +305,7 @@ public class PlayerGameListener extends PlayerListener {
             enchants.put(Enchantment.ARROW_DAMAGE, 1);
         }
 
-        event.setExpLevelCost(0);
+        //event.setExpLevelCost(0);
     }
 
     @EventHandler
