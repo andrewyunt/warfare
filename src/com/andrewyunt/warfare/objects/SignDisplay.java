@@ -1,27 +1,10 @@
-/*
- * Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reerved.
- *
- * NOTICE: All information contained herein is, and remains the property of Andrew Yunt. The intellectual and technical concepts contained
- * herein are proprietary to Andrew Yunt and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained
- * from Andrew Yunt. Access to the source code contained herein is hereby forbidden to anyone except current Andrew Yunt and those who have executed
- * Confidentiality and Non-disclosure agreements explicitly covering such access.
- *
- * The copyright notice above does not evidence any actual or intended publication or disclosure of this source code, which includes
- * information that is confidential and/or proprietary, and is a trade secret, of COMPANY. ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC PERFORMANCE,
- * OR PUBLIC DISPLAY OF OR THROUGH USE OF THIS SOURCE CODE WITHOUT THE EXPRESS WRITTEN CONSENT OF ANDREW YUNT IS STRICTLY PROHIBITED, AND IN VIOLATION OF
- * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
- * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
- */
 package com.andrewyunt.warfare.objects;
 
 import com.andrewyunt.warfare.Warfare;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,8 +42,6 @@ public class SignDisplay {
 
 		if(block.getState() instanceof Sign){
             bukkitSign = (Sign) block.getState();
-            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.runTaskTimer(Warfare.getInstance(), this::refresh, 0L, 6000L);
         }
 	}
 	
@@ -79,18 +60,17 @@ public class SignDisplay {
 		return place;
 	}
 	
-	public void refresh() {
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
-			Map<Integer, Entry<Object, Integer>> mostKills = Warfare.getInstance().getStorageManager()
-					.getTopFiveColumn("Players", "name", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
-			Entry<Object, Integer> entry = mostKills.get(place);
-			String name = (String) entry.getKey();
-			Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
-				bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
-				bukkitSign.setLine(1, name);
-				bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
-				bukkitSign.update();
-			});
-		});
+	public void refresh(Map<Integer, Entry<Object, Integer>> mostKills) {
+	    if(bukkitSign != null) {
+            Entry<Object, Integer> entry = mostKills.get(place);
+            String name = (String) entry.getKey();
+            bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
+            bukkitSign.setLine(1, name);
+            bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
+            bukkitSign.update();
+        }
+        else{
+	        Warfare.getInstance().getLogger().info("Failed to update sign " + type.name() + " #" + place);
+        }
 	}
 }
