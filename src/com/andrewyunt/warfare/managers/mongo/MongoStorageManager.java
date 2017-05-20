@@ -151,7 +151,7 @@ public class MongoStorageManager extends StorageManager{
             document.put("name", StaticConfiguration.SERVER_NAME);
             document.put("serverType", (StaticConfiguration.LOBBY ? Server.ServerType.LOBBY : Server.ServerType.GAME).name());
             document.put("gameStage", warfare.getGame().getStage().name());
-            document.put("mapName", "");
+            document.put("mapName", StaticConfiguration.MAP_NAME);
             document.put("onlinePlayers", warfare.getGame().getPlayers().size());
             document.put("maxPlayers", warfare.getGame().getCages().size());
             //Delete old server objects
