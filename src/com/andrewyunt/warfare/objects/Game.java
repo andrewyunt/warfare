@@ -118,7 +118,7 @@ public class Game {
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
 			getAvailableCages().iterator().next().setPlayer(player);
 
-			if (getAvailableCages().size() == 0) {
+			if (getAvailableCages().size() <= 2) {
 				setStage(Stage.COUNTDOWN);
 			}
 
@@ -345,7 +345,7 @@ public class Game {
 	public void checkCountdownTime() {
 		
 		if (countdownTime > 0) {
-			Bukkit.getServer().broadcastMessage(ChatColor.RED + String.format("The game will start in %s seconds.",
+			Bukkit.getServer().broadcastMessage(String.format(ChatColor.YELLOW + "The game will start in " + ChatColor.GOLD + ChatColor.BOLD.toString() + "%s" + ChatColor.YELLOW + " seconds.",
 					countdownTime));
 		} else if (countdownTime == 0) {
 			setStage(Stage.BATTLE);

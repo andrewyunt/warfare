@@ -43,6 +43,20 @@ import java.util.Map;
 public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
+    public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event){
+        Game game = Warfare.getInstance().getGame();
+        if (Warfare.getInstance().getArena().isEdit()) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The map is currently in edit mode.");
+        }
+        else if((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) &&game.getAvailableCages().size() <= 0){
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Server is currently full");
+        }
+        else if(game.getStage() == Game.Stage.RESTART){
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The warfare server server is currently restarting");
+        }
+    }
+
+    @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage(null);
 
@@ -56,19 +70,28 @@ public class PlayerGameListener extends PlayerListener {
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
             Game game = Warfare.getInstance().getGame();
-
             if (Warfare.getInstance().getArena().isEdit()) {
                 player.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
                 return;
             }
-
             if (game.getStage() == Game.Stage.WAITING) {
                 game.addPlayer(gp);
-            } else if (game.getStage() == Game.Stage.END) {
+            }
+            else if(game.getStage() == Game.Stage.COUNTDOWN){
+                if(game.getAvailableCages().size() > 0){
+                    game.addPlayer(gp);
+                }
+                else{
+                    player.kickPlayer(ChatColor.RED + "This game has already started.");
+                }
+            }
+            else if (game.getStage() == Game.Stage.END) {
                 player.kickPlayer("You may not join once the game has ended.");
-            } else if (game.getStage() == Game.Stage.RESTART) {
+            }
+            else if (game.getStage() == Game.Stage.RESTART) {
                 player.kickPlayer("You may not join during a restart.");
-            } else {
+            }
+            else {
                 if (!player.hasPermission("warfare.spectatorjoin")) {
                     player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
                 } else {
@@ -265,6 +288,7 @@ public class PlayerGameListener extends PlayerListener {
         event.getPlayer().setCanPickupItems(true);
     }
 
+    /*
     @EventHandler
     private void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
 
@@ -272,6 +296,7 @@ public class PlayerGameListener extends PlayerListener {
             ((Player) he).setLevel(100);
         }
     }
+    */
 
     @EventHandler
     private void onEnchantItem(EnchantItemEvent event) {
@@ -293,7 +318,7 @@ public class PlayerGameListener extends PlayerListener {
             enchants.put(Enchantment.ARROW_DAMAGE, 1);
         }
 
-        event.setExpLevelCost(0);
+        //event.setExpLevelCost(0);
     }
 
     @EventHandler
