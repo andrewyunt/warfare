@@ -22,6 +22,8 @@ public class PlayerManager {
 
 	private GamePlayer createPlayer(Player player){
 		GamePlayer gamePlayer = new GamePlayer(player.getUniqueId());
+		gamePlayer.setLoaded(false);
+		gamePlayer.setName(player.getName());
         Warfare.getInstance().getStorageManager().loadPlayerAsync(gamePlayer);
 		players.put(player.getUniqueId(), gamePlayer);
 		return gamePlayer;

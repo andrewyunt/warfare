@@ -27,6 +27,7 @@ import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.managers.StorageManager;
+import com.andrewyunt.warfare.managers.mongo.MongoStorageManager;
 import com.andrewyunt.warfare.managers.mysql.MySQLStorageManager;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.menu.PlayMenu;
@@ -116,7 +117,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		instance = this;
 
-		storageManager = new MySQLStorageManager();
+		storageManager = getConfig().getBoolean("mongo.enabled", false) ? new MongoStorageManager(this) : new MySQLStorageManager();
 		playerManager = new PlayerManager();
 		signManager = new SignManager();
 		partyManager = new PartyManager();
