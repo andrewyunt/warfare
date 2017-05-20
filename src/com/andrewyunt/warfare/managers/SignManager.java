@@ -1,13 +1,12 @@
 
 package com.andrewyunt.warfare.managers;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.objects.SignDisplay.Type;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class SignManager {
 		signs.add(sign);
 
 		if(!load) {
-			Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveSign(sign));
+			Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().saveSign(sign));
 		}
 	}
 	
@@ -38,7 +37,7 @@ public class SignManager {
 
 		signs.remove(sign);
 
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().deleteSign(sign));
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().deleteSign(sign));
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package com.andrewyunt.warfare.menu;
 
+import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.Game;
+import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Party;
 import com.andrewyunt.warfare.objects.Server;
 import com.andrewyunt.warfare.utilities.Utils;
@@ -16,10 +18,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlayMenu implements Listener, InventoryHolder {
@@ -38,7 +40,7 @@ public class PlayMenu implements Listener, InventoryHolder {
     public PlayMenu() {
         inventory = Bukkit.createInventory(this, SIZE, ChatColor.YELLOW + "Join Game");
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
-            List<Server> serverList = Warfare.getInstance().getMySQLManager().getServers();
+            List<Server> serverList = Warfare.getInstance().getStorageManager().getServers();
             inventoryServers = new ArrayList<>(serverList);
             inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) - server.getOnlinePlayers()));
             quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());

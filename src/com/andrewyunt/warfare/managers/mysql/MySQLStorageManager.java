@@ -9,7 +9,6 @@ import com.google.common.base.Joiner;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
@@ -90,14 +89,15 @@ public class MySQLStorageManager extends StorageManager{
 		savePurchases(player);
 		try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.SAVE_PLAYER)) {
 			preparedStatement.setString(1, player.getUUID().toString());
+			preparedStatement.setString(2, player.getName());
 			Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
-			preparedStatement.setString(2, party == null ? "none" : party.getLeader().toString());
-			preparedStatement.setString(3, player.getSelectedKit() == null ? "none"
+			preparedStatement.setString(3, party == null ? "none" : party.getLeader().toString());
+			preparedStatement.setString(4, player.getSelectedKit() == null ? "none"
 					: player.getSelectedKit().toString());
-			preparedStatement.setInt(4, player.getCoins());
-			preparedStatement.setInt(5, player.getEarnedCoins());
-			preparedStatement.setInt(6, player.getKills());
-			preparedStatement.setInt(7, player.getWins());
+			preparedStatement.setInt(5, player.getCoins());
+			preparedStatement.setInt(6, player.getEarnedCoins());
+			preparedStatement.setInt(7, player.getKills());
+			preparedStatement.setInt(8, player.getWins());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException exception) {
@@ -114,11 +114,13 @@ public class MySQLStorageManager extends StorageManager{
 
         loadPurchases(gamePlayer);
 
-        try (Connection connection = getConnection();PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_PLAYER)) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQLStatements.LOAD_PLAYER)) {
             preparedStatement.setString(1, gamePlayer.getUUID().toString());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
+                gamePlayer.setName(resultSet.getString("name"));
                 if (!resultSet.getString("party").equals("none")) {
                     loadParty(UUID.fromString(resultSet.getString("party")));
                 }
@@ -387,9 +389,9 @@ public class MySQLStorageManager extends StorageManager{
 
 	//TODO: REDO query selection
 	@Deprecated
-	public Map<Integer, Map.Entry<OfflinePlayer, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
+	public Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
 
-		Map<Integer, Map.Entry<OfflinePlayer, Integer>> highestValues = new HashMap<>();
+		Map<Integer, Map.Entry<Object, Integer>> highestValues = new HashMap<>();
 		String query = "SELECT `" + select + "`, " + orderBy + " FROM `" + tableName + "` ORDER BY " + orderBy + " DESC LIMIT 5;";
 		PreparedStatement preparedStatement;
 		ResultSet resultSet;
@@ -402,9 +404,7 @@ public class MySQLStorageManager extends StorageManager{
 			int place = 1;
 
 			while (resultSet.next()) {
-				OfflinePlayer op = Bukkit.getServer().getOfflinePlayer(UUID.fromString(resultSet.getString("uuid")));
-
-				highestValues.put(place, new AbstractMap.SimpleEntry<>(op, resultSet.getInt(orderBy)));
+				highestValues.put(place, new AbstractMap.SimpleEntry<>(resultSet.getObject(select), resultSet.getInt(orderBy)));
 
 				place++;
 			}

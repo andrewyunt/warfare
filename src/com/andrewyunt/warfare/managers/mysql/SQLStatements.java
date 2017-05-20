@@ -13,6 +13,7 @@ public class SQLStatements {
     // Table Creation
     public static final String DB_PLAYERS_CREATE = "CREATE TABLE IF NOT EXISTS `" + DB_PLAYERS + "`"
             + "  (`uuid`             CHAR(36) PRIMARY KEY NOT NULL,"
+            + "   `name`             CHAR(16) NOT NULL"
             + "   `party`            CHAR(36) NOT NULL,"
             + "   `kit`              CHAR(20) NOT NULL,"
             + "   `coins`            INT NOT NULL,"
@@ -46,7 +47,7 @@ public class SQLStatements {
 
     // Data
     public static final String LOAD_PLAYER = "SELECT * FROM " + DB_PLAYERS + " WHERE uuid = ?;";
-    public static final String SAVE_PLAYER = "REPLACE INTO " + DB_PLAYERS + " (uuid, party, kit,  coins, earned_coins, kills, wins) VALUES (?,?,?,?,?,?,?);";
+    public static final String SAVE_PLAYER = "REPLACE INTO " + DB_PLAYERS + " (uuid, name, party, kit,  coins, earned_coins, kills, wins) VALUES (?,?,?,?,?,?,?,?);";
     public static final String LOAD_PURCHASES = "SELECT * FROM " + DB_PURCHASES + " WHERE uuid = ?;";
     public static final String SAVE_PURCHASES = "REPLACE INTO " + DB_PURCHASES + " (uuid, purchasable) VALUES (?,?);";
     public static final String LOAD_SERVERS = "SELECT * FROM " + DB_SERVERS + ";";

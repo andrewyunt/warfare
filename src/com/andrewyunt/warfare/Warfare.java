@@ -18,13 +18,22 @@ package com.andrewyunt.warfare;
 import com.andrewyunt.warfare.command.BloodToggleCommand;
 import com.andrewyunt.warfare.command.LobbyCommand;
 import com.andrewyunt.warfare.command.party.PartyCommand;
+import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.listeners.fixes.*;
 import com.andrewyunt.warfare.managers.PartyManager;
+import com.andrewyunt.warfare.managers.PlayerManager;
+import com.andrewyunt.warfare.managers.SignManager;
+import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.managers.mysql.MySQLStorageManager;
+import com.andrewyunt.warfare.menu.ClassSelectorMenu;
 import com.andrewyunt.warfare.menu.PlayMenu;
+import com.andrewyunt.warfare.menu.ShopMenu;
+import com.andrewyunt.warfare.menu.TeleporterMenu;
+import com.andrewyunt.warfare.objects.Arena;
+import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.google.common.io.ByteStreams;
 import net.milkbowl.vault.chat.Chat;
@@ -35,15 +44,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.andrewyunt.warfare.command.warfare.WarfareCommand;
-import com.andrewyunt.warfare.managers.StorageManager;
-import com.andrewyunt.warfare.managers.PlayerManager;
-import com.andrewyunt.warfare.managers.SignManager;
-import com.andrewyunt.warfare.menu.ClassSelectorMenu;
-import com.andrewyunt.warfare.menu.ShopMenu;
-import com.andrewyunt.warfare.menu.TeleporterMenu;
-import com.andrewyunt.warfare.objects.Arena;
-import com.andrewyunt.warfare.objects.Game;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class Warfare extends JavaPlugin implements PluginMessageListener {
@@ -92,7 +92,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
         return (economy != null);
     }
 	
-	private StorageManager mysqlManager;
+	private StorageManager storageManager;
 	private PlayerManager playerManager;
 	private SignManager signManager;
 	private PartyManager partyManager;
@@ -116,7 +116,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		instance = this;
 
-		mysqlManager = new MySQLStorageManager();
+		storageManager = new MySQLStorageManager();
 		playerManager = new PlayerManager();
 		signManager = new SignManager();
 		partyManager = new PartyManager();
@@ -132,13 +132,13 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		PluginManager pm = getServer().getPluginManager();
 		
 		// Connect to the database
-		if (!mysqlManager.connect()) {
+		if (!storageManager.connect()) {
 			getLogger().severe("Could not connect to the database, shutting down...");
 			pm.disablePlugin(this);
 			return;
 		}
 		
-		mysqlManager.updateDB();
+		storageManager.updateDB();
 		
 		pm.registerEvents(classSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
@@ -151,7 +151,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
         pm.registerEvents(new ChatListener(this), this);
 		
 		if (StaticConfiguration.LOBBY){
-			mysqlManager.loadSigns();
+			storageManager.loadSigns();
 
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(playMenu, this);
@@ -159,9 +159,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		} else {
 			serverConfiguration.saveDefaultConfig();
 
-			arena = mysqlManager.loadArena();
+			arena = storageManager.loadArena();
 			game = new Game();			
-			mysqlManager.updateServerStatus();
+			storageManager.updateServerStatusAsync();
 			
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new EntityListener(), this);
@@ -193,7 +193,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			}
 		}
 
-		mysqlManager.disconnect();
+		storageManager.disconnect();
 	}
 
 	@Override
@@ -229,9 +229,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		return instance;
 	}
 	
-	public StorageManager getMySQLManager() {
+	public StorageManager getStorageManager() {
 		
-		return mysqlManager;
+		return storageManager;
 	}
 	
 	public PlayerManager getPlayerManager() {

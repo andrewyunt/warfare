@@ -15,7 +15,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,8 +26,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
@@ -34,7 +37,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +65,7 @@ public class PlayerGameListener extends PlayerListener {
         Player player = event.getPlayer();
 
         // Update server status
-        Warfare.getInstance().getMySQLManager().updateServerStatus();
+        Warfare.getInstance().getStorageManager().updateServerStatusAsync();
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
@@ -110,7 +112,7 @@ public class PlayerGameListener extends PlayerListener {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         Warfare.getInstance().getGame().removePlayer(gp);
-        Warfare.getInstance().getMySQLManager().updateServerStatus();
+        Warfare.getInstance().getStorageManager().updateServerStatusAsync();
     }
 
     @Override

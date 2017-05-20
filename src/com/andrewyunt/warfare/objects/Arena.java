@@ -1,10 +1,9 @@
 
 package com.andrewyunt.warfare.objects;
 
+import com.andrewyunt.warfare.Warfare;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-
-import com.andrewyunt.warfare.Warfare;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +64,6 @@ public class Arena {
 
 	public void save() {
 
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getMySQLManager().saveArena());
+		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().saveArena());
 	}
 }

@@ -1,14 +1,13 @@
 package com.andrewyunt.warfare.managers;
 
-import java.util.*;
-import java.util.logging.Level;
-
-import com.andrewyunt.warfare.objects.*;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.objects.*;
+import org.bukkit.Bukkit;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 
 public abstract class StorageManager {
 	public abstract boolean connect();
@@ -43,6 +42,14 @@ public abstract class StorageManager {
 
 	public abstract void updateServerStatus();
 
+	public void updateServerStatusAsync(){
+        if (Warfare.getInstance().isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), this::updateServerStatus);
+        } else {
+            updateServerStatus();
+        }
+    }
+
 	public abstract void saveParty(Party party);
 
 	public abstract Party loadParty(UUID leaderUUID);
@@ -58,5 +65,5 @@ public abstract class StorageManager {
     public abstract Arena loadArena();
 
 	@Deprecated
-	public abstract Map<Integer, Map.Entry<OfflinePlayer, Integer>> getTopFiveColumn(String tableName, String select, String orderBy);
+	public abstract Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy);
 }

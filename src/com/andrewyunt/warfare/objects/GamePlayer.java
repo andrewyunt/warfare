@@ -1,14 +1,10 @@
 
 package com.andrewyunt.warfare.objects;
 
-import java.util.*;
-
+import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.andrewyunt.warfare.utilities.Utils;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -18,12 +14,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
-import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.utilities.Utils;
+import java.util.*;
 
 public class GamePlayer {
 	
 	private UUID uuid;
+	private String name;
 	private int coins, earnedCoins, wins, kills, killStreak, energy;
 	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	private GamePlayer lastDamager;
@@ -380,7 +376,20 @@ public class GamePlayer {
 		getBukkitPlayer().updateInventory();
 	}
 
-	public void update(){
-	    Warfare.getInstance().getMySQLManager().savePlayerAsync(this);
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+	    if(!Objects.equals(name, this.name)) {
+            this.name = name;
+            update();
+        }
+    }
+
+    public void update(){
+	    if(isLoaded()) {
+            Warfare.getInstance().getStorageManager().savePlayerAsync(this);
+        }
     }
 }

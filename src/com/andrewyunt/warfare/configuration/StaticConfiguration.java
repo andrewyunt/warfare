@@ -9,6 +9,8 @@ public class StaticConfiguration {
 
     private static Configuration config = Warfare.getInstance().getConfig();
 
+    public static boolean MONGO = config.getBoolean("mongo.enabled", false);
+
     public static boolean LOBBY = config.getBoolean("is-lobby", false);
     public static String SERVER_NAME = Warfare.getInstance().getServerConfiguration()
             .getConfig().getString("server-name");

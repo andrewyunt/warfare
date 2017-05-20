@@ -1,22 +1,20 @@
 
 package com.andrewyunt.warfare.objects;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.utilities.Utils;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The class used to store game attributes, placed blocks, and players.
@@ -265,7 +263,7 @@ public class Game {
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
-		Warfare.getInstance().getMySQLManager().updateServerStatus();
+		Warfare.getInstance().getStorageManager().updateServerStatusAsync();
 		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		

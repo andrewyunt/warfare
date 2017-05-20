@@ -15,15 +15,16 @@
  */
 package com.andrewyunt.warfare.objects;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.*;
+import com.andrewyunt.warfare.Warfare;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.andrewyunt.warfare.Warfare;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The object used to perform operations on signs in the Warfare plugin.
@@ -80,11 +81,10 @@ public class SignDisplay {
 	
 	public void refresh() {
 		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
-			Map<Integer, Entry<OfflinePlayer, Integer>> mostKills = Warfare.getInstance().getMySQLManager()
-					.getTopFiveColumn("Players", "uuid", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
-			Entry<OfflinePlayer, Integer> entry = mostKills.get(place);
-			OfflinePlayer op = entry.getKey();
-			String name = op.getName();
+			Map<Integer, Entry<Object, Integer>> mostKills = Warfare.getInstance().getStorageManager()
+					.getTopFiveColumn("Players", "name", type == Type.KILLS_LEADERBOARD ? "kills" : "wins");
+			Entry<Object, Integer> entry = mostKills.get(place);
+			String name = (String) entry.getKey();
 			Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
 				bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
 				bukkitSign.setLine(1, name);
