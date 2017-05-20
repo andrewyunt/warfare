@@ -7,10 +7,13 @@ import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.utilities.Utils;
+import net.minecraft.server.v1_7_R4.EnumClientCommand;
+import net.minecraft.server.v1_7_R4.PacketPlayInClientCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
@@ -31,6 +34,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.Collections;
 import java.util.List;
@@ -185,11 +189,11 @@ public class PlayerGameListener extends PlayerListener {
         Player lastDamagerBP = lastDamager.getBukkitPlayer();
         int killCoins = 20;
 
-        if (lastDamagerBP.hasPermission("megatw.coins.double")) {
+        if (lastDamagerBP.hasPermission("warfare.coins.double")) {
             killCoins = 40;
         }
 
-        if (lastDamagerBP.hasPermission("megatw.coins.triple")) {
+        if (lastDamagerBP.hasPermission("warfare.coins.triple")) {
             killCoins = 60;
         }
 
@@ -197,6 +201,14 @@ public class PlayerGameListener extends PlayerListener {
 
         lastDamagerBP.sendMessage(ChatColor.GOLD + String.format("You killed %s and received %s coins.",
                 playerGP.getBukkitPlayer().getDisplayName(), String.valueOf(killCoins)));
+
+        // Remove the respawn button
+        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+            player.setCanPickupItems(false);
+            PacketPlayInClientCommand packet = new PacketPlayInClientCommand(EnumClientCommand.PERFORM_RESPAWN);
+            ((CraftPlayer) player).getHandle().playerConnection.a(packet);
+        }, 1);
     }
 
     @EventHandler
@@ -204,38 +216,38 @@ public class PlayerGameListener extends PlayerListener {
 
         event.setDeathMessage(null);
 
+        String msg;
+        List<String> msgList;
         Player killed = event.getEntity();
         Player killer = event.getEntity().getKiller();
         EntityDamageEvent entityDamageEvent = killed.getLastDamageCause();
-
-        if (entityDamageEvent.getEntityType() == null) {
-            return;
-        }
-
-        String msg = null;
-
-        if (entityDamageEvent.getEntityType() != EntityType.PLAYER) {
-            return;
-        }
-
-        if (!(killer instanceof Player) || !(killed instanceof Player)) {
-            return;
-        }
-
         ConfigurationSection deathMessagesSection = Warfare.getInstance().getConfig()
                 .getConfigurationSection("death-messages");
-        Material tool = killer.getItemInHand().getType();
-        List<String> msgList;
 
-        if (tool == Material.IRON_SWORD || tool == Material.DIAMOND_SWORD || tool == Material.STONE_SWORD
-                || tool == Material.BOW) {
-            msgList = deathMessagesSection.getStringList(tool.toString().toLowerCase());
+        if (entityDamageEvent.getCause() == DamageCause.VOID) {
+            msgList = deathMessagesSection.getStringList("void");
+            Collections.shuffle(msgList);
+            msg = String.format(msgList.get(0), killed.getDisplayName());
+        } else if (entityDamageEvent.getCause() == DamageCause.ENTITY_ATTACK) {
+            if (entityDamageEvent.getEntityType() != EntityType.PLAYER || !(killer instanceof Player)
+                    || !(killed instanceof Player)) {
+                return;
+            }
+
+            Material tool = killer.getItemInHand().getType();
+
+            if (tool == Material.IRON_SWORD || tool == Material.DIAMOND_SWORD || tool == Material.STONE_SWORD
+                    || tool == Material.WOOD_SWORD || tool == Material.BOW) {
+                msgList = deathMessagesSection.getStringList(tool.toString().toLowerCase());
+            } else {
+                msgList = deathMessagesSection.getStringList("melee");
+            }
+
+            Collections.shuffle(msgList);
+            msg = String.format(msgList.get(0), killer.getDisplayName(), killed.getDisplayName());
         } else {
-            msgList = deathMessagesSection.getStringList("melee");
+            return;
         }
-
-        Collections.shuffle(msgList);
-        msg = String.format(msgList.get(0), killer.getDisplayName(), killed.getDisplayName());
 
         event.setDeathMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
@@ -250,6 +262,7 @@ public class PlayerGameListener extends PlayerListener {
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
         event.setRespawnLocation(gp.setSpectating(true, true));
+        event.getPlayer().setCanPickupItems(true);
     }
 
     @EventHandler
