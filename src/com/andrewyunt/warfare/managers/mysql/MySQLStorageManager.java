@@ -120,7 +120,6 @@ public class MySQLStorageManager extends StorageManager{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                gamePlayer.setName(resultSet.getString("name"));
                 if (!resultSet.getString("party").equals("none")) {
                     loadParty(UUID.fromString(resultSet.getString("party")));
                 }

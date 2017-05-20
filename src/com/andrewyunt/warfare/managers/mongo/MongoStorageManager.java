@@ -103,7 +103,6 @@ public class MongoStorageManager extends StorageManager{
     public void loadPlayer(GamePlayer player) {
         Document document = playerCollection.find(new Document("_id", player.getUUID())).first();
         if(document != null){
-            player.setName(document.getString("name"));
             UUID party = document.get("party", UUID.class);
             if(party != null){
                 loadParty(party);

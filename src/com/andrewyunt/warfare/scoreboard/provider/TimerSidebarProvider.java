@@ -7,7 +7,6 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.scoreboard.SidebarEntry;
 import com.andrewyunt.warfare.scoreboard.SidebarProvider;
 import com.andrewyunt.warfare.utilities.DateTimeFormats;
-
 import com.faithfulmc.util.BukkitUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -53,12 +52,13 @@ public class TimerSidebarProvider implements SidebarProvider {
             // Display player's coins
             lines.add(new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Coin Balance: ",ChatColor.GRAY + String.valueOf(gp.getCoins())));
 
-            lines.add(new SidebarEntry(" "));
-
-            // Display player's chosen class
-            lines.add(new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
-            lines.add(new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + ChatColor.BOLD.toString(),
-                    (gp.getSelectedKit()) == null ? "None" : gp.getSelectedKit().getName()));
+            if(gp.isLoaded()) {
+                lines.add(new SidebarEntry(" "));
+                // Display player's chosen class
+                lines.add(new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
+                lines.add(new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + ChatColor.BOLD.toString(),
+                        (gp.getSelectedKit()) == null ? "None" : gp.getSelectedKit().getName()));
+            }
         } else {
             Game game = Warfare.getInstance().getGame();
             Game.Stage stage = game.getStage();
