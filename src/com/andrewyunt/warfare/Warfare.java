@@ -121,7 +121,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		storageManager = getConfig().getBoolean("mongo.enabled", false) ? new MongoStorageManager(this) : new MySQLStorageManager();
 		playerManager = new PlayerManager();
-		signManager = new SignManager();
+		signManager = new SignManager(this);
 		partyManager = new PartyManager();
 		serverConfiguration = new ServerConfiguration();
 		shopMenu = new ShopMenu();
