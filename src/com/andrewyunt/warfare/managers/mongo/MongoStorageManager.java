@@ -267,7 +267,7 @@ public class MongoStorageManager extends StorageManager{
                 })
                 .collect(Collectors.toSet())
         );
-        arenaCollection.deleteMany(new Document("name", StaticConfiguration.SERVER_NAME));
+        arenaCollection.deleteMany(new Document("name", StaticConfiguration.MAP_NAME));
         arenaCollection.insertOne(document);
     }
 
