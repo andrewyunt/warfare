@@ -181,9 +181,9 @@ public class MongoStorageManager extends StorageManager{
         Party party = new Party(leaderUUID);
         if(document != null){
             party.setOpen(document.getBoolean("open"));
-            Set<UUID> members = document.get("members", Set.class); //TODO: Test??
+            List<UUID> members = document.get("members", List.class); //TODO: Test??
             party.getMembers().addAll(members);
-            Set<UUID> invites = document.get("invites", Set.class); //TODO: Test??
+            List<UUID> invites = document.get("invites", List.class); //TODO: Test??
             party.getInvites().addAll(invites);
         }
         return party;
@@ -281,13 +281,13 @@ public class MongoStorageManager extends StorageManager{
             if(mapLocation != null){
                 arena.setMapLocation(deserializeLocation(mapLocation));
             }
-            Set<Document> cages = document.get("cages", Set.class); //TODO: Test??
+            List<Document> cages = document.get("cages", List.class); //TODO: Test??
             cages.forEach(cage -> {
                 String name = cage.getString("name");
                 Document location = cage.get("location", Document.class);
                 arena.addCageLocation(name, deserializeLocation(location));
             });
-            Set<Document> chests = document.get("chests", Set.class); //TODO: Test??
+            List<Document> chests = document.get("chests", List.class); //TODO: Test??
             arena.setLootChests(chests.stream()
                     .map(chest -> {
                 int tier = chest.getInteger("tier");
