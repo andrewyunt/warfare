@@ -23,6 +23,7 @@ import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.listeners.fixes.*;
 import com.andrewyunt.warfare.managers.PartyManager;
+import com.andrewyunt.warfare.managers.mysql.MySQLStorageManager;
 import com.andrewyunt.warfare.menu.PlayMenu;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.google.common.io.ByteStreams;
@@ -35,7 +36,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
-import com.andrewyunt.warfare.managers.mysql.MySQLManager;
+import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.menu.ClassSelectorMenu;
@@ -91,7 +92,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
         return (economy != null);
     }
 	
-	private MySQLManager mysqlManager;
+	private StorageManager mysqlManager;
 	private PlayerManager playerManager;
 	private SignManager signManager;
 	private PartyManager partyManager;
@@ -115,7 +116,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		instance = this;
 
-		mysqlManager = new MySQLManager();
+		mysqlManager = new MySQLStorageManager();
 		playerManager = new PlayerManager();
 		signManager = new SignManager();
 		partyManager = new PartyManager();
@@ -228,7 +229,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		return instance;
 	}
 	
-	public MySQLManager getMySQLManager() {
+	public StorageManager getMySQLManager() {
 		
 		return mysqlManager;
 	}

@@ -1,19 +1,16 @@
-/*
- * Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reserved.
- *
- * NOTICE: All information contained herein is, and remains the property of Andrew Yunt. The intellectual and technical concepts contained
- * herein are proprietary to Andrew Yunt and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained
- * from Andrew Yunt. Access to the source code contained herein is hereby forbidden to anyone except current Andrew Yunt and those who have executed
- * Confidentiality and Non-disclosure agreements explicitly covering such access.
- *
- * The copyright notice above does not evidence any actual or intended publication or disclosure of this source code, which includes
- * information that is confidential and/or proprietary, and is a trade secret, of COMPANY. ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC PERFORMANCE,
- * OR PUBLIC DISPLAY OF OR THROUGH USE OF THIS SOURCE CODE WITHOUT THE EXPRESS WRITTEN CONSENT OF ANDREW YUNT IS STRICTLY PROHIBITED, AND IN VIOLATION OF
- * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
- * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
- */
 package com.andrewyunt.warfare.managers.mysql;
+
+import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.exception.SignException;
+import com.andrewyunt.warfare.managers.StorageManager;
+import com.andrewyunt.warfare.objects.*;
+import com.google.common.base.Joiner;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,19 +20,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.objects.*;
-import com.google.common.base.Joiner;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import com.andrewyunt.warfare.Warfare;
-
-public class MySQLManager {
+public class MySQLStorageManager extends StorageManager{
 
 	private ComboPooledDataSource cpds;
 
