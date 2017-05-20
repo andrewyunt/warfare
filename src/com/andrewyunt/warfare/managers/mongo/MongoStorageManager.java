@@ -244,7 +244,7 @@ public class MongoStorageManager extends StorageManager{
     public void saveArena() {
         Document document = new Document();
         Arena arena = warfare.getArena();
-        document.put("name", StaticConfiguration.SERVER_NAME);
+        document.put("name", StaticConfiguration.MAP_NAME);
         if(arena.getMapLocation() != null){
             document.put("mapLocation", serializeLocation(arena.getMapLocation()));
         }
@@ -274,7 +274,7 @@ public class MongoStorageManager extends StorageManager{
 
     @SuppressWarnings("unchecked")
     public Arena loadArena() {
-        Document document = arenaCollection.find(new Document("name", StaticConfiguration.SERVER_NAME)).first();
+        Document document = arenaCollection.find(new Document("name", StaticConfiguration.MAP_NAME)).first();
         Arena arena = new Arena();
         if(document != null){
             Document mapLocation = document.get("mapLocation", Document.class);

@@ -77,6 +77,7 @@ public class ServerConfiguration {
             }
 
             getConfig().set("server-name", "server name");
+            getConfig().set("map-name", "map name");
             saveConfig();
         }
     }
