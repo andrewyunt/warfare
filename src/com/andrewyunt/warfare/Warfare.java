@@ -41,6 +41,8 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -180,6 +182,12 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
+
+		for(World world: Bukkit.getWorlds()){
+			for(Creature creature: world.getEntitiesByClass(Creature.class)){
+				creature.remove();
+			}
+		}
 	}
 
 
