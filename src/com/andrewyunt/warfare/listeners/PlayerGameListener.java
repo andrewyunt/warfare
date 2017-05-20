@@ -118,7 +118,6 @@ public class PlayerGameListener extends PlayerListener {
     @Override
     protected boolean handleHotbarClick(Player player, String itemName) {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-
         if (gp.isCaged()) {
             if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE))) {
                 Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);

@@ -79,7 +79,7 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(new SidebarEntry(" "));
 
                 // Display server name
-                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Server: ", ChatColor.GRAY + StaticConfiguration.SERVER_NAME));
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Map: ", ChatColor.GRAY + StaticConfiguration.MAP_NAME));
             } else {
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));

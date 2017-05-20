@@ -32,12 +32,9 @@ public class PlayerLobbyListener extends PlayerListener {
         // Send welcome message
         player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
                 + "-----------------------------------------------------");
-        player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD
-                + ChatColor.BOLD.toString() + "Warfare");
-        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: "
-                + ChatColor.GRAY + "ts.faithfulmc.com");
-        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: "
-                + ChatColor.GRAY + "www.faithfulmc.com");
+        player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
+        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: " + ChatColor.GRAY + "ts.faithfulmc.com");
+        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: " + ChatColor.GRAY + "www.faithfulmc.com");
         player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
                 + "-----------------------------------------------------");
 
@@ -60,7 +57,6 @@ public class PlayerLobbyListener extends PlayerListener {
     }
 
     protected boolean handleHotbarClick(Player player, String itemName) {
-
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
         /*
@@ -86,7 +82,9 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerInteractHigh(PlayerInteractEvent event) {
-        event.setCancelled(true);
+        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler

@@ -98,6 +98,7 @@ public class PlayMenu implements Listener, InventoryHolder {
                     .lore(
                             "",
                             ChatColor.GOLD + "Players: " + ChatColor.GRAY + " " + server.getOnlinePlayers() + "/" + server.getMaxPlayers(),
+                            ChatColor.GOLD + "Map Name: " + ChatColor.GRAY + " " + server.getMapName(),
                             ChatColor.GOLD + "Stage: " + ChatColor.GRAY + server.getGameStage().getDisplay(),
                             ""
                     )
