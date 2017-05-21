@@ -22,11 +22,11 @@ import org.bukkit.potion.PotionEffectType;
 public class LootChest {
 	
 	private static final ItemStack bow = new ItemStack(Material.BOW, 1);
-	private static final ItemStack ironSword = new ItemStack(Material.IRON_SWORD, 1);
-	private static final ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static final ItemStack ironSword = new ItemStack(Material.STONE_SWORD, 1);
+	private static final ItemStack diamondSword = new ItemStack(Material.IRON_SWORD, 1);
 	private static final ItemStack diamondChestplate = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-	private static final ItemStack diamondBoots = new ItemStack(Material.DIAMOND_SWORD, 1);
-	private static final ItemStack diamondBootsFalling = new ItemStack(Material.DIAMOND_SWORD, 1);
+	private static final ItemStack diamondBoots = new ItemStack(Material.IRON_SWORD, 1);
+	private static final ItemStack diamondBootsFalling = new ItemStack(Material.IRON_SWORD, 1);
 	private static final ItemStack power3Bow = new ItemStack(Material.BOW, 1);
 	private static final ItemStack frPotion = new ItemStack(Material.POTION, 3);
 	private static final ItemStack speedPotion = new ItemStack(Material.POTION, 3);
@@ -76,8 +76,8 @@ public class LootChest {
 		XI(3, 1, new ItemStack(Material.COBBLESTONE, 16)),
 		XII(3, 1, new ItemStack(Material.COBBLESTONE, 32)),
 		XIII(3, 2, new ItemStack(Material.IRON_AXE, 1)),
-		XIV(3, 2, new ItemStack(Material.STONE_SWORD, 1)),
-		XV(3, 2, new ItemStack(Material.IRON_SWORD, 1)),
+		XIV(3, 2, new ItemStack(Material.WOOD_SWORD, 1)),
+		XV(3, 2, new ItemStack(Material.STONE_SWORD, 1)),
 		XVI(3, 3, new ItemStack(Material.COOKED_BEEF, 4)),
 		XVII(3, 3, new ItemStack(Material.COOKED_BEEF, 16)),
 		XVIII(3, 3, new ItemStack(Material.BREAD, 4)),
@@ -102,7 +102,7 @@ public class LootChest {
 		XXXVIII(2, 1, new ItemStack(Material.WOOD, 64)),
 		XXXIX(2, 1, new ItemStack(Material.COBBLESTONE, 64)),
 		XL(2, 2, ironSword),
-		XLI(2, 2, new ItemStack(Material.DIAMOND_SWORD, 1)),
+		XLI(2, 2, new ItemStack(Material.IRON_SWORD, 1)),
 		XLII(2, 3, new ItemStack(Material.DIAMOND_CHESTPLATE, 1)),
 		XLIII(2, 3, new ItemStack(Material.DIAMOND_BOOTS, 1)),
 		XLIV(2, 4, new ItemStack(Material.WATER_BUCKET, 1)),
