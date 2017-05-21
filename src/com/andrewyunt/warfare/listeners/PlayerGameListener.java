@@ -380,25 +380,19 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     private void onSoup(PlayerInteractEvent event) {
 
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack item = event.getItem();
 
-        ItemStack item = event.getItem();
+            if (item != null && item.getType() == Material.MUSHROOM_SOUP) {
+                Player player = event.getPlayer();
+                if (player.getHealth() + 6 > player.getMaxHealth()) {
+                    player.setHealth(player.getMaxHealth());
+                } else {
+                    event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
+                }
 
-        if (item == null) {
-            return;
-        }
-
-        if (item.getType() == Material.MUSHROOM_SOUP) {
-            Player player = event.getPlayer();
-            if (player.getHealth() + 6 > player.getMaxHealth()) {
-                player.setHealth(player.getMaxHealth());
-            } else {
-                event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
+                item.setType(Material.BOWL);
             }
-
-            item.setType(Material.BOWL);
         }
     }
 

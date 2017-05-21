@@ -8,6 +8,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.purchases.Perk;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
@@ -421,6 +422,14 @@ public class PlayerPerkListener implements Listener {
         }
 
         Location loc = entity.getLocation().clone();
+
+        loc.getWorld().playEffect(loc, Effect.EXPLOSION_HUGE, 4, 4);
+
+        for(Entity other: player.getNearbyEntities(4, 4, 4)){
+            if(other != player && other instanceof Damageable){
+                ((Damageable) other).damage(5, player);
+            }
+        }
 
         loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4, false, false);
 
