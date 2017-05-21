@@ -79,6 +79,7 @@ public class MongoStorageManager extends StorageManager{
         arenaCollection = mongoDatabase.getCollection("arenas");
     }
 
+    @SuppressWarnings("unchecked")
     public void savePlayer(GamePlayer player) {
         Document document = new Document();
         document.put("_id", player.getUUID());
@@ -90,16 +91,21 @@ public class MongoStorageManager extends StorageManager{
         if(player.getSelectedKit() != null){
             document.put("selectedKit", player.getSelectedKit().name());
         }
+        document.put("points", player.getPoints());
         document.put("coins", player.getCoins());
         document.put("earnedCoins", player.getEarnedCoins());
         document.put("kills", player.getKills());
         document.put("wins", player.getWins());
+        document.put("purchases", new Document((Map) player.getPurchases()));
+        document.put("selectedKit", player.getSelectedKit().toString());
+        document.put("selectedPowerup", player.getSelectedPowerup().toString());
         //TODO: Better saving method?
         playerCollection.deleteMany(new Document("_id", player.getUUID()));
         playerCollection.insertOne(document);
     }
 
-    
+
+    @SuppressWarnings("unchecked")
     public void loadPlayer(GamePlayer player) {
         Document document = playerCollection.find(new Document("_id", player.getUUID())).first();
         if(document != null){
@@ -111,10 +117,14 @@ public class MongoStorageManager extends StorageManager{
             if(selectedKit != null){
                 player.setSelectedKit(Kit.valueOf(selectedKit));
             }
+            player.setPoints(document.getInteger("points"));
             player.setCoins(document.getInteger("coins"));
             player.setEarnedCoins(document.getInteger("earnedCoins"));
             player.setKills(document.getInteger("kills"));
             player.setWins(document.getInteger("wins"));
+            player.setPurchases((Map) document.get("purchases"));
+            player.setSelectedKit(Kit.valueOf(document.getString("selectedKit")));
+            player.setSelectedPowerup(Powerup.valueOf(document.getString("selectedPowerup")));
         }
         player.setLoaded(true);
     }
