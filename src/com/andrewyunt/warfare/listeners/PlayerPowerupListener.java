@@ -5,12 +5,7 @@ import com.andrewyunt.warfare.purchases.Powerup;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -80,119 +75,27 @@ public class PlayerPowerupListener implements Listener {
 
     @EventHandler (priority = EventPriority.NORMAL)
     public void EPC(EntityDamageByEntityEvent event) {
+        if (event.getCause() != DamageCause.FALL && event.getEntity() instanceof Player) {
+            // Give energy
+            Player damager = null;
+            Player damaged = (Player) event.getEntity();
 
-        if (event.getCause() == DamageCause.FALL) {
-            return;
-        }
-
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-
-        Player damaged = (Player) event.getEntity();
-        GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
-
-        final GamePlayer finalDamagedGP = damagedGP;
-
-        if (damagedGP.isEPCCooldown()) {
-            event.setCancelled(true);
-        } else {
-            damagedGP.setEPCCooldown(true);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-
-                    finalDamagedGP.setEPCCooldown(false);
+            if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+                damager = (Player) event.getDamager();
+            } else if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player) {
+                LivingEntity shooter = ((Arrow) event.getDamager()).getShooter();
+                if (shooter instanceof Player) {
+                    damager = (Player) shooter;
                 }
-            }.runTaskLater(Warfare.getInstance(), 10L);
-        }
-
-        // Give energy
-        if (event.getDamager() instanceof Player) {
-            Player damager = (Player) event.getDamager();
-            GamePlayer gpDamager = Warfare.getInstance().getPlayerManager().getPlayer(damager.getName());
-            GamePlayer gpDamaged = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
-
-            if (!(gpDamaged.isInGame() && gpDamager.isInGame())) {
-                return;
-            }
-
-            if (gpDamager.getSelectedPowerup() != Powerup.MARKSMAN) {
-                gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
             } else {
-                gpDamager.addEnergy(3); // Since SKELETON enum only contains the player's bow hit energy.
-            }
-
-            Utils.playBloodEffect(damaged, 10);
-
-            return;
-        }
-
-        if (event.getDamager() instanceof Arrow) {
-            Arrow arrow = (Arrow) event.getDamager();
-
-            if (!(arrow.getShooter() instanceof Player)) {
                 return;
             }
-
-            Player damager = (Player) arrow.getShooter();
-            GamePlayer gpDamager = Warfare.getInstance().getPlayerManager().getPlayer(damager.getName());
-            GamePlayer gpDamaged = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
-
-            // Don't give energy if the shot person is red
-            if (event.isCancelled()) {
-                return;
-            }
-
-            if (gpDamaged == gpDamager) {
-                return;
-            }
-
-            if (gpDamager.getSelectedPowerup() != Powerup.MARKSMAN) {
-                return;
-            }
-
-            gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
-
-            Utils.playBloodEffect(damaged, 10);
-
-            return;
-        }
-    }
-
-    @EventHandler (priority = EventPriority.NORMAL)
-    public void EPC(EntityDamageEvent event) {
-
-        if (event.getCause() == DamageCause.FALL) {
-            return;
-        }
-
-        if (event instanceof EntityDamageByEntityEvent) {
-            return;
-        }
-
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-
-        Player damaged = (Player) event.getEntity();
-        GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
-
-        final GamePlayer finalDamagedGP = damagedGP;
-
-        if (damagedGP.isEPCCooldown()) {
-            event.setCancelled(true);
-        } else {
-            damagedGP.setEPCCooldown(true);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-
-                    finalDamagedGP.setEPCCooldown(false);
+            if (damager != null && damaged != null) {
+                GamePlayer damagerPlayer = Warfare.getInstance().getPlayerManager().getPlayer(damager);
+                if (damagerPlayer.getSelectedPowerup() == Powerup.MARKSMAN) {
+                    Utils.playBloodEffect(damaged, 5);
                 }
-            }.runTaskLater(Warfare.getInstance(), 10L);
+            }
         }
     }
 

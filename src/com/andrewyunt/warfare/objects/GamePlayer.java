@@ -141,8 +141,7 @@ public class GamePlayer {
 	}
 
 	public void setEnergy(int energy) {
-
-		this.energy = Math.max(energy, 100);
+	    this.energy = energy;
 
 		if (this.energy > 100) {
 			this.energy = 100;
@@ -150,15 +149,13 @@ public class GamePlayer {
 			sentActivate = false;
 		}
 
-		if (this.energy == 100) {
-			if (!sentActivate) {
-				sentActivate = true;
-				if (selectedPowerup == Powerup.MARKSMAN) {
-					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " using your bow to activate your ability!");
-				} else {
-					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " using your sword to activate your ability!");
-				}
-			}
+		if (!sentActivate && this.energy == 100) {
+            sentActivate = true;
+            if (selectedPowerup == Powerup.MARKSMAN) {
+                getBukkitPlayer().sendMessage(ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " using your bow to activate your ability!");
+            } else {
+                getBukkitPlayer().sendMessage(ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " using your sword to activate your ability!");
+            }
 		}
 
 		getBukkitPlayer().setLevel(this.energy);
