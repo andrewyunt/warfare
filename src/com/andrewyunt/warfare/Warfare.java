@@ -144,8 +144,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		pm.registerEvents(kitSelectorMenu, this);
 		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
-
-        pm.registerEvents(new MobFixer(this), this);
+		
         pm.registerEvents(new PotFixListener(this), this);
         pm.registerEvents(new ColonCommandFix(this), this);
         pm.registerEvents(new WeatherFixListener(), this);
