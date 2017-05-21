@@ -1,4 +1,4 @@
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.purchases;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +42,11 @@ public enum Perk implements Purchasable {
     public int getPrice(int level) {
 
         return 0;
+    }
+
+
+    public PurchaseType getType() {
+        return PurchaseType.PERK;
     }
 
     @Override

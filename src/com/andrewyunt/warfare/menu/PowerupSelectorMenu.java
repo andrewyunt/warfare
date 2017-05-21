@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.menu;
 
 import java.util.ArrayList;
-import com.andrewyunt.warfare.objects.Powerup;
+import com.andrewyunt.warfare.purchases.Powerup;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

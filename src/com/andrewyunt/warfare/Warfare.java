@@ -29,13 +29,15 @@ import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.managers.mongo.MongoStorageManager;
 import com.andrewyunt.warfare.menu.*;
-import com.andrewyunt.warfare.objects.Arena;
-import com.andrewyunt.warfare.objects.Game;
+import com.andrewyunt.warfare.objects.*;
+import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.google.common.io.ByteStreams;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.commons.lang.enums.Enum;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;
@@ -115,6 +117,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
         });
 
 		instance = this;
+
+		ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter(this));
 
 		storageManager = new MongoStorageManager(this);
 		playerManager = new PlayerManager();
@@ -201,6 +205,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		}
 
 		storageManager.disconnect();
+
+		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 	}
 
 	@Override

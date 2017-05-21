@@ -5,7 +5,9 @@ import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.objects.*;
-import com.google.common.collect.Maps;
+import com.andrewyunt.warfare.purchases.Powerup;
+import com.andrewyunt.warfare.purchases.Purchasable;
+import com.andrewyunt.warfare.purchases.PurchaseType;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -100,7 +102,13 @@ public class MongoStorageManager extends StorageManager{
         document.put("earnedCoins", player.getEarnedCoins());
         document.put("kills", player.getKills());
         document.put("wins", player.getWins());
-        document.put("purchases", new Document((Map) player.getPurchases()));
+        document.put("purchases", player.getPurchases().entrySet().stream().map(entry -> {
+            Document purchase = new Document();
+            purchase.put("type", entry.getKey().getType().name());
+            purchase.put("name", entry.getKey().getName());
+            purchase.put("level", entry.getValue());
+            return purchase;
+        }).collect(Collectors.toList()));
         //TODO: Better saving method?
         playerCollection.deleteMany(new Document("_id", player.getUUID()));
         playerCollection.insertOne(document);
@@ -128,8 +136,15 @@ public class MongoStorageManager extends StorageManager{
             player.setEarnedCoins(document.getInteger("earnedCoins", 0));
             player.setKills(document.getInteger("kills", 0));
             player.setWins(document.getInteger("wins", 0));
-            Map purchases = document.get("purchases", Map.class);
-            player.setPurchases(purchases == null ? Maps.newHashMap() : purchases);
+            ((List<Document>) document.get("purchases", List.class)).forEach(purchase -> {
+                String type = purchase.getString("type");
+                String name = purchase.getString("name");
+                int level = purchase.getInteger("level");
+
+                PurchaseType purchaseType = PurchaseType.valueOf(type);
+                Purchasable purchasable = purchaseType.getPurchase(name);
+                player.getPurchases().put(purchasable, level);
+            });
         }
         player.setLoaded(true);
     }

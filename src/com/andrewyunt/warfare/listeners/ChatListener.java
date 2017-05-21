@@ -1,6 +1,7 @@
 package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.objects.GamePlayer;
 import com.faithfulmc.framework.BasePlugin;
 import com.faithfulmc.framework.user.BaseUser;
 import com.google.common.collect.HashMultimap;
@@ -13,10 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
@@ -88,7 +86,18 @@ public class ChatListener implements Listener {
                 block = true;
             }
         }
-        String msg = prefix + message;
+        GamePlayer gamePlayer = plugin.getPlayerManager().getPlayer(player);
+        String msg = gamePlayer.isSpectating() ? ChatColor.GRAY + "[Spectator Chat] " : "" + prefix + message;
+        if(gamePlayer.isSpectating()){
+            Iterator<Player> iterator = e.getRecipients().iterator();
+            while (iterator.hasNext()){
+                Player recipient = iterator.next();
+                GamePlayer otherPlayer = plugin.getPlayerManager().getPlayer(recipient);
+                if(!otherPlayer.isSpectating()){
+                    iterator.remove();
+                }
+            }
+        }
         player.sendMessage(msg);
         if(block){
             msg = msg.replace(ChatColor.GOLD + "»", ChatColor.RED + "»");

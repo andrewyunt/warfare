@@ -3,6 +3,8 @@ package com.andrewyunt.warfare.objects;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.purchases.Powerup;
+import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -10,7 +12,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
@@ -141,7 +142,7 @@ public class GamePlayer {
 
 	public void setEnergy(int energy) {
 
-		this.energy = energy;
+		this.energy = Math.max(energy, 100);
 
 		if (this.energy > 100) {
 			this.energy = 100;
@@ -262,26 +263,31 @@ public class GamePlayer {
 
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		this.spectating = spectating;
-		
+		if(respawn){
+		    getBukkitPlayer().spigot().respawn();
+        }
 		if (spectating) {
-			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-                Player player = getBukkitPlayer();
+            Player player = getBukkitPlayer();
+            player.setGameMode(GameMode.CREATIVE);
+            player.setFireTicks(0);
 
-                player.setAllowFlight(true);
-                player.setFireTicks(0);
-
-                for (GamePlayer toShow : Warfare.getInstance().getGame().getSpectators()) {
-                    player.showPlayer(toShow.getBukkitPlayer());
+            for(Player other: Bukkit.getOnlinePlayers()){
+                if(other != player){
+                    GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(other);
+                    if(gamePlayer.isSpectating()){
+                        other.showPlayer(player);
+                        player.showPlayer(other);
+                    }
+                    else{
+                        other.hidePlayer(player);
+                        player.showPlayer(other);
+                    }
                 }
+            }
+            player.spigot().setCollidesWithEntities(false);
+            player.spigot().setViewDistance(4);
 
-                for (GamePlayer toHide : Warfare.getInstance().getGame().getPlayers()) {
-                    toHide.getBukkitPlayer().hidePlayer(player);
-                }
-
-                updateHotbar();
-                player.spigot().setCollidesWithEntities(false);
-            }, 5L);
+            updateHotbar();
 
 			
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
@@ -344,7 +350,6 @@ public class GamePlayer {
 	}
 
 	public void updateHotbar() {
-
 		PlayerInventory inv = getBukkitPlayer().getInventory();
 		inv.clear();
 
@@ -367,20 +372,17 @@ public class GamePlayer {
 			classSelector.setItemMeta(classSelectorMeta);
 			inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
 		} else if (spectating) {
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-				ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
-				ItemMeta teleporterMeta = teleporter.getItemMeta();
-				teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
-				teleporter.setItemMeta(teleporterMeta);
-				inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
+            ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+            ItemMeta teleporterMeta = teleporter.getItemMeta();
+            teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
+            teleporter.setItemMeta(teleporterMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
 
-				ItemStack bed = new ItemStack(Material.BED, 1);
-				ItemMeta bedMeta = bed.getItemMeta();
-				bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
-				bed.setItemMeta(bedMeta);
-				inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-			}, 5);
+            ItemStack bed = new ItemStack(Material.BED, 1);
+            ItemMeta bedMeta = bed.getItemMeta();
+            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
+            bed.setItemMeta(bedMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
 		} else {
 			ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
 			ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
@@ -400,7 +402,6 @@ public class GamePlayer {
 			bed.setItemMeta(bedMeta);
 			inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
 		}
-
 		getBukkitPlayer().updateInventory();
 	}
 

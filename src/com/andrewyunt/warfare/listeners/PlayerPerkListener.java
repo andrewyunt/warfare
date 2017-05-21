@@ -6,8 +6,7 @@ import java.util.UUID;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Perk;
-import com.andrewyunt.warfare.utilities.Utils;
+import com.andrewyunt.warfare.purchases.Perk;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

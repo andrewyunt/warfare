@@ -1,5 +1,5 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.purchases;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -35,5 +35,10 @@ public enum HealthBoost implements Purchasable {
 	public ItemStack getDisplayItem() {
 		
 		return new ItemStack(Material.GOLDEN_APPLE);
+	}
+
+
+	public PurchaseType getType() {
+		return PurchaseType.HEALTH_BOOST;
 	}
 }

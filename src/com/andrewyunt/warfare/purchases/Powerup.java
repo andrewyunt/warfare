@@ -1,10 +1,11 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.purchases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.utilities.Utils;
 import net.minecraft.server.v1_7_R4.PacketPlayOutWorldParticles;
 import org.bukkit.*;
@@ -28,7 +29,6 @@ import org.bukkit.util.Vector;
  * @author Andrew Yunt
  */
 public enum Powerup implements Purchasable {
-
     MEDIC("Medic", 4),
     MARKSMAN("Marksman", 20),
     WIZARD("Wizard", 10),
@@ -107,6 +107,10 @@ public enum Powerup implements Purchasable {
         }
 
         return null;
+    }
+
+    public PurchaseType getType() {
+        return PurchaseType.POWERUP;
     }
 
     public int getEnergyPerClick() {
@@ -379,4 +383,6 @@ public enum Powerup implements Purchasable {
 
         player.setEnergy(0);
     }
+
+
 }

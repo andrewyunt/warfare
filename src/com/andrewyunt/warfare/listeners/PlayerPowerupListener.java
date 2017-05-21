@@ -1,7 +1,7 @@
 
 package com.andrewyunt.warfare.listeners;
 
-import com.andrewyunt.warfare.objects.Powerup;
+import com.andrewyunt.warfare.purchases.Powerup;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;

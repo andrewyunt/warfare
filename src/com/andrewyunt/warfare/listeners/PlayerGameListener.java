@@ -37,6 +37,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collections;
@@ -223,24 +224,19 @@ public class PlayerGameListener extends PlayerListener {
         if (lastDamagerBP.hasPermission("warfare.coins.double")) {
             killCoins = 40;
         }
-
         if (lastDamagerBP.hasPermission("warfare.coins.triple")) {
             killCoins = 60;
         }
 
         lastDamager.setCoins(lastDamager.getCoins() + killCoins);
         lastDamager.setPoints(lastDamager.getPoints() + 5);
+        lastDamagerBP.sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
 
-        lastDamagerBP.sendMessage(ChatColor.GOLD + String.format("You killed %s and received %s coins.",
-                playerGP.getBukkitPlayer().getDisplayName(), String.valueOf(killCoins)));
-
-        // Remove the respawn button
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            player.setCanPickupItems(false);
-            PacketPlayInClientCommand packet = new PacketPlayInClientCommand(EnumClientCommand.PERFORM_RESPAWN);
-            ((CraftPlayer) player).getHandle().playerConnection.a(packet);
-        }, 1);
+        Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
+            if(player.isOnline()){
+                playerGP.setSpectating(true, true);
+            }
+        });
     }
 
     @EventHandler
@@ -293,19 +289,8 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-        event.setRespawnLocation(gp.setSpectating(true, true));
-        event.getPlayer().setCanPickupItems(true);
+        event.setRespawnLocation(gp.setSpectating(true, false));
     }
-
-    /*
-    @EventHandler
-    private void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
-
-        for (HumanEntity he : event.getViewers()) {
-            ((Player) he).setLevel(100);
-        }
-    }
-    */
 
     @EventHandler
     private void onEnchantItem(EnchantItemEvent event) {
@@ -327,12 +312,10 @@ public class PlayerGameListener extends PlayerListener {
             enchants.put(Enchantment.ARROW_DAMAGE, 1);
         }
 
-        //event.setExpLevelCost(0);
     }
 
     @EventHandler
     private void onFoodLevelChange(FoodLevelChangeEvent event) {
-
         GamePlayer player = Warfare.getInstance().getPlayerManager().getPlayer(event.getEntity().getName());
 
         Game.Stage stage = Warfare.getInstance().getGame().getStage();

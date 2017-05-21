@@ -3,6 +3,8 @@ package com.andrewyunt.warfare.objects;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.purchases.HealthBoost;
+import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;

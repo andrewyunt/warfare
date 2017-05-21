@@ -1,5 +1,5 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.purchases;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -27,4 +27,6 @@ public interface Purchasable {
 	 * @return The display item of the Purchasable.
 	 */
 	ItemStack getDisplayItem();
+
+	PurchaseType getType();
 }

@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.andrewyunt.warfare.objects.*;
+import com.andrewyunt.warfare.purchases.HealthBoost;
+import com.andrewyunt.warfare.purchases.Perk;
+import com.andrewyunt.warfare.purchases.Powerup;
+import com.andrewyunt.warfare.purchases.Purchasable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -163,7 +167,7 @@ public class ShopMenu implements Listener {
 				inv.setItem(row * 9 + 2, is);
 
 				for (int level = 0; level < 4; level++) {
-					is = player.getPurchases().get(powerup) >= level ?
+					is = player.getPurchases().getOrDefault(powerup, -1) >= level ?
 							new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5) :
 							player.getLevel() >= powerup.getPlayerLvlNeeded(level) ?
 							new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1) :
@@ -179,7 +183,7 @@ public class ShopMenu implements Listener {
 						lore.add(ChatColor.RED + ChatColor.BOLD.toString() + "MUST BE LVL "
 								+ powerup.getPlayerLvlNeeded(level) + " TO PURCHASE");
 					}
-					lore.add(player.getPurchases().get(powerup) >= level ? ChatColor.GREEN + "Purchased" :
+					lore.add(player.getPurchases().getOrDefault(powerup, -1) >= level ? ChatColor.GREEN + "Purchased" :
 							ChatColor.RED + "Price: $" + numberFormat.format(powerup.getPrice(level)));
 					im.setLore(lore);
 					is.setItemMeta(im);
@@ -277,6 +281,7 @@ public class ShopMenu implements Listener {
 			
 			gp.setCoins(gp.getCoins() - purchasable.getPrice(level));
 			gp.getPurchases().put(purchasable, level);
+			gp.update();
 			
 			player.sendMessage(ChatColor.GOLD + String.format("You purchased %s for %s coins.",
 					name, purchasable.getPrice(level)));
