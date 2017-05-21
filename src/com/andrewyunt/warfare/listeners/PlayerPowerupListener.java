@@ -213,7 +213,7 @@ public class PlayerPowerupListener implements Listener {
             return;
         }
 
-        if (entity.hasMetadata("MegaArena")) {
+        if (entity.hasMetadata("Warfare")) {
             event.setCancelled(true);
         }
     }
@@ -223,7 +223,7 @@ public class PlayerPowerupListener implements Listener {
 
         Entity entity = event.getEntity();
 
-        if (!entity.hasMetadata("MegaArena")) {
+        if (!entity.hasMetadata("Warfare")) {
             return;
         }
 
