@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimerSidebarProvider implements SidebarProvider {
-
     protected static final String STRAIGHT_LINE = BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 13);
 
     private static String handleBardFormat(long millis, boolean trailingZero, boolean showMillis) {
@@ -42,6 +41,9 @@ public class TimerSidebarProvider implements SidebarProvider {
 
         if (StaticConfiguration.LOBBY) {
             lines.add(new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Statistics" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));
+
+            // Display player's level
+            lines.add(new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + "Level: ", ChatColor.GRAY + String.valueOf(gp.getLevel())));
 
             // Display player's wins
             lines.add(new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Total Wins: ", ChatColor.GRAY + String.valueOf(gp.getWins())));
