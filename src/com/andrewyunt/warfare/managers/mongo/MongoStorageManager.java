@@ -91,7 +91,7 @@ public class MongoStorageManager extends StorageManager{
         if(player.getSelectedKit() != null){
             document.put("selectedKit", player.getSelectedKit().name());
         }
-        if(player.getSelectedKit() != null){
+        if(player.getSelectedPowerup() != null){
             document.put("selectedPowerup", player.getSelectedPowerup().name());
         }
         document.put("points", player.getPoints());
