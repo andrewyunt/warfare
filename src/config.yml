@@ -17,69 +17,165 @@ hotbar-items:
   lobby-items:
     shop:
       slot: 3
-      title: "&a&lPerk Shop"
+      title: "&a&lPerk Shop &7(Right Click)"
     kit-selector:
       slot: 7
-      title: "&b&lSelect Kit"
+      title: "&b&lSelect Kit &7(Right Click)"
     play:
       slot: 5
-      title: "&6&lJoin Game"
+      title: "&6&lJoin Game &7(Right Click)"
   spectator-items:
     teleporter:
       slot: 1
-      title: "&a&lTeleporter"
+      title: "&a&lTeleporter &7(Right Click)"
     return-to-lobby:
       slot: 9
-      title: "&c&lReturn to Lobby"
+      title: "&c&lReturn to Lobby &7(Right Click)"
   cage-items:
     kit-selector:
       slot: 1
-      title: "&b&lSelect Kit"
+      title: "&b&lSelect Kit &7(Right Click)"
     powerup-selector:
       slot: 2
-      title: "&b&lSelect Powerup"
+      title: "&b&lSelect Powerup &7(Right Click)"
     return-to-lobby:
       slot: 9
-      title: "&c&lReturn to Lobby"
+      title: "&c&lReturn to Lobby &7(Right Click)"
 
-# Ultimate Descriptions
-description-HEAL:
-  - "Heal yourself 3 \u2764"
-description-WRATH:
-  - "Strike nearby enemies with lightning for 2.5 \u2764"
-description-HELLS_SPAWNING:
-  - "Spawn a Ghast to assist you in battle"
-description-LEAP:
-  - "Leap forward & upward"
-description-SONIC:
-  - "Gain Speed 3 for 5 seconds"
-description-WITHERING:
-  - "Shoot a wither skull"
-description-FLAMING_FEET:
-  - "For 5 seconds, you will gain Speed II and"
-  - "the blocks below you will be put on fire!"
-
-# Skill Descriptions
-description-RESISTANCE:
-  - "20% chance to gain Resistance I for 1 second upon being hit"
-description-JUGGERNAUT:
-  - "Killing an enemy increases your max health by 1 \u2764"
-description-CONSUMPTION:
-  - "Killing an enemy gives you Regeneration II for 4 seconds"
-description-HEAD_START:
-  - "Get 10 seconds of Speed II when the game begins"
-description-GUARD:
-  - "Get Resistance II while in a chest"
-description-FLAME:
-  - "10% chance for your arrows to be set on fire"
-
-# Health Boost Descriptions
-description-HEALTH_BOOST_I:
-  - "Gives you an extra heart when you spawn."
-description-HEALTH_BOOST_II:
-  - "Gives you an extra two hearts when you spawn."
-description-HEALTH_BOOST_III:
-  - "Gives you an extra three hearts when you spawn."
+descriptions:
+  MEDIC:
+    0:
+    - "Heal yourself and nearby"
+    - "team mates by 2.0 hearts"
+    1:
+    - "Heal yourself and nearby"
+    - "team mates by 2.5 hearts"
+    2:
+    - "Heal yourself and nearby"
+    - "team mates by 3.0 hearts"
+    3:
+    - "Heal yourself and nearby"
+    - "team mates by 3.5 hearts"
+  MARKSMAN:
+    0:
+    - "Fire an explosive arrow that deals 2.0 damage"
+    - "to nearby enemies with 100% armor penetration"
+    1:
+    - "Fire an explosive arrow that deals 2.5 damage"
+    - "to nearby enemies with 100% armor penetration"
+    2:
+    - "Fire an explosive arrow that deals 3.0 damage"
+    - "to nearby enemies with 100% armor penetration"
+    3:
+    - "Fire an explosive arrow that deals 3.5 damage"
+    - "to nearby enemies with 100% armor penetration"
+  WIZARD:
+    0:
+    - "Strike nearby enemies with lightning that"
+    - "does 1.0 damage with 100% armor penetration"
+    1:
+    - "Strike nearby enemies with lightning that"
+    - "does 1.5 damage with 100% armor penetration"
+    2:
+    - "Strike nearby enemies with lightning that"
+    - "does 2.0 damage with 100% armor penetration"
+    3:
+    - "Strike nearby enemies with lightning that"
+    - "does 2.5 damage with 100% armor penetration"
+  BOMBER:
+    0:
+    - "Detonate an explosion that deals 3.0 damage to nearby"
+    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    1:
+    - "Detonate an explosion that deals 3.5 damage to nearby"
+    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    2:
+    - "Detonate an explosion that deals 4.0 damage to nearby"
+    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    3:
+    - "Detonate an explosion that deals 4.5 damage to nearby"
+    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+  SPECTRE:
+    0:
+    - "Summon a tornado for 2.0 seconds, dealing 2.0"
+    - "damage with 100% armor penetration every second"
+    1:
+    - "Summon a tornado for 2.5 seconds, dealing 2.0"
+    - "damage with 100% armor penetration every second"
+    2:
+    - "Summon a tornado for 3.0 seconds, dealing 2.0"
+    - "damage with 100% armor penetration every second"
+    3:
+    - "Summon a tornado for 3.5 seconds, dealing 2.0"
+    - "damage with 100% armor penetration every second"
+  NINJA:
+    0:
+    - "Fire three wither heads which explode on impact,"
+    - "dealing 2.0 damage per head with 100% armor penetration"
+    1:
+    - "Fire three wither heads which explode on impact,"
+    - "dealing 2.5 damage per head with 100% armor penetration"
+    2:
+    - "Fire three wither heads which explode on impact,"
+    - "dealing 3.0 damage per head with 100% armor penetration"
+    3:
+    - "Fire three wither heads which explode on impact,"
+    - "dealing 3.5 damage per head with 100% armor penetration"
+  RESIST:
+    0:
+    - "Getting hit has a 11% chance to"
+    - "receive Resistance I for 1 seconds"
+  SWIFTNESS:
+    0:
+    - "Getting hit by an arrow has a 10%"
+    - "chance to give you Speed II for 3 seconds"
+  BOOMERANG:
+    0:
+    - "20% chance to retrieve arrow on arrow hit"
+  WEAKENING_ARROW:
+    0:
+    - "Upon arrow hit, inflict Weakness II and gain"
+    - "Regeneration I for 2.0 second"
+  RECHARGE:
+    0:
+    - "Killing an enemy gives you Regeneration I and"
+    - "Resistance I for 2.0 seconds"
+  FLURRY:
+    0:
+    - "10% chance to gain Speed I"
+    - "for 2 seconds upon hitting an enemy"
+  EXPLOSIVE_WEAKNESS:
+    0:
+    - "Detonate an explosion when you reach 3.5 hearts and"
+    - "gain Speed II for 3 seconds. 30 second cooldown!"
+  SUPPORT:
+    0:
+    - "6% chance to summon a Primed TNT which explodes"
+    - "after 3 seconds upon getting hit by an enemy, does"
+    - "not deal damage to you or your team mates"
+  WEAKENING_SWING:
+    0:
+    - "Upon hitting an enemy player, 15% chance"
+    - "to inflict Weakness I for 2.0 seconds"
+  SWIFT_BACKUP:
+    0:
+    - "Upon getting hit, 10% chance to spawn a wolf that"
+    - "protects you for 4.0 seconds. Wolf has permanent Speed II"
+  SOUL_SUCKER:
+    0:
+    - "Attacking an enemy has a 12% chance to gain 1.0 health"
+  UNDEAD:
+    0:
+    - "7% chance to gain 1.0 health upon being hit"
+  HEALTH_BOOST_I:
+    0:
+    - "Gives you an extra heart when you spawn."
+  HEALTH_BOOST_II:
+    0:
+    - "Gives you an extra two hearts when you spawn."
+  HEALTH_BOOST_III:
+    0:
+    - "Gives you an extra three hearts when you spawn."
 
 death-messages:
   void:
