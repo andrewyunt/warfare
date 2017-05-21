@@ -5,6 +5,7 @@ import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.SignException;
 import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.objects.*;
+import com.google.common.collect.Maps;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -127,7 +128,8 @@ public class MongoStorageManager extends StorageManager{
             player.setEarnedCoins(document.getInteger("earnedCoins", 0));
             player.setKills(document.getInteger("kills", 0));
             player.setWins(document.getInteger("wins", 0));
-            player.setPurchases(document.get("purchases", Map.class));
+            Map purchases = document.get("purchases", Map.class);
+            player.setPurchases(purchases == null ? Maps.newHashMap() : purchases);
         }
         player.setLoaded(true);
     }
