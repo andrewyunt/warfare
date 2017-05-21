@@ -32,16 +32,19 @@ public class StaticConfiguration {
 
     // hotbar items
     public static String SPECTATOR_TELEPORTER_TITLE = config.getString("hotbar-items.spectator-items.teleporter.title");
-    public static String NO_PERMS_CLASS_SLOT = config.getString("no-perms-class-slot");
     public static int SPECTATOR_TELEPORTER_SLOT = config.getInt("hotbar-items.spectator-items.teleporter.slot");
     public static String SPECTATOR_RETURN_TO_LOBBY_TITLE = config.getString("hotbar-items.spectator-items.return-to-lobby.title");
     public static int SPECTATOR_RETURN_TO_LOBBY_SLOT = config.getInt("hotbar-items.spectator-items.return-to-lobby.slot");
-    public static String CAGE_CLASS_SELECTOR_TITLE = config.getString("hotbar-items.cage-items.class-selector.title");
-    public static int CAGE_CLASS_SELECTOR_SLOT = config.getInt("hotbar-items.cage-items.class-selector.slot");
+    public static String CAGE_KIT_SELECTOR_TITLE = config.getString("hotbar-items.cage-items.kit-selector.title");
+    public static int CAGE_KIT_SELECTOR_SLOT = config.getInt("hotbar-items.cage-items.kit-selector.slot");
+    public static String CAGE_POWERUP_SELECTOR_TITLE = config.getString("hotbar-items.cage-items.powerup-selector.title");
+    public static int CAGE_POWERUP_SELECTOR_SLOT = config.getInt("hotbar-items.cage-items.powerup-selector.slot");
+    public static String CAGE_RETURN_TO_LOBBY_TITLE = config.getString("hotbar-items.cage-items.return-to-lobby.title");
+    public static int CAGE_RETURN_TO_LOBBY_SLOT = config.getInt("hotbar-items.cage-items.return-to-lobby.slot");
     public static String LOBBY_SHOP_TITLE = config.getString("hotbar-items.lobby-items.shop.title");
     public static int LOBBY_SHOP_SLOT = config.getInt("hotbar-items.lobby-items.shop.slot");
-    public static String LOBBY_CLASS_SELECTOR_TITLE = config.getString("hotbar-items.lobby-items.class-selector.title");
-    public static int LOBBY_CLASS_SELECTOR_SLOT = config.getInt("hotbar-items.lobby-items.class-selector.slot");
+    public static String LOBBY_KIT_SELECTOR_TITLE = config.getString("hotbar-items.lobby-items.kit-selector.title");
+    public static int LOBBY_KIT_SELECTOR_SLOT = config.getInt("hotbar-items.lobby-items.kit-selector.slot");
     public static String LOBBY_PLAY_TITLE = config.getString("hotbar-items.lobby-items.play.title");
     public static int LOBBY_PLAY_SLOT = config.getInt("hotbar-items.lobby-items.play.slot");
 

@@ -28,11 +28,7 @@ import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.managers.mongo.MongoStorageManager;
-import com.andrewyunt.warfare.managers.mysql.MySQLStorageManager;
-import com.andrewyunt.warfare.menu.ClassSelectorMenu;
-import com.andrewyunt.warfare.menu.PlayMenu;
-import com.andrewyunt.warfare.menu.ShopMenu;
-import com.andrewyunt.warfare.menu.TeleporterMenu;
+import com.andrewyunt.warfare.menu.*;
 import com.andrewyunt.warfare.objects.Arena;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
@@ -102,7 +98,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	private ServerConfiguration serverConfiguration;
 	private ShopMenu shopMenu;
 	private PlayMenu playMenu;
-	private ClassSelectorMenu classSelectorMenu;
+	private KitSelectorMenu kitSelectorMenu;
+	private PowerupSelectorMenu powerupSelectorMenu;
 	private TeleporterMenu teleporterMenu;
 	private ScoreboardHandler scoreboardHandler;
 	private Arena arena;
@@ -119,14 +116,15 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 		instance = this;
 
-		storageManager = getConfig().getBoolean("mongo.enabled", false) ? new MongoStorageManager(this) : new MySQLStorageManager();
+		storageManager = new MongoStorageManager(this);
 		playerManager = new PlayerManager();
 		signManager = new SignManager(this);
 		partyManager = new PartyManager();
 		serverConfiguration = new ServerConfiguration();
 		shopMenu = new ShopMenu();
 		playMenu = new PlayMenu();
-		classSelectorMenu = new ClassSelectorMenu();
+		kitSelectorMenu = new KitSelectorMenu();
+		powerupSelectorMenu = new PowerupSelectorMenu();
 		teleporterMenu = new TeleporterMenu();
 		scoreboardHandler = new ScoreboardHandler();
 
@@ -143,7 +141,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		
 		storageManager.updateDB();
 		
-		pm.registerEvents(classSelectorMenu, this);
+		pm.registerEvents(kitSelectorMenu, this);
+		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
 
         pm.registerEvents(new MobFixer(this), this);
@@ -288,9 +287,14 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		return playMenu;
 	}
 	
-	public ClassSelectorMenu getClassSelectorMenu() {
+	public KitSelectorMenu getKitSelectorMenu() {
 		
-		return classSelectorMenu;
+		return kitSelectorMenu;
+	}
+
+	public PowerupSelectorMenu getPowerupSelectorMenu() {
+
+		return powerupSelectorMenu;
 	}
 	
 	public TeleporterMenu getTeleporterMenu() {

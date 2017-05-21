@@ -54,7 +54,7 @@ public class PlayerPowerupListener implements Listener {
                 return;
             }
 
-            if (gp.getSelectedPowerup() == Powerup.EXPLOSIVE_ARROW) {
+            if (gp.getSelectedPowerup() == Powerup.MARKSMAN) {
                 return;
             }
 
@@ -70,7 +70,7 @@ public class PlayerPowerupListener implements Listener {
                 return;
             }
 
-            if (gp.getSelectedPowerup() == Powerup.EXPLOSIVE_ARROW) {
+            if (gp.getSelectedPowerup() == Powerup.MARKSMAN) {
                 if (type == Material.BOW) {
                     gp.getSelectedPowerup().use(gp);
                 }
@@ -118,7 +118,7 @@ public class PlayerPowerupListener implements Listener {
                 return;
             }
 
-            if (gpDamager.getSelectedPowerup() != Powerup.EXPLOSIVE_ARROW) {
+            if (gpDamager.getSelectedPowerup() != Powerup.MARKSMAN) {
                 gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
             } else {
                 gpDamager.addEnergy(3); // Since SKELETON enum only contains the player's bow hit energy.
@@ -149,7 +149,7 @@ public class PlayerPowerupListener implements Listener {
                 return;
             }
 
-            if (gpDamager.getSelectedPowerup() != Powerup.EXPLOSIVE_ARROW) {
+            if (gpDamager.getSelectedPowerup() != Powerup.MARKSMAN) {
                 return;
             }
 

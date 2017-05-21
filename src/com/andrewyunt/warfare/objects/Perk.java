@@ -1,6 +1,9 @@
 package com.andrewyunt.warfare.objects;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 /**
  * The enumeration for abilities, their names, and the method to use them.
@@ -43,6 +46,32 @@ public enum Perk implements Purchasable {
 
     @Override
     public ItemStack getDisplayItem() {
+
+        if (this == RESIST) {
+            return new ItemStack(Material.IRON_INGOT);
+        } else if (this == SWIFTNESS) {
+            return new ItemStack(Material.SUGAR);
+        } else if (this == BOOMERANG) {
+            return new ItemStack(Material.LEASH);
+        } else if (this == WEAKENING_ARROW) {
+            return new ItemStack(Material.BLAZE_ROD);
+        } else if (this == RECHARGE) {
+            return new Potion(PotionType.REGEN, 2).toItemStack(1);
+        } else if (this == FLURRY) {
+            return new ItemStack(Material.FEATHER);
+        } else if (this == EXPLOSIVE_WEAKNESS) {
+            return new ItemStack(Material.TNT);
+        } else if (this == SUPPORT) {
+            return new Potion(PotionType.WEAKNESS, 2).toItemStack(1);
+        } else if (this == WEAKENING_SWING) {
+            return new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
+        } else if (this == SWIFT_BACKUP) {
+            return new Potion(PotionType.INSTANT_HEAL, 2).toItemStack(1);
+        } else if (this == SOUL_SUCKER) {
+            return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+        } else if (this == UNDEAD) {
+            return new ItemStack(Material.ROTTEN_FLESH);
+        }
 
         return null;
     }

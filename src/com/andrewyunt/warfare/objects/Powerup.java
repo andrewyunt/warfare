@@ -1,13 +1,13 @@
 
 package com.andrewyunt.warfare.objects;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.utilities.Utils;
 import net.minecraft.server.v1_7_R4.PacketPlayOutWorldParticles;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
@@ -17,6 +17,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
@@ -27,12 +29,12 @@ import org.bukkit.util.Vector;
  */
 public enum Powerup implements Purchasable {
 
-    HEAL("Heal", 4),
-    EXPLOSIVE_ARROW("Explosive Arrow", 20),
-    LIGHTNING("Lightning", 10),
-    EXPLODE("Explode", 10),
-    TORNADO("Tornado", 5),
-    WITHER_HEADS("Master's Attack", 5);
+    MEDIC("Medic", 4),
+    MARKSMAN("Marksman", 20),
+    WIZARD("Wizard", 10),
+    BOMBER("Bomber", 10),
+    SPECTRE("Spectre", 5),
+    NINJA("Ninja", 5);
 
     private final String name;
     private final int energyPerClick;
@@ -55,11 +57,54 @@ public enum Powerup implements Purchasable {
     @Override
     public int getPrice(int level) {
 
+        switch(this) {
+            case MEDIC:
+                return level * 5000;
+            case MARKSMAN:
+                return level * 7500;
+            case WIZARD:
+                return level * 10000;
+            case BOMBER:
+                return level * 12500;
+            case SPECTRE:
+                return level * 15000;
+            case NINJA:
+                if (level == 1) {
+                    return 17500;
+                } else if (level == 2) {
+                    return 55000;
+                } else if (level == 3) {
+                    return 72500;
+                }
+        }
+
         return 0;
+    }
+
+    public int getPlayerLvlNeeded(int level) {
+
+        return (new ArrayList<Powerup>(Arrays.asList(values())).indexOf(this) * 4 + level + 1) * 5;
     }
 
     @Override
     public ItemStack getDisplayItem() {
+
+        switch(this) {
+            case MEDIC:
+                Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
+                healPotion.setSplash(true);
+                return healPotion.toItemStack(1);
+            case MARKSMAN:
+                return new ItemStack(Material.ARROW);
+            case WIZARD:
+                return new ItemStack(Material.BLAZE_ROD);
+            case BOMBER:
+                return new ItemStack(Material.TNT);
+            case SPECTRE:
+                return new ItemStack(Material.NETHER_STAR);
+            case NINJA:
+                return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+        }
 
         return null;
     }
@@ -84,7 +129,7 @@ public enum Powerup implements Purchasable {
         Player bp = player.getBukkitPlayer();
         int level = player.getLevel(this);
 
-        if (this == HEAL) {
+        if (this == MEDIC) {
 
             double hearts = 2.0 + 0.5 * (level - 1);
 
@@ -115,14 +160,14 @@ public enum Powerup implements Purchasable {
                     ChatColor.GOLD + "Heal" + ChatColor.YELLOW,
                     ChatColor.GOLD + String.valueOf(hearts / 2) + ChatColor.YELLOW));
 
-        } else if (this == EXPLOSIVE_ARROW) {
+        } else if (this == MARKSMAN) {
 
             Projectile arrow = bp.launchProjectile(Arrow.class);
             arrow.setVelocity(arrow.getVelocity().multiply(2.0));
             arrow.setMetadata("Warfare", new FixedMetadataValue(Warfare.getInstance(), true));
             arrow.setShooter(bp);
 
-        } else if (this == LIGHTNING) {
+        } else if (this == WIZARD) {
 
             int count = 0;
 
@@ -162,7 +207,7 @@ public enum Powerup implements Purchasable {
                     "You have used the %s ability.",
                     ChatColor.GOLD + this.getName() + ChatColor.YELLOW));
 
-        } else if (this == EXPLODE) {
+        } else if (this == BOMBER) {
 
             BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
             scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
@@ -197,7 +242,7 @@ public enum Powerup implements Purchasable {
                 }
             }, 60L);
 
-        } else if (this == TORNADO) {
+        } else if (this == SPECTRE) {
 
             Location location = bp.getLocation();
 
@@ -313,7 +358,7 @@ public enum Powerup implements Purchasable {
                 }
             }, 0L, 20L);
 
-        } else if (this == WITHER_HEADS) {
+        } else if (this == NINJA) {
 
             Vector originalVector = bp.getEyeLocation().getDirection();
             Vector rightVector = originalVector.clone();

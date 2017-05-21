@@ -102,6 +102,8 @@ public class Game {
 		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
 			getAvailableCages().iterator().next().setPlayer(player);
 
+			player.updateHotbar();
+
 			if (getAvailableCages().size() <= 2) {
 				setStage(Stage.COUNTDOWN);
 			}
@@ -193,7 +195,7 @@ public class Game {
 			bp.closeInventory();
 			
 			// Set player's health
-			Set<Purchasable> purchases = player.getPurchases();
+			Set<Purchasable> purchases = player.getPurchases().keySet();
 			double health = 24;
 			
 			if (purchases.contains(HealthBoost.HEALTH_BOOST_I)) {
@@ -227,7 +229,7 @@ public class Game {
 			Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
 					String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
 			
-			int winCoins = 200;
+			int winCoins = 1000;
 			
 			if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
 				winCoins = 400;
@@ -238,6 +240,7 @@ public class Game {
 			}
 			
 			player.setCoins(player.getCoins() + winCoins);
+			player.setPoints(player.getPoints() + 30);
 			player.setWins(player.getWins() + 1);
 			
 			player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(

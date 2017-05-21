@@ -20,19 +20,23 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private String name;
-	private int coins, earnedCoins, wins, kills, killStreak, energy;
+	private int points, coins, earnedCoins, wins, kills, killStreak, energy;
 	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Powerup selectedPowerup;
-	private Perk selectedPerk;
 	
 	private final Map<Purchasable, Integer> purchases = new HashMap<>();
-	private final Set<UUID> ghasts = new HashSet<>();
 	
 	public GamePlayer(UUID uuid) {
 		
 		this.uuid = uuid;
+
+		for (Powerup powerup : Powerup.values()) {
+			if (!purchases.containsKey(powerup)) {
+				purchases.put(powerup, -1);
+			}
+		}
 
 		// Register health objective for game servers
 		if (!StaticConfiguration.LOBBY) {
@@ -50,6 +54,21 @@ public class GamePlayer {
 	public Player getBukkitPlayer() {
 		
 		return Bukkit.getServer().getPlayer(uuid);
+	}
+
+	public int getPoints() {
+
+		return points;
+	}
+
+	public void setPoints(int points) {
+
+		this.points = points;
+	}
+
+	public int getLevel() {
+
+		return (int) Math.floor(points / 150);
 	}
 	
 	public void setCoins(int coins) {
@@ -133,7 +152,7 @@ public class GamePlayer {
 		if (this.energy == 100) {
 			if (!sentActivate) {
 				sentActivate = true;
-				if (selectedPowerup == Powerup.EXPLOSIVE_ARROW) {
+				if (selectedPowerup == Powerup.MARKSMAN) {
 					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Left click" + ChatColor.YELLOW + " using your bow to activate your ability!");
 				} else {
 					getBukkitPlayer().sendMessage(ChatColor.GOLD + "Right click" + ChatColor.YELLOW + " using your sword to activate your ability!");
@@ -241,17 +260,6 @@ public class GamePlayer {
 		return selectedPowerup;
 	}
 
-	public void setSelectedPerk(Perk selectedPerk) {
-		if(!Objects.equals(selectedPerk, this.selectedPerk)) {
-			this.selectedPerk = selectedPerk;
-			update();
-		}
-	}
-
-	public Perk getSelectedPerk() {
-		return selectedPerk;
-	}
-
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		this.spectating = spectating;
 		
@@ -300,19 +308,14 @@ public class GamePlayer {
 		return spectating;
 	}
 	
-	public Set<Purchasable> getPurchases() {
+	public Map<Purchasable, Integer> getPurchases() {
 		
-		return purchases.keySet();
+		return purchases;
 	}
 
 	public int getLevel(Purchasable purchasable) {
 
 		return purchases.get(purchasable);
-	}
-	
-	public Set<UUID> getGhasts() {
-		
-		return ghasts;
 	}
 	
 	public boolean isCaged() {
@@ -336,25 +339,11 @@ public class GamePlayer {
 	}
 
 	public void updateHotbar() {
+
 		PlayerInventory inv = getBukkitPlayer().getInventory();
 		inv.clear();
-        if (spectating) {
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
 
-                ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
-                ItemMeta teleporterMeta = teleporter.getItemMeta();
-                teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
-                teleporter.setItemMeta(teleporterMeta);
-                inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
-
-                ItemStack bed = new ItemStack(Material.BED, 1);
-                ItemMeta bedMeta = bed.getItemMeta();
-                bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
-                bed.setItemMeta(bedMeta);
-                inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-            }, 5);
-		} else {
+        if (StaticConfiguration.LOBBY) {
 			ItemStack shop = new ItemStack(Material.CHEST, 1);
 			ItemMeta shopMeta = shop.getItemMeta();
 			shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
@@ -369,10 +358,44 @@ public class GamePlayer {
 
 			ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
 			ItemMeta classSelectorMeta = classSelector.getItemMeta();
-			classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE));
+			classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
 			classSelector.setItemMeta(classSelectorMeta);
-			inv.setItem(StaticConfiguration.LOBBY_CLASS_SELECTOR_SLOT - 1, classSelector);
+			inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
+		} else if (spectating) {
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+				ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+				ItemMeta teleporterMeta = teleporter.getItemMeta();
+				teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
+				teleporter.setItemMeta(teleporterMeta);
+				inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
+
+				ItemStack bed = new ItemStack(Material.BED, 1);
+				ItemMeta bedMeta = bed.getItemMeta();
+				bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
+				bed.setItemMeta(bedMeta);
+				inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
+			}, 5);
+		} else {
+			ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
+			ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
+			kitSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE));
+			kitSelector.setItemMeta(kitSelectorMeta);
+			inv.setItem(StaticConfiguration.CAGE_KIT_SELECTOR_SLOT - 1, kitSelector);
+
+			ItemStack powerupSelector = new ItemStack(Material.ENDER_CHEST, 1);
+			ItemMeta powerupSelectorMeta = powerupSelector.getItemMeta();
+			powerupSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE));
+			powerupSelector.setItemMeta(powerupSelectorMeta);
+			inv.setItem(StaticConfiguration.CAGE_POWERUP_SELECTOR_SLOT - 1, powerupSelector);
+
+			ItemStack bed = new ItemStack(Material.BED, 1);
+			ItemMeta bedMeta = bed.getItemMeta();
+			bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE));
+			bed.setItemMeta(bedMeta);
+			inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
 		}
+
 		getBukkitPlayer().updateInventory();
 	}
 

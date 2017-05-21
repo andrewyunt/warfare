@@ -12,18 +12,15 @@ is-lobby: true
 lobby-servers:
   - "server"
 
-# GUI menu message for no class slot permission
-no-perms-class-slot: "&cNo access"
-
 # The slots and titles for hotbar items
 hotbar-items:
   lobby-items:
     shop:
       slot: 3
       title: "&a&lPerk Shop"
-    class-selector:
+    kit-selector:
       slot: 7
-      title: "&b&lSelect Class"
+      title: "&b&lSelect Kit"
     play:
       slot: 5
       title: "&6&lJoin Game"
@@ -31,6 +28,16 @@ hotbar-items:
     teleporter:
       slot: 1
       title: "&a&lTeleporter"
+    return-to-lobby:
+      slot: 9
+      title: "&c&lReturn to Lobby"
+  cage-items:
+    kit-selector:
+      slot: 1
+      title: "&b&lSelect Kit"
+    powerup-selector:
+      slot: 2
+      title: "&b&lSelect Powerup"
     return-to-lobby:
       slot: 9
       title: "&c&lReturn to Lobby"

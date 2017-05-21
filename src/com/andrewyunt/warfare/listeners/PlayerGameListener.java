@@ -2,13 +2,14 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.menu.ClassSelectorMenu;
+import com.andrewyunt.warfare.menu.KitSelectorMenu;
 import com.andrewyunt.warfare.objects.Game;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.Kit;
 import com.andrewyunt.warfare.utilities.Utils;
 import net.minecraft.server.v1_7_R4.EnumClientCommand;
 import net.minecraft.server.v1_7_R4.PacketPlayInClientCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -119,8 +120,14 @@ public class PlayerGameListener extends PlayerListener {
     protected boolean handleHotbarClick(Player player, String itemName) {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
         if (gp.isCaged()) {
-            if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_CLASS_SELECTOR_TITLE))) {
-                Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
+            if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE))) {
+                Warfare.getInstance().getKitSelectorMenu().open(gp);
+                return true;
+            } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE))) {
+                Warfare.getInstance().getPowerupSelectorMenu().open(gp);
+                return true;
+            } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE))) {
+                Utils.sendPlayerToServer(player, StaticConfiguration.getNextLobby());
                 return true;
             }
         } else if (gp.isSpectating()) {
@@ -222,6 +229,7 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         lastDamager.setCoins(lastDamager.getCoins() + killCoins);
+        lastDamager.setPoints(lastDamager.getPoints() + 5);
 
         lastDamagerBP.sendMessage(ChatColor.GOLD + String.format("You killed %s and received %s coins.",
                 playerGP.getBukkitPlayer().getDisplayName(), String.valueOf(killCoins)));
@@ -425,11 +433,10 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getInventory().getType() == InventoryType.PLAYER) {
-            return;
-        }
-        if (!event.getInventory().getTitle().contains("Class Selector")) {
-            cancelCageInteractions(event, (Player) event.getPlayer());
+        if (event.getInventory().getType() == InventoryType.CHEST) {
+            if (!event.getInventory().getTitle().contains("Kit Selector") && !event.getInventory().getTitle().contains("Powerup Selector")) {
+                cancelCageInteractions(event, (Player) event.getPlayer());
+            }
         }
     }
 

@@ -95,7 +95,7 @@ public class PlayerPerkListener implements Listener {
         }
 
         // Checking that the damaged player has the perk
-        if (shooterGP.getSelectedPerk() != Perk.BOOMERANG) {
+        if (!shooterGP.getPurchases().keySet().contains(Perk.BOOMERANG)) {
             return;
         }
 
@@ -144,7 +144,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (shooterGP.getSelectedPerk() != Perk.WEAKENING_ARROW) {
+        if (!shooterGP.getPurchases().keySet().contains(Perk.WEAKENING_ARROW)) {
             return;
         }
 
@@ -191,7 +191,7 @@ public class PlayerPerkListener implements Listener {
         }
 
         // Checking that the damaged player has the perk
-        if (damagedGP.getSelectedPerk() != Perk.RESIST) {
+        if (!damagedGP.getPurchases().keySet().contains(Perk.RESIST)) {
             return;
         }
 
@@ -238,7 +238,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagedGP.getSelectedPerk() != Perk.SWIFTNESS) {
+        if (damagedGP.getPurchases().keySet().contains(Perk.SWIFTNESS)) {
             return;
         }
 
@@ -292,7 +292,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagerGP.getSelectedPerk() != Perk.RECHARGE) {
+        if (!damagerGP.getPurchases().keySet().contains(Perk.RECHARGE)) {
             return;
         }
 
@@ -351,7 +351,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagerGP.getSelectedPerk() != Perk.FLURRY) {
+        if (!damagerGP.getPurchases().keySet().contains(Perk.FLURRY)) {
             return;
         }
 
@@ -414,7 +414,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (gp.getSelectedPerk() != Perk.EXPLOSIVE_WEAKNESS) {
+        if (!gp.getPurchases().keySet().contains(Perk.EXPLOSIVE_WEAKNESS)) {
             return;
         }
 
@@ -469,7 +469,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagedGP.getSelectedPerk() != Perk.SUPPORT) {
+        if (!damagedGP.getPurchases().keySet().contains(Perk.SUPPORT)) {
             return;
         }
 
@@ -558,7 +558,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagerGP.getSelectedPerk() != Perk.WEAKENING_SWING) {
+        if (damagerGP.getPurchases().keySet().contains(Perk.WEAKENING_SWING)) {
             return;
         }
 
@@ -605,7 +605,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagedGP.getSelectedPerk() != Perk.SWIFT_BACKUP) {
+        if (!damagedGP.getPurchases().keySet().contains(Perk.SWIFT_BACKUP)) {
             return;
         }
 
@@ -660,7 +660,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagerGP.getSelectedPerk() != Perk.SOUL_SUCKER) {
+        if (!damagerGP.getPurchases().keySet().contains(Perk.SOUL_SUCKER)) {
             return;
         }
 
@@ -707,7 +707,7 @@ public class PlayerPerkListener implements Listener {
         }
 
         // Checking that the damaged player has the perk
-        if (damagedGP.getSelectedPerk() != Perk.UNDEAD) {
+        if (!damagedGP.getPurchases().keySet().contains(Perk.UNDEAD)) {
             return;
         }
 

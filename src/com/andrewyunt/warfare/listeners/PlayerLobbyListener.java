@@ -3,7 +3,8 @@ package com.andrewyunt.warfare.listeners;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.menu.ClassSelectorMenu;
+import com.andrewyunt.warfare.menu.KitSelectorMenu;
+import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.objects.GamePlayer;
 import com.andrewyunt.warfare.objects.SignDisplay;
 import com.andrewyunt.warfare.utilities.Utils;
@@ -59,13 +60,11 @@ public class PlayerLobbyListener extends PlayerListener {
     protected boolean handleHotbarClick(Player player, String itemName) {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
-        /*
         if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE))) {
             Warfare.getInstance().getShopMenu().open(ShopMenu.Type.MAIN, gp);
             return true;
-        } else*/
-        if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_CLASS_SELECTOR_TITLE))) {
-            Warfare.getInstance().getClassSelectorMenu().open(ClassSelectorMenu.Type.KIT, gp);
+        } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE))) {
+            Warfare.getInstance().getKitSelectorMenu().open(gp);
             return true;
         } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE))) {
             Warfare.getInstance().getPlayMenu().open(gp);

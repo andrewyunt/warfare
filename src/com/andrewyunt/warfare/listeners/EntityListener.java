@@ -15,8 +15,7 @@ import com.andrewyunt.warfare.objects.GamePlayer;
 public class EntityListener implements Listener {
 	@EventHandler
 	private void onEntitySpawn(EntitySpawnEvent event) {
-		if (event.getEntityType() != EntityType.GHAST && event.getEntityType() != EntityType.PLAYER
-				&& event.getEntityType() != EntityType.DROPPED_ITEM) {
+		if (event.getEntityType() != EntityType.PLAYER && event.getEntityType() != EntityType.DROPPED_ITEM) {
             event.getEntity().remove();
         }
 	}
@@ -24,20 +23,5 @@ public class EntityListener implements Listener {
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event){
         event.setCancelled(true);
-	}
-	
-	@EventHandler
-	private void onEntityTarget(EntityTargetEvent event) {
-		if(event.getTarget() instanceof Player) {
-			Player target = (Player) event.getTarget();
-			if (event.getEntity() instanceof Ghast) {
-				GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(target);
-
-				if (gp.getGhasts().contains(event.getEntity().getUniqueId())) {
-					event.setCancelled(true);
-					event.setTarget(null);
-				}
-			}
-		}
 	}
 }
