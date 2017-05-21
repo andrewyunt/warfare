@@ -25,8 +25,7 @@ public class GamePlayer {
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Powerup selectedPowerup;
-	
-	private final Map<Purchasable, Integer> purchases = new HashMap<>();
+	private Map<Purchasable, Integer> purchases = new HashMap<>();
 	
 	public GamePlayer(UUID uuid) {
 		
@@ -306,6 +305,11 @@ public class GamePlayer {
 	public boolean isSpectating() {
 		
 		return spectating;
+	}
+
+	public void setPurchases(Map<Purchasable, Integer> purchases) {
+
+		this.purchases = purchases;
 	}
 	
 	public Map<Purchasable, Integer> getPurchases() {
