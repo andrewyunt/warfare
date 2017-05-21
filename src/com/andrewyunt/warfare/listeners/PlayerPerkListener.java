@@ -558,7 +558,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (damagerGP.getPurchases().keySet().contains(Perk.WEAKENING_SWING)) {
+        if (!damagerGP.getPurchases().keySet().contains(Perk.WEAKENING_SWING)) {
             return;
         }
 
