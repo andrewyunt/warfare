@@ -66,13 +66,14 @@ public class GamePlayer {
 	}
 
 	public int getLevel() {
-
-		return (int) Math.floor(points / 150);
+		return (int) Math.floor(points / 150) + 1;
 	}
 	
 	public void setCoins(int coins) {
-		
-		this.coins = coins;
+		if(!Objects.equals(coins, this.coins)) {
+			this.coins = coins;
+			update();
+		}
 	}
 	
 	public int getCoins() {
