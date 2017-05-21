@@ -377,13 +377,8 @@ public class PlayerPerkListener implements Listener {
                 ChatColor.GOLD + Perk.FLURRY.getName() + ChatColor.YELLOW));
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void explosiveWeakness(EntityDamageEvent event) {
-
-        if (event.isCancelled()) {
-            return;
-        }
-
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void explosiveWeakness(EntityDamageByEntityEvent event) {
         explosiveWeakness(event.getEntity());
     }
 
@@ -421,7 +416,7 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        if (((Damageable) player).getHealth() <= 7) {
+        if (player.getHealth() <= 7) {
             return;
         }
 
