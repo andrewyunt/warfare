@@ -7,6 +7,7 @@ import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.events.*;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.utilities.Utils;
@@ -37,7 +38,7 @@ public class GameListener implements Listener {
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
             game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
 
-            gamePlayer.updateHotbar();
+            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
 
             if (game.getAvailableCages().size() <= 2) {
                 game.setStage(Game.Stage.COUNTDOWN);

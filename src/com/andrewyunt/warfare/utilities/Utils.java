@@ -193,26 +193,31 @@ public class Utils {
 
 		GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damagedPlayer.getName());
 
-		if (!damagedGP.isInGame())
+		if (!damagedGP.isInGame()) {
 			return;
+		}
 
 		Location loc = damagedPlayer.getLocation();
 
 		for (Entity entity : Utils.getNearbyEntities(loc, bloodRadius)) {
-			if (!(entity instanceof Player))
+			if (!(entity instanceof Player)) {
 				continue;
+			}
 
 			Player player = (Player) entity;
 			GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
-			if (player == damagedPlayer)
+			if (player == damagedPlayer) {
 				continue;
+			}
 
-			if (!gp.isInGame())
+			if (!gp.isInGame()) {
 				continue;
+			}
 
-			if (!gp.getHasBloodEffect())
+			if (!gp.getHasBloodEffect()) {
 				continue;
+			}
 
 			player.playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
 		}
