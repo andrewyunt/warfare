@@ -39,7 +39,7 @@ public class SetMapLocationArgument extends CommandArgument {
 
         arena.setMapLocation(((Player) sender).getLocation());
 
-        arena.save();
+        Warfare.getInstance().getStorageManager().saveArena();
 
         return true;
     }

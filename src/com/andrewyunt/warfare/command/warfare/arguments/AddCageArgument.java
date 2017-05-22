@@ -52,7 +52,7 @@ public class AddCageArgument extends CommandArgument {
         Location loc = ((Player) sender).getLocation();
 
         arena.addCageLocation(args[1], loc);
-        arena.save();
+        Warfare.getInstance().getStorageManager().saveArena();
 
         sender.sendMessage(String.format(ChatColor.YELLOW + "You created the cage " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "in" + ChatColor.GOLD + " %s.",
                 args[1],

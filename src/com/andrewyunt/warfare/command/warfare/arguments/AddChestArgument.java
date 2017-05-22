@@ -70,7 +70,7 @@ public class AddChestArgument extends CommandArgument {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
         }
 
-        arena.save();
+        Warfare.getInstance().getStorageManager().saveArena();
 
         return true;
     }

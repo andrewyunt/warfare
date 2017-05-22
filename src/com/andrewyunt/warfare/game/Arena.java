@@ -61,9 +61,4 @@ public class Arena {
 		
 		return lootChests;
 	}
-
-	public void save() {
-
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().saveArena());
-	}
 }
