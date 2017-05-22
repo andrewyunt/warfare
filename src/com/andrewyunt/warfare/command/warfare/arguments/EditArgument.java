@@ -47,7 +47,7 @@ public class EditArgument extends CommandArgument {
             Game game = Warfare.getInstance().getGame();
 
             if (game != null) {
-                game.end();
+                game.setStage(Game.Stage.END);
             }
 
             arena.setEdit(true);

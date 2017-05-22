@@ -148,11 +148,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		pm.registerEvents(kitSelectorMenu, this);
 		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
-		
-        pm.registerEvents(new PotFixListener(this), this);
+
         pm.registerEvents(new ColonCommandFix(this), this);
         pm.registerEvents(new WeatherFixListener(), this);
-        pm.registerEvents(new InfinityArrowFixListener(), this);
         pm.registerEvents(new ChatListener(this), this);
 		
 		if (StaticConfiguration.LOBBY){
@@ -169,11 +167,14 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			storageManager.updateServerStatusAsync();
 			
 			pm.registerEvents(teleporterMenu, this);
+			pm.registerEvents(new GameListener(), this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
 			pm.registerEvents(new PlayerPowerupListener(), this);
 			pm.registerEvents(new PlayerPerkListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
+			pm.registerEvents(new PotFixListener(this), this);
+			pm.registerEvents(new InfinityArrowFixListener(), this);
 
 			getCommand("lobby").setExecutor(new LobbyCommand(this));
 		}

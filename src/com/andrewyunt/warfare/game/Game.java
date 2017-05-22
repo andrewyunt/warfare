@@ -1,8 +1,10 @@
-
 package com.andrewyunt.warfare.game;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.events.AddPlayerEvent;
+import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
+import com.andrewyunt.warfare.game.events.StageChangeEvent;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.purchases.HealthBoost;
@@ -74,7 +76,6 @@ public class Game {
 	private final Set<Cage> cages = new HashSet<>();
 	
 	public Game() {
-
 		Arena arena = Warfare.getInstance().getArena();
 		
 		for (Entry<String, Location> entry : arena.getCageLocations().entrySet()) {
@@ -92,49 +93,30 @@ public class Game {
 	 * 		The player to be added to the game.
 	 */
 	public void addPlayer(GamePlayer player) {
-		
 		// Add the player to the players set
 		players.add(player);
 
-		// Get the player's bukkit player
-		Player bp = player.getBukkitPlayer();
-
-		// Set player's mode to survival
-		bp.setGameMode(GameMode.SURVIVAL);
-
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-			getAvailableCages().iterator().next().setPlayer(player);
-
-			player.updateHotbar();
-
-			if (getAvailableCages().size() <= 2) {
-				setStage(Stage.COUNTDOWN);
-			}
-
-			// Send the join message to the players
-			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", bp.getDisplayName(),
-							players.size(), cages.size())));
-		}, 5L);
+		Bukkit.getServer().getPluginManager().callEvent(new AddPlayerEvent(player));
 	}
 	
 	public void removePlayer(GamePlayer player) {
-
+		// Remove the player from the players set
 		players.remove(player);
-		
-		if (stage == Stage.WAITING) {
-			player.getCage().setPlayer(null);
-			
-			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-					String.format("&7%s &6has quit!", player.getBukkitPlayer().getDisplayName())));
-		} else {
-			checkPlayers();
-		}
+
+		Bukkit.getServer().getPluginManager().callEvent(new RemovePlayerEvent(player));
 	}
-	
+
+	/**
+	 * Gets all players currently in the game.
+	 *
+	 * @returns
+	 * 		A set of players currently in the game.
+	 */
+	public Set<GamePlayer> getPlayers() {
+		return players;
+	}
+
 	public void checkPlayers() {
-		
 		if (players.size() == 1 && (stage != Stage.WAITING && stage != Stage.END && stage != Stage.RESTART)) {
 			setStage(Stage.END);
 		} else if (players.size() == 0 && stage != Stage.WAITING) {
@@ -142,19 +124,7 @@ public class Game {
 		}
 	}
 	
-	/**
-	 * Gets all players currently in the game.
-	 * 
-	 * @returns
-	 * 		A set of players currently in the game.
-	 */
-	public Set<GamePlayer> getPlayers() {
-		
-		return players;
-	}
-	
 	public Set<Cage> getCages() {
-		
 		return cages;
 	}
 	
@@ -162,169 +132,27 @@ public class Game {
 		return cages.stream().filter(cage -> !cage.hasPlayer()).collect(Collectors.toSet());
 	}
 	
-	public Set<GamePlayer> getSpectators() {
-		Set<GamePlayer> spectators = new HashSet<>(Warfare.getInstance().getPlayerManager().getPlayers());
-		spectators.removeAll(players);
-		return spectators;
-	}
-	
-	public void start() {
-		
-		for (Entity entity : Warfare.getInstance().getArena().getMapLocation().getWorld().getEntities()) {
-			if (entity.getType() != EntityType.PLAYER) {
-				entity.remove();
-			}
-		}
-		
-		// Destroy cages
-		for (Cage cage : cages) {
-			cage.destroy();
-		}
-		
-		for (GamePlayer player : players) {
-			Player bp = player.getBukkitPlayer();
-			
-			// Update player's name color
-			Utils.colorPlayerName(player, Warfare.getInstance().getGame().getPlayers());
-
-			bp.setWalkSpeed(bp.getWalkSpeed() * 1.25f);
-			
-			// Clear player's inventory to remove class selector
-			bp.getInventory().clear();
-			
-			// Give player kit items
-			player.getSelectedKitOrPot().giveItems(player);
-			
-			// Close player's inventory to keep them from using the class selector in-game
-			bp.closeInventory();
-			
-			// Set player's health
-			Set<Purchasable> purchases = player.getPurchases().keySet();
-			double health = 24;
-			
-			if (purchases.contains(HealthBoost.HEALTH_BOOST_I)) {
-				health = 26;
-			} else if (purchases.contains(HealthBoost.HEALTH_BOOST_II)) {
-				health = 28;
-			} else if (purchases.contains(HealthBoost.HEALTH_BOOST_III)) {
-				health = 30;
-			}
-			
-			bp.setMaxHealth(health);
-			bp.setHealth(health);
-
-			Bukkit.getScheduler().runTaskLater(Warfare.getInstance(), () -> bp.setWalkSpeed(bp.getWalkSpeed() / 1.25f), 20 * 10);
-		}
-		
-		// Fill chests
-		fillChests();
-		
-		// Start chest refill timer
-		runRefillTimer();
-	}
-	
-	/**
-	 * Method is executed to end the game.
-	 */
-	public void end() {
-
-		// Only one player should be in-game when the game ends
-		for (GamePlayer player : players) {
-			Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
-					String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
-			
-			int winCoins = 1000;
-			
-			if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
-				winCoins = 400;
-			}
-			
-			if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple")) {
-				winCoins = 600;
-			}
-			
-			player.setCoins(player.getCoins() + winCoins);
-			player.setPoints(player.getPoints() + 30);
-			player.setWins(player.getWins() + 1);
-			
-			player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
-					"You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
-					String.valueOf(winCoins)));
-		}
-
-		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Thanks for playing!");
-
-		if(Warfare.getInstance().isEnabled()) {
-			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> setStage(Stage.RESTART), 120L);
-		}
-		else{
-			setStage(Stage.RESTART);
-		}
-	}
-	
-	public Stage getStage() {
-		
-		return stage;
-	}
-	
 	public void setStage(Stage stage) {
 		this.stage = stage;
-		Warfare.getInstance().getStorageManager().updateServerStatusAsync();
-		
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		
-		if (stage == Stage.COUNTDOWN) {
-			
-			runCountdownTimer();
-			
-		} else if (stage == Stage.BATTLE) {
-			
-			start();
-			
-		} else if (stage == Stage.END) {
-			
-			end();
 
-		} else if (stage == Stage.RESTART) {
+		Bukkit.getServer().getPluginManager().callEvent(new StageChangeEvent(stage));
+	}
 
-            if(!Warfare.getInstance().isEnabled()){
-                return;
-            }
+	public Stage getStage() {
+		return stage;
+	}
 
-			for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-                Player bukkitPlayer = player.getBukkitPlayer();
-                if(bukkitPlayer != null) {
-                    if(!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
-                        Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
-                        if (party == null) {
-                            Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
-                        } else {
-                            UUID leader = party.getLeader();
-                            if (leader == player.getUUID()) {
-                                String lobby = StaticConfiguration.getNextLobby();
-                                for (UUID member : party.getMembers()) {
-                                    Player other = Bukkit.getPlayer(member);
-                                    Utils.sendPlayerToServer(other, lobby);
-                                }
-                            } else if (Bukkit.getPlayer(leader) == null) {
-                                Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
-                            }
-                        }
-                    }
-                }
+	public void fillChests() {
+		for (LootChest lootChest : Warfare.getInstance().getArena().getLootChests()) {
+			if (lootChest.getLocation().getBlock().getType() != Material.CHEST) {
+				continue;
 			}
-			
-			if (Warfare.getInstance().getArena().isEdit()) {
-				return;
-			}
-			
-			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
+
+			lootChest.fill();
 		}
 	}
 	
 	public void runCountdownTimer() {
-		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
             countdownTime--;
@@ -334,9 +162,9 @@ public class Game {
 	}
 	
 	public void checkCountdownTime() {
-		
 		if (countdownTime > 0) {
-			Bukkit.getServer().broadcastMessage(String.format(ChatColor.YELLOW + "The game will start in " + ChatColor.GOLD + ChatColor.BOLD.toString() + "%s" + ChatColor.YELLOW + " seconds.",
+			Bukkit.getServer().broadcastMessage(String.format(ChatColor.YELLOW + "The game will start in " + ChatColor.GOLD
+							+ ChatColor.BOLD.toString() + "%s" + ChatColor.YELLOW + " seconds.",
 					countdownTime));
 		} else if (countdownTime == 0) {
 			setStage(Stage.BATTLE);
@@ -344,23 +172,10 @@ public class Game {
 	}
 
 	public short getCountdownTime() {
-		
 		return countdownTime;
 	}
 	
-	public void fillChests() {
-		
-		for (LootChest lootChest : Warfare.getInstance().getArena().getLootChests()) {
-			if (lootChest.getLocation().getBlock().getType() != Material.CHEST) {
-				continue;
-			}
-			
-			lootChest.fill();
-		}
-	}
-	
 	public void runRefillTimer() {
-		
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
             refillCountdownTime--;
@@ -370,7 +185,6 @@ public class Game {
 	}
 	
 	public void checkRefillTime() {
-		
 		if (refillCountdownTime == 0) {
 			fillChests();
 			
@@ -381,7 +195,6 @@ public class Game {
 	}
 	
 	public short getRefillCountdownTime() {
-		
 		return refillCountdownTime;
 	}
 }
