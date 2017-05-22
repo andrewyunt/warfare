@@ -1,8 +1,6 @@
 
 package com.andrewyunt.warfare.game;
 
-import com.andrewyunt.warfare.Warfare;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;

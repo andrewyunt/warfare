@@ -41,7 +41,7 @@ public enum Perk implements Purchasable {
     @Override
     public int getPrice(int level) {
 
-        return 0;
+        return 15000;
     }
 
 

@@ -7,13 +7,9 @@ import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
-import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 

@@ -66,32 +66,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
     public static Chat getChat() {
         return chat;
     }
-
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
-        }
-        return (permission != null);
-    }
-
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
-        if (chatProvider != null) {
-            chat = chatProvider.getProvider();
-        }
-
-        return (chat != null);
-    }
-
-    private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
-
-        return (economy != null);
-    }
 	
 	private StorageManager storageManager;
 	private PlayerManager playerManager;
@@ -193,7 +167,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		}
 	}
 
-
 	@Override
 	public void onDisable() {
 
@@ -236,6 +209,28 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			}
 		}
 		*/
+	}
+
+	private void setupPermissions() {
+		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if (permissionProvider != null) {
+			permission = permissionProvider.getProvider();
+		}
+	}
+
+	private void setupChat() {
+		RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+		if (chatProvider != null) {
+			chat = chatProvider.getProvider();
+		}
+
+	}
+
+	private void setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
 	}
 	
 	public static Warfare getInstance() {
