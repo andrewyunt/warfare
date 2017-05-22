@@ -15,9 +15,7 @@
  */
 package com.andrewyunt.warfare;
 
-import com.andrewyunt.warfare.command.BloodToggleCommand;
-import com.andrewyunt.warfare.command.LobbyCommand;
-import com.andrewyunt.warfare.command.SetSpawnCommand;
+import com.andrewyunt.warfare.command.*;
 import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
@@ -161,6 +159,8 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		getCommand("party").setExecutor(new PartyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
 		getCommand("setspawn").setExecutor(new SetSpawnCommand());
+		getCommand("coins").setExecutor(new CoinsCommand());
+		getCommand("stats").setExecutor(new StatsCommand());
 
 		for(World world: Bukkit.getWorlds()){
 			for(Creature creature: world.getEntitiesByClass(Creature.class)){

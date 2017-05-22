@@ -109,6 +109,9 @@ public class MongoStorageManager extends StorageManager{
         document.put("earnedCoins", player.getEarnedCoins());
         document.put("kills", player.getKills());
         document.put("wins", player.getWins());
+        document.put("losses", player.getLosses());
+        document.put("deaths", player.getDeaths());
+        document.put("gamesPlayed", player.getGamesPlayed());
         document.put("purchases", player.getPurchases().entrySet().stream().map(entry -> {
             Document purchase = new Document();
             purchase.put("type", entry.getKey().getType().name());
@@ -143,6 +146,9 @@ public class MongoStorageManager extends StorageManager{
             player.setEarnedCoins(document.getInteger("earnedCoins", 0));
             player.setKills(document.getInteger("kills", 0));
             player.setWins(document.getInteger("wins", 0));
+            player.setLosses(document.getInteger("losses", 0));
+            player.setDeaths(document.getInteger("deaths", 0));
+            player.setGamesPlayed(document.getInteger("gamesPlayed", 0));
             ((List<Document>) document.get("purchases", List.class)).forEach(purchase -> {
                 String type = purchase.getString("type");
                 String name = purchase.getString("name");

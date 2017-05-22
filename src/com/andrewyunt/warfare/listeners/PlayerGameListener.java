@@ -256,19 +256,12 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
+        playerGP.setDeaths(playerGP.getDeaths() + 1);
         Warfare.getInstance().getGame().removePlayer(playerGP);
 
         GamePlayer lastDamager = playerGP.getLastDamager();
 
-        if (lastDamager == null) {
-            return;
-        }
-
-        if (lastDamager == playerGP) {
-            return;
-        }
-
-        if (!(lastDamager.isInGame())) {
+        if (lastDamager == null || lastDamager == playerGP || !lastDamager.isInGame()) {
             return;
         }
 

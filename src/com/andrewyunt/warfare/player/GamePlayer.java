@@ -19,8 +19,8 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private String name;
-	private int points, coins, earnedCoins, wins, kills, killStreak, energy;
-	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
+	private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
+	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown, hasPlayed;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Powerup selectedPowerup;
@@ -103,9 +103,30 @@ public class GamePlayer {
 		return wins;
 	}
 
-	
+	public void setLosses(int losses) {
+		if (!Objects.equals(losses, this.losses)) {
+			this.losses = losses;
+			update();
+		}
+	}
+
+	public int getLosses() {
+		return losses;
+	}
+
+	public void setGamesPlayed(int gamesPlayed) {
+		if (!Objects.equals(gamesPlayed, this.gamesPlayed)) {
+			this.gamesPlayed = gamesPlayed;
+			update();
+		}
+	}
+
+	public int getGamesPlayed() {
+		return gamesPlayed;
+	}
+
 	public void addKill() {
-		
+
 		this.killStreak = killStreak + 1;
 		
 		setKills(kills + 1);
@@ -126,6 +147,17 @@ public class GamePlayer {
 	public int getKillStreak() {
 
 		return killStreak;
+	}
+
+	public void setDeaths(int deaths) {
+		if (!Objects.equals(deaths, this.deaths)) {
+			this.deaths = deaths;
+			update();
+		}
+	}
+
+	public int getDeaths() {
+		return deaths;
 	}
 
 	public void addEnergy(int energy) {
@@ -214,9 +246,16 @@ public class GamePlayer {
 
 		return explosiveWeaknessCooldown;
 	}
+
+	public void setHasPlayed(boolean hasPlayed) {
+		this.hasPlayed = hasPlayed;
+	}
+
+	public boolean hasPlayed() {
+		return hasPlayed;
+	}
 	
 	public boolean isInGame() {
-		
 		return Warfare.getInstance().getGame().getPlayers().contains(this);
 	}
 	

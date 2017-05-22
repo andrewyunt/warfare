@@ -14,3 +14,8 @@ commands:
     description: Toggle blood particles on or off.
   setspawn:
     description: Set the spawn location of a lobby with the yaw and pitch.
+  coins:
+    aliases: ['balance','bal','money']
+    description: Check a player's coin balance.
+  stats:
+    description: View a player's statistics.

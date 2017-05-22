@@ -149,28 +149,33 @@ public class GameListener implements Listener {
     public void onEnd(EndEvent event) {
         Game game = Warfare.getInstance().getGame();
 
-        // Only one player should be in-game when the game ends
-        for (GamePlayer player : game.getPlayers()) {
-            Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
-                    String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
+        for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
+            if (player.isInGame()) {
+                Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
+                        String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
 
-            int winCoins = 1000;
+                int winCoins = 1000;
 
-            if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
-                winCoins = 400;
+                if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
+                    winCoins = 400;
+                }
+
+                if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple")) {
+                    winCoins = 600;
+                }
+
+                player.setCoins(player.getCoins() + winCoins);
+                player.setPoints(player.getPoints() + 30);
+                player.setWins(player.getWins() + 1);
+
+                player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
+                        "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
+                        String.valueOf(winCoins)));
+            } else {
+                player.setLosses(player.getLosses() + 1);
             }
 
-            if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple")) {
-                winCoins = 600;
-            }
-
-            player.setCoins(player.getCoins() + winCoins);
-            player.setPoints(player.getPoints() + 30);
-            player.setWins(player.getWins() + 1);
-
-            player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
-                    "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
-                    String.valueOf(winCoins)));
+            player.setGamesPlayed(player.getGamesPlayed() + 1);
         }
 
         Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Thanks for playing!");
