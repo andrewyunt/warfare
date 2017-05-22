@@ -83,17 +83,29 @@ public class TimerSidebarProvider implements SidebarProvider {
                 // Display server name
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Map: ", ChatColor.GRAY + StaticConfiguration.MAP_NAME));
             } else {
-
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                String time = LocalTime.ofSecondOfDay(game.getRefillCountdownTime()).toString().substring(4);
-                if (time.length() == 1) {
-                    time = time + ":00";
+                short gameTime = game.getGameTime();
+                short subtractFrom = (short) (gameTime <= 300 ? 300 : gameTime <= 600 ? 600 : 900);
+                String refillTime = LocalTime.ofSecondOfDay(subtractFrom - gameTime).toString().substring(4);
+                if (refillTime.length() == 1) {
+                    refillTime = refillTime + ":00";
                 }
 
-                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + time));
+                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + refillTime));
 
-                lines.add(new SidebarEntry("  "));
+                lines.add(new SidebarEntry("    "));
+
+                lines.add(new SidebarEntry(ChatColor.GRAY.toString(), "Time remaining",":"));
+
+                String timeRemaining = LocalTime.ofSecondOfDay(300 - gameTime).toString().substring(4);
+                if (timeRemaining.length() == 1) {
+                    timeRemaining = timeRemaining + ":00";
+                }
+
+                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString() + timeRemaining));
+
+                lines.add(new SidebarEntry(ChatColor.RESET + "   "));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Players Left: ", ChatColor.GRAY.toString() +  game.getPlayers().size()));
 

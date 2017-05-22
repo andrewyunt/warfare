@@ -141,8 +141,8 @@ public class GameListener implements Listener {
         // Fill chests
         game.fillChests();
 
-        // Start chest refill timer
-        game.runRefillTimer();
+        // Start game timer
+        game.runGameTimer();
     }
 
     @EventHandler

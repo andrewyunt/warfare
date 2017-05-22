@@ -60,7 +60,7 @@ public class Game {
         }
     }
 	
-	private short countdownTime = 10, refillCountdownTime = 300;
+	private short countdownTime = 10, gameTime;
 	private Stage stage = Stage.WAITING;
 	
 	private final Set<GamePlayer> players = new HashSet<>();
@@ -165,27 +165,27 @@ public class Game {
 	public short getCountdownTime() {
 		return countdownTime;
 	}
-	
-	public void runRefillTimer() {
+
+	public void runGameTimer() {
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
-            refillCountdownTime--;
+			gameTime++;
 
-            checkRefillTime();
-        }, 0L, 20L);
+			checkGameTime();
+		}, 0L, 20L);
 	}
-	
-	public void checkRefillTime() {
-		if (refillCountdownTime == 0) {
+
+	public void checkGameTime() {
+		if (gameTime == 900) {
+			setStage(Stage.END);
+			Bukkit.getServer().broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + "The game timer ran out.");
+		} else if (gameTime % 300 == 0) {
 			fillChests();
-			
-			refillCountdownTime = 300;
-			
 			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
 	}
-	
-	public short getRefillCountdownTime() {
-		return refillCountdownTime;
+
+	public short getGameTime() {
+		return gameTime;
 	}
 }
