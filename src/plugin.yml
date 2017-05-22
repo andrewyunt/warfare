@@ -19,3 +19,5 @@ commands:
     description: Check a player's coin balance.
   stats:
     description: View a player's statistics.
+  spawn:
+    description: Teleport to the spawn location.

@@ -159,6 +159,7 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		getCommand("party").setExecutor(new PartyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
 		getCommand("setspawn").setExecutor(new SetSpawnCommand());
+		getCommand("spawn").setExecutor(new SpawnCommand());
 		getCommand("coins").setExecutor(new CoinsCommand());
 		getCommand("stats").setExecutor(new StatsCommand());
 
