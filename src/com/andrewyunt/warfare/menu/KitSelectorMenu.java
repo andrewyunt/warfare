@@ -14,8 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Kit;
 
 public class KitSelectorMenu implements Listener {
 	

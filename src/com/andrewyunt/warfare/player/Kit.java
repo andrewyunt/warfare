@@ -1,6 +1,7 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.player;
 
+import com.andrewyunt.warfare.player.GamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;

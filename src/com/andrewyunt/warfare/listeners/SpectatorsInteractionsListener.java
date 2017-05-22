@@ -31,7 +31,7 @@ import org.bukkit.material.TrapDoor;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.managers.PlayerManager;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 
 /**
  * Modified class sourced from the Bukkit plugin SpectatorPlus.

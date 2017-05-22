@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 
 /**
  * The bloodtoggle command class which is used as a Bukkit CommandExecutor

@@ -1,5 +1,5 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.game;
 
 import com.andrewyunt.warfare.Warfare;
 import org.bukkit.Bukkit;

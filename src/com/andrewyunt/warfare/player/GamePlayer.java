@@ -1,8 +1,9 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.player;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.utilities.Utils;

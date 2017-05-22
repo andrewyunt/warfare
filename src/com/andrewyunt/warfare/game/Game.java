@@ -1,8 +1,10 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.game;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.utilities.Utils;

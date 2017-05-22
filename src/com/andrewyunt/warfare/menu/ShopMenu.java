@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.andrewyunt.warfare.objects.*;
+import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Perk;
 import com.andrewyunt.warfare.purchases.Powerup;

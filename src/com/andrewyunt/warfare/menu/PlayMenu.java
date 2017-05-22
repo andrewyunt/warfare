@@ -1,10 +1,10 @@
 package com.andrewyunt.warfare.menu;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Game;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Party;
-import com.andrewyunt.warfare.objects.Server;
+import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.faithfulmc.util.ItemBuilder;
 import org.bukkit.Bukkit;

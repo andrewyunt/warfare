@@ -1,4 +1,4 @@
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.player;
 
 import java.util.HashSet;
 import java.util.Set;

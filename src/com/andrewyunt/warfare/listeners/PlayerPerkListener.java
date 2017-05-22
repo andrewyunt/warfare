@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.purchases.Perk;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -24,7 +24,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;

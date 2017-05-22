@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Game;
+import com.andrewyunt.warfare.game.Game;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

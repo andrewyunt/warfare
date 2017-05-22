@@ -1,4 +1,6 @@
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.lobby;
+
+import com.andrewyunt.warfare.game.Game;
 
 public class Server {
     private final String name;

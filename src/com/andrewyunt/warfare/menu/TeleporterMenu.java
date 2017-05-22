@@ -29,7 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 
 public class TeleporterMenu implements Listener {
 	

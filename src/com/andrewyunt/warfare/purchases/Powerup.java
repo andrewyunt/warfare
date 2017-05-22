@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.utilities.Utils;
 import net.minecraft.server.v1_7_R4.PacketPlayOutWorldParticles;
 import org.bukkit.*;

@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.protocol;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;

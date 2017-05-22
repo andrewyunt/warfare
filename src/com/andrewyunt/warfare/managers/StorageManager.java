@@ -1,7 +1,11 @@
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.*;
+import com.andrewyunt.warfare.game.Arena;
+import com.andrewyunt.warfare.lobby.Server;
+import com.andrewyunt.warfare.lobby.SignDisplay;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Party;
 import org.bukkit.Bukkit;
 
 import java.util.List;

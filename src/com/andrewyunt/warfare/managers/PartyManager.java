@@ -1,6 +1,6 @@
 package com.andrewyunt.warfare.managers;
 
-import com.andrewyunt.warfare.objects.Party;
+import com.andrewyunt.warfare.player.Party;
 
 import java.util.HashSet;
 import java.util.Set;

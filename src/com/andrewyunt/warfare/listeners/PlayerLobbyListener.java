@@ -2,11 +2,10 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.menu.KitSelectorMenu;
+import com.andrewyunt.warfare.lobby.SignException;
 import com.andrewyunt.warfare.menu.ShopMenu;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.SignDisplay;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

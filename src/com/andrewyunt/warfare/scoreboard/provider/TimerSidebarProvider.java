@@ -2,8 +2,8 @@ package com.andrewyunt.warfare.scoreboard.provider;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.objects.Game;
-import com.andrewyunt.warfare.objects.GamePlayer;
+import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.scoreboard.SidebarEntry;
 import com.andrewyunt.warfare.scoreboard.SidebarProvider;
 import com.andrewyunt.warfare.utilities.DateTimeFormats;
