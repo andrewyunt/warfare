@@ -65,13 +65,13 @@ public enum Perk implements Purchasable {
         } else if (this == FLURRY) {
             return new ItemStack(Material.FEATHER);
         } else if (this == EXPLOSIVE_WEAKNESS) {
-            return new ItemStack(Material.TNT);
+            return new ItemStack(Material.MONSTER_EGG, 1, (short) 50);
         } else if (this == SUPPORT) {
-            return new Potion(PotionType.WEAKNESS, 2).toItemStack(1);
+            return new ItemStack(Material.TNT);
         } else if (this == WEAKENING_SWING) {
-            return new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
+            return new Potion(PotionType.WEAKNESS, 2).toItemStack(1);
         } else if (this == SWIFT_BACKUP) {
-            return new Potion(PotionType.INSTANT_HEAL, 2).toItemStack(1);
+            return new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
         } else if (this == SOUL_SUCKER) {
             return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
         } else if (this == UNDEAD) {

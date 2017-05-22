@@ -60,7 +60,7 @@ public class GameListener implements Listener {
             gamePlayer.getCage().setPlayer(null);
 
             Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                    String.format("&7%s &6has quit!", gamePlayer.getBukkitPlayer().getDisplayName())));
+                    String.format("&6%s &ehas left the game!", gamePlayer.getBukkitPlayer().getDisplayName())));
         } else {
             game.checkPlayers();
         }

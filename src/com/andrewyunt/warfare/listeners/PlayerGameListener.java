@@ -114,6 +114,65 @@ public class PlayerGameListener extends PlayerListener {
         Warfare.getInstance().getStorageManager().updateServerStatusAsync();
     }
 
+    @EventHandler
+    private void onUpdateHotbar(UpdateHotbarEvent event) {
+        GamePlayer gamePlayer = event.getGamePlayer();
+        PlayerInventory inv = gamePlayer.getBukkitPlayer().getInventory();
+        inv.clear();
+
+        if (StaticConfiguration.LOBBY) {
+            ItemStack shop = new ItemStack(Material.CHEST, 1);
+            ItemMeta shopMeta = shop.getItemMeta();
+            shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
+            shop.setItemMeta(shopMeta);
+            inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
+
+            ItemStack play = new ItemStack(Material.COMPASS, 1);
+            ItemMeta playMeta = play.getItemMeta();
+            playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
+            play.setItemMeta(playMeta);
+            inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
+
+            ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
+            ItemMeta classSelectorMeta = classSelector.getItemMeta();
+            classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
+            classSelector.setItemMeta(classSelectorMeta);
+            inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
+        } else if (gamePlayer.isSpectating()) {
+            ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+            ItemMeta teleporterMeta = teleporter.getItemMeta();
+            teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
+            teleporter.setItemMeta(teleporterMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
+
+            ItemStack bed = new ItemStack(Material.BED, 1);
+            ItemMeta bedMeta = bed.getItemMeta();
+            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
+            bed.setItemMeta(bedMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
+        } else {
+            ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
+            ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
+            kitSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE));
+            kitSelector.setItemMeta(kitSelectorMeta);
+            inv.setItem(StaticConfiguration.CAGE_KIT_SELECTOR_SLOT - 1, kitSelector);
+
+            ItemStack powerupSelector = new ItemStack(Material.CHEST, 1);
+            ItemMeta powerupSelectorMeta = powerupSelector.getItemMeta();
+            powerupSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE));
+            powerupSelector.setItemMeta(powerupSelectorMeta);
+            inv.setItem(StaticConfiguration.CAGE_POWERUP_SELECTOR_SLOT - 1, powerupSelector);
+
+            ItemStack bed = new ItemStack(Material.BED, 1);
+            ItemMeta bedMeta = bed.getItemMeta();
+            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE));
+            bed.setItemMeta(bedMeta);
+            inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
+        }
+
+        gamePlayer.getBukkitPlayer().updateInventory();
+    }
+
     @Override
     protected boolean handleHotbarClick(Player player, String itemName) {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
@@ -421,64 +480,5 @@ public class PlayerGameListener extends PlayerListener {
         if (gp.isCaged()) {
             cancellable.setCancelled(true);
         }
-    }
-
-    @EventHandler
-    private void onUpdateHotbar(UpdateHotbarEvent event) {
-        GamePlayer gamePlayer = event.getGamePlayer();
-        PlayerInventory inv = gamePlayer.getBukkitPlayer().getInventory();
-        inv.clear();
-
-        if (StaticConfiguration.LOBBY) {
-            ItemStack shop = new ItemStack(Material.CHEST, 1);
-            ItemMeta shopMeta = shop.getItemMeta();
-            shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
-            shop.setItemMeta(shopMeta);
-            inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
-
-            ItemStack play = new ItemStack(Material.COMPASS, 1);
-            ItemMeta playMeta = play.getItemMeta();
-            playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
-            play.setItemMeta(playMeta);
-            inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
-
-            ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
-            ItemMeta classSelectorMeta = classSelector.getItemMeta();
-            classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
-            classSelector.setItemMeta(classSelectorMeta);
-            inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
-        } else if (gamePlayer.isSpectating()) {
-            ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
-            ItemMeta teleporterMeta = teleporter.getItemMeta();
-            teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
-            teleporter.setItemMeta(teleporterMeta);
-            inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
-
-            ItemStack bed = new ItemStack(Material.BED, 1);
-            ItemMeta bedMeta = bed.getItemMeta();
-            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
-            bed.setItemMeta(bedMeta);
-            inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-        } else {
-            ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
-            ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
-            kitSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE));
-            kitSelector.setItemMeta(kitSelectorMeta);
-            inv.setItem(StaticConfiguration.CAGE_KIT_SELECTOR_SLOT - 1, kitSelector);
-
-            ItemStack powerupSelector = new ItemStack(Material.ENDER_CHEST, 1);
-            ItemMeta powerupSelectorMeta = powerupSelector.getItemMeta();
-            powerupSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE));
-            powerupSelector.setItemMeta(powerupSelectorMeta);
-            inv.setItem(StaticConfiguration.CAGE_POWERUP_SELECTOR_SLOT - 1, powerupSelector);
-
-            ItemStack bed = new ItemStack(Material.BED, 1);
-            ItemMeta bedMeta = bed.getItemMeta();
-            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE));
-            bed.setItemMeta(bedMeta);
-            inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
-        }
-
-        gamePlayer.getBukkitPlayer().updateInventory();
     }
 }
