@@ -20,7 +20,7 @@ public class GamePlayer {
 	private UUID uuid;
 	private String name;
 	private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
-	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown, hasPlayed;
+	private boolean loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown, hasPlayed;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Powerup selectedPowerup;
@@ -195,16 +195,6 @@ public class GamePlayer {
 	public int getEnergy() {
 
 		return this.energy;
-	}
-	
-	public void setEPCCooldown(boolean cooldown) {
-		
-		this.epcCooldown = cooldown;
-	}
-	
-	public boolean isEPCCooldown() {
-		
-		return epcCooldown;
 	}
 	
 	public void setLoaded(boolean loaded) {
