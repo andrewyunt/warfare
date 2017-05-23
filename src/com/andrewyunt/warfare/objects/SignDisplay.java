@@ -21,8 +21,22 @@ public class SignDisplay {
 	private final int place;
 	
 	public enum Type {
-		KILLS_LEADERBOARD,
-		WINS_LEADERBOARD
+		KILLS_LEADERBOARD("kills"),
+		WINS_LEADERBOARD("wins");
+
+		private final String id;
+
+		Type(String id) {
+			this.id = id;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public String id(){
+		    return id;
+        }
 	}
 	
 	/**
