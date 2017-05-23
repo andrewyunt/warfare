@@ -1,5 +1,5 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;

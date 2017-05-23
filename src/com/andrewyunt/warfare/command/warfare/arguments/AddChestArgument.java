@@ -1,8 +1,8 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Arena;
-import com.andrewyunt.warfare.objects.LootChest;
+import com.andrewyunt.warfare.game.Arena;
+import com.andrewyunt.warfare.game.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -70,7 +70,7 @@ public class AddChestArgument extends CommandArgument {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
         }
 
-        arena.save();
+        Warfare.getInstance().getStorageManager().saveArena();
 
         return true;
     }

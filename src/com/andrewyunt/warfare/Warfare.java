@@ -15,12 +15,13 @@
  */
 package com.andrewyunt.warfare;
 
-import com.andrewyunt.warfare.command.BloodToggleCommand;
-import com.andrewyunt.warfare.command.LobbyCommand;
+import com.andrewyunt.warfare.command.*;
 import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Arena;
+import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.listeners.fixes.*;
 import com.andrewyunt.warfare.managers.PartyManager;
@@ -29,7 +30,6 @@ import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.managers.StorageManager;
 import com.andrewyunt.warfare.managers.mongo.MongoStorageManager;
 import com.andrewyunt.warfare.menu.*;
-import com.andrewyunt.warfare.objects.*;
 import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -37,7 +37,6 @@ import com.google.common.io.ByteStreams;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import org.apache.commons.lang.enums.Enum;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;
@@ -65,32 +64,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
     public static Chat getChat() {
         return chat;
-    }
-
-    private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
-        }
-        return (permission != null);
-    }
-
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
-        if (chatProvider != null) {
-            chat = chatProvider.getProvider();
-        }
-
-        return (chat != null);
-    }
-
-    private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
-
-        return (economy != null);
     }
 	
 	private StorageManager storageManager;
@@ -148,11 +121,9 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		pm.registerEvents(kitSelectorMenu, this);
 		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
-		
-        pm.registerEvents(new PotFixListener(this), this);
+
         pm.registerEvents(new ColonCommandFix(this), this);
         pm.registerEvents(new WeatherFixListener(), this);
-        pm.registerEvents(new InfinityArrowFixListener(), this);
         pm.registerEvents(new ChatListener(this), this);
 		
 		if (StaticConfiguration.LOBBY){
@@ -169,11 +140,14 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			storageManager.updateServerStatusAsync();
 			
 			pm.registerEvents(teleporterMenu, this);
+			pm.registerEvents(new GameListener(), this);
 			pm.registerEvents(new EntityListener(), this);
 			pm.registerEvents(new PlayerGameListener(), this);
 			pm.registerEvents(new PlayerPowerupListener(), this);
 			pm.registerEvents(new PlayerPerkListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
+			pm.registerEvents(new PotFixListener(this), this);
+			pm.registerEvents(new InfinityArrowFixListener(), this);
 
 			getCommand("lobby").setExecutor(new LobbyCommand(this));
 		}
@@ -184,6 +158,10 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
+		getCommand("setspawn").setExecutor(new SetSpawnCommand());
+		getCommand("spawn").setExecutor(new SpawnCommand());
+		getCommand("coins").setExecutor(new CoinsCommand());
+		getCommand("stats").setExecutor(new StatsCommand());
 
 		for(World world: Bukkit.getWorlds()){
 			for(Creature creature: world.getEntitiesByClass(Creature.class)){
@@ -191,7 +169,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			}
 		}
 	}
-
 
 	@Override
 	public void onDisable() {
@@ -235,6 +212,28 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 			}
 		}
 		*/
+	}
+
+	private void setupPermissions() {
+		RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		if (permissionProvider != null) {
+			permission = permissionProvider.getProvider();
+		}
+	}
+
+	private void setupChat() {
+		RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+		if (chatProvider != null) {
+			chat = chatProvider.getProvider();
+		}
+
+	}
+
+	private void setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
 	}
 	
 	public static Warfare getInstance() {

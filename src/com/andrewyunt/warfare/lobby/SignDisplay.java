@@ -1,4 +1,4 @@
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.lobby;
 
 import com.andrewyunt.warfare.Warfare;
 import org.bukkit.ChatColor;

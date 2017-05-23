@@ -1,8 +1,6 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.game;
 
-import com.andrewyunt.warfare.Warfare;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -60,10 +58,5 @@ public class Arena {
 	public Set<LootChest> getLootChests() {
 		
 		return lootChests;
-	}
-
-	public void save() {
-
-		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().saveArena());
 	}
 }

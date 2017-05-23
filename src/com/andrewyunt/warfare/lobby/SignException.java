@@ -1,5 +1,5 @@
 
-package com.andrewyunt.warfare.exception;
+package com.andrewyunt.warfare.lobby;
 
 /**
  * The exception which is used when an error occurs with the SignDisplay object.

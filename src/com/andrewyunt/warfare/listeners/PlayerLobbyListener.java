@@ -2,12 +2,13 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.menu.KitSelectorMenu;
+import com.andrewyunt.warfare.lobby.SignException;
 import com.andrewyunt.warfare.menu.ShopMenu;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.SignDisplay;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.lobby.SignDisplay;
+import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.utilities.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -43,7 +44,7 @@ public class PlayerLobbyListener extends PlayerListener {
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            gp.updateHotbar();
+            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
             player.teleport(player.getLocation().getWorld().getSpawnLocation());
         }, 2L);
     }

@@ -2,9 +2,9 @@
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.exception.SignException;
-import com.andrewyunt.warfare.objects.SignDisplay;
-import com.andrewyunt.warfare.objects.SignDisplay.Type;
+import com.andrewyunt.warfare.lobby.SignException;
+import com.andrewyunt.warfare.lobby.SignDisplay;
+import com.andrewyunt.warfare.lobby.SignDisplay.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 

@@ -14,8 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Kit;
 
 public class KitSelectorMenu implements Listener {
 	
@@ -31,7 +31,7 @@ public class KitSelectorMenu implements Listener {
 	public void open(GamePlayer player) {
 
 		Player bp = player.getBukkitPlayer();
-		Inventory inv = Bukkit.createInventory(null, 27, ChatColor.YELLOW
+		Inventory inv = Bukkit.createInventory(null, 27, ChatColor.AQUA
 				+ ChatColor.BOLD.toString() + "Kit Selector");
 
 		for (int i = 0; i < 11; i++) {

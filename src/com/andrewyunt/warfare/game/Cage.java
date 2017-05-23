@@ -1,10 +1,11 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.game;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.player.GamePlayer;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;

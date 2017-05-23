@@ -1,17 +1,15 @@
 
-package com.andrewyunt.warfare.objects;
+package com.andrewyunt.warfare.player;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Cage;
+import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
-import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
@@ -21,8 +19,8 @@ public class GamePlayer {
 	
 	private UUID uuid;
 	private String name;
-	private int points, coins, earnedCoins, wins, kills, killStreak, energy;
-	private boolean epcCooldown, loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
+	private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
+	private boolean loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown, hasPlayed;
 	private GamePlayer lastDamager;
 	private Kit selectedKit;
 	private Powerup selectedPowerup;
@@ -105,9 +103,30 @@ public class GamePlayer {
 		return wins;
 	}
 
-	
+	public void setLosses(int losses) {
+		if (!Objects.equals(losses, this.losses)) {
+			this.losses = losses;
+			update();
+		}
+	}
+
+	public int getLosses() {
+		return losses;
+	}
+
+	public void setGamesPlayed(int gamesPlayed) {
+		if (!Objects.equals(gamesPlayed, this.gamesPlayed)) {
+			this.gamesPlayed = gamesPlayed;
+			update();
+		}
+	}
+
+	public int getGamesPlayed() {
+		return gamesPlayed;
+	}
+
 	public void addKill() {
-		
+
 		this.killStreak = killStreak + 1;
 		
 		setKills(kills + 1);
@@ -128,6 +147,17 @@ public class GamePlayer {
 	public int getKillStreak() {
 
 		return killStreak;
+	}
+
+	public void setDeaths(int deaths) {
+		if (!Objects.equals(deaths, this.deaths)) {
+			this.deaths = deaths;
+			update();
+		}
+	}
+
+	public int getDeaths() {
+		return deaths;
 	}
 
 	public void addEnergy(int energy) {
@@ -165,16 +195,6 @@ public class GamePlayer {
 	public int getEnergy() {
 
 		return this.energy;
-	}
-	
-	public void setEPCCooldown(boolean cooldown) {
-		
-		this.epcCooldown = cooldown;
-	}
-	
-	public boolean isEPCCooldown() {
-		
-		return epcCooldown;
 	}
 	
 	public void setLoaded(boolean loaded) {
@@ -216,9 +236,16 @@ public class GamePlayer {
 
 		return explosiveWeaknessCooldown;
 	}
+
+	public void setHasPlayed(boolean hasPlayed) {
+		this.hasPlayed = hasPlayed;
+	}
+
+	public boolean hasPlayed() {
+		return hasPlayed;
+	}
 	
 	public boolean isInGame() {
-		
 		return Warfare.getInstance().getGame().getPlayers().contains(this);
 	}
 	
@@ -260,6 +287,7 @@ public class GamePlayer {
 
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		this.spectating = spectating;
+
 		if(respawn){
 		    getBukkitPlayer().spigot().respawn();
         }
@@ -284,9 +312,8 @@ public class GamePlayer {
             player.spigot().setCollidesWithEntities(false);
             player.spigot().setViewDistance(4);
 
-            updateHotbar();
+			Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(this));
 
-			
 			Location loc = Warfare.getInstance().getArena().getMapLocation();
 			Chunk chunk = loc.getChunk();
 			
@@ -344,62 +371,6 @@ public class GamePlayer {
         }
 		
 		return null;
-	}
-
-	public void updateHotbar() {
-		PlayerInventory inv = getBukkitPlayer().getInventory();
-		inv.clear();
-
-        if (StaticConfiguration.LOBBY) {
-			ItemStack shop = new ItemStack(Material.CHEST, 1);
-			ItemMeta shopMeta = shop.getItemMeta();
-			shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
-			shop.setItemMeta(shopMeta);
-			inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
-
-			ItemStack play = new ItemStack(Material.COMPASS, 1);
-			ItemMeta playMeta = play.getItemMeta();
-			playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
-			play.setItemMeta(playMeta);
-			inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
-
-			ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
-			ItemMeta classSelectorMeta = classSelector.getItemMeta();
-			classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
-			classSelector.setItemMeta(classSelectorMeta);
-			inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
-		} else if (spectating) {
-            ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
-            ItemMeta teleporterMeta = teleporter.getItemMeta();
-            teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
-            teleporter.setItemMeta(teleporterMeta);
-            inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
-
-            ItemStack bed = new ItemStack(Material.BED, 1);
-            ItemMeta bedMeta = bed.getItemMeta();
-            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
-            bed.setItemMeta(bedMeta);
-            inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
-		} else {
-			ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
-			ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
-			kitSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE));
-			kitSelector.setItemMeta(kitSelectorMeta);
-			inv.setItem(StaticConfiguration.CAGE_KIT_SELECTOR_SLOT - 1, kitSelector);
-
-			ItemStack powerupSelector = new ItemStack(Material.ENDER_CHEST, 1);
-			ItemMeta powerupSelectorMeta = powerupSelector.getItemMeta();
-			powerupSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE));
-			powerupSelector.setItemMeta(powerupSelectorMeta);
-			inv.setItem(StaticConfiguration.CAGE_POWERUP_SELECTOR_SLOT - 1, powerupSelector);
-
-			ItemStack bed = new ItemStack(Material.BED, 1);
-			ItemMeta bedMeta = bed.getItemMeta();
-			bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE));
-			bed.setItemMeta(bedMeta);
-			inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
-		}
-		getBukkitPlayer().updateInventory();
 	}
 
     public String getName() {

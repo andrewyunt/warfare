@@ -17,10 +17,10 @@ hotbar-items:
   lobby-items:
     shop:
       slot: 3
-      title: "&a&lPerk Shop &7(Right Click)"
+      title: "&a&lShop &7(Right Click)"
     kit-selector:
       slot: 7
-      title: "&b&lSelect Kit &7(Right Click)"
+      title: "&b&lKit Selector &7(Right Click)"
     play:
       slot: 5
       title: "&6&lJoin Game &7(Right Click)"
@@ -37,7 +37,7 @@ hotbar-items:
       title: "&b&lSelect Kit &7(Right Click)"
     powerup-selector:
       slot: 2
-      title: "&b&lSelect Powerup &7(Right Click)"
+      title: "&e&lPowerup Selector &7(Right Click)"
     return-to-lobby:
       slot: 9
       title: "&c&lReturn to Lobby &7(Right Click)"
@@ -84,17 +84,21 @@ descriptions:
     - "does 2.5 damage with 100% armor penetration"
   BOMBER:
     0:
-    - "Detonate an explosion that deals 3.0 damage to nearby"
-    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    - "Detonate an explosion that deals 3.0 damage to"
+    - "nearby enemies with 100% armor penetration and"
+    - "takes 3 seconds to explode"
     1:
-    - "Detonate an explosion that deals 3.5 damage to nearby"
-    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    - "Detonate an explosion that deals 3.5 damage to"
+    - "nearby enemies with 100% armor penetration and"
+    - "takes 3 seconds to explode"
     2:
-    - "Detonate an explosion that deals 4.0 damage to nearby"
-    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    - "Detonate an explosion that deals 4.0 damage to"
+    - "nearby enemies with 100% armor penetration and"
+    - "takes 3 seconds to explode"
     3:
-    - "Detonate an explosion that deals 4.5 damage to nearby"
-    - "enemies with 100% armor penetration and takes 3 seconds to explode"
+    - "Detonate an explosion that deals 4.5 damage to"
+    - "nearby enemies with 100% armor penetration and"
+    - "takes 3 seconds to explode"
   SPECTRE:
     0:
     - "Summon a tornado for 2.0 seconds, dealing 2.0"
@@ -159,8 +163,9 @@ descriptions:
     - "to inflict Weakness I for 2.0 seconds"
   SWIFT_BACKUP:
     0:
-    - "Upon getting hit, 10% chance to spawn a wolf that"
-    - "protects you for 4.0 seconds. Wolf has permanent Speed II"
+    - "Upon getting hit, 10% chance to spawn a wolf"
+    - "that protects you for 4.0 seconds. Wolf has"
+    - "permanent Speed II"
   SOUL_SUCKER:
     0:
     - "Attacking an enemy has a 12% chance to gain 1.0 health"

@@ -2,19 +2,16 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.menu.KitSelectorMenu;
-import com.andrewyunt.warfare.objects.Game;
-import com.andrewyunt.warfare.objects.GamePlayer;
-import com.andrewyunt.warfare.objects.Kit;
+import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Kit;
+import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.utilities.Utils;
-import net.minecraft.server.v1_7_R4.EnumClientCommand;
-import net.minecraft.server.v1_7_R4.PacketPlayInClientCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -33,11 +30,11 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collections;
@@ -115,6 +112,65 @@ public class PlayerGameListener extends PlayerListener {
 
         Warfare.getInstance().getGame().removePlayer(gp);
         Warfare.getInstance().getStorageManager().updateServerStatusAsync();
+    }
+
+    @EventHandler
+    private void onUpdateHotbar(UpdateHotbarEvent event) {
+        GamePlayer gamePlayer = event.getGamePlayer();
+        PlayerInventory inv = gamePlayer.getBukkitPlayer().getInventory();
+        inv.clear();
+
+        if (StaticConfiguration.LOBBY) {
+            ItemStack shop = new ItemStack(Material.CHEST, 1);
+            ItemMeta shopMeta = shop.getItemMeta();
+            shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
+            shop.setItemMeta(shopMeta);
+            inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
+
+            ItemStack play = new ItemStack(Material.COMPASS, 1);
+            ItemMeta playMeta = play.getItemMeta();
+            playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
+            play.setItemMeta(playMeta);
+            inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
+
+            ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
+            ItemMeta classSelectorMeta = classSelector.getItemMeta();
+            classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
+            classSelector.setItemMeta(classSelectorMeta);
+            inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
+        } else if (gamePlayer.isSpectating()) {
+            ItemStack teleporter = new ItemStack(Material.COMPASS, 1);
+            ItemMeta teleporterMeta = teleporter.getItemMeta();
+            teleporterMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_TELEPORTER_TITLE));
+            teleporter.setItemMeta(teleporterMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_TELEPORTER_SLOT - 1, teleporter);
+
+            ItemStack bed = new ItemStack(Material.BED, 1);
+            ItemMeta bedMeta = bed.getItemMeta();
+            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_TITLE));
+            bed.setItemMeta(bedMeta);
+            inv.setItem(StaticConfiguration.SPECTATOR_RETURN_TO_LOBBY_SLOT - 1, bed);
+        } else {
+            ItemStack kitSelector = new ItemStack(Material.ENDER_CHEST, 1);
+            ItemMeta kitSelectorMeta = kitSelector.getItemMeta();
+            kitSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE));
+            kitSelector.setItemMeta(kitSelectorMeta);
+            inv.setItem(StaticConfiguration.CAGE_KIT_SELECTOR_SLOT - 1, kitSelector);
+
+            ItemStack powerupSelector = new ItemStack(Material.CHEST, 1);
+            ItemMeta powerupSelectorMeta = powerupSelector.getItemMeta();
+            powerupSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_POWERUP_SELECTOR_TITLE));
+            powerupSelector.setItemMeta(powerupSelectorMeta);
+            inv.setItem(StaticConfiguration.CAGE_POWERUP_SELECTOR_SLOT - 1, powerupSelector);
+
+            ItemStack bed = new ItemStack(Material.BED, 1);
+            ItemMeta bedMeta = bed.getItemMeta();
+            bedMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.CAGE_RETURN_TO_LOBBY_TITLE));
+            bed.setItemMeta(bedMeta);
+            inv.setItem(StaticConfiguration.CAGE_RETURN_TO_LOBBY_SLOT - 1, bed);
+        }
+
+        gamePlayer.getBukkitPlayer().updateInventory();
     }
 
     @Override
@@ -200,19 +256,12 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
+        playerGP.setDeaths(playerGP.getDeaths() + 1);
         Warfare.getInstance().getGame().removePlayer(playerGP);
 
         GamePlayer lastDamager = playerGP.getLastDamager();
 
-        if (lastDamager == null) {
-            return;
-        }
-
-        if (lastDamager == playerGP) {
-            return;
-        }
-
-        if (!(lastDamager.isInGame())) {
+        if (lastDamager == null || lastDamager == playerGP || !lastDamager.isInGame()) {
             return;
         }
 

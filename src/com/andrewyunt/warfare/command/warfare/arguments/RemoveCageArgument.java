@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.objects.Arena;
+import com.andrewyunt.warfare.game.Arena;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -48,7 +48,7 @@ public class RemoveCageArgument extends CommandArgument {
         }
 
         arena.getCageLocations().remove(args[1]);
-        arena.save();
+        Warfare.getInstance().getStorageManager().saveArena();
 
         sender.sendMessage(String.format(ChatColor.YELLOW + "You removed the cage " + ChatColor.GOLD + "%s.", args[1]));
 
