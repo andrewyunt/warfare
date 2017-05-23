@@ -11,6 +11,7 @@ import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,6 +21,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class PlayerLobbyListener extends PlayerListener {
@@ -42,11 +46,8 @@ public class PlayerLobbyListener extends PlayerListener {
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
 
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
-            player.teleport(player.getLocation().getWorld().getSpawnLocation());
-        }, 2L);
+        player.teleport(player.getLocation().getWorld().getSpawnLocation());
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
     }
 
     @EventHandler
@@ -56,6 +57,33 @@ public class PlayerLobbyListener extends PlayerListener {
 
         Player player = event.getPlayer();
         Warfare.getInstance().getPlayerManager().deletePlayer(Warfare.getInstance().getPlayerManager().getPlayer(player));
+    }
+
+    @EventHandler
+    private void onUpdateHotbar(UpdateHotbarEvent event) {
+        GamePlayer gamePlayer = event.getGamePlayer();
+        PlayerInventory inv = gamePlayer.getBukkitPlayer().getInventory();
+        inv.clear();
+
+        ItemStack shop = new ItemStack(Material.CHEST, 1);
+        ItemMeta shopMeta = shop.getItemMeta();
+        shopMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_SHOP_TITLE));
+        shop.setItemMeta(shopMeta);
+        inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
+
+        ItemStack play = new ItemStack(Material.COMPASS, 1);
+        ItemMeta playMeta = play.getItemMeta();
+        playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
+        play.setItemMeta(playMeta);
+        inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
+
+        ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
+        ItemMeta classSelectorMeta = classSelector.getItemMeta();
+        classSelectorMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE));
+        classSelector.setItemMeta(classSelectorMeta);
+        inv.setItem(StaticConfiguration.LOBBY_KIT_SELECTOR_SLOT - 1, classSelector);
+
+        gamePlayer.getBukkitPlayer().updateInventory();
     }
 
     protected boolean handleHotbarClick(Player player, String itemName) {
