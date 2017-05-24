@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimerSidebarProvider implements SidebarProvider {
+
     protected static final String STRAIGHT_LINE = BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 13);
 
     private static String handleBardFormat(long millis, boolean trailingZero, boolean showMillis) {
@@ -83,9 +84,17 @@ public class TimerSidebarProvider implements SidebarProvider {
                 // Display server name
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Map: ", ChatColor.GRAY + StaticConfiguration.MAP_NAME));
             } else {
+                short gameTime = game.getGameTime();
+                String timeRemaining = LocalTime.ofSecondOfDay(900 - gameTime).toString().substring(3);
+                if (timeRemaining.length() == 1) {
+                    timeRemaining = timeRemaining + ":00";
+                }
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Time remaining: ", ChatColor.GRAY + timeRemaining));
+
+                lines.add(new SidebarEntry("    "));
+
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Next event",":"));
 
-                short gameTime = game.getGameTime();
                 short subtractFrom = (short) (gameTime <= 300 ? 300 : gameTime <= 600 ? 600 : 900);
                 String refillTime = LocalTime.ofSecondOfDay(subtractFrom - gameTime).toString().substring(4);
                 if (refillTime.length() == 1) {
@@ -93,17 +102,6 @@ public class TimerSidebarProvider implements SidebarProvider {
                 }
 
                 lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString(), "Refill", ChatColor.GRAY + " " + refillTime));
-
-                lines.add(new SidebarEntry("    "));
-
-                lines.add(new SidebarEntry(ChatColor.GRAY.toString(), "Time remaining",":"));
-
-                String timeRemaining = LocalTime.ofSecondOfDay(300 - gameTime).toString().substring(4);
-                if (timeRemaining.length() == 1) {
-                    timeRemaining = timeRemaining + ":00";
-                }
-
-                lines.add(new SidebarEntry("  " + ChatColor.YELLOW.toString() + timeRemaining));
 
                 lines.add(new SidebarEntry(ChatColor.RESET + "   "));
 

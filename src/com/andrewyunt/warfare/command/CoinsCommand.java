@@ -23,7 +23,7 @@ public class CoinsCommand implements CommandExecutor {
 
             int coins = Warfare.getInstance().getPlayerManager().getPlayer(targetPlayer).getCoins();
             sender.sendMessage(ChatColor.GOLD + targetPlayer.getDisplayName() + ChatColor.YELLOW + " has a balance of "
-                    + ChatColor.GREEN + coins + " coins");
+                    + ChatColor.GRAY + coins + " coins");
         }
 
         return true;
