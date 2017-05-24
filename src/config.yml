@@ -181,6 +181,12 @@ descriptions:
   HEALTH_BOOST_III:
     0:
     - "Gives you an extra three hearts when you spawn."
+  HEALTH_BOOST_IV:
+    0:
+    - "Gives you an extra four hearts when you spawn."
+  HEALTH_BOOST_V:
+    0:
+    - "Gives you an extra five hearts when you spawn."
 
 death-messages:
   void:

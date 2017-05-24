@@ -6,9 +6,11 @@ import org.bukkit.inventory.ItemStack;
 
 public enum HealthBoost implements Purchasable {
 	
-	HEALTH_BOOST_I("Health Boost I", 250000),
-	HEALTH_BOOST_II("Health Boost II", 500000),
-	HEALTH_BOOST_III("Health Boost III", 1000000);
+	HEALTH_BOOST_I("Health Boost I", 20000),
+	HEALTH_BOOST_II("Health Boost II", 40000),
+	HEALTH_BOOST_III("Health Boost III", 60000),
+	HEALTH_BOOST_IV("Health Boost IV", 80000),
+	HEALTH_BOOST_V("Health Boost V", 100000);
 
 	private final String name;
 	private final int price;

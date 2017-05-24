@@ -130,6 +130,10 @@ public class GameListener implements Listener {
                 health = 28;
             } else if (purchases.contains(HealthBoost.HEALTH_BOOST_III)) {
                 health = 30;
+            } else if (purchases.contains(HealthBoost.HEALTH_BOOST_IV)) {
+                health = 32;
+            } else if (purchases.contains(HealthBoost.HEALTH_BOOST_V)) {
+                health = 34;
             }
 
             bp.setMaxHealth(health);
