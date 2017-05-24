@@ -74,7 +74,7 @@ public class KitSelectorMenu implements Listener {
 		
 		String title = event.getClickedInventory().getTitle();
 		
-		if (!title.contains(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Kit Selector")) {
+		if (!title.contains(ChatColor.AQUA + ChatColor.BOLD.toString() + "Kit Selector")) {
             return;
         }
 		
