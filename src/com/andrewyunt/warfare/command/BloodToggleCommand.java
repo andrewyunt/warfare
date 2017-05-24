@@ -31,7 +31,7 @@ public class BloodToggleCommand implements CommandExecutor {
 
         GamePlayer player = Warfare.getInstance().getPlayerManager().getPlayer(sender.getName());
 
-        boolean hasBloodEffect = !player.getHasBloodEffect();
+        boolean hasBloodEffect = !player.isHasBloodEffect();
 
         player.setHasBloodEffect(hasBloodEffect);
 

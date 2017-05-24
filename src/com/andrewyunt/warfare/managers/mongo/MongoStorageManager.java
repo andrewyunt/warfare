@@ -328,7 +328,7 @@ public class MongoStorageManager extends StorageManager{
             cages.forEach(cage -> {
                 String name = cage.getString("name");
                 Document location = cage.get("location", Document.class);
-                arena.addCageLocation(name, deserializeLocation(location));
+                arena.getCageLocations().put(name, deserializeLocation(location));
             });
             List<Document> chests = document.get("chests", List.class);
             arena.setLootChests(chests.stream()

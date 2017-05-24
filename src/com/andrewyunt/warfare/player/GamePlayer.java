@@ -1,4 +1,3 @@
-
 package com.andrewyunt.warfare.player;
 
 import com.andrewyunt.warfare.Warfare;
@@ -7,6 +6,8 @@ import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -17,18 +18,19 @@ import java.util.*;
 
 public class GamePlayer {
 	
-	private UUID uuid;
-	private String name;
-	private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
-	private boolean loaded, spectating, sentActivate, hasFallen, hasBloodEffect, explosiveWeaknessCooldown, hasPlayed;
-	private GamePlayer lastDamager;
-	private Kit selectedKit;
-	private Powerup selectedPowerup;
-	private Map<Purchasable, Integer> purchases = new HashMap<>();
+	@Getter private UUID UUID;
+	@Getter private String name;
+	@Getter @Setter private int points;
+	@Getter private int coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
+	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
+	@Getter private boolean spectating, sentActivate;
+	@Getter @Setter private GamePlayer lastDamager;
+	@Getter private Kit selectedKit;
+	@Getter private Powerup selectedPowerup;
+	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
 	
-	public GamePlayer(UUID uuid) {
-		
-		this.uuid = uuid;
+	public GamePlayer(UUID UUID) {
+		this.UUID = UUID;
 
 		for (Powerup powerup : Powerup.values()) {
 			if (!purchases.containsKey(powerup)) {
@@ -38,30 +40,14 @@ public class GamePlayer {
 
 		// Register health objective for game servers
 		if (!StaticConfiguration.LOBBY) {
-			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(uuid).getScoreboard()
+			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(UUID).getScoreboard()
 					.registerNewObjective(ChatColor.RED + "❤", "health");
 			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 		}
 	}
 	
-	public UUID getUUID() {
-		
-		return uuid;
-	}
-	
 	public Player getBukkitPlayer() {
-		
-		return Bukkit.getServer().getPlayer(uuid);
-	}
-
-	public int getPoints() {
-
-		return points;
-	}
-
-	public void setPoints(int points) {
-
-		this.points = points;
+		return Bukkit.getServer().getPlayer(UUID);
 	}
 
 	public int getLevel() {
@@ -75,11 +61,6 @@ public class GamePlayer {
 		}
 	}
 	
-	public int getCoins() {
-		
-		return coins;
-	}
-	
 	public void setEarnedCoins(int earnedCoins) {
 		if (!Objects.equals(earnedCoins, this.earnedCoins)) {
             this.earnedCoins = earnedCoins;
@@ -87,20 +68,11 @@ public class GamePlayer {
         }
 	}
 	
-	public int getEarnedCoins() {
-		
-		return earnedCoins;
-	}
-	
 	public void setWins(int wins) {
 	    if (!Objects.equals(wins, this.wins)) {
             this.wins = wins;
             update();
         }
-	}
-	
-	public int getWins() {
-		return wins;
 	}
 
 	public void setLosses(int losses) {
@@ -110,10 +82,6 @@ public class GamePlayer {
 		}
 	}
 
-	public int getLosses() {
-		return losses;
-	}
-
 	public void setGamesPlayed(int gamesPlayed) {
 		if (!Objects.equals(gamesPlayed, this.gamesPlayed)) {
 			this.gamesPlayed = gamesPlayed;
@@ -121,12 +89,7 @@ public class GamePlayer {
 		}
 	}
 
-	public int getGamesPlayed() {
-		return gamesPlayed;
-	}
-
 	public void addKill() {
-
 		this.killStreak = killStreak + 1;
 		
 		setKills(kills + 1);
@@ -138,16 +101,6 @@ public class GamePlayer {
             update();
         }
 	}
-	
-	public int getKills() {
-		
-		return kills;
-	}
-
-	public int getKillStreak() {
-
-		return killStreak;
-	}
 
 	public void setDeaths(int deaths) {
 		if (!Objects.equals(deaths, this.deaths)) {
@@ -156,18 +109,8 @@ public class GamePlayer {
 		}
 	}
 
-	public int getDeaths() {
-		return deaths;
-	}
-
 	public void addEnergy(int energy) {
-
 		setEnergy(this.energy + energy);
-	}
-
-	public void removeEnergy(int energy) {
-
-		setEnergy(this.energy - energy);
 	}
 
 	public void setEnergy(int energy) {
@@ -191,72 +134,9 @@ public class GamePlayer {
 		getBukkitPlayer().setLevel(this.energy);
 		getBukkitPlayer().setExp(this.energy / 100.0F);
 	}
-
-	public int getEnergy() {
-
-		return this.energy;
-	}
-	
-	public void setLoaded(boolean loaded) {
-		
-		this.loaded = loaded;
-	}
-	
-	public boolean isLoaded() {
-		
-		return loaded;
-	}
-	
-	public void setHasFallen(boolean hasFallen) {
-		
-		this.hasFallen = hasFallen;
-	}
-	
-	public boolean hasFallen() {
-		
-		return hasFallen;
-	}
-
-	public void setHasBloodEffect(boolean hasBloodEffect) {
-
-		this.hasBloodEffect = hasBloodEffect;
-	}
-
-	public boolean getHasBloodEffect() {
-
-		return hasBloodEffect;
-	}
-
-	public void setExplosiveWeaknessCooldown(boolean explosiveWeaknessCooldown) {
-
-		this.explosiveWeaknessCooldown = explosiveWeaknessCooldown;
-	}
-
-	public boolean isExplosiveWeaknessCooldown() {
-
-		return explosiveWeaknessCooldown;
-	}
-
-	public void setHasPlayed(boolean hasPlayed) {
-		this.hasPlayed = hasPlayed;
-	}
-
-	public boolean hasPlayed() {
-		return hasPlayed;
-	}
 	
 	public boolean isInGame() {
 		return Warfare.getInstance().getGame().getPlayers().contains(this);
-	}
-	
-	public void setLastDamager(GamePlayer lastDamager) {
-		
-		this.lastDamager = lastDamager;
-	}
-	
-	public GamePlayer getLastDamager() {
-		
-		return lastDamager;
 	}
 	
 	public void setSelectedKit(Kit selectedKit) {
@@ -265,12 +145,8 @@ public class GamePlayer {
             update();
         }
 	}
-	
-	public Kit getSelectedKit() {
-		return selectedKit;
-	}
 
-	public Kit getSelectedKitOrPot(){
+	public Kit getSelectedKitOrPot() {
         return selectedKit == null ? Kit.POT : selectedKit;
     }
 
@@ -279,10 +155,6 @@ public class GamePlayer {
 			this.selectedPowerup = selectedPowerup;
 			update();
 		}
-	}
-
-	public Powerup getSelectedPowerup() {
-		return selectedPowerup;
 	}
 
 	public Location setSpectating(boolean spectating, boolean respawn) {
@@ -332,34 +204,16 @@ public class GamePlayer {
 		
 		return null;
 	}
-	
-	public boolean isSpectating() {
-		
-		return spectating;
-	}
-
-	public void setPurchases(Map<Purchasable, Integer> purchases) {
-
-		this.purchases = purchases;
-	}
-	
-	public Map<Purchasable, Integer> getPurchases() {
-		
-		return purchases;
-	}
 
 	public int getLevel(Purchasable purchasable) {
-
 		return purchases.get(purchasable);
 	}
 	
 	public boolean isCaged() {
-		
 		return getCage() != null;
 	}
 	
 	public Cage getCage() {
-		
 		if (StaticConfiguration.LOBBY) {
             return null;
         }
@@ -372,10 +226,6 @@ public class GamePlayer {
 		
 		return null;
 	}
-
-    public String getName() {
-        return name;
-    }
 
     public void setName(String name) {
 	    if(!Objects.equals(name, this.name)) {

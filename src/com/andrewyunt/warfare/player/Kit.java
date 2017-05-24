@@ -2,6 +2,7 @@
 package com.andrewyunt.warfare.player;
 
 import com.andrewyunt.warfare.player.GamePlayer;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -14,16 +15,11 @@ public enum Kit {
 	POT("Pot"),
 	SOUP("Soup");
 	
-	private final String name;
+	@Getter private final String name;
 	
 	Kit(String name) {
 		
 		this.name = name;
-	}
-	
-	public String getName() {
-		
-		return name;
 	}
 	
 	public void giveItems(GamePlayer player) {

@@ -1,13 +1,15 @@
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.player.Party;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class PartyManager {
-    private Set<Party> parties = new HashSet<>();
+
+    @Getter private Set<Party> parties = new HashSet<>();
 
     public Party createParty(UUID leader) {
         Party party = new Party(leader);
@@ -17,10 +19,6 @@ public class PartyManager {
 
     public void deleteParty(Party party) {
         parties.remove(party);
-    }
-
-    public Set<Party> getParties() {
-        return parties;
     }
 
     public Party getParty(UUID uuid) {

@@ -215,7 +215,7 @@ public class Utils {
 				continue;
 			}
 
-			if (!gp.getHasBloodEffect()) {
+			if (!gp.isHasBloodEffect()) {
 				continue;
 			}
 

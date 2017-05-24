@@ -1,10 +1,10 @@
-
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.lobby.SignException;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.lobby.SignDisplay.Type;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 
 public class SignManager {
     private final Warfare warfare;
-	private final Set<SignDisplay> signs = new HashSet<>();
+
+    @Getter private final Set<SignDisplay> signs = new HashSet<>();
 
     public SignManager(Warfare warfare) {
         this.warfare = warfare;
@@ -58,17 +59,6 @@ public class SignManager {
 	}
 
 	/**
-	 * Gets all registered signs on the server.
-	 * 
-	 * @return
-	 * 		A collection of all registered signs on the server.
-	 */
-	public Set<SignDisplay> getSigns() {
-
-		return signs;
-	}
-
-	/**
 	 * Gets a registered sign of the specified name.
 	 * 
 	 * @param loc
@@ -98,7 +88,7 @@ public class SignManager {
 		} catch (SignException e) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

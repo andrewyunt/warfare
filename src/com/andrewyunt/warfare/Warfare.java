@@ -34,6 +34,8 @@ import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.google.common.io.ByteStreams;
+import lombok.Getter;
+import lombok.Setter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -47,38 +49,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class Warfare extends JavaPlugin implements PluginMessageListener {
-	
-	private static Warfare instance;
 
-    public static Permission permission = null;
-    public static Economy economy = null;
-    public static Chat chat = null;
+	@Getter private static Warfare instance;
+	@Getter private static Permission permission = null;
+	@Getter private static Economy economy = null;
+	@Getter private static Chat chat = null;
 
-    public static Permission getPermission() {
-        return permission;
-    }
-
-    public static Economy getEconomy() {
-        return economy;
-    }
-
-    public static Chat getChat() {
-        return chat;
-    }
-	
-	private StorageManager storageManager;
-	private PlayerManager playerManager;
-	private SignManager signManager;
-	private PartyManager partyManager;
-	private ServerConfiguration serverConfiguration;
-	private ShopMenu shopMenu;
-	private PlayMenu playMenu;
-	private KitSelectorMenu kitSelectorMenu;
-	private PowerupSelectorMenu powerupSelectorMenu;
-	private TeleporterMenu teleporterMenu;
-	private ScoreboardHandler scoreboardHandler;
-	private Arena arena;
-	private Game game;
+	@Getter private StorageManager storageManager;
+	@Getter private PlayerManager playerManager;
+	@Getter private SignManager signManager;
+	@Getter private PartyManager partyManager;
+	@Getter private ServerConfiguration serverConfiguration;
+	@Getter private ShopMenu shopMenu;
+	@Getter private PlayMenu playMenu;
+	@Getter private KitSelectorMenu kitSelectorMenu;
+	@Getter private PowerupSelectorMenu powerupSelectorMenu;
+	@Getter private TeleporterMenu teleporterMenu;
+	@Getter private ScoreboardHandler scoreboardHandler;
+	@Getter private Arena arena;
+	@Getter @Setter private Game game;
 	
 	@Override
 	public void onEnable() {
@@ -234,80 +223,5 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		if (economyProvider != null) {
 			economy = economyProvider.getProvider();
 		}
-	}
-	
-	public static Warfare getInstance() {
-		
-		return instance;
-	}
-	
-	public StorageManager getStorageManager() {
-		
-		return storageManager;
-	}
-	
-	public PlayerManager getPlayerManager() {
-		
-		return playerManager;
-	}
-	
-	public SignManager getSignManager() {
-		
-		return signManager;
-	}
-
-	public PartyManager getPartyManager() {
-
-		return partyManager;
-	}
-
-	public Arena getArena() {
-		
-		return arena;
-	}
-	
-	public Game getGame() {
-		
-		return game;
-	}
-	
-	public void setGame(Game game) {
-		
-		this.game = game;
-	}
-
-	public ServerConfiguration getServerConfiguration() {
-
-		return serverConfiguration;
-	}
-	
-	public ShopMenu getShopMenu() {
-		
-		return shopMenu;
-	}
-
-	public PlayMenu getPlayMenu() {
-
-		return playMenu;
-	}
-	
-	public KitSelectorMenu getKitSelectorMenu() {
-		
-		return kitSelectorMenu;
-	}
-
-	public PowerupSelectorMenu getPowerupSelectorMenu() {
-
-		return powerupSelectorMenu;
-	}
-	
-	public TeleporterMenu getTeleporterMenu() {
-		
-		return teleporterMenu;
-	}
-
-	public ScoreboardHandler getScoreboardHandler() {
-
-		return scoreboardHandler;
 	}
 }

@@ -2,6 +2,7 @@ package com.andrewyunt.warfare.scoreboard;
 
 import com.andrewyunt.warfare.Warfare;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -11,11 +12,11 @@ import org.bukkit.scoreboard.Team;
 public class PlayerBoard {
 
     public final BufferedObjective bufferedObjective;
-    private final Scoreboard scoreboard;
-    private final Player player;
-    private boolean sidebarVisible;
-    private boolean removed;
-    private SidebarProvider defaultProvider;
+    @Getter private final Scoreboard scoreboard;
+    @Getter private final Player player;
+    @Getter private boolean sidebarVisible;
+    @Getter private boolean removed;
+    @Getter private SidebarProvider defaultProvider;
 
     public PlayerBoard(final Player player) {
 
@@ -40,21 +41,6 @@ public class PlayerBoard {
                 }
             }
         }
-    }
-
-    public Player getPlayer() {
-
-        return this.player;
-    }
-
-    public Scoreboard getScoreboard() {
-
-        return this.scoreboard;
-    }
-
-    public boolean isSidebarVisible() {
-
-        return this.sidebarVisible;
     }
 
     public void setSidebarVisible(final boolean visible) {
@@ -88,15 +74,5 @@ public class PlayerBoard {
                 this.bufferedObjective.flip();
             }
         }
-    }
-
-    public boolean isRemoved() {
-
-        return removed;
-    }
-
-    public SidebarProvider getDefaultProvider() {
-
-        return defaultProvider;
     }
 }

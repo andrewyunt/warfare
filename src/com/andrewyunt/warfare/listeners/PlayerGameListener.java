@@ -402,7 +402,7 @@ public class PlayerGameListener extends PlayerListener {
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(((Player) event.getEntity()).getName());
 
-        if (gp.isInGame() && !gp.hasFallen()) {
+        if (gp.isInGame() && !gp.isHasFallen()) {
             gp.setHasFallen(true);
             event.setCancelled(true);
         }

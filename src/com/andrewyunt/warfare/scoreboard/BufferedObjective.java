@@ -13,11 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 public class BufferedObjective {
-
-    private static final int MAX_SIDEBAR_ENTRIES = 16;
-    private static final int MAX_NAME_LENGTH = 16;
-    private static final int MAX_PREFIX_LENGTH = 16;
-    private static final int MAX_SUFFIX_LENGTH = 16;
     private final Scoreboard scoreboard;
     private Set<String> previousLines;
     private TIntObjectHashMap<SidebarEntry> contents;

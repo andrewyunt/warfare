@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
+import lombok.Getter;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,8 +16,8 @@ import org.bukkit.util.Vector;
 
 public class Cage {
 	
-	private String name;
-	private GamePlayer player;
+	@Getter private String name;
+	@Getter private GamePlayer player;
 
 	private final Location location;
 	private final Set<Block> blocks = new HashSet<>();
@@ -56,12 +57,7 @@ public class Cage {
             block.setType(Material.GLASS);
         }
 	}
-	
-	public String getName() {
-		
-		return name;
-	}
-	
+
 	public void setPlayer(GamePlayer player) {
 		
 		this.player = player;
@@ -90,17 +86,8 @@ public class Cage {
 		player.getBukkitPlayer().teleport(location);
 	}
 	
-	public GamePlayer getPlayer() {
-		return player;
-	}
-	
 	public boolean hasPlayer() {
 		return player != null;
-	}
-	
-	public Set<Block> getBlocks() {
-		
-		return blocks;
 	}
 	
 	public void destroy() {
