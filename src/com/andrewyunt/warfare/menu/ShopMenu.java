@@ -1,4 +1,3 @@
-
 package com.andrewyunt.warfare.menu;
 
 import java.text.NumberFormat;
@@ -241,13 +240,13 @@ public class ShopMenu implements Listener {
 					|| name.equals(ChatColor.GOLD + "Health Boosts")) {
                 return;
             }
-			
+
 			if (!im.hasLore()) {
                 return;
             }
-			
-			if (im.getLore().contains(ChatColor.GOLD + "Purchased")) {
-				player.sendMessage(ChatColor.RED + "You have already purchased that item.");
+
+			if (im.getLore().contains(ChatColor.GREEN + "Purchased")) {
+				player.sendMessage(ChatColor.RED + "You've already purchased this item in the shop.");
 				return;
 			}
 
