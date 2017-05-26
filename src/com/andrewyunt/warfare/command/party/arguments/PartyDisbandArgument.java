@@ -15,6 +15,7 @@ public class PartyDisbandArgument extends CommandArgument {
         super("disband", "Disband your party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.disband";
     }
 
     public String getUsage(String s) {

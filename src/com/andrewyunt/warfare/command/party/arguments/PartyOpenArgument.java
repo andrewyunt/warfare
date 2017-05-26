@@ -15,6 +15,7 @@ public class PartyOpenArgument extends CommandArgument {
         super("open", "Open/close your party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.open";
     }
 
     public String getUsage(String s) {

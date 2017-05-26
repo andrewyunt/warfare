@@ -16,6 +16,7 @@ public class RemoveCoinsArgument extends CommandArgument {
         super("removecoins", "Remove coins from a player's balance");
 
         isPlayerOnly = true;
+        permission = "warfare.removecoins";
     }
 
     public String getUsage(String s) {

@@ -16,6 +16,7 @@ public class EditArgument extends CommandArgument {
         super("edit", "Put the server in edit mode");
 
         isPlayerOnly = true;
+        permission = "warfare.edit";
     }
 
     public String getUsage(String s) {

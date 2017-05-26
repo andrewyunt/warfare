@@ -15,6 +15,7 @@ public class PartyLeaveArgument extends CommandArgument {
         super("leave", "Leave your current party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.leave";
     }
 
     public String getUsage(String s) {

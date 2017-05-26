@@ -16,6 +16,7 @@ public class AddCoinsArgument extends CommandArgument {
         super("addcoins", "Add coins to a player's balance");
 
         isPlayerOnly = true;
+        permission = "warfare.addcoins";
     }
 
     public String getUsage(String s) {

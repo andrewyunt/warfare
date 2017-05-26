@@ -17,6 +17,7 @@ public class PartyJoinArgument extends CommandArgument {
         super("join", "Join an exiting party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.join";
     }
 
     public String getUsage(String s) {

@@ -18,6 +18,7 @@ public class PartyKickArgument extends CommandArgument{
         super("kick", "Kick a player from your party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.kick";
     }
 
     public String getUsage(String s) {

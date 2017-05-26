@@ -16,6 +16,7 @@ public class AddCageArgument extends CommandArgument {
         super("addcage", "Add a cage to the map");
 
         isPlayerOnly = true;
+        permission = "warfare.addcage";
     }
 
     public String getUsage(String s) {

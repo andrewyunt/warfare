@@ -14,6 +14,7 @@ public class RemoveCageArgument extends CommandArgument {
         super("removecage", "Remove a cage from the map");
 
         isPlayerOnly = true;
+        permission = "warfare.removecage";
     }
 
     public String getUsage(String s) {

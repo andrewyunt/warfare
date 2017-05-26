@@ -18,6 +18,7 @@ public class PartyInviteArgument extends CommandArgument{
         super("invite", "Invite a player to your party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.invite";
     }
 
     public String getUsage(String s)

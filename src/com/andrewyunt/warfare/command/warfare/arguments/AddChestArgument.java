@@ -19,6 +19,7 @@ public class AddChestArgument extends CommandArgument {
         super("addchest", "Adds a loot chest to the map");
 
         isPlayerOnly = true;
+        permission = "warfare.addchest";
     }
 
     public String getUsage(String s) {

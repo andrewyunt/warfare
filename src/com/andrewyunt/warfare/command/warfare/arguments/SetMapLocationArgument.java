@@ -15,6 +15,7 @@ public class SetMapLocationArgument extends CommandArgument {
         super("setmaplocation", "Sets map spawn location");
 
         isPlayerOnly = true;
+        permission = "warfare.setmaplocation";
     }
 
     public String getUsage(String s) {

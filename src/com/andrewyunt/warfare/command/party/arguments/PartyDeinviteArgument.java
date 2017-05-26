@@ -18,6 +18,7 @@ public class PartyDeinviteArgument extends CommandArgument {
         super("deinvite", "Remove a player's invite to your party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.deinvite";
     }
 
     public String getUsage(String s)  {

@@ -14,6 +14,7 @@ public class PartyCreateArgument extends CommandArgument {
         super("create", "Create a party");
 
         this.isPlayerOnly = true;
+        permission = "warfare.party.create";
     }
 
     public String getUsage(String s) {

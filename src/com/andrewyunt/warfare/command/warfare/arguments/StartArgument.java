@@ -14,6 +14,7 @@ public class StartArgument extends CommandArgument{
         super("start", "Start the game");
 
         isPlayerOnly = true;
+        permission = "warfare.start";
     }
 
     public String getUsage(String s) {

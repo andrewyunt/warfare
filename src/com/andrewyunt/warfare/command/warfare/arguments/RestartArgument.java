@@ -14,6 +14,7 @@ public class RestartArgument extends CommandArgument {
         super("restart", "Restart the server");
 
         isPlayerOnly = true;
+        permission = "warfare.restart";
     }
 
     public String getUsage(String s) {
