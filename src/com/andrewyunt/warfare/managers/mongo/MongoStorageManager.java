@@ -108,9 +108,10 @@ public class MongoStorageManager extends StorageManager{
         document.put("coins", player.getCoins());
         document.put("earnedCoins", player.getEarnedCoins());
         document.put("kills", player.getKills());
+        document.put("deaths", player.getDeaths());
+        document.put("kdr", player.getKills() / player.getDeaths());
         document.put("wins", player.getWins());
         document.put("losses", player.getLosses());
-        document.put("deaths", player.getDeaths());
         document.put("gamesPlayed", player.getGamesPlayed());
         document.put("purchases", player.getPurchases().entrySet().stream().map(entry -> {
             Document purchase = new Document();

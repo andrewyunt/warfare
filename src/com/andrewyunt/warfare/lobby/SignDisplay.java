@@ -1,6 +1,7 @@
 package com.andrewyunt.warfare.lobby;
 
 import com.andrewyunt.warfare.Warfare;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -16,27 +17,20 @@ import java.util.Map.Entry;
  */
 public class SignDisplay {
 
-	private Sign bukkitSign;
-	private final Type type;
-	private final int place;
+	@Getter private Sign bukkitSign;
+	@Getter private final Type type;
+	@Getter private final int place;
 	
 	public enum Type {
 		KILLS_LEADERBOARD("kills"),
-		WINS_LEADERBOARD("wins");
+		WINS_LEADERBOARD("wins"),
+		KDR_LEADERBOARD("kdr");
 
-		private final String id;
+		@Getter private final String id;
 
 		Type(String id) {
 			this.id = id;
 		}
-
-		public String getId() {
-			return id;
-		}
-
-		public String id(){
-		    return id;
-        }
 	}
 	
 	/**
@@ -48,42 +42,26 @@ public class SignDisplay {
 	 * 		The place on the leaderboard the sign should display.
 	 */
 	public SignDisplay(Location loc, Type type, int place) {
-
 		this.type = type;
 		this.place = place;
 		
 		Block block = loc.getWorld().getBlockAt(loc);
 
-		if(block.getState() instanceof Sign){
+		if (block.getState() instanceof Sign) {
             bukkitSign = (Sign) block.getState();
         }
 	}
 	
-	public Type getType() {
-		
-		return type;
-	}
-	
-	public Sign getBukkitSign() {
-		
-		return bukkitSign;
-	}
-
-	public int getPlace() {
-
-		return place;
-	}
-	
-	public void refresh(Map<Integer, Entry<Object, Integer>> mostKills) {
-	    if(bukkitSign != null) {
-            Entry<Object, Integer> entry = mostKills.get(place);
+	public void refresh(Map<Integer, Entry<Object, Integer>> topPlayers) {
+	    if (bukkitSign != null) {
+            Entry<Object, Integer> entry = topPlayers.get(place);
             String name = (String) entry.getKey();
             bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
             bukkitSign.setLine(1, name);
-            bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD ? " Kills" : " Wins"));
+            bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD
+					? " Kills" : type == Type.WINS_LEADERBOARD ? " Wins" : "KDR"));
             bukkitSign.update();
-        }
-        else{
+        } else {
 	        Warfare.getInstance().getLogger().info("Failed to update sign " + type.name() + " #" + place);
         }
 	}

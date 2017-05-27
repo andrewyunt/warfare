@@ -169,12 +169,18 @@ public class PlayerLobbyListener extends PlayerListener {
 
         SignDisplay.Type type = null;
 
-        if (event.getLine(1).equalsIgnoreCase("kills")) {
-            type = SignDisplay.Type.KILLS_LEADERBOARD;
-        } else if (event.getLine(1).equalsIgnoreCase("wins")) {
-            type = SignDisplay.Type.WINS_LEADERBOARD;
-        } else {
-            return;
+        switch (event.getLine(1)) {
+            case "kills":
+                type = SignDisplay.Type.KILLS_LEADERBOARD;
+                break;
+            case "wins":
+                type = SignDisplay.Type.WINS_LEADERBOARD;
+                break;
+            case "kdr":
+                type = SignDisplay.Type.KDR_LEADERBOARD;
+                break;
+            default:
+                return;
         }
 
         int place;
