@@ -18,7 +18,6 @@ public enum Perk implements Purchasable {
     WEAKENING_ARROW("Weakening Arrow"),
     RECHARGE("Recharge"),
     FLURRY("Flurry"),
-    EXPLOSIVE_WEAKNESS("Explosive Weakness"),
     SUPPORT("Support"),
     WEAKENING_SWING("Weakening Swing"),
     SWIFT_BACKUP("Swift Backup"),
@@ -64,8 +63,6 @@ public enum Perk implements Purchasable {
             return new Potion(PotionType.REGEN, 2).toItemStack(1);
         } else if (this == FLURRY) {
             return new ItemStack(Material.FEATHER);
-        } else if (this == EXPLOSIVE_WEAKNESS) {
-            return new ItemStack(Material.MONSTER_EGG, 1, (short) 50);
         } else if (this == SUPPORT) {
             return new ItemStack(Material.TNT);
         } else if (this == WEAKENING_SWING) {

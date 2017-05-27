@@ -148,10 +148,6 @@ descriptions:
     0:
     - "10% chance to gain Speed I"
     - "for 2 seconds upon hitting an enemy"
-  EXPLOSIVE_WEAKNESS:
-    0:
-    - "Detonate an explosion when you reach 3.5 hearts and"
-    - "gain Speed II for 3 seconds. 30 second cooldown!"
   SUPPORT:
     0:
     - "6% chance to summon a Primed TNT which explodes"

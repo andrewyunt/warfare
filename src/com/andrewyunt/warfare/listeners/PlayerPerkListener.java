@@ -41,7 +41,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class PlayerPerkListener implements Listener {
 
     private HashMap<UUID, Player> creeperTNT = new HashMap<>();
-    private HashMap<UUID, GamePlayer> explosiveWeaknessTNT = new HashMap<>();
 
     @EventHandler
     public void removeEffects(PlayerDeathEvent e) {
@@ -375,73 +374,6 @@ public class PlayerPerkListener implements Listener {
         damager.sendMessage(ChatColor.YELLOW + String.format(
                 "Your %s perk has been activated!",
                 ChatColor.GOLD + Perk.FLURRY.getName() + ChatColor.YELLOW));
-    }
-
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void explosiveWeakness(EntityDamageByEntityEvent event) {
-        explosiveWeakness(event.getEntity());
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void explosiveWeakness(EntityRegainHealthEvent event) {
-
-        if (event.isCancelled()) {
-            return;
-        }
-
-        explosiveWeakness(event.getEntity());
-    }
-
-    public void explosiveWeakness(Entity entity) {
-
-        // Check if the entity is player
-        if (!(entity instanceof Player)) {
-            return;
-        }
-
-        // Casting to players
-        Player player = (Player) entity;
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
-
-        // Check if players are in-game
-        if (!gp.isInGame()) {
-            return;
-        }
-
-        if (!gp.getPurchases().keySet().contains(Perk.EXPLOSIVE_WEAKNESS)) {
-            return;
-        }
-
-        if (gp.isExplosiveWeaknessCooldown()) {
-            return;
-        }
-
-        if (player.getHealth() <= 7) {
-            return;
-        }
-
-        Location loc = entity.getLocation().clone();
-
-        loc.getWorld().playEffect(loc, Effect.EXPLOSION_HUGE, 4, 4);
-
-        for(Entity other: player.getNearbyEntities(4, 4, 4)){
-            if(other != player && other instanceof Damageable){
-                ((Damageable) other).damage(5, player);
-            }
-        }
-
-        loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), 4, false, false);
-
-        gp.setExplosiveWeaknessCooldown(true);
-
-        final GamePlayer finalGP = gp;
-
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> finalGP.setExplosiveWeaknessCooldown(false), 600L);
-
-        player.sendMessage(ChatColor.YELLOW + String.format(
-                "Your %s perk has been activated!",
-                ChatColor.GOLD + Perk.EXPLOSIVE_WEAKNESS.getName() + ChatColor.YELLOW));
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
