@@ -82,7 +82,8 @@ public class Cage {
 		vector.setY(0.5);
 
 		location.setDirection(vector);
-		
+		location.setPitch(0);
+
 		player.getBukkitPlayer().teleport(location);
 	}
 	
