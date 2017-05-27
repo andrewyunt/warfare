@@ -249,19 +249,12 @@ public class PlayerGameListener extends PlayerListener {
 
         lastDamager.addKill();
 
-        Player lastDamagerBP = lastDamager.getBukkitPlayer();
-        int killCoins = 20;
-
-        if (lastDamagerBP.hasPermission("warfare.coins.double")) {
-            killCoins = 40;
-        }
-        if (lastDamagerBP.hasPermission("warfare.coins.triple")) {
-            killCoins = 60;
-        }
-
-        lastDamager.setCoins(lastDamager.getCoins() + killCoins);
+        int killCoins = 20 * lastDamager.getBoost();
+        lastDamager.setCoins(lastDamager.getCoins() + lastDamager.getBoost());
         lastDamager.setPoints(lastDamager.getPoints() + 5);
-        lastDamagerBP.sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
+        lastDamager.getBukkitPlayer().sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD
+                + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD
+                + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
 
         Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
             if(player.isOnline()){

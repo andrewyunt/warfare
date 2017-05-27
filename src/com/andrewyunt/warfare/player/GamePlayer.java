@@ -21,7 +21,7 @@ public class GamePlayer {
 	@Getter private UUID UUID;
 	@Getter private String name;
 	@Getter @Setter private int points;
-	@Getter private int coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
+	@Getter private int coins, earnedCoins, wins, losses, boost, gamesPlayed, kills, killStreak, deaths, energy;
 	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	@Getter private boolean spectating, sentActivate;
 	@Getter @Setter private GamePlayer lastDamager;
@@ -78,6 +78,13 @@ public class GamePlayer {
 	public void setLosses(int losses) {
 		if (!Objects.equals(losses, this.losses)) {
 			this.losses = losses;
+			update();
+		}
+	}
+
+	public void setBoost(int boost) {
+		if (!Objects.equals(boost, this.boost)) {
+			this.boost = boost;
 			update();
 		}
 	}

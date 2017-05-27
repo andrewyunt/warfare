@@ -12,6 +12,7 @@ public class WarfareCommand extends ArgumentExecutor {
 		addArgument(new AddCoinsArgument());
 		addArgument(new RemoveCoinsArgument());
 		addArgument(new SetLevelArgument());
+		addArgument(new SetBoostArgument());
 		addArgument(new AddCageArgument());
 		addArgument(new RemoveCageArgument());
 		addArgument(new AddChestArgument());

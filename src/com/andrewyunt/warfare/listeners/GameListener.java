@@ -158,15 +158,7 @@ public class GameListener implements Listener {
                 Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
                         String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
 
-                int winCoins = 1000;
-
-                if (player.getBukkitPlayer().hasPermission("Warfare.coins.double")) {
-                    winCoins = 400;
-                }
-
-                if (player.getBukkitPlayer().hasPermission("Warfare.coins.triple")) {
-                    winCoins = 600;
-                }
+                int winCoins = 1000 * player.getBoost();
 
                 player.setCoins(player.getCoins() + winCoins);
                 player.setPoints(player.getPoints() + 30);

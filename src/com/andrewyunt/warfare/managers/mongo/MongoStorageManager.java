@@ -107,6 +107,7 @@ public class MongoStorageManager extends StorageManager{
         document.put("points", player.getPoints());
         document.put("coins", player.getCoins());
         document.put("earnedCoins", player.getEarnedCoins());
+        document.put("boost", player.getBoost());
         document.put("kills", player.getKills());
         document.put("deaths", player.getDeaths());
         document.put("kdr", player.getKills() / player.getDeaths());
@@ -145,6 +146,7 @@ public class MongoStorageManager extends StorageManager{
             player.setPoints(document.getInteger("points", 0));
             player.setCoins(document.getInteger("coins", 0));
             player.setEarnedCoins(document.getInteger("earnedCoins", 0));
+            player.setBoost(document.getInteger("boost"));
             player.setKills(document.getInteger("kills", 0));
             player.setWins(document.getInteger("wins", 0));
             player.setLosses(document.getInteger("losses", 0));
