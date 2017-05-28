@@ -50,7 +50,7 @@ public class GamePlayer {
 	}
 
 	public int getLevel() {
-		return (int) Math.floor(points / 150) + 1;
+		return (int) Math.floor(points / 150);
 	}
 
 	public void setPoints(int points) {
