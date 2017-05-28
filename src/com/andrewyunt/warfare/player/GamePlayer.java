@@ -20,7 +20,7 @@ public class GamePlayer {
 	
 	@Getter private UUID UUID;
 	@Getter private String name;
-	@Getter private int points, coins, earnedCoins, wins, losses, boost, gamesPlayed, kills, killStreak, deaths, energy;
+	@Getter private int points, coins, earnedCoins, wins, losses, boost = 1, gamesPlayed, kills, killStreak, deaths, energy;
 	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	@Getter private boolean spectating, sentActivate;
 	@Getter @Setter private GamePlayer lastDamager;
