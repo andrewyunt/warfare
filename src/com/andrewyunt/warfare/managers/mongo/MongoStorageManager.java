@@ -120,7 +120,11 @@ public class MongoStorageManager extends StorageManager{
         document.put("boost", player.getBoost());
         document.put("kills", player.getKills());
         document.put("deaths", player.getDeaths());
-        document.put("kdr", player.getKills() / player.getDeaths());
+        if (player.getDeaths() == 0) {
+            document.put("kdr", player.getDeaths());
+        } else {
+            document.put("kdr", player.getKills() / player.getDeaths());
+        }
         document.put("wins", player.getWins());
         document.put("losses", player.getLosses());
         document.put("gamesPlayed", player.getGamesPlayed());
