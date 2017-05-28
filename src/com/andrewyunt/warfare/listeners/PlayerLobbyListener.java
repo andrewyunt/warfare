@@ -8,10 +8,7 @@ import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.utilities.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class PlayerLobbyListener extends PlayerListener {
 
@@ -46,8 +44,15 @@ public class PlayerLobbyListener extends PlayerListener {
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
 
-        player.teleport(player.getLocation().getWorld().getSpawnLocation());
         Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
+    }
+
+    @EventHandler
+    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
+        Location spawnLocation = event.getPlayer().getLocation().getWorld().getSpawnLocation();
+
+        event.setSpawnLocation(new Location(spawnLocation.getWorld(), spawnLocation.getX() + 0.5,
+                spawnLocation.getY(), spawnLocation.getZ() + 0.5, 90, 0));
     }
 
     @EventHandler
