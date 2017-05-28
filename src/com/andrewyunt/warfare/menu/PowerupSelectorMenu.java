@@ -88,9 +88,15 @@ public class PowerupSelectorMenu implements Listener {
         Powerup powerup = Powerup.valueOf(enumStr);
         if (gp.getLevel(powerup) >= 0) {
             gp.setSelectedPowerup(powerup);
+            player.sendMessage(String.format(ChatColor.YELLOW + "You selected the " + ChatColor.GOLD + "%s"
+                    + ChatColor.YELLOW + " powerup.", name));
         } else {
-            player.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "You must reach lvl "
-                    + powerup.getPlayerLvlNeeded(0) + " to unlock and purchase this powerup.");
+            if (gp.getLevel() < powerup.getPlayerLvlNeeded(0) ) {
+                player.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "You must reach lvl "
+                        + powerup.getPlayerLvlNeeded(0) + " to unlock and purchase this powerup.");
+            } else {
+                player.sendMessage(ChatColor.RED + "You must purchase this powerup before you can select it.");
+            }
         }
     }
 }

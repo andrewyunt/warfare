@@ -97,6 +97,8 @@ public class KitSelectorMenu implements Listener {
 		String enumStr = ChatColor.stripColor(name.toUpperCase().replace(' ', '_')
 				.replace("'", ""));
 		gp.setSelectedKit(Kit.valueOf(enumStr));
+		player.sendMessage(String.format(ChatColor.YELLOW + "You selected the " + ChatColor.GOLD + "%s"
+						+ ChatColor.YELLOW + " kit.", name));
 		player.closeInventory();
 	}
 }
