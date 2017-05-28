@@ -282,8 +282,8 @@ public class ShopMenu implements Listener {
 			gp.getPurchases().put(purchasable, level);
 			gp.update();
 			
-			player.sendMessage(ChatColor.GOLD + String.format("You purchased %s for %s coins.",
-					name, purchasable.getPrice(level)));
+			player.sendMessage(String.format(ChatColor.YELLOW + "You purchased " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " for "
+					+ ChatColor.GOLD + "%s coins" + ChatColor.YELLOW + ".", name, purchasable.getPrice(level)));
 			
 			open(type, gp);
 		}
