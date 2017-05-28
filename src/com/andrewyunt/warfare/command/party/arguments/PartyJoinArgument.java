@@ -57,9 +57,10 @@ public class PartyJoinArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You are not invited to this party");
         } else {
             targetParty.getMembers().add(player.getUniqueId());
+            Warfare.getInstance().getStorageManager().saveParty(targetParty);
+            player.sendMessage(ChatColor.YELLOW + "You joined " + ChatColor.GOLD + args[1] + ChatColor.YELLOW
+                    + "'s party successfully.");
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(targetParty);
 
         return true;
     }

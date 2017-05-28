@@ -48,9 +48,10 @@ public class PartyKickArgument extends CommandArgument{
             player.sendMessage(ChatColor.YELLOW + "That player is not in your party");
         } else {
             party.getMembers().remove(kick);
+            Warfare.getInstance().getStorageManager().saveParty(party);
+            player.sendMessage(ChatColor.YELLOW + "Kicked " + ChatColor.GOLD + args[1] + ChatColor.YELLOW
+                    + " from the party.");
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }

@@ -58,9 +58,12 @@ public class PartyInviteArgument extends CommandArgument{
             player.sendMessage(ChatColor.YELLOW + "That player is already invited");
         } else {
             party.getInvites().add(invited);
+            Warfare.getInstance().getStorageManager().saveParty(party);
+            Bukkit.getPlayer(invited).sendMessage(ChatColor.YELLOW + "You have been invited to " +
+                    ChatColor.GOLD + player.getDisplayName() + ChatColor.YELLOW + "'s party.");
+            player.sendMessage(ChatColor.YELLOW + "Invited " + ChatColor.GOLD + args[1] +
+                    ChatColor.YELLOW + " to the party.");
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }

@@ -49,9 +49,9 @@ public class PartyDeinviteArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "That player was not invited");
         } else {
             party.getInvites().remove(removeUUID);
+            player.sendMessage(ChatColor.GOLD + args[1] + ChatColor.YELLOW + " has been deinvited successfully.");
+            Warfare.getInstance().getStorageManager().saveParty(party);
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }

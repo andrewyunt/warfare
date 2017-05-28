@@ -34,10 +34,9 @@ public class PartyLeaveArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You must disband your party");
         } else {
             party.getMembers().remove(player.getUniqueId());
+            Warfare.getInstance().getStorageManager().saveParty(party);
             player.sendMessage(ChatColor.YELLOW + "You left the party");
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }

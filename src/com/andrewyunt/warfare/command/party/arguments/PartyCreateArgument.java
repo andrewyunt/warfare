@@ -24,6 +24,7 @@ public class PartyCreateArgument extends CommandArgument {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
         PartyManager partyManager = Warfare.getInstance().getPartyManager();
         Player player = (Player) sender;
 
@@ -32,7 +33,7 @@ public class PartyCreateArgument extends CommandArgument {
         } else {
             Party party = partyManager.createParty(player.getUniqueId());
             Warfare.getInstance().getStorageManager().saveParty(party);
-            player.sendMessage(ChatColor.YELLOW + "You created a party");
+            player.sendMessage(ChatColor.YELLOW + "You created a party.");
         }
 
         return true;

@@ -3,10 +3,13 @@ package com.andrewyunt.warfare.command.party.arguments;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.Party;
 import com.faithfulmc.util.command.CommandArgument;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class PartyDisbandArgument extends CommandArgument {
 
@@ -32,11 +35,13 @@ public class PartyDisbandArgument extends CommandArgument {
 
         if (party.getLeader() == player.getUniqueId()) {
             Warfare.getInstance().getPartyManager().deleteParty(party);
+            Warfare.getInstance().getStorageManager().saveParty(party);
+            for (UUID uuid : party.getMembers()) {
+                Bukkit.getPlayer(uuid).sendMessage(ChatColor.YELLOW + "Your party has been disbanded.");
+            }
         } else {
             player.sendMessage(ChatColor.YELLOW + "You need to be the leader of a party to disband it.");
         }
-
-        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }
