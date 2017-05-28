@@ -44,7 +44,7 @@ public class SetLevelArgument extends CommandArgument {
             return false;
         }
 
-        targetGP.setPoints(level * 125);
+        targetGP.setPoints(level * 150);
 
         targetGP.getBukkitPlayer().sendMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW
                         + " set your level to " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + ".",
