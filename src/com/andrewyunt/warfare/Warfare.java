@@ -133,14 +133,13 @@ public class Warfare extends JavaPlugin {
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
 			pm.registerEvents(new PotFixListener(this), this);
 			pm.registerEvents(new InfinityArrowFixListener(), this);
-
-			getCommand("lobby").setExecutor(new LobbyCommand(this));
 		}
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
+		getCommand("lobby").setExecutor(new LobbyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
 		getCommand("setspawn").setExecutor(new SetSpawnCommand());
 		getCommand("spawn").setExecutor(new SpawnCommand());
