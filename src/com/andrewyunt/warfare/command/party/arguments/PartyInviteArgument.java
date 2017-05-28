@@ -13,8 +13,7 @@ import java.util.UUID;
 
 public class PartyInviteArgument extends CommandArgument{
 
-    public PartyInviteArgument()
-    {
+    public PartyInviteArgument() {
         super("invite", "Invite a player to your party");
 
         this.isPlayerOnly = true;
@@ -60,6 +59,8 @@ public class PartyInviteArgument extends CommandArgument{
         } else {
             party.getInvites().add(invited);
         }
+
+        Warfare.getInstance().getStorageManager().saveParty(party);
 
         return true;
     }

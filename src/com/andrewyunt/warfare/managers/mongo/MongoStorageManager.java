@@ -15,10 +15,14 @@ import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.purchases.PurchaseType;
+import com.andrewyunt.warfare.utilities.Utils;
+import com.faithfulmc.framework.BasePlugin;
+import com.mongodb.CursorType;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -29,9 +33,11 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MongoStorageManager extends StorageManager{
+
     private final Warfare warfare;
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
@@ -41,6 +47,7 @@ public class MongoStorageManager extends StorageManager{
     private MongoCollection<Document> partyCollection;
     private MongoCollection<Document> signCollection;
     private MongoCollection<Document> arenaCollection;
+    private MongoCollection<Document> partyServersCollection;
 
     private boolean hasInserted = false;
     private ObjectId serverId;
@@ -80,13 +87,16 @@ public class MongoStorageManager extends StorageManager{
         mongoClient.close();
     }
 
-    
     public void updateDB() {
         playerCollection = mongoDatabase.getCollection("players");
         serverCollection = mongoDatabase.getCollection("gameservers");
         partyCollection = mongoDatabase.getCollection("parties");
         signCollection = mongoDatabase.getCollection("signs");
         arenaCollection = mongoDatabase.getCollection("arenas");
+
+        if (StaticConfiguration.LOBBY) {
+            getPartyServers();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -126,7 +136,6 @@ public class MongoStorageManager extends StorageManager{
         playerCollection.insertOne(document);
     }
 
-
     @SuppressWarnings("unchecked")
     public void loadPlayer(GamePlayer player) {
         Document document = playerCollection.find(new Document("_id", player.getUUID())).first();
@@ -165,7 +174,6 @@ public class MongoStorageManager extends StorageManager{
         player.setLoaded(true);
     }
 
-    
     public List<Server> getServers() {
         List<Server> serverList = new ArrayList<>();
         for(Document document: serverCollection.find()){
@@ -180,7 +188,6 @@ public class MongoStorageManager extends StorageManager{
         return serverList;
     }
 
-    
     public void updateServerStatus() {
         if(hasInserted){
             //Better saving method
@@ -190,8 +197,7 @@ public class MongoStorageManager extends StorageManager{
                             Updates.set("onlinePlayers", warfare.getGame().getPlayers().size())
                     )
             );
-        }
-        else{
+        } else {
             Document document = new Document();
             document.put("_id", serverId = new ObjectId());
             document.put("name", StaticConfiguration.SERVER_NAME);
@@ -207,7 +213,6 @@ public class MongoStorageManager extends StorageManager{
             hasInserted = true;
         }
     }
-
     
     public void saveParty(Party party) {
         Document document = new Document();
@@ -219,7 +224,6 @@ public class MongoStorageManager extends StorageManager{
         partyCollection.deleteMany(new Document("_id", party.getLeader()));
         partyCollection.insertOne(document);
     }
-
 
     @SuppressWarnings("unchecked")
     public Party loadParty(UUID leaderUUID) {
@@ -235,7 +239,35 @@ public class MongoStorageManager extends StorageManager{
         return party;
     }
 
-    
+    public void setPartyServer(Party party, String server) {
+        Document document = new Document();
+        document.put("_id", party.getLeader());
+        document.put("server", server);
+        partyCollection.insertOne(document);
+    }
+
+    public void getPartyServers() {
+        Document query = new Document();
+        Document projection = new Document();
+        MongoCursor<Document> cursor = partyCollection.find(query).projection(projection).cursorType(CursorType.TailableAwait).iterator();
+        try {
+            while (cursor.hasNext()) {//blocking
+                Document document = cursor.next();
+                UUID partyLeader = document.get("_id", UUID.class);
+                String server = document.getString("server");
+                if (server == null) {
+                    continue;
+                }
+                Party party = warfare.getPartyManager().getParty(partyLeader);
+                for (UUID member : party.getMembers()) {
+                    Utils.sendPlayerToServer(Bukkit.getServer().getPlayer(member), server);
+                }
+            }
+        } catch (IllegalStateException ex) {
+            warfare.getLogger().log(Level.INFO, "Cursor Thread closing ");
+        }
+    }
+
     public void saveSign(SignDisplay signDisplay) {
         Document document = new Document();
         document.put("server", StaticConfiguration.SERVER_NAME);
@@ -271,7 +303,6 @@ public class MongoStorageManager extends StorageManager{
         document.put("location", serializeLocation(signDisplay.getBukkitSign().getLocation()));
         signCollection.deleteMany(document);
     }
-
     
     public void loadSigns() {
         for(Document document: signCollection.find(new Document("server", StaticConfiguration.SERVER_NAME))){
@@ -285,7 +316,6 @@ public class MongoStorageManager extends StorageManager{
             }
         }
     }
-
     
     public void saveArena() {
         Document document = new Document();
@@ -317,7 +347,6 @@ public class MongoStorageManager extends StorageManager{
         arenaCollection.insertOne(document);
     }
 
-
     @SuppressWarnings("unchecked")
     public Arena loadArena() {
         Document document = arenaCollection.find(new Document("name", StaticConfiguration.MAP_NAME)).first();
@@ -344,7 +373,6 @@ public class MongoStorageManager extends StorageManager{
         }
         return arena;
     }
-
     
     public Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
         Document projection = new Document();

@@ -54,6 +54,8 @@ public class PartyDeinviteArgument extends CommandArgument {
             party.getInvites().remove(removeUUID);
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(party);
+
         return true;
     }
 }

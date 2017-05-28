@@ -1,6 +1,8 @@
 package com.andrewyunt.warfare.command.party.arguments;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.managers.PartyManager;
+import com.andrewyunt.warfare.player.Party;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,12 +27,14 @@ public class PartyCreateArgument extends CommandArgument {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        PartyManager partyManager = Warfare.getInstance().getPartyManager();
         Player player = (Player) sender;
 
-        if (Warfare.getInstance().getPartyManager().getParty(player.getUniqueId()) != null) {
+        if (partyManager.getParty(player.getUniqueId()) != null) {
             player.sendMessage(ChatColor.YELLOW + "You are already in a party");
         } else {
-            Warfare.getInstance().getPartyManager().createParty(player.getUniqueId());
+            Party party = partyManager.createParty(player.getUniqueId());
+            Warfare.getInstance().getStorageManager().saveParty(party);
             player.sendMessage(ChatColor.YELLOW + "You created a party");
         }
 

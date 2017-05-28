@@ -61,6 +61,8 @@ public class PartyJoinArgument extends CommandArgument {
             targetParty.getMembers().add(player.getUniqueId());
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(targetParty);
+
         return true;
     }
 }

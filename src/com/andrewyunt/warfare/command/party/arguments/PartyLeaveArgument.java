@@ -40,6 +40,8 @@ public class PartyLeaveArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You left the party");
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(party);
+
         return true;
     }
 }

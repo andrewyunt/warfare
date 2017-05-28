@@ -53,6 +53,8 @@ public class PartyKickArgument extends CommandArgument{
             party.getMembers().remove(kick);
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(party);
+
         return true;
     }
 }

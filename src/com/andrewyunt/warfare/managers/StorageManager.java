@@ -7,13 +7,13 @@ import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
 import org.bukkit.Bukkit;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class StorageManager {
+
 	public abstract boolean connect();
 
 	public abstract void disconnect();
@@ -57,6 +57,10 @@ public abstract class StorageManager {
 	public abstract void saveParty(Party party);
 
 	public abstract Party loadParty(UUID leaderUUID);
+
+    public abstract void setPartyServer(Party party, String server);
+
+    public abstract void getPartyServers();
 
     public abstract void saveSign(SignDisplay signDisplay);
 

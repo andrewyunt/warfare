@@ -142,6 +142,9 @@ public class PlayMenu implements Listener, InventoryHolder {
                     int amount = size == 1 ? 1 : size + 2;
                     if(server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
                         playerEntity.sendToServer(server.getName());
+                        if (playerEntity instanceof PartyPlayerEntity) {
+                            Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
+                        }
                         server.setOnlinePlayers(server.getOnlinePlayers() + size);
                         return;
                     }
@@ -156,6 +159,9 @@ public class PlayMenu implements Listener, InventoryHolder {
                         Server server = serverID < inventoryServers.size() ? inventoryServers.get(serverID) : null;
                         if(server != null){
                             playerEntity.sendToServer(server.getName());
+                            if (playerEntity instanceof PartyPlayerEntity) {
+                                Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
+                            }
                             Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
                         }
                     }

@@ -40,6 +40,8 @@ public class PartyOpenArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You need to be the leader of a party to toggle whether it is open.");
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(party);
+
         return true;
     }
 }

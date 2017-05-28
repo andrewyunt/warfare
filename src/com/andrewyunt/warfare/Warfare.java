@@ -33,7 +33,6 @@ import com.andrewyunt.warfare.menu.*;
 import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.chat.Chat;
@@ -42,13 +41,11 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
-public class Warfare extends JavaPlugin implements PluginMessageListener {
+public class Warfare extends JavaPlugin {
 
 	@Getter private static Warfare instance;
 	@Getter private static Permission permission = null;
@@ -71,7 +68,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 	
 	@Override
 	public void onEnable() {
-
 	    Bukkit.getScheduler().runTask(this, () -> {
             setupChat();
             setupEconomy();
@@ -142,7 +138,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		}
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 		
 		getCommand("warfare").setExecutor(new WarfareCommand());
 		getCommand("party").setExecutor(new PartyCommand());
@@ -161,7 +156,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 
 	@Override
 	public void onDisable() {
-
 		if (!getConfig().getBoolean("is-lobby")) {
 			if (!StaticConfiguration.LOBBY) {
 			    if(game.getStage() != Game.Stage.RESTART) {
@@ -173,34 +167,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		storageManager.disconnect();
 
 		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-	}
-
-	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-
-		if (!channel.equals("BungeeCord")) {
-			return;
-		}
-
-		String received = ByteStreams.newDataInput(message).readUTF();
-
-		Bukkit.getServer().broadcastMessage(received);
-
-		//TODO: Recode
-		/*
-		if (!received.contains("MOVEPARTY")) {
-			String[] firstArray = received.split("\\\\W+");
-			String[] secondArray = firstArray[1].split("\\\\W+");
-
-			for (UUID sendUUID : partyManager.getParty(UUID.fromString(secondArray[0])).getMembers()) {
-				OfflinePlayer sendPlayer = Bukkit.getServer().getOfflinePlayer(sendUUID);
-
-				if (sendPlayer.isOnline()) {
-					Utils.sendPlayerToServer((Player) sendPlayer, secondArray[1]);
-				}
-			}
-		}
-		*/
 	}
 
 	private void setupPermissions() {
@@ -215,7 +181,6 @@ public class Warfare extends JavaPlugin implements PluginMessageListener {
 		if (chatProvider != null) {
 			chat = chatProvider.getProvider();
 		}
-
 	}
 
 	private void setupEconomy() {

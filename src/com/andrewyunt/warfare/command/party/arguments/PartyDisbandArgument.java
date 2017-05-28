@@ -39,6 +39,8 @@ public class PartyDisbandArgument extends CommandArgument {
             player.sendMessage(ChatColor.YELLOW + "You need to be the leader of a party to disband it.");
         }
 
+        Warfare.getInstance().getStorageManager().saveParty(party);
+
         return true;
     }
 }

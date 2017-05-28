@@ -1,14 +1,17 @@
 package com.andrewyunt.warfare.lobby;
 
 import com.andrewyunt.warfare.game.Game;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Server {
-    private final String name;
-    private final ServerType serverType;
-    private final Game.Stage gameStage;
-    private final String mapName;
-    private int onlinePlayers;
-    private final int maxPlayers;
+
+    @Getter private final String name;
+    @Getter private final ServerType serverType;
+    @Getter private final Game.Stage gameStage;
+    @Getter private final String mapName;
+    @Getter @Setter private int onlinePlayers;
+    @Getter private final int maxPlayers;
 
     public Server(String name, ServerType serverType, Game.Stage gameStage, String mapName, int onlinePlayers, int maxPlayers) {
         this.name = name;
@@ -19,35 +22,7 @@ public class Server {
         this.maxPlayers = maxPlayers;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public ServerType getServerType() {
-        return serverType;
-    }
-
-    public Game.Stage getGameStage() {
-        return gameStage;
-    }
-
-    public void setOnlinePlayers(int onlinePlayers) {
-        this.onlinePlayers = onlinePlayers;
-    }
-
-    public int getOnlinePlayers() {
-        return onlinePlayers;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public String getMapName() {
-        return mapName;
-    }
-
-    public enum ServerType{
-        LOBBY, GAME;
+    public enum ServerType {
+        LOBBY, GAME
     }
 }
