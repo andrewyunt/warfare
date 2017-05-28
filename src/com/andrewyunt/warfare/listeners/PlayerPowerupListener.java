@@ -1,4 +1,3 @@
-
 package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.purchases.Powerup;
@@ -29,7 +28,6 @@ public class PlayerPowerupListener implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
-
         ItemStack item = event.getItem();
 
         if (item == null) {
@@ -99,7 +97,6 @@ public class PlayerPowerupListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-
         if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT)) {
             event.setCancelled(true);
         }
@@ -107,7 +104,6 @@ public class PlayerPowerupListener implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-
         Entity entity = event.getEntity();
 
         if (entity.getType() != EntityType.WITHER_SKULL) {
@@ -121,7 +117,6 @@ public class PlayerPowerupListener implements Listener {
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-
         Entity entity = event.getEntity();
 
         if (!entity.hasMetadata("Warfare")) {

@@ -16,7 +16,6 @@ import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.purchases.PurchaseType;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.faithfulmc.framework.BasePlugin;
 import com.mongodb.CursorType;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -38,7 +37,8 @@ import java.util.stream.Collectors;
 
 public class MongoStorageManager extends StorageManager{
 
-    private final Warfare warfare;
+    private final Warfare warfare = Warfare.getInstance();
+
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
 
@@ -52,10 +52,6 @@ public class MongoStorageManager extends StorageManager{
     private boolean hasInserted = false;
     private ObjectId serverId;
 
-    public MongoStorageManager(Warfare warfare) {
-        this.warfare = warfare;
-    }
-
     public boolean connect() {
         ConfigurationSection config = warfare.getConfig().getConfigurationSection("mongo");
         String address = config.getString("address");
@@ -63,22 +59,23 @@ public class MongoStorageManager extends StorageManager{
         String database = config.getString("database");
         boolean auth = config.getBoolean("auth.enabled");
         MongoCredential mongoCredential;
-        if(auth){
+
+        if (auth) {
             String username = config.getString("auth.username");
             String password = config.getString("auth.password");
             mongoCredential = MongoCredential.createMongoCRCredential(username, database, password.toCharArray());
-        }
-        else{
+        } else {
             mongoCredential = null;
         }
-        try{
+
+        try {
             mongoClient = auth ? new MongoClient(new ServerAddress(address, port), Collections.singletonList(mongoCredential)) : new MongoClient(address, port);
             mongoDatabase = mongoClient.getDatabase(database);
-        }
-        catch (Exception exception){
+        } catch (Exception exception) {
             handleException(exception);
             return false;
         }
+
         return true;
     }
 
@@ -93,6 +90,7 @@ public class MongoStorageManager extends StorageManager{
         partyCollection = mongoDatabase.getCollection("parties");
         signCollection = mongoDatabase.getCollection("signs");
         arenaCollection = mongoDatabase.getCollection("arenas");
+        partyServersCollection = mongoDatabase.getCollection("partyservers");
 
         if (StaticConfiguration.LOBBY) {
             getPartyServers();
@@ -105,13 +103,13 @@ public class MongoStorageManager extends StorageManager{
         document.put("_id", player.getUUID());
         document.put("name", player.getName());
         Party party = warfare.getPartyManager().getParty(player.getUUID());
-        if(party != null){
+        if (party != null) {
             document.put("party", party.getLeader());
         }
-        if(player.getSelectedKit() != null){
+        if (player.getSelectedKit() != null) {
             document.put("selectedKit", player.getSelectedKit().name());
         }
-        if(player.getSelectedPowerup() != null){
+        if (player.getSelectedPowerup() != null) {
             document.put("selectedPowerup", player.getSelectedPowerup().name());
         }
         document.put("points", player.getPoints());
@@ -143,17 +141,17 @@ public class MongoStorageManager extends StorageManager{
     @SuppressWarnings("unchecked")
     public void loadPlayer(GamePlayer player) {
         Document document = playerCollection.find(new Document("_id", player.getUUID())).first();
-        if(document != null){
+        if (document != null) {
             UUID party = document.get("party", UUID.class);
-            if(party != null){
+            if (party != null) {
                 loadParty(party);
             }
             String selectedKit = document.getString("selectedKit");
-            if(selectedKit != null){
+            if (selectedKit != null) {
                 player.setSelectedKit(Kit.valueOf(selectedKit));
             }
             String selectedPowerup = document.getString("selectedPowerup");
-            if(selectedPowerup != null){
+            if (selectedPowerup != null) {
                 player.setSelectedPowerup(Powerup.valueOf(selectedPowerup));
             }
             player.setPoints(document.getInteger("points", 0));
@@ -180,7 +178,7 @@ public class MongoStorageManager extends StorageManager{
 
     public List<Server> getServers() {
         List<Server> serverList = new ArrayList<>();
-        for(Document document: serverCollection.find()){
+        for (Document document: serverCollection.find()) {
             String name = document.getString("name");
             Server.ServerType serverType = Server.ServerType.valueOf(document.getString("serverType"));
             Game.Stage gameStage = Game.Stage.valueOf(document.getString("gameStage"));
@@ -193,7 +191,7 @@ public class MongoStorageManager extends StorageManager{
     }
 
     public void updateServerStatus() {
-        if(hasInserted){
+        if (hasInserted) {
             //Better saving method
             serverCollection.updateOne(Filters.eq("_id", serverId),
                     Filters.and(
@@ -233,7 +231,7 @@ public class MongoStorageManager extends StorageManager{
     public Party loadParty(UUID leaderUUID) {
         Document document = partyCollection.find(new Document("_id", leaderUUID)).first();
         Party party = new Party(leaderUUID);
-        if(document != null){
+        if (document != null) {
             party.setOpen(document.getBoolean("open"));
             List<UUID> members = document.get("members", List.class);
             party.getMembers().addAll(members);
@@ -253,7 +251,8 @@ public class MongoStorageManager extends StorageManager{
     public void getPartyServers() {
         Document query = new Document();
         Document projection = new Document();
-        MongoCursor<Document> cursor = partyCollection.find(query).projection(projection).cursorType(CursorType.TailableAwait).iterator();
+        MongoCursor<Document> cursor = partyServersCollection.find(query).projection(projection)
+                .cursorType(CursorType.TailableAwait).iterator();
         try {
             while (cursor.hasNext()) {//blocking
                 Document document = cursor.next();
@@ -325,7 +324,7 @@ public class MongoStorageManager extends StorageManager{
         Document document = new Document();
         Arena arena = warfare.getArena();
         document.put("name", StaticConfiguration.MAP_NAME);
-        if(arena.getMapLocation() != null){
+        if (arena.getMapLocation() != null) {
             document.put("mapLocation", serializeLocation(arena.getMapLocation()));
         }
         document.put("cages", arena.getCageLocations().entrySet()
@@ -355,9 +354,9 @@ public class MongoStorageManager extends StorageManager{
     public Arena loadArena() {
         Document document = arenaCollection.find(new Document("name", StaticConfiguration.MAP_NAME)).first();
         Arena arena = new Arena();
-        if(document != null){
+        if (document != null) {
             Document mapLocation = document.get("mapLocation", Document.class);
-            if(mapLocation != null){
+            if (mapLocation != null) {
                 arena.setMapLocation(deserializeLocation(mapLocation));
             }
             List<Document> cages = document.get("cages", List.class);
@@ -384,10 +383,10 @@ public class MongoStorageManager extends StorageManager{
         projection.put(orderBy, true);
         Map<Integer, Map.Entry<Object, Integer>> topFiveMap = new HashMap<>();
         int place = 1;
-        for(Document document: playerCollection.find()
+        for (Document document: playerCollection.find()
                 .sort(new Document(orderBy, -1))
                 .limit(5)
-                .projection(projection)){
+                .projection(projection)) {
             Object selectField = document.get(select);
             Integer orderField = document.getInteger(orderBy);
             topFiveMap.put(place, new AbstractMap.SimpleEntry<>(selectField, orderField));

@@ -1,18 +1,20 @@
 package com.andrewyunt.warfare.purchases;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Map;
 
 public enum  PurchaseType {
+
     HEALTH_BOOST(HealthBoost.class),
     PERK(Perk.class),
     POWERUP(Powerup.class);
 
-    private Class<? extends Purchasable> clazz;
+    @Getter private Class<? extends Purchasable> clazz;
 
-    private final Map<String, Purchasable> PURCHASE_MAP;
+    @Getter private final Map<String, Purchasable> PURCHASE_MAP;
 
     PurchaseType(Class<? extends Purchasable> clazz) {
         this.clazz = clazz;
@@ -23,13 +25,5 @@ public enum  PurchaseType {
 
     public Purchasable getPurchase(String name){
         return PURCHASE_MAP.get(name);
-    }
-
-    public Map<String, Purchasable> getPURCHASE_MAP() {
-        return PURCHASE_MAP;
-    }
-
-    public Class<? extends Purchasable> getClazz() {
-        return clazz;
     }
 }

@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 public class AddCoinsArgument extends CommandArgument {
 
     public AddCoinsArgument() {
-
         super("addcoins", "Add coins to a player's balance");
 
         isPlayerOnly = true;
@@ -20,13 +19,11 @@ public class AddCoinsArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!(args.length >= 3)) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addcoins [player] [amount]");
             return false;

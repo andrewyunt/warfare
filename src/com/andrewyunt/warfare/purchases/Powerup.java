@@ -43,20 +43,17 @@ public enum Powerup implements Purchasable {
     private int damageTaskID;
 
     Powerup(String name, int energyPerClick) {
-
         this.name = name;
         this.energyPerClick = energyPerClick;
     }
 
     @Override
     public String getName() {
-
         return name;
     }
 
     @Override
     public int getPrice(int level) {
-
         switch(this) {
             case MEDIC:
                 return level * 5000;
@@ -82,13 +79,11 @@ public enum Powerup implements Purchasable {
     }
 
     public int getPlayerLvlNeeded(int level) {
-
         return (new ArrayList<Powerup>(Arrays.asList(values())).indexOf(this) * 4 + level + 1) * 5;
     }
 
     @Override
     public ItemStack getDisplayItem() {
-
         switch(this) {
             case MEDIC:
                 Potion healPotion = new Potion(PotionType.INSTANT_HEAL, 2);
@@ -104,9 +99,9 @@ public enum Powerup implements Purchasable {
                 return new ItemStack(Material.NETHER_STAR);
             case NINJA:
                 return new ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+            default:
+                return null;
         }
-
-        return null;
     }
 
     public PurchaseType getType() {
@@ -114,7 +109,6 @@ public enum Powerup implements Purchasable {
     }
 
     public int getEnergyPerClick() {
-
         return energyPerClick;
     }
 
@@ -125,7 +119,6 @@ public enum Powerup implements Purchasable {
      * 		The player to use the specified ability for.
      */
     public void use(GamePlayer player) {
-
         if (player.getEnergy() < 100) {
             return;
         }
@@ -383,6 +376,4 @@ public enum Powerup implements Purchasable {
 
         player.setEnergy(0);
     }
-
-
 }

@@ -40,7 +40,6 @@ public class ShopMenu implements Listener {
 	private final ItemStack healthBoosts = new ItemStack(Material.GOLDEN_APPLE, 1);
 	
 	public ShopMenu() {
-		
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
 		ItemMeta powerupsMeta = powerups.getItemMeta();
 		ItemMeta perksMeta = perks.getItemMeta();
@@ -60,7 +59,6 @@ public class ShopMenu implements Listener {
 	}
 	
 	public void open(Type type, GamePlayer player) {
-		
 		Inventory inv;
 		
 		if (type == Type.MAIN) {
@@ -114,7 +112,7 @@ public class ShopMenu implements Listener {
 				Purchasable purchasable = purchasables.get(purchasableNum);
 				ItemStack is = purchasable.getDisplayItem().clone();
 				
-				for(Enchantment enchantment : is.getEnchantments().keySet()) {
+				for (Enchantment enchantment : is.getEnchantments().keySet()) {
                     is.removeEnchantment(enchantment);
                 }
 				
@@ -198,7 +196,6 @@ public class ShopMenu implements Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		
 		String title = event.getClickedInventory().getTitle();
 		
 		if (!title.contains("Shop")) {

@@ -23,7 +23,6 @@ public class StaticConfiguration {
     public static int CURRENT_LOBBY = 0;
 
     public static String getNextLobby() {
-
         CURRENT_LOBBY %= LOBBY_SERVERS.size();
         String server = LOBBY_SERVERS.get(CURRENT_LOBBY);
         CURRENT_LOBBY += 1;

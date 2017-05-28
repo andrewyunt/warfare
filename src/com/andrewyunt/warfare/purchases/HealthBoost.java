@@ -1,4 +1,3 @@
-
 package com.andrewyunt.warfare.purchases;
 
 import org.bukkit.Material;
@@ -16,26 +15,22 @@ public enum HealthBoost implements Purchasable {
 	private final int price;
 	
 	HealthBoost(String name, int price) {
-		
 		this.name = name;
 		this.price = price;
 	}
 	
 	@Override
 	public String getName() {
-		
 		return name;
 	}
 
 	@Override
 	public int getPrice(int level) {
-		
 		return price;
 	}
 
 	@Override
 	public ItemStack getDisplayItem() {
-		
 		return new ItemStack(Material.GOLDEN_APPLE);
 	}
 

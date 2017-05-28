@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 public class PartyCreateArgument extends CommandArgument {
 
     public PartyCreateArgument() {
-
         super("create", "Create a party");
 
         this.isPlayerOnly = true;
@@ -20,13 +19,11 @@ public class PartyCreateArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         PartyManager partyManager = Warfare.getInstance().getPartyManager();
         Player player = (Player) sender;
 

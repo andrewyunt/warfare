@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 public class PartyDisbandArgument extends CommandArgument {
 
     public PartyDisbandArgument() {
-
         super("disband", "Disband your party");
 
         this.isPlayerOnly = true;
@@ -19,12 +18,10 @@ public class PartyDisbandArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         Player player = (Player) sender;
         Party party = Warfare.getInstance().getPartyManager().getParty(player.getUniqueId());
 

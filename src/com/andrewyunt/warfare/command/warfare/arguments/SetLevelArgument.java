@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 public class SetLevelArgument extends CommandArgument {
 
     public SetLevelArgument() {
-
         super("setlevel", "Set a player's levels");
 
         isPlayerOnly = true;
@@ -20,13 +19,11 @@ public class SetLevelArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!(args.length >= 3)) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare setlevel [player] [amount]");
             return false;

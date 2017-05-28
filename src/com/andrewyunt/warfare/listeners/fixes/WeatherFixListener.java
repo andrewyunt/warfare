@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class WeatherFixListener implements Listener {
+
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent e) {
         if ((e.getWorld().getEnvironment() == World.Environment.NORMAL) && e.toWeatherState()) {

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 public class SetMapLocationArgument extends CommandArgument {
 
     public SetMapLocationArgument() {
-
         super("setmaplocation", "Sets map spawn location");
 
         isPlayerOnly = true;
@@ -19,13 +18,11 @@ public class SetMapLocationArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!sender.hasPermission("warfare.setmaplocation")) {
             sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
             return false;

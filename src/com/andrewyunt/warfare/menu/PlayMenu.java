@@ -7,6 +7,7 @@ import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.faithfulmc.util.ItemBuilder;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,14 +27,13 @@ import java.util.stream.Collectors;
 
 public class PlayMenu implements Listener, InventoryHolder {
 
-    private final int SIZE = 6 * 9;
+    @Getter private final Inventory inventory;
 
+    private final int SIZE = 6 * 9;
     private final int QUICK_JOIN_SLOT = 49;
     private final ItemStack QUICK_JOIN_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join").lore(ChatColor.GRAY + "Click to join a game").build();
-
     private final ItemStack PANE = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).displayName(" ").build();
 
-    private final Inventory inventory;
     private List<Server> inventoryServers = new ArrayList<>();
     private List<Server> quickJoinServers = new ArrayList<>();
 
@@ -49,7 +49,7 @@ public class PlayMenu implements Listener, InventoryHolder {
         }, 0, 2);
     }
 
-    public ItemStack[] getContents(){
+    public ItemStack[] getContents() {
         ItemStack[] itemStacks = new ItemStack[SIZE];
         for (int i = 0; i < 9; i++) {
             itemStacks[i] = PANE.clone();
@@ -64,9 +64,9 @@ public class PlayMenu implements Listener, InventoryHolder {
 
         List<ItemStack> toAdd = new ArrayList<>();
 
-        for(Server server: inventoryServers){
+        for (Server server: inventoryServers){
             ItemStack itemStack = createServerItem(server);
-            if(itemStack != null){
+            if (itemStack != null) {
                 toAdd.add(itemStack);
             }
         }
@@ -87,12 +87,8 @@ public class PlayMenu implements Listener, InventoryHolder {
         return itemStacks;
     }
 
-    public Inventory getInventory(){
-        return inventory;
-    }
-
-    public ItemStack createServerItem(Server server){
-        if(server.getServerType() == Server.ServerType.GAME && server.getGameStage().ordinal() < Game.Stage.END.ordinal()){
+    public ItemStack createServerItem(Server server) {
+        if (server.getServerType() == Server.ServerType.GAME && server.getGameStage().ordinal() < Game.Stage.END.ordinal()) {
             return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
                     .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + server.getName())
                     .lore(
@@ -114,7 +110,7 @@ public class PlayMenu implements Listener, InventoryHolder {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inv = event.getClickedInventory();
-        if(inv != null && inv.getHolder() == this) {
+        if (inv != null && inv.getHolder() == this) {
             event.setCancelled(true);
 
             int slot = event.getSlot();
@@ -137,10 +133,10 @@ public class PlayMenu implements Listener, InventoryHolder {
 
             if (slot == QUICK_JOIN_SLOT) {
                 Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
-                for(Server server: quickJoinServers){
+                for(Server server: quickJoinServers) {
                     int size = playerEntity.size();
                     int amount = size == 1 ? 1 : size + 2;
-                    if(server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
+                    if (server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
                         playerEntity.sendToServer(server.getName());
                         if (playerEntity instanceof PartyPlayerEntity) {
                             Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
@@ -153,11 +149,11 @@ public class PlayMenu implements Listener, InventoryHolder {
             } else {
                 int row = slot / 9;
                 int column = slot % 9;
-                if(row > 0 && row < 5){
-                    if(column > 0 && column < 8){
+                if (row > 0 && row < 5) {
+                    if (column > 0 && column < 8) {
                         int serverID = (row - 1) * 7 + column - 1;
                         Server server = serverID < inventoryServers.size() ? inventoryServers.get(serverID) : null;
-                        if(server != null){
+                        if (server != null) {
                             playerEntity.sendToServer(server.getName());
                             if (playerEntity instanceof PartyPlayerEntity) {
                                 Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
@@ -170,24 +166,11 @@ public class PlayMenu implements Listener, InventoryHolder {
         }
     }
 
-    public abstract class PlayersEntity{
-        private int ticks = 0;
-        protected UUID player;
+    public abstract class PlayersEntity {
+        @Getter protected UUID player;
 
         public PlayersEntity(UUID player) {
             this.player = player;
-        }
-
-        public boolean hasFailed(){
-            return Bukkit.getPlayer(player) == null;
-        }
-
-        public int ticks(){
-            return ticks++;
-        }
-
-        public UUID getPlayerUUID(){
-            return player;
         }
 
         public Player getPlayer(){
@@ -198,7 +181,7 @@ public class PlayMenu implements Listener, InventoryHolder {
         public abstract int size();
     }
 
-    public class SinglePlayerEntity extends PlayersEntity{
+    public class SinglePlayerEntity extends PlayersEntity {
         public SinglePlayerEntity(UUID player) {
             super(player);
         }
@@ -217,11 +200,11 @@ public class PlayMenu implements Listener, InventoryHolder {
             super(partyLeader);
         }
 
-        public boolean hasFailed(){
+        public boolean hasFailed() {
             return Bukkit.getPlayer(player) == null || Warfare.getInstance().getPartyManager().getParty(player) == null;
         }
 
-        public int size(){
+        public int size() {
             return Warfare.getInstance().getPartyManager().getParty(player).getMembers().size();
         }
 

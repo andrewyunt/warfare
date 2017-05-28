@@ -5,6 +5,7 @@ import com.andrewyunt.warfare.game.events.AddPlayerEvent;
 import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
 import com.andrewyunt.warfare.game.events.StageChangeEvent;
 import com.andrewyunt.warfare.player.GamePlayer;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -27,10 +28,10 @@ public class Game {
 		END(3, DyeColor.RED, ChatColor.RED, "Game finished"),
 		RESTART(4, DyeColor.RED, ChatColor.RED, "Server restarting");
 
-        private final int order;
-		private final DyeColor dyeColor;
-		private final ChatColor color;
-		private final String description;
+        @Getter private final int order;
+		@Getter private final DyeColor dyeColor;
+		@Getter private final ChatColor color;
+		@Getter private final String description;
 
         Stage(int order, DyeColor dyeColor, ChatColor color, String description) {
             this.order = order;
@@ -39,32 +40,16 @@ public class Game {
             this.description = description;
         }
 
-        public DyeColor getDyeColor() {
-            return dyeColor;
-        }
-
-        public ChatColor getColor() {
-            return color;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
         public String getDisplay(){
             return color + description;
         }
-
-        public int getOrder() {
-            return order;
-        }
     }
-	
-	private short countdownTime = 10, gameTime;
-	private Stage stage = Stage.WAITING;
-	
-	private final Set<GamePlayer> players = new HashSet<>();
-	private final Set<Cage> cages = new HashSet<>();
+
+	@Getter private short countdownTime = 10, gameTime;
+	@Getter private Stage stage = Stage.WAITING;
+
+	@Getter private final Set<GamePlayer> players = new HashSet<>();
+	@Getter private final Set<Cage> cages = new HashSet<>();
 	
 	public Game() {
 		Arena arena = Warfare.getInstance().getArena();
@@ -97,26 +82,12 @@ public class Game {
 		Bukkit.getServer().getPluginManager().callEvent(new RemovePlayerEvent(player));
 	}
 
-	/**
-	 * Gets all players currently in the game.
-	 *
-	 * @returns
-	 * 		A set of players currently in the game.
-	 */
-	public Set<GamePlayer> getPlayers() {
-		return players;
-	}
-
 	public void checkPlayers() {
 		if (players.size() == 1 && (stage != Stage.WAITING && stage != Stage.END && stage != Stage.RESTART)) {
 			setStage(Stage.END);
 		} else if (players.size() == 0 && stage != Stage.WAITING) {
 			setStage(Stage.RESTART);
 		}
-	}
-	
-	public Set<Cage> getCages() {
-		return cages;
 	}
 	
 	public Set<Cage> getAvailableCages() {
@@ -127,10 +98,6 @@ public class Game {
 		this.stage = stage;
 
 		Bukkit.getServer().getPluginManager().callEvent(new StageChangeEvent(stage));
-	}
-
-	public Stage getStage() {
-		return stage;
 	}
 
 	public void fillChests() {
@@ -162,10 +129,6 @@ public class Game {
 		}
 	}
 
-	public short getCountdownTime() {
-		return countdownTime;
-	}
-
 	public void runGameTimer() {
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
@@ -183,9 +146,5 @@ public class Game {
 			fillChests();
 			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
-	}
-
-	public short getGameTime() {
-		return gameTime;
 	}
 }

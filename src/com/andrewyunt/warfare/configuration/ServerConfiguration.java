@@ -20,7 +20,6 @@ public class ServerConfiguration {
     private File configFile = null;
 
     public void reloadConfig() {
-
         if (configFile == null) {
             configFile = new File("server.yml");
         }
@@ -42,7 +41,6 @@ public class ServerConfiguration {
     }
 
     public FileConfiguration getConfig() {
-
         if (config == null) {
             reloadConfig();
         }
@@ -51,7 +49,6 @@ public class ServerConfiguration {
     }
 
     public void saveConfig() {
-
         if (config == null || configFile == null) {
             return;
         }
@@ -64,7 +61,6 @@ public class ServerConfiguration {
     }
 
     public void saveDefaultConfig() {
-
         if (configFile == null) {
             configFile = new File("server.yml");
         }

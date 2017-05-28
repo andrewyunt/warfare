@@ -21,7 +21,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class PlayerLobbyListener extends PlayerListener {
@@ -172,7 +171,7 @@ public class PlayerLobbyListener extends PlayerListener {
             return;
         }
 
-        SignDisplay.Type type = null;
+        SignDisplay.Type type;
 
         switch (event.getLine(1)) {
             case "kills":

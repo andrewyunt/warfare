@@ -15,7 +15,6 @@ import org.bukkit.util.BlockIterator;
 public class AddChestArgument extends CommandArgument {
 
     public AddChestArgument() {
-
         super("addchest", "Adds a loot chest to the map");
 
         isPlayerOnly = true;
@@ -23,13 +22,11 @@ public class AddChestArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!sender.hasPermission("warfare.addchest")) {
             sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
             return false;

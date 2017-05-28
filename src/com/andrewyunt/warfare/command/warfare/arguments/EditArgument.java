@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 public class EditArgument extends CommandArgument {
 
     public EditArgument() {
-
         super("edit", "Put the server in edit mode");
 
         isPlayerOnly = true;
@@ -20,13 +19,11 @@ public class EditArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!sender.hasPermission("warfare.edit")) {
             sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
             return false;

@@ -33,11 +33,10 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
 
 public class TeleporterMenu implements Listener {
-	
-	private final ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-	
+
 	public TeleporterMenu() {
-		
+
+		ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
 		ItemMeta glassPaneMeta = glassPane.getItemMeta();
 		glassPaneMeta.setDisplayName("  ");
 		glassPaneMeta.setLore(new ArrayList<>());

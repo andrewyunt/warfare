@@ -82,14 +82,10 @@ public class KitSelectorMenu implements Listener {
 		
 		ItemStack is = event.getCurrentItem();
 		
-		if (is.getType() == Material.STAINED_GLASS_PANE) {
+		if (is.getType() == Material.STAINED_GLASS_PANE || !is.hasItemMeta()) {
             return;
         }
-		
-		if (!is.hasItemMeta()) {
-            return;
-        }
-		
+
 		ItemMeta im = is.getItemMeta();
 		String name = im.getDisplayName();
 		Player player = (Player) event.getWhoClicked();

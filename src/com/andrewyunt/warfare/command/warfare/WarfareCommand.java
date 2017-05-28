@@ -6,7 +6,6 @@ import com.faithfulmc.util.command.ArgumentExecutor;
 public class WarfareCommand extends ArgumentExecutor {
 
 	public WarfareCommand() {
-
 		super("warfare");
 
 		addArgument(new AddCoinsArgument());

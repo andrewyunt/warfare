@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 public class SetBoostArgument extends CommandArgument {
 
     public SetBoostArgument() {
-
         super("setboostargument", "Set a player's booster level");
 
         isPlayerOnly = true;
@@ -20,13 +19,11 @@ public class SetBoostArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!(args.length >= 3)) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare setboostargument [player] [amount]");
             return false;

@@ -11,22 +11,20 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import org.bukkit.entity.Player;
 
 public class EPCAdapter extends PacketAdapter{
-    private final Warfare plugin;
 
-    public EPCAdapter(Warfare plugin) {
-        super(plugin, PacketType.Play.Client.USE_ENTITY);
-        this.plugin = plugin;
+    public EPCAdapter() {
+        super(Warfare.getInstance(), PacketType.Play.Client.USE_ENTITY);
     }
 
     public void onPacketReceiving(PacketEvent event) {
         PacketContainer packetContainer = event.getPacket();
-        if(packetContainer.getEntityUseActions().read(0) == EnumWrappers.EntityUseAction.ATTACK){
+        if (packetContainer.getEntityUseActions().read(0) == EnumWrappers.EntityUseAction.ATTACK) {
             Player player = event.getPlayer();
-            if(player.isOnline()){
-                GamePlayer gamePlayer = plugin.getPlayerManager().getPlayer(player);
-                if(gamePlayer.isInGame()){
+            if (player.isOnline()) {
+                GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
+                if (gamePlayer.isInGame()) {
                     Powerup powerup = gamePlayer.getSelectedPowerup();
-                    if(powerup != null){
+                    if (powerup != null) {
                         gamePlayer.addEnergy(powerup.getEnergyPerClick());
                     }
                 }

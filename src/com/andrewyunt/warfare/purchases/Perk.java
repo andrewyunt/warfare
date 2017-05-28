@@ -24,10 +24,9 @@ public enum Perk implements Purchasable {
     SOUL_SUCKER("Soul Sucker"),
     UNDEAD("Undead");
 
-    final String name;
+    private final String name;
 
     Perk(String name) {
-
         this.name = name;
     }
 
@@ -43,38 +42,38 @@ public enum Perk implements Purchasable {
         return 15000;
     }
 
-
+    @Override
     public PurchaseType getType() {
         return PurchaseType.PERK;
     }
 
     @Override
     public ItemStack getDisplayItem() {
-
-        if (this == RESIST) {
-            return new ItemStack(Material.IRON_INGOT);
-        } else if (this == SWIFTNESS) {
-            return new ItemStack(Material.SUGAR);
-        } else if (this == BOOMERANG) {
-            return new ItemStack(Material.LEASH);
-        } else if (this == WEAKENING_ARROW) {
-            return new ItemStack(Material.BLAZE_ROD);
-        } else if (this == RECHARGE) {
-            return new Potion(PotionType.REGEN, 2).toItemStack(1);
-        } else if (this == FLURRY) {
-            return new ItemStack(Material.FEATHER);
-        } else if (this == SUPPORT) {
-            return new ItemStack(Material.TNT);
-        } else if (this == WEAKENING_SWING) {
-            return new Potion(PotionType.WEAKNESS, 2).toItemStack(1);
-        } else if (this == SWIFT_BACKUP) {
-            return new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
-        } else if (this == SOUL_SUCKER) {
-            return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-        } else if (this == UNDEAD) {
-            return new ItemStack(Material.ROTTEN_FLESH);
+        switch (this) {
+            case RESIST:
+                return new ItemStack(Material.IRON_INGOT);
+            case SWIFTNESS:
+                return new ItemStack(Material.SUGAR);
+            case BOOMERANG:
+                return new ItemStack(Material.LEASH);
+            case WEAKENING_ARROW:
+                return new ItemStack(Material.BLAZE_ROD);
+            case RECHARGE:
+                return new Potion(PotionType.REGEN, 2).toItemStack(1);
+            case FLURRY:
+                return new ItemStack(Material.FEATHER);
+            case SUPPORT:
+                return new ItemStack(Material.TNT);
+            case WEAKENING_SWING:
+                return new Potion(PotionType.WEAKNESS, 2).toItemStack(1);
+            case SWIFT_BACKUP:
+                return new ItemStack(Material.MONSTER_EGG, 1, (short) 95);
+            case SOUL_SUCKER:
+                return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+            case UNDEAD:
+                return new ItemStack(Material.ROTTEN_FLESH);
+            default:
+                return null;
         }
-
-        return null;
     }
 }

@@ -14,7 +14,6 @@ import java.util.UUID;
 public class PartyDeinviteArgument extends CommandArgument {
 
     public PartyDeinviteArgument() {
-
         super("deinvite", "Remove a player's invite to your party");
 
         this.isPlayerOnly = true;
@@ -22,12 +21,10 @@ public class PartyDeinviteArgument extends CommandArgument {
     }
 
     public String getUsage(String s)  {
-
         return "/" + s + " " + getName() + " <name>";
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (args.length != 2) {
             sender.sendMessage(ChatColor.YELLOW + getUsage(label));
             return true;

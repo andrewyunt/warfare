@@ -6,7 +6,6 @@ import com.faithfulmc.util.command.ArgumentExecutor;
 public class PartyCommand extends ArgumentExecutor {
 
     public PartyCommand() {
-
         super("party");
 
         addArgument(new PartyCreateArgument());

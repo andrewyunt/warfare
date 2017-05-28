@@ -76,11 +76,11 @@ public class Warfare extends JavaPlugin {
 
 		instance = this;
 
-		ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter(this));
+		ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter());
 
-		storageManager = new MongoStorageManager(this);
+		storageManager = new MongoStorageManager();
 		playerManager = new PlayerManager();
-		signManager = new SignManager(this);
+		signManager = new SignManager();
 		partyManager = new PartyManager();
 		serverConfiguration = new ServerConfiguration();
 		shopMenu = new ShopMenu();
@@ -107,9 +107,9 @@ public class Warfare extends JavaPlugin {
 		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
 
-        pm.registerEvents(new ColonCommandFix(this), this);
+        pm.registerEvents(new ColonCommandFix(), this);
         pm.registerEvents(new WeatherFixListener(), this);
-        pm.registerEvents(new ChatListener(this), this);
+        pm.registerEvents(new ChatListener(), this);
 		
 		if (StaticConfiguration.LOBBY){
 			storageManager.loadSigns();
@@ -131,7 +131,7 @@ public class Warfare extends JavaPlugin {
 			pm.registerEvents(new PlayerPowerupListener(), this);
 			pm.registerEvents(new PlayerPerkListener(), this);
 			pm.registerEvents(new SpectatorsInteractionsListener(), this);
-			pm.registerEvents(new PotFixListener(this), this);
+			pm.registerEvents(new PotFixListener(), this);
 			pm.registerEvents(new InfinityArrowFixListener(), this);
 		}
 		

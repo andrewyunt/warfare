@@ -1,4 +1,3 @@
-
 package com.andrewyunt.warfare.game;
 
 import java.util.HashSet;

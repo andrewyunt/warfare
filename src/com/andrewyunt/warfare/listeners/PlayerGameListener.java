@@ -46,13 +46,12 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event){
         Game game = Warfare.getInstance().getGame();
+
         if (Warfare.getInstance().getArena().isEdit()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The map is currently in edit mode.");
-        }
-        else if((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getAvailableCages().size() <= 0){
+        } else if((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getAvailableCages().size() <= 0) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Server is currently full");
-        }
-        else if(game.getStage() == Game.Stage.RESTART){
+        } else if(game.getStage() == Game.Stage.RESTART) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The warfare server server is currently restarting");
         }
     }
@@ -77,22 +76,17 @@ public class PlayerGameListener extends PlayerListener {
             }
             if (game.getStage() == Game.Stage.WAITING) {
                 game.addPlayer(gp);
-            }
-            else if(game.getStage() == Game.Stage.COUNTDOWN){
-                if(game.getAvailableCages().size() > 0){
+            } else if(game.getStage() == Game.Stage.COUNTDOWN) {
+                if (game.getAvailableCages().size() > 0) {
                     game.addPlayer(gp);
-                }
-                else{
+                } else{
                     player.kickPlayer(ChatColor.RED + "This game has already started.");
                 }
-            }
-            else if (game.getStage() == Game.Stage.END) {
+            } else if (game.getStage() == Game.Stage.END) {
                 player.kickPlayer("You may not join once the game has ended.");
-            }
-            else if (game.getStage() == Game.Stage.RESTART) {
+            } else if (game.getStage() == Game.Stage.RESTART) {
                 player.kickPlayer("You may not join during a restart.");
-            }
-            else {
+            } else {
                 if (!player.hasPermission("warfare.spectatorjoin")) {
                     player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
                 } else {
@@ -104,7 +98,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerQuit(PlayerQuitEvent event) {
-
         event.setQuitMessage(null);
 
         Player player = event.getPlayer();
@@ -187,7 +180,7 @@ public class PlayerGameListener extends PlayerListener {
         Entity damager = event.getDamager();
         Entity damaged = event.getEntity();
 
-        if(damager instanceof Player && damaged instanceof Player) {
+        if (damager instanceof Player && damaged instanceof Player) {
             GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer((damaged).getUniqueId());
             GamePlayer damagerGP = Warfare.getInstance().getPlayerManager().getPlayer((damager).getUniqueId());
 
@@ -206,19 +199,16 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
-
         cancelCageInteractions(event, event.getPlayer());
     }
 
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {
-
         cancelCageInteractions(event, event.getPlayer());
     }
 
     @EventHandler
     private void onPlayerDropItem(PlayerDropItemEvent event) {
-
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
 
         if (gp.isCaged()) {
@@ -228,7 +218,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerDeath(PlayerDeathEvent event) {
-
         event.setDroppedExp(0);
 
         Player player = event.getEntity();
@@ -265,7 +254,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onDeathMessage(PlayerDeathEvent event) {
-
         event.setDeathMessage(null);
 
         String msg;
@@ -318,7 +306,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onEnchantItem(EnchantItemEvent event) {
-
         Map<Enchantment, Integer> enchants = event.getEnchantsToAdd();
 
         enchants.clear();
@@ -335,7 +322,6 @@ public class PlayerGameListener extends PlayerListener {
         } else if (type == Material.BOW) {
             enchants.put(Enchantment.ARROW_DAMAGE, 1);
         }
-
     }
 
     @EventHandler
@@ -353,7 +339,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onProjectileLaunch(ProjectileLaunchEvent event) {
-
         if (event.getEntityType() != EntityType.ARROW) {
             return;
         }
@@ -384,7 +369,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     private void onPlayerFall(EntityDamageEvent event) {
-
         if (event.getCause() != EntityDamageEvent.DamageCause.FALL) {
             return;
         }
@@ -403,7 +387,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onSoup(PlayerInteractEvent event) {
-
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getItem();
 
@@ -423,7 +406,8 @@ public class PlayerGameListener extends PlayerListener {
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-        if(gamePlayer.isSpectating()) {
+
+        if (gamePlayer.isSpectating()) {
             Location playerLoc = event.getPlayer().getLocation();
             Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
             if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 300 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 300) {
@@ -442,7 +426,6 @@ public class PlayerGameListener extends PlayerListener {
     }
 
     private void cancelCageInteractions(Cancellable cancellable, Player player) {
-
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         if (gp.isCaged()) {

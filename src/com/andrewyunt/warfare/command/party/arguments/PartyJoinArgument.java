@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 public class PartyJoinArgument extends CommandArgument {
 
     public PartyJoinArgument() {
-
         super("join", "Join an exiting party");
 
         this.isPlayerOnly = true;
@@ -21,7 +20,6 @@ public class PartyJoinArgument extends CommandArgument {
     }
 
     public String getUsage(String s) {
-
         return "/" + s + " " + getName() + " <party>";
     }
 
