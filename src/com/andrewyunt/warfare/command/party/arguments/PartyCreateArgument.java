@@ -24,7 +24,6 @@ public class PartyCreateArgument extends CommandArgument {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         PartyManager partyManager = Warfare.getInstance().getPartyManager();
         Player player = (Player) sender;
 

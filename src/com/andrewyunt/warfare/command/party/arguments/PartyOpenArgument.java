@@ -8,6 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class PartyOpenArgument extends CommandArgument {
 
     public PartyOpenArgument() {
@@ -30,7 +32,7 @@ public class PartyOpenArgument extends CommandArgument {
             return false;
         }
 
-        if (party.getLeader() == player.getUniqueId()) {
+        if (Objects.equals(party.getLeader(), player.getUniqueId())) {
             party.setOpen(!party.isOpen());
             Warfare.getInstance().getStorageManager().saveParty(party);
             player.sendMessage(ChatColor.YELLOW + "The party is now " + (party.isOpen() ? ChatColor.GREEN + "open" : ChatColor.RED + "closed"));

@@ -19,10 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayMenu implements Listener, InventoryHolder {
@@ -122,7 +119,7 @@ public class PlayMenu implements Listener, InventoryHolder {
             if (party == null) {
                 playerEntity = new SinglePlayerEntity(player.getUniqueId());
             } else {
-                if (party.getLeader() == player.getUniqueId()) {
+                if (Objects.equals(party.getLeader(), player.getUniqueId())) {
                     playerEntity = new PartyPlayerEntity(player.getUniqueId());
                 } else {
                     player.sendMessage(ChatColor.RED + "You must be the party leader to do this");

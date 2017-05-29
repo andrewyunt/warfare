@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PartyKickArgument extends CommandArgument{
@@ -46,6 +47,8 @@ public class PartyKickArgument extends CommandArgument{
             player.sendMessage(ChatColor.YELLOW + "You may not kick yourself");
         } else if (party.getMembers().contains(kick)) {
             player.sendMessage(ChatColor.YELLOW + "That player is not in your party");
+        } else if (Objects.equals(party.getLeader(), player.getUniqueId())) {
+            player.sendMessage(ChatColor.YELLOW + "You must be the leader of the party");
         } else {
             party.getMembers().remove(kick);
             Warfare.getInstance().getStorageManager().saveParty(party);

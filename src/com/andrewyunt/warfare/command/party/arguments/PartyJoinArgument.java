@@ -24,7 +24,6 @@ public class PartyJoinArgument extends CommandArgument {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (args.length != 2) {
             sender.sendMessage(ChatColor.YELLOW + getUsage(label));
             return true;

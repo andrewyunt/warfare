@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PartyInviteArgument extends CommandArgument{
@@ -39,7 +40,7 @@ public class PartyInviteArgument extends CommandArgument{
             return false;
         }
 
-        if (party.getLeader() != player.getUniqueId()) {
+        if (!Objects.equals(party.getLeader(), player.getUniqueId())) {
             player.sendMessage(ChatColor.YELLOW + "You must be the leader of the party to do this");
             return false;
         }

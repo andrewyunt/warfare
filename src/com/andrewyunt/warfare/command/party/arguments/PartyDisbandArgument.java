@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PartyDisbandArgument extends CommandArgument {
@@ -33,7 +34,7 @@ public class PartyDisbandArgument extends CommandArgument {
             return false;
         }
 
-        if (party.getLeader() == player.getUniqueId()) {
+        if (Objects.equals(party.getLeader(), player.getUniqueId())) {
             Warfare.getInstance().getPartyManager().deleteParty(party);
             Warfare.getInstance().getStorageManager().saveParty(party);
             for (UUID uuid : party.getMembers()) {

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class Party {
 
-    @Getter private UUID leader;
+    @Getter @Setter private UUID leader;
     @Getter @Setter private boolean open;
 
     @Getter private final Set<UUID> members = new HashSet<>();

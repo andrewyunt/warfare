@@ -93,7 +93,7 @@ public class MongoStorageManager extends StorageManager{
         partyServersCollection = mongoDatabase.getCollection("partyservers");
 
         if (StaticConfiguration.LOBBY) {
-            getPartyServers();
+            Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> getPartyServers());
         }
     }
 
@@ -217,6 +217,11 @@ public class MongoStorageManager extends StorageManager{
     }
     
     public void saveParty(Party party) {
+        for (UUID member : party.getMembers()) {
+            if (Bukkit.getPlayer(member) != null) {
+                savePlayer(Warfare.getInstance().getPlayerManager().getPlayer(member));
+            }
+        }
         Document document = new Document();
         document.put("_id", party.getLeader());
         document.put("open", party.isOpen());
@@ -243,9 +248,10 @@ public class MongoStorageManager extends StorageManager{
 
     public void setPartyServer(Party party, String server) {
         Document document = new Document();
-        document.put("_id", party.getLeader());
+        document.put("serverid", StaticConfiguration.SERVER_NAME);
+        document.put("leader", party.getLeader());
         document.put("server", server);
-        partyCollection.insertOne(document);
+        partyServersCollection.insertOne(document);
     }
 
     public void getPartyServers() {
@@ -256,14 +262,19 @@ public class MongoStorageManager extends StorageManager{
         try {
             while (cursor.hasNext()) {//blocking
                 Document document = cursor.next();
-                UUID partyLeader = document.get("_id", UUID.class);
+                UUID partyLeader = document.get("leader", UUID.class);
                 String server = document.getString("server");
                 if (server == null) {
                     continue;
                 }
                 Party party = warfare.getPartyManager().getParty(partyLeader);
+                if (party == null) {
+                    continue;
+                }
                 for (UUID member : party.getMembers()) {
-                    Utils.sendPlayerToServer(Bukkit.getServer().getPlayer(member), server);
+                    if (Bukkit.getPlayer(member) != null) {
+                        Utils.sendPlayerToServer(Bukkit.getServer().getPlayer(member), server);
+                    }
                 }
             }
         } catch (IllegalStateException ex) {
