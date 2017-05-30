@@ -15,7 +15,7 @@ public class SetBoostArgument extends CommandArgument {
         super("setboostargument", "Set a player's booster level");
 
         isPlayerOnly = true;
-        permission = "warfare.setboostargument";
+        permission = "warfare.setboost";
     }
 
     public String getUsage(String s) {
