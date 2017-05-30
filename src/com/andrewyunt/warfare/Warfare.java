@@ -119,6 +119,7 @@ public class Warfare extends JavaPlugin {
 			serverConfiguration.saveDefaultConfig();
 
 			game = new Game();
+			storageManager.loadMap();
 			storageManager.updateServerStatusAsync();
 			
 			pm.registerEvents(teleporterMenu, this);

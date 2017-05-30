@@ -369,7 +369,9 @@ public class MongoStorageManager extends StorageManager{
         Game game = Warfare.getInstance().getGame();
         Document document = arenaCollection.find(new Document("name", StaticConfiguration.MAP_NAME)).first();
         if (document != null) {
-            game.setTeams(document.getBoolean("teams"));
+            if (document.containsKey("teams")) {
+                game.setTeams(document.getBoolean("teams"));
+            }
             Document mapLocation = document.get("mapLocation", Document.class);
             if (mapLocation != null) {
                 game.setMapLocation(deserializeLocation(mapLocation));
@@ -379,7 +381,10 @@ public class MongoStorageManager extends StorageManager{
                     .map(cage -> {
                         String name = cage.getString("name");
                         Document location = cage.get("location", Document.class);
-                        int side = cage.getInteger("side");
+                        int side = 0;
+                        if (cage.containsKey("side")) {
+                            side = cage.getInteger("side");
+                        }
                         return new Cage(name, deserializeLocation(location), side);
                     }).collect(Collectors.toSet())
             );

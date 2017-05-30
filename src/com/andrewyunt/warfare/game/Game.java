@@ -60,8 +60,6 @@ public class Game {
 	@Getter private final Set<Side> sides = new HashSet<>();
 	
 	public Game() {
-		Warfare.getInstance().getStorageManager().loadMap();
-
 		if (teams) {
 			sides.add(new Side(1, "Team 1"));
 			sides.add(new Side(2, "Team 2"));
