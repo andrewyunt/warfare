@@ -9,15 +9,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LobbyCommand implements CommandExecutor{
+public class LobbyCommand implements CommandExecutor {
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player) {
             if (StaticConfiguration.LOBBY) {
                 Utils.sendPlayerToServer((Player)sender, "Hub" + ThreadLocalRandom.current().nextInt(1, 8 + 1));
             }
             Utils.sendPlayerToServer((Player)sender, StaticConfiguration.getNextLobby());
-            sender.sendMessage(ChatColor.YELLOW + "Sending you to the warfare lobby");
+            sender.sendMessage(ChatColor.YELLOW + "You are being sent to the " + (StaticConfiguration.LOBBY ? "hub" : "Warfare lobby"));
         } else {
             sender.sendMessage(ChatColor.RED + "You must be a player to do this");
         }
