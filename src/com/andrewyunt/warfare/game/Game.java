@@ -6,10 +6,13 @@ import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
 import com.andrewyunt.warfare.game.events.StageChangeEvent;
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,21 +48,27 @@ public class Game {
         }
     }
 
+	@Getter @Setter private Set<LootChest> lootChests = new HashSet<>();
+	@Getter @Setter private Set<Cage> cages = new HashSet<>();
+	@Getter @Setter private boolean teams;
+	@Getter @Setter private boolean edit;
+	@Getter @Setter private Location mapLocation;
 	@Getter private short countdownTime = 10, gameTime;
 	@Getter private Stage stage = Stage.WAITING;
 
 	@Getter private final Set<GamePlayer> players = new HashSet<>();
-	@Getter private final Set<Cage> cages = new HashSet<>();
+	@Getter private final Set<Side> sides = new HashSet<>();
 	
 	public Game() {
-		Arena arena = Warfare.getInstance().getArena();
-		
-		for (Entry<String, Location> entry : arena.getCageLocations().entrySet()) {
-			cages.add(new Cage(entry.getKey(), entry.getValue()));
+		Warfare.getInstance().getStorageManager().loadMap();
+
+		if (teams) {
+			sides.add(new Side(1, "Team 1"));
+			sides.add(new Side(2, "Team 2"));
 		}
 
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> arena.getMapLocation().getWorld().setTime(6000), 20L, 0L);
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> mapLocation.getWorld().setTime(6000), 20L, 0L);
 	}
 	
 	/**
@@ -93,6 +102,18 @@ public class Game {
 	public Set<Cage> getAvailableCages() {
 		return cages.stream().filter(cage -> !cage.hasPlayer()).collect(Collectors.toSet());
 	}
+
+	public Cage getCage(String name) {
+		Cage cage = null;
+
+		for (Cage itrCage : cages) {
+			if (cage.getName().equals(name)) {
+				cage = itrCage;
+			}
+		}
+
+		return cage;
+	}
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
@@ -101,7 +122,7 @@ public class Game {
 	}
 
 	public void fillChests() {
-		for (LootChest lootChest : Warfare.getInstance().getArena().getLootChests()) {
+		for (LootChest lootChest : lootChests) {
 			if (lootChest.getLocation().getBlock().getType() != Material.CHEST) {
 				continue;
 			}

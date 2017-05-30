@@ -2,8 +2,8 @@ package com.andrewyunt.warfare.managers.mongo;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.lobby.SignException;
-import com.andrewyunt.warfare.game.Arena;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
@@ -203,7 +203,8 @@ public class MongoStorageManager extends StorageManager{
             Document document = new Document();
             document.put("_id", serverId = new ObjectId());
             document.put("name", StaticConfiguration.SERVER_NAME);
-            document.put("serverType", (StaticConfiguration.LOBBY ? Server.ServerType.LOBBY : Server.ServerType.GAME).name());
+            document.put("serverType", (StaticConfiguration.LOBBY ? Server.ServerType.LOBBY : Warfare.getInstance().
+                    getGame().isTeams() ? Server.ServerType.TEAMS : Server.ServerType.SOLO).name());
             document.put("gameStage", warfare.getGame().getStage().name());
             document.put("mapName", StaticConfiguration.MAP_NAME);
             document.put("onlinePlayers", warfare.getGame().getPlayers().size());
@@ -331,23 +332,25 @@ public class MongoStorageManager extends StorageManager{
         }
     }
     
-    public void saveArena() {
+    public void saveMap() {
         Document document = new Document();
-        Arena arena = warfare.getArena();
+        Game game = warfare.getGame();
         document.put("name", StaticConfiguration.MAP_NAME);
-        if (arena.getMapLocation() != null) {
-            document.put("mapLocation", serializeLocation(arena.getMapLocation()));
+        document.put("teams", game.isTeams());
+        if (game.getMapLocation() != null) {
+            document.put("mapLocation", serializeLocation(game.getMapLocation()));
         }
-        document.put("cages", arena.getCageLocations().entrySet()
+        document.put("cages", game.getCages()
                 .stream()
                 .map(cage -> {
                     Document cageDocument = new Document();
-                    cageDocument.put("name", cage.getKey());
-                    cageDocument.put("location", serializeLocation(cage.getValue()));
+                    cageDocument.put("name", cage.getName());
+                    cageDocument.put("location", serializeLocation(cage.getLocation()));
+                    cageDocument.put("side", cage.getSideNum());
                     return cageDocument;
                 })
                 .collect(Collectors.toSet()));
-        document.put("chests", arena.getLootChests()
+        document.put("chests", game.getLootChests()
                 .stream()
                 .map(chest -> {
                     Document chestDocument = new Document();
@@ -362,22 +365,26 @@ public class MongoStorageManager extends StorageManager{
     }
 
     @SuppressWarnings("unchecked")
-    public Arena loadArena() {
+    public void loadMap() {
+        Game game = Warfare.getInstance().getGame();
         Document document = arenaCollection.find(new Document("name", StaticConfiguration.MAP_NAME)).first();
-        Arena arena = new Arena();
         if (document != null) {
+            game.setTeams(document.getBoolean("teams"));
             Document mapLocation = document.get("mapLocation", Document.class);
             if (mapLocation != null) {
-                arena.setMapLocation(deserializeLocation(mapLocation));
+                game.setMapLocation(deserializeLocation(mapLocation));
             }
             List<Document> cages = document.get("cages", List.class);
-            cages.forEach(cage -> {
-                String name = cage.getString("name");
-                Document location = cage.get("location", Document.class);
-                arena.getCageLocations().put(name, deserializeLocation(location));
-            });
+            game.setCages(cages.stream()
+                    .map(cage -> {
+                        String name = cage.getString("name");
+                        Document location = cage.get("location", Document.class);
+                        int side = cage.getInteger("side");
+                        return new Cage(name, deserializeLocation(location), side);
+                    }).collect(Collectors.toSet())
+            );
             List<Document> chests = document.get("chests", List.class);
-            arena.setLootChests(chests.stream()
+            game.setLootChests(chests.stream()
                     .map(chest -> {
                 int tier = chest.getInteger("tier");
                 Document location = chest.get("location", Document.class);
@@ -385,7 +392,6 @@ public class MongoStorageManager extends StorageManager{
                     }).collect(Collectors.toSet())
             );
         }
-        return arena;
     }
     
     public Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {

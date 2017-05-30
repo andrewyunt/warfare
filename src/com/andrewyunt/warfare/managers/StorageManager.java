@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.game.Arena;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.player.GamePlayer;
@@ -68,9 +67,9 @@ public abstract class StorageManager {
 
     public abstract void loadSigns();
 
-    public abstract void saveArena();
+    public abstract void saveMap();
 
-    public abstract Arena loadArena();
+    public abstract void loadMap();
 
 	@Deprecated
 	public abstract Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy);

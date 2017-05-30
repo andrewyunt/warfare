@@ -47,7 +47,7 @@ public class PlayerGameListener extends PlayerListener {
     public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event){
         Game game = Warfare.getInstance().getGame();
 
-        if (Warfare.getInstance().getArena().isEdit()) {
+        if (Warfare.getInstance().getGame().isEdit()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The map is currently in edit mode.");
         } else if((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getAvailableCages().size() <= 0) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Server is currently full");
@@ -70,7 +70,7 @@ public class PlayerGameListener extends PlayerListener {
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
             Game game = Warfare.getInstance().getGame();
-            if (Warfare.getInstance().getArena().isEdit()) {
+            if (Warfare.getInstance().getGame().isEdit()) {
                 player.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
                 return;
             }
@@ -409,7 +409,7 @@ public class PlayerGameListener extends PlayerListener {
 
         if (gamePlayer.isSpectating()) {
             Location playerLoc = event.getPlayer().getLocation();
-            Location centerLoc = Warfare.getInstance().getArena().getMapLocation();
+            Location centerLoc = Warfare.getInstance().getGame().getMapLocation();
             if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 300 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 300) {
                 event.getPlayer().teleport(centerLoc);
             }

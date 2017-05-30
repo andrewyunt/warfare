@@ -20,7 +20,6 @@ import com.andrewyunt.warfare.command.party.PartyCommand;
 import com.andrewyunt.warfare.command.warfare.WarfareCommand;
 import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.game.Arena;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.listeners.*;
 import com.andrewyunt.warfare.listeners.fixes.*;
@@ -63,7 +62,6 @@ public class Warfare extends JavaPlugin {
 	@Getter private PowerupSelectorMenu powerupSelectorMenu;
 	@Getter private TeleporterMenu teleporterMenu;
 	@Getter private ScoreboardHandler scoreboardHandler;
-	@Getter private Arena arena;
 	@Getter @Setter private Game game;
 	
 	@Override
@@ -120,8 +118,7 @@ public class Warfare extends JavaPlugin {
 		} else {
 			serverConfiguration.saveDefaultConfig();
 
-			arena = storageManager.loadArena();
-			game = new Game();			
+			game = new Game();
 			storageManager.updateServerStatusAsync();
 			
 			pm.registerEvents(teleporterMenu, this);

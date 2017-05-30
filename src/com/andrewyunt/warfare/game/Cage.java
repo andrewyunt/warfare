@@ -17,13 +17,15 @@ public class Cage {
 	
 	@Getter private String name;
 	@Getter private GamePlayer player;
+	@Getter private int sideNum;
 
-	private final Location location;
+	@Getter private final Location location;
 	private final Set<Block> blocks = new HashSet<>();
 	
-	public Cage(String name, Location location) {
-		
+	public Cage(String name, Location location, int sideNum) {
+		this.name = name;
 		this.location = location;
+		this.sideNum = sideNum;
 		
 		World world = location.getWorld();
 		double X = location.getX();
@@ -58,7 +60,6 @@ public class Cage {
 	}
 
 	public void setPlayer(GamePlayer player) {
-		
 		this.player = player;
 		
 		if (player == null) {
@@ -77,7 +78,7 @@ public class Cage {
 		location.setY(location.getBlockY() + 1);
 		location.setZ(location.getBlockZ() + 0.5);
 
-		Vector vector = Warfare.getInstance().getArena().getMapLocation().toVector().subtract(location.toVector()).normalize();
+		Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(location.toVector()).normalize();
 		vector.setY(0.5);
 
 		location.setDirection(vector);
@@ -91,7 +92,6 @@ public class Cage {
 	}
 	
 	public void destroy() {
-		
 		player = null;
 		
 		for (Block block : blocks) {

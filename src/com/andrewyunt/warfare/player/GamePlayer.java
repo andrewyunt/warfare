@@ -3,6 +3,7 @@ package com.andrewyunt.warfare.player;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
+import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
@@ -20,13 +21,14 @@ public class GamePlayer {
 	
 	@Getter private UUID UUID;
 	@Getter private String name;
+	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
 	@Getter private int points, coins, earnedCoins, wins, losses, boost = 1, gamesPlayed, kills, killStreak, deaths, energy;
 	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	@Getter private boolean spectating, sentActivate;
 	@Getter @Setter private GamePlayer lastDamager;
 	@Getter private Kit selectedKit;
 	@Getter private Powerup selectedPowerup;
-	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
+	@Getter @Setter Side side;
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;
@@ -199,7 +201,7 @@ public class GamePlayer {
 
 			Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(this));
 
-			Location loc = Warfare.getInstance().getArena().getMapLocation();
+			Location loc = Warfare.getInstance().getGame().getMapLocation();
 			Chunk chunk = loc.getChunk();
 			
 			if (!chunk.isLoaded()) {

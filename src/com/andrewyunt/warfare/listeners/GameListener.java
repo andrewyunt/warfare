@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.game.events.*;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
@@ -20,8 +21,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GameListener implements Listener {
 
@@ -36,12 +40,33 @@ public class GameListener implements Listener {
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
-
             Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
 
-            if (game.getAvailableCages().size() <= 2) {
-                game.setStage(Game.Stage.COUNTDOWN);
+            if (game.isTeams()) {
+                Side mostCages = null;
+                for (Side side : game.getSides()) {
+                    if (mostCages == null) {
+                        mostCages = side;
+                    } else if (side.getAvailableCages().size() > mostCages.getAvailableCages().size()) {
+                            mostCages = side;
+                    }
+                }
+
+                gamePlayer.setSide(mostCages);
+
+                mostCages.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+
+                if (game.getAvailableCages().size() == 0) {
+                    game.setStage(Game.Stage.COUNTDOWN);
+                }
+            } else {
+                gamePlayer.setSide(new Side(0, player.getDisplayName()));
+
+                game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+
+                if (game.getAvailableCages().size() <= 2) {
+                    game.setStage(Game.Stage.COUNTDOWN);
+                }
             }
 
             // Send the join message to the players
@@ -92,7 +117,7 @@ public class GameListener implements Listener {
     public void onStart(StartEvent event) {
         Game game = Warfare.getInstance().getGame();
 
-        for (Entity entity : Warfare.getInstance().getArena().getMapLocation().getWorld().getEntities()) {
+        for (Entity entity : Warfare.getInstance().getGame().getMapLocation().getWorld().getEntities()) {
             if (entity.getType() != EntityType.PLAYER) {
                 entity.remove();
             }
@@ -152,25 +177,34 @@ public class GameListener implements Listener {
     @EventHandler
     public void onEnd(EndEvent event) {
         Game game = Warfare.getInstance().getGame();
+        Collection<GamePlayer> players = Warfare.getInstance().getPlayerManager().getPlayers();
+        GamePlayer winningPlayer = players.stream().filter(player -> player.isInGame()).iterator().next();
+        final Side winningSide = winningPlayer.getSide();
 
-        for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-            if (player.isInGame()) {
-                Bukkit.getServer().broadcastMessage(ChatColor.GOLD +
-                        String.format("%s " + ChatColor.YELLOW + "has won the game!", player.getBukkitPlayer().getDisplayName()));
+        Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s " + ChatColor.YELLOW + " has won the game!",
+                winningSide.getName()));
 
-                int winCoins = 1000 * player.getBoost();
+        for (GamePlayer winner : winningSide.getPlayers()) {
+            int winCoins = 1000 * winner.getBoost();
 
-                player.setCoins(player.getCoins() + winCoins);
-                player.setPoints(player.getPoints() + 30);
-                player.setWins(player.getWins() + 1);
+            winner.setCoins(winner.getCoins() + winCoins);
+            winner.setPoints(winner.getPoints() + 30);
+            winner.setWins(winner.getWins() + 1);
 
-                player.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
-                        "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
-                        String.valueOf(winCoins)));
-            } else {
-                player.setLosses(player.getLosses() + 1);
-            }
+            winner.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
+                    "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
+                    String.valueOf(winCoins)));
+        }
 
+
+        Set<GamePlayer> losers = Warfare.getInstance().getPlayerManager().getPlayers().stream()
+                .filter(player -> player.getSide() != winningSide).collect(Collectors.toSet());
+
+        for (GamePlayer loser : losers) {
+            loser.setLosses(loser.getLosses() + 1);
+        }
+
+        for (GamePlayer player : players) {
             player.setGamesPlayed(player.getGamesPlayed() + 1);
         }
 
@@ -193,7 +227,7 @@ public class GameListener implements Listener {
         for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
             Player bukkitPlayer = player.getBukkitPlayer();
             if (bukkitPlayer != null) {
-                if (!Warfare.getInstance().getArena().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
+                if (!Warfare.getInstance().getGame().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
                     Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
                     if (party == null) {
                         Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
@@ -213,7 +247,7 @@ public class GameListener implements Listener {
             }
         }
 
-        if (Warfare.getInstance().getArena().isEdit()) {
+        if (Warfare.getInstance().getGame().isEdit()) {
             return;
         }
 

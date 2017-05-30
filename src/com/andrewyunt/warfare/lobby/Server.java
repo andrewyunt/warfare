@@ -23,6 +23,6 @@ public class Server {
     }
 
     public enum ServerType {
-        LOBBY, GAME
+        LOBBY, TEAMS, SOLO
     }
 }

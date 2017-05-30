@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.game.Arena;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.faithfulmc.util.command.CommandArgument;
@@ -29,26 +28,24 @@ public class EditArgument extends CommandArgument {
             return false;
         }
 
-        Arena arena = Warfare.getInstance().getArena();
+        Game game = Warfare.getInstance().getGame();
 
-        if (arena == null) {
+        if (game == null) {
             return false;
         }
 
-        if (arena.isEdit()) {
-            arena.setEdit(false);
+        if (game.isEdit()) {
+            game.setEdit(false);
 
             Warfare.getInstance().setGame(new Game());
 
             sender.sendMessage(ChatColor.YELLOW + "You have disabled edit mode for the arena.");
         } else {
-            Game game = Warfare.getInstance().getGame();
-
             if (game != null) {
                 game.setStage(Game.Stage.END);
             }
 
-            arena.setEdit(true);
+            game.setEdit(true);
             sender.sendMessage(ChatColor.YELLOW + "You have enabled edit mode for the arena.");
 
             for (GamePlayer gp : game.getPlayers()) {

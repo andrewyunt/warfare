@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.game.Arena;
+import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
@@ -53,22 +53,22 @@ public class AddChestArgument extends CommandArgument {
             return false;
         }
 
-        Arena arena = Warfare.getInstance().getArena();
+        Game game = Warfare.getInstance().getGame();
 
-        if (arena == null) {
+        if (game == null) {
             sender.sendMessage(ChatColor.RED + "The arena is null.");
             return false;
         }
 
         try {
-            arena.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1])));
+            game.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1])));
 
             sender.sendMessage(ChatColor.YELLOW + "Loot chest has been added successfully.");
         } catch (NumberFormatException e) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
         }
 
-        Warfare.getInstance().getStorageManager().saveArena();
+        Warfare.getInstance().getStorageManager().saveMap();
 
         return true;
     }

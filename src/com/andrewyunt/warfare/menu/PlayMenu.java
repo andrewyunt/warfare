@@ -40,7 +40,8 @@ public class PlayMenu implements Listener, InventoryHolder {
             List<Server> serverList = Warfare.getInstance().getStorageManager().getServers();
             inventoryServers = new ArrayList<>(serverList);
             inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) - server.getOnlinePlayers()));
-            quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());
+            quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING)
+                    .collect(Collectors.toList());
             quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) - server.getOnlinePlayers()));
             Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> inventory.setContents(getContents()));
         }, 0, 2);
@@ -85,12 +86,14 @@ public class PlayMenu implements Listener, InventoryHolder {
     }
 
     public ItemStack createServerItem(Server server) {
-        if (server.getServerType() == Server.ServerType.GAME && server.getGameStage().ordinal() < Game.Stage.END.ordinal()) {
+        Server.ServerType serverType = server.getServerType();
+        if ((serverType == Server.ServerType.TEAMS || serverType == Server.ServerType.SOLO) && server.getGameStage().ordinal() < Game.Stage.END.ordinal()) {
             return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
                     .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + server.getName())
                     .lore(
                             "",
                             ChatColor.GOLD + "Players: " + ChatColor.GRAY + " " + server.getOnlinePlayers() + "/" + server.getMaxPlayers(),
+                            ChatColor.GOLD + "Server Type: " + ChatColor.GRAY + " " + (serverType == Server.ServerType.TEAMS ? "Teams" : "Solo"),
                             ChatColor.GOLD + "Map Name: " + ChatColor.GRAY + " " + server.getMapName(),
                             ChatColor.GOLD + "Stage: " + ChatColor.GRAY + server.getGameStage().getDisplay(),
                             ""

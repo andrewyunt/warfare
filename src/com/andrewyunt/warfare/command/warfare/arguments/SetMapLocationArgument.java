@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.game.Arena;
+import com.andrewyunt.warfare.game.Game;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -28,16 +28,16 @@ public class SetMapLocationArgument extends CommandArgument {
             return false;
         }
 
-        Arena arena = Warfare.getInstance().getArena();
+        Game game = Warfare.getInstance().getGame();
 
-        if (arena == null) {
+        if (game == null) {
             sender.sendMessage(ChatColor.RED + "The arena is null.");
             return false;
         }
 
-        arena.setMapLocation(((Player) sender).getLocation());
+        game.setMapLocation(((Player) sender).getLocation());
 
-        Warfare.getInstance().getStorageManager().saveArena();
+        Warfare.getInstance().getStorageManager().saveMap();
 
         return true;
     }
