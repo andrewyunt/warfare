@@ -13,12 +13,16 @@ public class CoinsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            Player targetPlayer;
+            Player targetPlayer = null;
 
             if (args.length == 0) {
                 targetPlayer = (Player) sender;
             } else {
-                targetPlayer = Bukkit.getServer().getPlayer(args[0]);
+                try {
+                    targetPlayer = Bukkit.getServer().getPlayer(args[0]);
+                } catch (NullPointerException e) {
+                    sender.sendMessage(ChatColor.RED + "The specified player doesn't exist.");
+                }
             }
 
             int coins = Warfare.getInstance().getPlayerManager().getPlayer(targetPlayer).getCoins();
