@@ -88,6 +88,11 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
+        if (shooterGP.getSide() == damagedGP.getSide()) {
+            return;
+        }
+
+
         // Checking that the damaged player has the perk
         if (!shooterGP.getPurchases().keySet().contains(Perk.BOOMERANG)) {
             return;
@@ -138,6 +143,10 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
+        if (shooterGP.getSide() == damagedGP.getSide()) {
+            return;
+        }
+
         if (!shooterGP.getPurchases().keySet().contains(Perk.WEAKENING_ARROW)) {
             return;
         }
@@ -181,6 +190,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -229,6 +242,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!shooterGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (shooterGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -283,6 +300,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -344,6 +365,9 @@ public class PlayerPerkListener implements Listener {
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
             return;
         }
+        if (damagerGP.getSide() == damagedGP.getSide()) {
+            return;
+        }
 
         if (!damagerGP.getPurchases().keySet().contains(Perk.FLURRY)) {
             return;
@@ -399,6 +423,10 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
+        if (damagerGP.getSide() == damagedGP.getSide()) {
+            return;
+        }
+
         if (!damagedGP.getPurchases().keySet().contains(Perk.SUPPORT)) {
             return;
         }
@@ -446,11 +474,15 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
-        GamePlayer creeperAP = Warfare.getInstance().getPlayerManager().getPlayer(creeper.getName());
+        GamePlayer damagerGP = Warfare.getInstance().getPlayerManager().getPlayer(creeper.getName());
         GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
 
         // Check if players are in-game
-        if (!creeperAP.isInGame() || !damagedGP.isInGame()) {
+        if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -485,6 +517,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -532,6 +568,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 
@@ -590,6 +630,10 @@ public class PlayerPerkListener implements Listener {
             return;
         }
 
+        if (damagerGP.getSide() == damagedGP.getSide()) {
+            return;
+        }
+
         if (!damagerGP.getPurchases().keySet().contains(Perk.SOUL_SUCKER)) {
             return;
         }
@@ -633,6 +677,10 @@ public class PlayerPerkListener implements Listener {
 
         // Check if players are in-game
         if (!damagerGP.isInGame() || !damagedGP.isInGame()) {
+            return;
+        }
+
+        if (damagerGP.getSide() == damagedGP.getSide()) {
             return;
         }
 

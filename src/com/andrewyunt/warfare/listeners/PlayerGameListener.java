@@ -188,6 +188,11 @@ public class PlayerGameListener extends PlayerListener {
                 return;
             }
 
+            if (damagedGP.getSide() == damagerGP.getSide()) {
+                event.setCancelled(true);
+                return;
+            }
+
             damagedGP.setLastDamager(damagerGP);
 
             if (damagerGP.getSelectedKit() == Kit.SOUP) {

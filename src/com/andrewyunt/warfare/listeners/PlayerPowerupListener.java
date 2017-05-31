@@ -69,32 +69,6 @@ public class PlayerPowerupListener implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.NORMAL)
-    public void EPC(EntityDamageByEntityEvent event) {
-        if (event.getCause() != DamageCause.FALL && event.getEntity() instanceof Player) {
-            // Give energy
-            Player damager = null;
-            Player damaged = (Player) event.getEntity();
-
-            if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
-                damager = (Player) event.getDamager();
-            } else if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player) {
-                LivingEntity shooter = ((Arrow) event.getDamager()).getShooter();
-                if (shooter instanceof Player) {
-                    damager = (Player) shooter;
-                }
-            } else {
-                return;
-            }
-            if (damager != null && damaged != null) {
-                GamePlayer damagerPlayer = Warfare.getInstance().getPlayerManager().getPlayer(damager);
-                if (damagerPlayer.getSelectedPowerup() == Powerup.MARKSMAN) {
-                    Utils.playBloodEffect(damaged, 5);
-                }
-            }
-        }
-    }
-
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT)) {
@@ -146,6 +120,10 @@ public class PlayerPowerupListener implements Listener {
             GamePlayer nearbyGP = Warfare.getInstance().getPlayerManager().getPlayer(nearbyPlayer.getName());
 
             if (!nearbyGP.isInGame()) {
+                continue;
+            }
+
+            if (nearbyGP.getSide() == shooterGP.getSide()) {
                 continue;
             }
 
