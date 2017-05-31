@@ -9,6 +9,7 @@ import com.andrewyunt.warfare.game.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.managers.StorageManager;
+import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
 import com.andrewyunt.warfare.player.Party;
@@ -31,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -115,7 +117,6 @@ public class MongoStorageManager extends StorageManager{
         document.put("points", player.getPoints());
         document.put("coins", player.getCoins());
         document.put("earnedCoins", player.getEarnedCoins());
-        document.put("boost", player.getBoost());
         document.put("kills", player.getKills());
         document.put("deaths", player.getDeaths());
         if (player.getDeaths() == 0) {
@@ -132,6 +133,12 @@ public class MongoStorageManager extends StorageManager{
             purchase.put("name", entry.getKey().getName());
             purchase.put("level", entry.getValue());
             return purchase;
+        }).collect(Collectors.toList()));
+        document.put("boosters", player.getBoosters().stream().map(booster -> {
+            Document boosterDocument = new Document();
+            boosterDocument.put("level", booster.getLevel());
+            boosterDocument.put("expiry", booster.getExpiry());
+            return boosterDocument;
         }).collect(Collectors.toList()));
         //TODO: Better saving method?
         playerCollection.deleteMany(new Document("_id", player.getUUID()));
@@ -157,7 +164,6 @@ public class MongoStorageManager extends StorageManager{
             player.setPoints(document.getInteger("points", 0));
             player.setCoins(document.getInteger("coins", 0));
             player.setEarnedCoins(document.getInteger("earnedCoins", 0));
-            player.setBoost(document.getInteger("boost"));
             player.setKills(document.getInteger("kills", 0));
             player.setWins(document.getInteger("wins", 0));
             player.setLosses(document.getInteger("losses", 0));
@@ -167,10 +173,14 @@ public class MongoStorageManager extends StorageManager{
                 String type = purchase.getString("type");
                 String name = purchase.getString("name");
                 int level = purchase.getInteger("level");
-
                 PurchaseType purchaseType = PurchaseType.valueOf(type);
                 Purchasable purchasable = purchaseType.getPurchase(name);
                 player.getPurchases().put(purchasable, level);
+            });
+            ((List<Document>) document.get("boosters", List.class)).forEach(purchase -> {
+                int level = purchase.getInteger("level");
+                LocalDateTime expiry = (LocalDateTime) purchase.get("expiry");
+                player.getBoosters().add(new Booster(level, expiry));
             });
         }
         player.setLoaded(true);

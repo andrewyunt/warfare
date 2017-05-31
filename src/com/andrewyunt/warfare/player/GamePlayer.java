@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class GamePlayer {
@@ -22,13 +23,15 @@ public class GamePlayer {
 	@Getter private UUID UUID;
 	@Getter private String name;
 	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
-	@Getter private int points, coins, earnedCoins, wins, losses, boost = 1, gamesPlayed, kills, killStreak, deaths, energy;
+	@Getter @Setter private Set<Booster> boosters = new HashSet<>();
+	@Getter private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
 	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	@Getter private boolean spectating, sentActivate;
 	@Getter @Setter private GamePlayer lastDamager;
 	@Getter private Kit selectedKit;
 	@Getter private Powerup selectedPowerup;
 	@Getter @Setter Side side;
+	private int boosterTaskId;
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;
@@ -45,6 +48,18 @@ public class GamePlayer {
 					.registerNewObjective(ChatColor.RED + "❤", "health");
 			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 		}
+
+		boosterTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+			Set<Booster> toRemove = new HashSet<>();
+			for (Booster booster : boosters) {
+				if (LocalDateTime.now().isAfter(booster.getExpiry())) {
+					toRemove.add(booster);
+				}
+			}
+			for (Booster booster : toRemove) {
+				boosters.remove(booster);
+			}
+		}, 1200L, 0L);
 	}
 	
 	public Player getBukkitPlayer() {
@@ -86,13 +101,6 @@ public class GamePlayer {
 	public void setLosses(int losses) {
 		if (!Objects.equals(losses, this.losses)) {
 			this.losses = losses;
-			update();
-		}
-	}
-
-	public void setBoost(int boost) {
-		if (!Objects.equals(boost, this.boost)) {
-			this.boost = boost;
 			update();
 		}
 	}
@@ -254,4 +262,14 @@ public class GamePlayer {
             Warfare.getInstance().getStorageManager().savePlayerAsync(this);
         }
     }
+
+    public int getBoost() {
+    	int boost = 0;
+    	for (Booster booster : boosters) {
+    		if (booster.getLevel() > boost) {
+    			boost = booster.getLevel();
+			}
+		}
+		return boost;
+	}
 }

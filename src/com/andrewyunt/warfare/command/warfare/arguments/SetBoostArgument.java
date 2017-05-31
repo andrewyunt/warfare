@@ -1,6 +1,7 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
+import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.Bukkit;
@@ -9,10 +10,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.LocalDateTime;
+
 public class SetBoostArgument extends CommandArgument {
 
     public SetBoostArgument() {
-        super("setboostargument", "Set a player's booster level");
+        super("setboost", "Set a player's booster level");
 
         isPlayerOnly = true;
         permission = "warfare.setboost";
@@ -24,8 +27,8 @@ public class SetBoostArgument extends CommandArgument {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(args.length >= 3)) {
-            sender.sendMessage(ChatColor.RED + "Usage: /warfare setboostargument [player] [amount]");
+        if (!(args.length >= 4)) {
+            sender.sendMessage(ChatColor.RED + "Usage: /warfare setboost [player] [level] [duration]");
             return false;
         }
 
@@ -33,15 +36,17 @@ public class SetBoostArgument extends CommandArgument {
         GamePlayer targetGP = Warfare.getInstance().getPlayerManager().getPlayer(targetPlayer.getName());
 
         int boost;
+        int duration;
 
         try {
             boost = Integer.valueOf(args[2]);
+            duration = Integer.valueOf(args[3]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: /warfare setboostargument [player] [amount]");
+            sender.sendMessage(ChatColor.RED + "Usage: /warfare setboost [player] [amount]");
             return false;
         }
 
-        targetGP.setBoost(boost);
+        targetGP.getBoosters().add(new Booster(boost, LocalDateTime.now().plusHours(duration)));
 
         sender.sendMessage(String.format(ChatColor.YELLOW + "You set" + ChatColor.GOLD + "%s" + ChatColor.YELLOW
                         + "'s booster level to " + ChatColor.GOLD + "%s"+ ChatColor.YELLOW + ".",
