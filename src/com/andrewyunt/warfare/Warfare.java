@@ -22,7 +22,10 @@ import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.listeners.*;
-import com.andrewyunt.warfare.listeners.fixes.*;
+import com.andrewyunt.warfare.listeners.fixes.ColonCommandFix;
+import com.andrewyunt.warfare.listeners.fixes.InfinityArrowFixListener;
+import com.andrewyunt.warfare.listeners.fixes.PotFixListener;
+import com.andrewyunt.warfare.listeners.fixes.WeatherFixListener;
 import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
@@ -32,6 +35,7 @@ import com.andrewyunt.warfare.menu.*;
 import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
+import com.faithfulmc.framework.server.ServerSettings;
 import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.chat.Chat;
@@ -149,6 +153,10 @@ public class Warfare extends JavaPlugin {
 				creature.remove();
 			}
 		}
+
+		ServerSettings.SAVE_ENTRIES = false;
+		ServerSettings.setName(StaticConfiguration.SERVER_NAME);
+		ServerSettings.ACCEPTING_NEW = false;
 	}
 
 	@Override
