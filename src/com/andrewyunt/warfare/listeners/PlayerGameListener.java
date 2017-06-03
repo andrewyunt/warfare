@@ -37,6 +37,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -243,8 +244,27 @@ public class PlayerGameListener extends PlayerListener {
 
         lastDamager.addKill();
 
-        int killCoins = 20 * lastDamager.getBoost();
-        lastDamager.setCoins(lastDamager.getCoins() + lastDamager.getBoost());
+        int killCoins = 30;
+
+        List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(lastDamager.getBukkitPlayer()));
+
+        if (groups.contains("Platinum")) {
+            killCoins = 100;
+        } else if (groups.contains("Sapphire")) {
+            killCoins = 90;
+        }  else if (groups.contains("Ruby")) {
+            killCoins = 80;
+        } else if (groups.contains("Emerald")) {
+            killCoins = 70;
+        } else if (groups.contains("Diamond")) {
+            killCoins = 60;
+        } else if (groups.contains("Gold")) {
+            killCoins = 50;
+        } else if (groups.contains("Iron")) {
+            killCoins = 40;
+        }
+
+        lastDamager.setCoins(lastDamager.getCoins() + killCoins * lastDamager.getBoost());
         lastDamager.setPoints(lastDamager.getPoints() + 5);
         lastDamager.getBukkitPlayer().sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD
