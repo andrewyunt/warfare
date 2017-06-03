@@ -261,6 +261,11 @@ public class ShopMenu implements Listener {
 					player.sendMessage(ChatColor.RED + "You haven't unlocked that item yet.");
 					return;
 				}
+
+				if (gp.getPurchases().get(purchasable) < level - 1) {
+					player.sendMessage(ChatColor.RED + "You haven't unlocked the preceding upgrades.");
+					return;
+				}
 			} else if (title.contains("Perks")) {
 				purchasable = Perk.valueOf(enumStr);
 				type = Type.PERKS;
@@ -274,7 +279,7 @@ public class ShopMenu implements Listener {
 						purchasable.getName()));
 				return;
 			}
-			
+
 			gp.setCoins(gp.getCoins() - purchasable.getPrice(level));
 			gp.getPurchases().put(purchasable, level);
 			gp.update();
