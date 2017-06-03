@@ -1,6 +1,7 @@
 package com.andrewyunt.warfare.command.warfare;
 
 import com.andrewyunt.warfare.command.warfare.arguments.*;
+import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.faithfulmc.framework.BaseConstants;
 import com.faithfulmc.util.BukkitUtils;
 import com.faithfulmc.util.command.ArgumentExecutor;
@@ -21,14 +22,17 @@ public class WarfareCommand extends ArgumentExecutor {
 		addArgument(new RemoveCoinsArgument());
 		addArgument(new SetLevelArgument());
 		addArgument(new SetBoostArgument());
-		addArgument(new AddCageArgument());
-		addArgument(new RemoveCageArgument());
-		addArgument(new AddChestArgument());
-		addArgument(new SetMapLocationArgument());
-		addArgument(new ToggleTeamsArgument());
-		addArgument(new EditArgument());
-		addArgument(new StartArgument());
-		addArgument(new RestartArgument());
+
+		if (!StaticConfiguration.LOBBY) {
+			addArgument(new AddCageArgument());
+			addArgument(new RemoveCageArgument());
+			addArgument(new AddChestArgument());
+			addArgument(new SetMapLocationArgument());
+			addArgument(new ToggleTeamsArgument());
+			addArgument(new EditArgument());
+			addArgument(new StartArgument());
+			addArgument(new RestartArgument());
+		}
 	}
 
 	@Override

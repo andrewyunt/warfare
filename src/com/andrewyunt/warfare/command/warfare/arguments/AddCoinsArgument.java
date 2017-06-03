@@ -18,6 +18,7 @@ public class AddCoinsArgument extends CommandArgument {
         permission = "warfare.addcoins";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }

@@ -19,17 +19,13 @@ public class AddCageArgument extends CommandArgument {
         permission = "warfare.addcage";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("warfare.addcage")) {
-            sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
-            return false;
-        }
-
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addcage [name] [side]");
             return false;

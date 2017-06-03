@@ -17,10 +17,12 @@ public class PartyLeaveArgument extends CommandArgument {
         permission = "warfare.party.leave";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
         Party party = Warfare.getInstance().getPartyManager().getParty(player.getUniqueId());

@@ -21,11 +21,12 @@ public class PartyInviteArgument extends CommandArgument{
         permission = "warfare.party.invite";
     }
 
-    public String getUsage(String s)
-    {
+    @Override
+    public String getUsage(String s) {
         return "/" + s + " " + getName() + " <name>";
     }
 
+    @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (args.length != 2) {
             commandSender.sendMessage(ChatColor.YELLOW + getUsage(label));

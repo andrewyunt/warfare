@@ -17,17 +17,13 @@ public class SetMapLocationArgument extends CommandArgument {
         permission = "warfare.setmaplocation";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("warfare.setmaplocation")) {
-            sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
-            return false;
-        }
-
         Game game = Warfare.getInstance().getGame();
 
         if (game == null) {

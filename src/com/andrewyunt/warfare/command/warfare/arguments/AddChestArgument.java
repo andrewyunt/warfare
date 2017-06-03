@@ -21,17 +21,13 @@ public class AddChestArgument extends CommandArgument {
         permission = "warfare.addchest";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("warfare.addchest")) {
-            sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
-            return false;
-        }
-
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: /warfare addchest [tier]");
             return false;

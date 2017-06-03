@@ -21,10 +21,12 @@ public class PartyKickArgument extends CommandArgument{
         permission = "warfare.party.kick";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName() + " <player>";
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
             sender.sendMessage(ChatColor.YELLOW + getUsage(label));

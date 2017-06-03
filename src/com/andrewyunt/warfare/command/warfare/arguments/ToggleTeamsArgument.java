@@ -3,7 +3,6 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.game.Game;
 import com.faithfulmc.util.command.CommandArgument;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -23,11 +22,6 @@ public class ToggleTeamsArgument extends CommandArgument {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("warfare.toggleteams")) {
-            sender.sendMessage(ChatColor.RED + "You do not have access to that command.");
-            return false;
-        }
-
         Game game = Warfare.getInstance().getGame();
         Warfare.getInstance().getGame().setTeams(!game.isTeams());
 

@@ -18,6 +18,7 @@ public class RemoveCoinsArgument extends CommandArgument {
         permission = "warfare.removecoins";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }

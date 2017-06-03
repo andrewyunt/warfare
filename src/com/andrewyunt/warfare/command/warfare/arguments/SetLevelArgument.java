@@ -18,6 +18,7 @@ public class SetLevelArgument extends CommandArgument {
         permission = "warfare.setlevel";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }

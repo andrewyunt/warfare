@@ -21,6 +21,7 @@ public class SetBoostArgument extends CommandArgument {
         permission = "warfare.setboost";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }

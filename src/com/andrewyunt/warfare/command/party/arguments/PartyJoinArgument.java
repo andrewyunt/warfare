@@ -19,10 +19,12 @@ public class PartyJoinArgument extends CommandArgument {
         permission = "warfare.party.join";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName() + " <party>";
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length != 2) {
             sender.sendMessage(ChatColor.YELLOW + getUsage(label));

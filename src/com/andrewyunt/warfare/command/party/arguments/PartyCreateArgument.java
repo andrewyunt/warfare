@@ -18,6 +18,7 @@ public class PartyCreateArgument extends CommandArgument {
         permission = "warfare.party.create";
     }
 
+    @Override
     public String getUsage(String s) {
         return "/" + s + " " + getName();
     }
