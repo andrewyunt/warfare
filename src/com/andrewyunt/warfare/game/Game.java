@@ -9,11 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,7 +62,11 @@ public class Game {
 		}
 
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> mapLocation.getWorld().setTime(6000), 20L, 0L);
+		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+			if (mapLocation != null) {
+				mapLocation.getWorld().setTime(6000);
+			}
+		}, 20L, 0L);
 	}
 	
 	/**
