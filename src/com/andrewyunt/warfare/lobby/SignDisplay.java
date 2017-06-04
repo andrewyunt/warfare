@@ -17,52 +17,62 @@ import java.util.Map.Entry;
  */
 public class SignDisplay {
 
-	@Getter private Sign bukkitSign;
 	@Getter private final Type type;
 	@Getter private final int place;
+
+	@Getter private Location location;
+	@Getter private Sign bukkitSign;
 	
 	public enum Type {
-		KILLS_LEADERBOARD("kills"),
-		WINS_LEADERBOARD("wins"),
-		KDR_LEADERBOARD("kdr");
+		KILLS_LEADERBOARD("kills", "Kills"),
+		WINS_LEADERBOARD("wins", "Wins"),
+		KDR_LEADERBOARD("kdr", "KDR");
 
 		@Getter private final String id;
+		@Getter private final String display;
 
-		Type(String id) {
+		Type(String id, String display) {
 			this.id = id;
+			this.display = display;
 		}
 	}
 	
 	/**
 	 * Creates a sign display with the specified location and update interval.
 	 *
-	 * @param loc
+	 * @param location
 	 * 		The location of the display.
 	 * @param place
 	 * 		The place on the leaderboard the sign should display.
 	 */
-	public SignDisplay(Location loc, Type type, int place) {
+	public SignDisplay(Location location, Type type, int place) {
+		this.location = location;
 		this.type = type;
 		this.place = place;
 		
-		Block block = loc.getWorld().getBlockAt(loc);
+		Block block = location.getWorld().getBlockAt(location);
 
 		if (block.getState() instanceof Sign) {
-            bukkitSign = (Sign) block.getState();
-        }
+			bukkitSign = (Sign) block.getState();
+		}
 	}
 	
 	public void refresh(Map<Integer, Entry<Object, Integer>> topPlayers) {
-	    if (bukkitSign != null) {
-            Entry<Object, Integer> entry = topPlayers.get(place);
-            String name = (String) entry.getKey();
-            bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
-            bukkitSign.setLine(1, name);
-            bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + (type == Type.KILLS_LEADERBOARD
-					? " Kills" : type == Type.WINS_LEADERBOARD ? " Wins" : "KDR"));
-            bukkitSign.update();
-        } else {
-	        Warfare.getInstance().getLogger().info("Failed to update sign " + type.name() + " #" + place);
-        }
+		if (bukkitSign != null) {
+			Entry<Object, Integer> entry = topPlayers.get(place);
+			try {
+				bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
+				bukkitSign.setLine(1, (String) entry.getKey());
+				bukkitSign.setLine(2, ChatColor.YELLOW.toString() + entry.getValue() + " " + type.getDisplay());
+			} catch (NullPointerException e) {
+				bukkitSign.setLine(0, "No players with");
+				bukkitSign.setLine(1, place + " " + type.getDisplay());
+				bukkitSign.setLine(2, "");
+			}
+
+			bukkitSign.update();
+		} else {
+			Warfare.getInstance().getLogger().info("Failed to update sign " + type.name() + " #" + place);
+		}
 	}
 }

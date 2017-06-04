@@ -2,7 +2,7 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.andrewyunt.warfare.lobby.SignException;
+import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.lobby.SignDisplay;
@@ -120,9 +120,18 @@ public class PlayerLobbyListener extends PlayerListener {
     }
 
     @EventHandler
-    public void onBlockDamage(BlockBreakEvent event) {
+    public void onBlockBreak(BlockBreakEvent event) {
         if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
+        }
+
+        SignManager signManager = Warfare.getInstance().getSignManager();
+        Location location = event.getBlock().getLocation();
+
+        try {
+            signManager.deleteSign(signManager.getSign(location));
+        } catch (NullPointerException e) {
+            // do nothing if sign doesn't exist
         }
     }
 
@@ -173,7 +182,7 @@ public class PlayerLobbyListener extends PlayerListener {
 
         SignDisplay.Type type;
 
-        switch (event.getLine(1)) {
+        switch (event.getLine(1).toLowerCase()) {
             case "kills":
                 type = SignDisplay.Type.KILLS_LEADERBOARD;
                 break;
@@ -201,15 +210,10 @@ public class PlayerLobbyListener extends PlayerListener {
             return;
         }
 
-        try {
-            Warfare.getInstance().getSignManager().createSign(
-                    event.getBlock().getLocation(),
-                    type,
-                    place,
-                    false);
-        } catch (SignException e) {
-            e.printStackTrace();
-            player.sendMessage(ChatColor.RED + e.getMessage());
-        }
+        Warfare.getInstance().getSignManager().createSign(
+                event.getBlock().getLocation(),
+                type,
+                place,
+                false);
     }
 }

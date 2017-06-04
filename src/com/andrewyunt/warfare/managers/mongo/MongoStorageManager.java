@@ -3,7 +3,6 @@ package com.andrewyunt.warfare.managers.mongo;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
-import com.andrewyunt.warfare.lobby.SignException;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
@@ -325,7 +324,7 @@ public class MongoStorageManager extends StorageManager{
     public void deleteSign(SignDisplay signDisplay) {
         Document document = new Document();
         document.put("server", StaticConfiguration.SERVER_NAME);
-        document.put("location", serializeLocation(signDisplay.getBukkitSign().getLocation()));
+        document.put("location", serializeLocation(signDisplay.getLocation()));
         signCollection.deleteMany(document);
     }
     
@@ -334,11 +333,7 @@ public class MongoStorageManager extends StorageManager{
             Location location = deserializeLocation(document.get("location", Document.class));
             SignDisplay.Type type = SignDisplay.Type.valueOf(document.getString("type"));
             int place = document.getInteger("place");
-            try {
-                warfare.getSignManager().createSign(location, type, place, true);
-            } catch (SignException exception) {
-                handleException(exception);
-            }
+            warfare.getSignManager().createSign(location, type, place, true);
         }
     }
     

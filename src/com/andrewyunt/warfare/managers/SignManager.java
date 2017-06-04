@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.lobby.SignException;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.lobby.SignDisplay.Type;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import org.bukkit.Location;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +32,7 @@ public class SignManager {
         }, 20 * 5, 20 * 30);
     }
 
-    public void createSign(Location loc, Type type, int place, boolean load) throws SignException {
-		if (place == 0 || loc == null) {
-            throw new SignException();
-        }
-		
+    public void createSign(Location loc, Type type, int place, boolean load) {
 		SignDisplay sign = new SignDisplay(loc, type, place);
 		signs.add(sign);
 
@@ -45,11 +41,7 @@ public class SignManager {
 		}
 	}
 	
-	public void deleteSign(SignDisplay sign) throws SignException {
-		if (sign == null) {
-            throw new SignException();
-        }
-
+	public void deleteSign(SignDisplay sign) {
 		signs.remove(sign);
 
 		Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().deleteSign(sign));
@@ -62,28 +54,17 @@ public class SignManager {
 	 * 		The location of the specified sign.
 	 * @return
 	 * 		The sign fetched of the specified location.
-	 * @throws SignException
-	 * 		If a sign with the specified name does not exist.
 	 */
-	public SignDisplay getSign(Location loc) throws SignException {
+	public SignDisplay getSign(Location loc) {
 		for (SignDisplay signDisplay : signs) {
             if (signDisplay.getBukkitSign() != null) {
-                if (loc == signDisplay.getBukkitSign().getLocation()) {
+            	Location displayLoc = signDisplay.getBukkitSign().getLocation();
+                if (Objects.equals(loc.getWorld().getBlockAt(loc), displayLoc.getWorld().getBlockAt(displayLoc))) {
                     return signDisplay;
                 }
             }
         }
-			
-		throw new SignException("The specified sign does not exist.");
-	}
 
-	public boolean signExists(Location loc) {
-		try {
-			getSign(loc);
-		} catch (SignException e) {
-			return false;
-		}
-
-		return true;
+        return null;
 	}
 }
