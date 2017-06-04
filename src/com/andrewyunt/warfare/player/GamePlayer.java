@@ -35,26 +35,6 @@ public class GamePlayer {
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;
 
-		if (!getBukkitPlayer().hasPlayedBefore()) {
-			List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(lastDamager.getBukkitPlayer()));
-
-			if (groups.contains("Platinum")) {
-				setCoins(1250);
-			} else if (groups.contains("Sapphire")) {
-				setCoins(2500);
-			}  else if (groups.contains("Ruby")) {
-				setCoins(3750);
-			} else if (groups.contains("Emerald")) {
-				setCoins(5000);
-			} else if (groups.contains("Diamond")) {
-				setCoins(6250);
-			} else if (groups.contains("Gold")) {
-				setCoins(7500);
-			} else if (groups.contains("Iron")) {
-				setCoins(10000);
-			}
-		}
-
 		for (Powerup powerup : Powerup.values()) {
 			if (!purchases.containsKey(powerup)) {
 				purchases.put(powerup, -1);

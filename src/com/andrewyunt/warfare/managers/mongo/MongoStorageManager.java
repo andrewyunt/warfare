@@ -181,6 +181,24 @@ public class MongoStorageManager extends StorageManager{
                 LocalDateTime expiry = (LocalDateTime) purchase.get("expiry");
                 player.getBoosters().add(new Booster(level, expiry));
             });
+        } else {
+            List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(player.getBukkitPlayer()));
+
+            if (groups.contains("Platinum")) {
+                player.setCoins(1250);
+            } else if (groups.contains("Sapphire")) {
+                player.setCoins(2500);
+            }  else if (groups.contains("Ruby")) {
+                player.setCoins(3750);
+            } else if (groups.contains("Emerald")) {
+                player.setCoins(5000);
+            } else if (groups.contains("Diamond")) {
+                player.setCoins(6250);
+            } else if (groups.contains("Gold")) {
+                player.setCoins(7500);
+            } else if (groups.contains("Iron")) {
+                player.setCoins(10000);
+            }
         }
         player.setLoaded(true);
     }
