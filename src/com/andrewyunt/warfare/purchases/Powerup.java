@@ -206,38 +206,35 @@ public enum Powerup implements Purchasable {
 
         } else if (this == BOMBER) {
 
-            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-                Location loc = bp.getLocation().clone();
+            Location loc = bp.getLocation().clone();
 
-                loc.getWorld().spigot().playEffect(
-                        loc.add(0.0D, 0.8D, 0.0D),
-                        Effect.EXPLOSION_HUGE);
+            loc.getWorld().spigot().playEffect(
+                    loc.add(0.0D, 0.8D, 0.0D),
+                    Effect.EXPLOSION_HUGE);
 
-                for (Entity entity : bp.getNearbyEntities(5, 3, 5)) {
-                    if (!(entity instanceof Player)) {
-                        continue;
-                    }
-
-                    Player entityPlayer = (Player) entity;
-                    GamePlayer entityAP = Warfare.getInstance().getPlayerManager().getPlayer(entityPlayer.getName());
-
-                    if (!entityAP.isInGame()) {
-                        continue;
-                    }
-
-                    Damageable dmgVictim = (Damageable) entity;
-                    double dmg = 3.0 + 0.5 * (level - 1);
-
-                    ((Damageable) entity).damage(0.00001D); // So the player will get the red damage
-
-                    if (dmgVictim.getHealth() <= dmg) {
-                        dmgVictim.setHealth(0D);
-                    } else {
-                        dmgVictim.setHealth(dmgVictim.getHealth() - dmg);
-                    }
+            for (Entity entity : bp.getNearbyEntities(5, 3, 5)) {
+                if (!(entity instanceof Player)) {
+                    continue;
                 }
-            }, 60L);
+
+                Player entityPlayer = (Player) entity;
+                GamePlayer entityAP = Warfare.getInstance().getPlayerManager().getPlayer(entityPlayer.getName());
+
+                if (!entityAP.isInGame()) {
+                    continue;
+                }
+
+                Damageable dmgVictim = (Damageable) entity;
+                double dmg = 3.0 + 0.5 * (level - 1);
+
+                ((Damageable) entity).damage(0.00001D); // So the player will get the red damage
+
+                if (dmgVictim.getHealth() <= dmg) {
+                    dmgVictim.setHealth(0D);
+                } else {
+                    dmgVictim.setHealth(dmgVictim.getHealth() - dmg);
+                }
+            }
 
         } else if (this == SPECTRE) {
 
