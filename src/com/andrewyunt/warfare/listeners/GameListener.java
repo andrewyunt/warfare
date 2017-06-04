@@ -52,6 +52,10 @@ public class GameListener implements Listener {
                     }
                 }
 
+                if (mostCages.getPlayers().size() == 0) {
+                    mostCages.setName(player.getDisplayName());
+                }
+
                 gamePlayer.setSide(mostCages);
 
                 mostCages.getAvailableCages().iterator().next().setPlayer(gamePlayer);
@@ -182,7 +186,7 @@ public class GameListener implements Listener {
         final Side winningSide = winningPlayer.getSide();
 
         Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW + " has won the game!",
-                winningSide.getName()));
+                game.isTeams() ? winningSide.getName() + ChatColor.YELLOW + "'s side" : winningSide.getName()));
 
         for (GamePlayer winner : winningSide.getPlayers()) {
             int winCoins = 1000 * winner.getBoost();

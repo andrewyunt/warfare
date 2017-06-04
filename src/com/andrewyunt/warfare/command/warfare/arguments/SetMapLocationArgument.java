@@ -32,8 +32,9 @@ public class SetMapLocationArgument extends CommandArgument {
         }
 
         game.setMapLocation(((Player) sender).getLocation());
-
         Warfare.getInstance().getStorageManager().saveMap();
+
+        sender.sendMessage(ChatColor.YELLOW + "Set the map location successfully.");
 
         return true;
     }

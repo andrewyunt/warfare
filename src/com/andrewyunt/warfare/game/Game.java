@@ -46,7 +46,7 @@ public class Game {
 
 	@Getter @Setter private Set<LootChest> lootChests = new HashSet<>();
 	@Getter @Setter private Set<Cage> cages = new HashSet<>();
-	@Getter @Setter private boolean teams;
+	@Getter private boolean teams;
 	@Getter @Setter private boolean edit;
 	@Getter @Setter private Location mapLocation;
 	@Getter private short countdownTime = 10, gameTime;
@@ -56,17 +56,21 @@ public class Game {
 	@Getter private final Set<Side> sides = new HashSet<>();
 	
 	public Game() {
-		if (teams) {
-			sides.add(new Side(1, "Team 1"));
-			sides.add(new Side(2, "Team 2"));
-		}
-
 		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
 			if (mapLocation != null) {
 				mapLocation.getWorld().setTime(6000);
 			}
 		}, 20L, 0L);
+	}
+
+	public void setTeams(boolean teams) {
+		this.teams = teams;
+
+		if (teams) {
+			sides.add(new Side(1, "Team 1"));
+			sides.add(new Side(2, "Team 2"));
+		}
 	}
 	
 	/**
@@ -105,7 +109,7 @@ public class Game {
 		Cage cage = null;
 
 		for (Cage itrCage : cages) {
-			if (cage.getName().equals(name)) {
+			if (itrCage.getName().equals(name)) {
 				cage = itrCage;
 			}
 		}

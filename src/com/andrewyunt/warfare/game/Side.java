@@ -33,7 +33,7 @@ public class Side {
     }
 
     public Set<Cage> getAvailableCages() {
-        return Warfare.getInstance().getGame().getCages().stream().filter(cage -> !cage.hasPlayer())
-                .filter(cage -> cage.getSideNum() == sideNum).collect(Collectors.toSet());
+        return Warfare.getInstance().getGame().getAvailableCages().stream().filter(cage -> cage.getSideNum() == sideNum)
+                .collect(Collectors.toSet());
     }
 }
