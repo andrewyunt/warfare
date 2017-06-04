@@ -69,6 +69,49 @@ public class PlayerPowerupListener implements Listener {
         }
     }
 
+    @EventHandler (priority = EventPriority.NORMAL)
+    public void onMarksmanArrowHit(EntityDamageByEntityEvent event) {
+        if (event.getCause() == DamageCause.FALL) {
+            return;
+        }
+
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        Player damaged = (Player) event.getEntity();
+
+        if (event.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) event.getDamager();
+
+            if (!(arrow.getShooter() instanceof Player)) {
+                return;
+            }
+
+            Player damager = (Player) arrow.getShooter();
+            GamePlayer gpDamager = Warfare.getInstance().getPlayerManager().getPlayer(damager.getName());
+            GamePlayer gpDamaged = Warfare.getInstance().getPlayerManager().getPlayer(damaged.getName());
+
+            if (event.isCancelled()) { // Don't give energy if the shot person is red
+                return;
+            }
+
+            if (gpDamaged == gpDamager) {
+                return;
+            }
+
+            if (gpDamager.getSelectedPowerup() != Powerup.MARKSMAN) {
+                return;
+            }
+
+            gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
+
+            Utils.playBloodEffect(damaged, 10);
+
+            return;
+        }
+    }
+
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getCause() == DamageCause.ENTITY_EXPLOSION && (event.getDamager().getType() != EntityType.PRIMED_TNT)) {

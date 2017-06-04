@@ -24,7 +24,7 @@ public class EPCAdapter extends PacketAdapter{
                 GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
                 if (gamePlayer.isInGame()) {
                     Powerup powerup = gamePlayer.getSelectedPowerup();
-                    if (powerup != null) {
+                    if (powerup != null && powerup != Powerup.MARKSMAN) {
                         gamePlayer.addEnergy(powerup.getEnergyPerClick());
                     }
                 }
