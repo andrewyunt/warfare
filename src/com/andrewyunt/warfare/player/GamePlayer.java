@@ -283,7 +283,7 @@ public class GamePlayer {
     }
 
     public int getBoost() {
-    	int boost = 0;
+    	int boost = 1;
     	for (Booster booster : boosters) {
     		if (booster.getLevel() > boost) {
     			boost = booster.getLevel();

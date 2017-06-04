@@ -181,7 +181,7 @@ public class GameListener implements Listener {
         GamePlayer winningPlayer = players.stream().filter(player -> player.isInGame()).iterator().next();
         final Side winningSide = winningPlayer.getSide();
 
-        Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s " + ChatColor.YELLOW + " has won the game!",
+        Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW + " has won the game!",
                 winningSide.getName()));
 
         for (GamePlayer winner : winningSide.getPlayers()) {
