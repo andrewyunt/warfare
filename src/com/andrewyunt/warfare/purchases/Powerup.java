@@ -128,7 +128,7 @@ public enum Powerup implements Purchasable {
 
         if (this == MEDIC) {
 
-            double hearts = 2.0 + 0.5 * (level - 1);
+            double hearts = 4.0 + 1 * (level - 1);
 
             if (bp.getHealth() + hearts < bp.getMaxHealth()) {
                 bp.setHealth(bp.getHealth() + hearts);
