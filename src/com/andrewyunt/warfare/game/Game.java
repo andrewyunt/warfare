@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.game.events.AddPlayerEvent;
 import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
 import com.andrewyunt.warfare.game.events.StageChangeEvent;
+import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
 import lombok.Setter;

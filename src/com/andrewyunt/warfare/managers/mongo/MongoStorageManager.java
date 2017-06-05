@@ -4,7 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
-import com.andrewyunt.warfare.game.LootChest;
+import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.managers.StorageManager;
@@ -377,7 +377,7 @@ public class MongoStorageManager extends StorageManager{
                 .stream()
                 .map(chest -> {
                     Document chestDocument = new Document();
-                    chestDocument.put("tier", (int) chest.getTier());
+                    chestDocument.put("tier", (int) chest.getTier().getNum());
                     chestDocument.put("location", serializeLocation(chest.getLocation()));
                     return chestDocument;
                 })
