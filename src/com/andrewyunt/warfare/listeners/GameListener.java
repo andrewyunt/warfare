@@ -38,46 +38,13 @@ public class GameListener implements Listener {
         // Set player's mode to survival
         player.setGameMode(GameMode.SURVIVAL);
 
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
+        // Call hotbar update event
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
 
-            if (game.isTeams()) {
-                Side mostCages = null;
-                for (Side side : game.getSides()) {
-                    if (mostCages == null) {
-                        mostCages = side;
-                    } else if (side.getAvailableCages().size() > mostCages.getAvailableCages().size()) {
-                            mostCages = side;
-                    }
-                }
-
-                if (mostCages.getPlayers().size() == 0) {
-                    mostCages.setName(player.getDisplayName());
-                }
-
-                gamePlayer.setSide(mostCages);
-
-                mostCages.getAvailableCages().iterator().next().setPlayer(gamePlayer);
-
-                if (game.getAvailableCages().size() == 0) {
-                    game.setStage(Game.Stage.COUNTDOWN);
-                }
-            } else {
-                gamePlayer.setSide(new Side(0, player.getDisplayName()));
-
-                game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
-
-                if (game.getAvailableCages().size() <= 2) {
-                    game.setStage(Game.Stage.COUNTDOWN);
-                }
-            }
-
-            // Send the join message to the players
-            Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                    String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", player.getDisplayName(),
-                            game.getPlayers().size(), game.getCages().size())));
-        }, 5L);
+        // Send the join message to the players
+        Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", player.getDisplayName(),
+                        game.getPlayers().size(), game.getCages().size())));
     }
 
     @EventHandler

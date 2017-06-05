@@ -7,9 +7,10 @@ import java.util.Random;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.utilities.Utils;
-import net.minecraft.server.v1_7_R4.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -268,7 +269,8 @@ public enum Powerup implements Purchasable {
                             }
 
                             PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
-                                    "snowshovel",
+                                    EnumParticle.SNOW_SHOVEL,
+                                    false,
                                     (float) newLoc.getX(),
                                     (float) newLoc.getY(),
                                     (float) newLoc.getZ(),
@@ -291,7 +293,8 @@ public enum Powerup implements Purchasable {
                             }
 
                             PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
-                                    "largesmoke",
+                                    EnumParticle.SMOKE_LARGE,
+                                    false,
                                     (float) newLoc.getX(),
                                     (float) newLoc.getY(),
                                     (float) newLoc.getZ(),

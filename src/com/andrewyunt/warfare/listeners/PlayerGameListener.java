@@ -3,9 +3,12 @@ package com.andrewyunt.warfare.listeners;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.game.Side;
+import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
+import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,11 +39,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class PlayerGameListener extends PlayerListener {
 
@@ -67,35 +71,77 @@ public class PlayerGameListener extends PlayerListener {
         // Update server status
         Warfare.getInstance().getStorageManager().updateServerStatusAsync();
 
+        // Create GamePlayer object
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
-            Game game = Warfare.getInstance().getGame();
-            if (Warfare.getInstance().getGame().isEdit()) {
-                player.kickPlayer(ChatColor.RED + "The map is currently in edit mode.");
-                return;
+        // Add powerups to player's purchases if they don't exist
+        for (Powerup powerup : Powerup.values()) {
+            if (!gp.getPurchases().containsKey(powerup)) {
+                gp.getPurchases().put(powerup, -1);
             }
-            if (game.getStage() == Game.Stage.WAITING) {
-                game.addPlayer(gp);
-            } else if(game.getStage() == Game.Stage.COUNTDOWN) {
-                if (game.getAvailableCages().size() > 0) {
-                    game.addPlayer(gp);
-                } else{
-                    player.kickPlayer(ChatColor.RED + "This game has already started.");
-                }
-            } else if (game.getStage() == Game.Stage.END) {
-                player.kickPlayer("You may not join once the game has ended.");
-            } else if (game.getStage() == Game.Stage.RESTART) {
-                player.kickPlayer("You may not join during a restart.");
-            } else {
-                if (!player.hasPermission("warfare.spectatorjoin")) {
-                    player.kickPlayer(ChatColor.RED + "You do not have permission join to spectate games.");
-                } else {
-                    gp.setSpectating(true, false);
+        }
+
+        // Register health objective for game servers
+        if (!StaticConfiguration.LOBBY) {
+			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(gp.getUUID()).getScoreboard()
+					.registerNewObjective(ChatColor.RED + "❤", "health");
+			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+		}
+
+		// Check player's boosters periodically
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
+            Set<Booster> toRemove = new HashSet<>();
+            for (Booster booster : gp.getBoosters()) {
+                if (LocalDateTime.now().isAfter(booster.getExpiry())) {
+                    toRemove.add(booster);
                 }
             }
-        }, 1);
+            for (Booster booster : toRemove) {
+                gp.getBoosters().remove(booster);
+            }
+        }, 1200L, 0L);
+    }
+
+    @EventHandler
+    public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
+        Bukkit.getServer().broadcastMessage("test");
+        Player player = event.getPlayer();
+        GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
+        Game game = Warfare.getInstance().getGame();
+        Location spawnAt;
+
+        if (game.isTeams()) {
+            Side mostCages = null;
+            for (Side side : game.getSides()) {
+                if (mostCages == null) {
+                    mostCages = side;
+                } else if (side.getAvailableCages().size() > mostCages.getAvailableCages().size()) {
+                    mostCages = side;
+                }
+            }
+
+            if (mostCages.getPlayers().size() == 0) {
+                mostCages.setName(player.getDisplayName());
+            }
+
+            gamePlayer.setSide(mostCages);
+
+            spawnAt = mostCages.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+
+            if (game.getAvailableCages().size() == 0) {
+                game.setStage(Game.Stage.COUNTDOWN);
+            }
+        } else {
+            gamePlayer.setSide(new Side(0, player.getDisplayName()));
+
+            spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+
+            if (game.getAvailableCages().size() <= 2) {
+                game.setStage(Game.Stage.COUNTDOWN);
+            }
+        }
+
+        event.setSpawnLocation(spawnAt);
     }
 
     @EventHandler

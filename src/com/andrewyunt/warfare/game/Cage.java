@@ -59,11 +59,11 @@ public class Cage {
         }
 	}
 
-	public void setPlayer(GamePlayer player) {
+	public Location setPlayer(GamePlayer player) {
 		this.player = player;
 		
 		if (player == null) {
-            return;
+            return null;
         }
 		
 		// Teleport the player to the location;
@@ -84,7 +84,7 @@ public class Cage {
 		location.setDirection(vector);
 		location.setPitch(0);
 
-		player.getBukkitPlayer().teleport(location);
+		return location;
 	}
 	
 	public boolean hasPlayer() {
