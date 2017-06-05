@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.scoreboard;
 
-import net.minecraft.util.gnu.trove.map.hash.TIntObjectHashMap;
-import net.minecraft.util.org.apache.commons.lang3.RandomStringUtils;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;

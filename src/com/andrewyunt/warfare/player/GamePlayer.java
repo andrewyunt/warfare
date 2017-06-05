@@ -12,10 +12,6 @@ import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class GamePlayer {
@@ -34,31 +30,6 @@ public class GamePlayer {
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;
-
-		for (Powerup powerup : Powerup.values()) {
-			if (!purchases.containsKey(powerup)) {
-				purchases.put(powerup, -1);
-			}
-		}
-
-		// Register health objective for game servers
-		if (!StaticConfiguration.LOBBY) {
-			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(UUID).getScoreboard()
-					.registerNewObjective(ChatColor.RED + "❤", "health");
-			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-		}
-
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
-			Set<Booster> toRemove = new HashSet<>();
-			for (Booster booster : boosters) {
-				if (LocalDateTime.now().isAfter(booster.getExpiry())) {
-					toRemove.add(booster);
-				}
-			}
-			for (Booster booster : toRemove) {
-				boosters.remove(booster);
-			}
-		}, 1200L, 0L);
 	}
 	
 	public Player getBukkitPlayer() {
