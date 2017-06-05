@@ -113,7 +113,7 @@ public class Warfare extends JavaPlugin {
         pm.registerEvents(new WeatherFixListener(), this);
         pm.registerEvents(new ChatListener(), this);
 		
-		if (StaticConfiguration.LOBBY){
+		if (StaticConfiguration.LOBBY) {
 			storageManager.loadSigns();
 
 			pm.registerEvents(shopMenu, this);
@@ -148,8 +148,8 @@ public class Warfare extends JavaPlugin {
 		getCommand("coins").setExecutor(new CoinsCommand());
 		getCommand("stats").setExecutor(new StatsCommand());
 
-		for(World world: Bukkit.getWorlds()){
-			for(Creature creature: world.getEntitiesByClass(Creature.class)){
+		for (World world: Bukkit.getWorlds()) {
+			for (Creature creature: world.getEntitiesByClass(Creature.class)) {
 				creature.remove();
 			}
 		}
@@ -163,7 +163,7 @@ public class Warfare extends JavaPlugin {
 	public void onDisable() {
 		if (!getConfig().getBoolean("is-lobby")) {
 			if (!StaticConfiguration.LOBBY) {
-			    if(game.getStage() != Game.Stage.RESTART) {
+			    if (game.getStage() != Game.Stage.RESTART) {
                     game.setStage(Game.Stage.RESTART);
                 }
 			}

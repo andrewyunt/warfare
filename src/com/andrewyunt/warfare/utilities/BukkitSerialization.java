@@ -27,7 +27,6 @@ public class BukkitSerialization {
 	 * @throws IllegalStateException
 	 */
 	public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
-		
 		// get the main content part, this doesn't return the armor
 		String content = toBase64(playerInventory);
 		String armor = itemStackArrayToBase64(playerInventory.getArmorContents());
@@ -49,7 +48,6 @@ public class BukkitSerialization {
 	 * @throws IllegalStateException
 	 */
 	public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
-		
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
@@ -86,7 +84,6 @@ public class BukkitSerialization {
 	 * @throws IllegalStateException
 	 */
 	public static String toBase64(Inventory inventory) throws IllegalStateException {
-		
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
@@ -124,7 +121,6 @@ public class BukkitSerialization {
 	 * @throws IOException
 	 */
 	public static Inventory fromBase64(String data) throws IOException {
-		
 		try {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
 			BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -155,7 +151,6 @@ public class BukkitSerialization {
 	 * @throws IOException
 	 */
 	public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
-		
 		try {
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
 			BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);

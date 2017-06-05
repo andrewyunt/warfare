@@ -47,7 +47,7 @@ public class PartyJoinArgument extends CommandArgument {
 
         Party targetParty = Warfare.getInstance().getPartyManager().getParty(target.getUniqueId());
 
-        if (targetParty == null){
+        if (targetParty == null) {
             player.sendMessage(ChatColor.YELLOW + "Party not found");
             return false;
         }

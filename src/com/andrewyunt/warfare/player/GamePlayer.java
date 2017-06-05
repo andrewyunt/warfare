@@ -41,14 +41,14 @@ public class GamePlayer {
 	}
 
 	public void setPoints(int points) {
-		if(!Objects.equals(points, this.points)) {
+		if (!Objects.equals(points, this.points)) {
 			this.points = points;
 			update();
 		}
 	}
 
 	public void setCoins(int coins) {
-		if(!Objects.equals(coins, this.coins)) {
+		if (!Objects.equals(coins, this.coins)) {
 			this.coins = coins;
 			update();
 		}
@@ -133,7 +133,7 @@ public class GamePlayer {
 	}
 	
 	public void setSelectedKit(Kit selectedKit) {
-	    if(!Objects.equals(selectedKit, this.selectedKit)) {
+	    if (!Objects.equals(selectedKit, this.selectedKit)) {
             this.selectedKit = selectedKit;
             update();
         }
@@ -144,7 +144,7 @@ public class GamePlayer {
     }
 
 	public void setSelectedPowerup(Powerup selectedPowerup) {
-		if(!Objects.equals(selectedPowerup, this.selectedPowerup)) {
+		if (!Objects.equals(selectedPowerup, this.selectedPowerup)) {
 			this.selectedPowerup = selectedPowerup;
 			update();
 		}
@@ -153,7 +153,7 @@ public class GamePlayer {
 	public Location setSpectating(boolean spectating, boolean respawn) {
 		this.spectating = spectating;
 
-		if(respawn){
+		if (respawn) {
 		    getBukkitPlayer().spigot().respawn();
         }
 		if (spectating) {
@@ -161,10 +161,10 @@ public class GamePlayer {
             player.setGameMode(GameMode.CREATIVE);
             player.setFireTicks(0);
 
-            for(Player other: Bukkit.getOnlinePlayers()){
-                if(other != player){
+            for (Player other: Bukkit.getOnlinePlayers()) {
+                if (other != player) {
                     GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(other);
-                    if(gamePlayer.isSpectating()){
+                    if (gamePlayer.isSpectating()) {
                         other.showPlayer(player);
                         player.showPlayer(other);
                     }
@@ -221,14 +221,14 @@ public class GamePlayer {
 	}
 
     public void setName(String name) {
-	    if(!Objects.equals(name, this.name)) {
+	    if (!Objects.equals(name, this.name)) {
             this.name = name;
             update();
         }
     }
 
-    public void update(){
-	    if(isLoaded()) {
+    public void update() {
+	    if (isLoaded()) {
             Warfare.getInstance().getStorageManager().savePlayerAsync(this);
         }
     }

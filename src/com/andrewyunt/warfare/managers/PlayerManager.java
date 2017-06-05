@@ -3,7 +3,6 @@ package com.andrewyunt.warfare.managers;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

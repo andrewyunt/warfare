@@ -38,7 +38,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
@@ -49,15 +48,15 @@ import java.util.*;
 public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
-    public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event){
+    public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
         Game game = Warfare.getInstance().getGame();
 
         if (Warfare.getInstance().getGame().isEdit()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The map is currently in edit mode.");
-        } else if((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getCages().size() != 0
+        } else if ((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getCages().size() != 0
                 && game.getAvailableCages().size() <= 0) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Server is currently full");
-        } else if(game.getStage() == Game.Stage.RESTART) {
+        } else if (game.getStage() == Game.Stage.RESTART) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The warfare server server is currently restarting");
         }
     }
@@ -317,8 +316,8 @@ public class PlayerGameListener extends PlayerListener {
                 + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
 
         Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
-            if(player.isOnline()){
-                playerGP.setSpectating(true, true);
+            if (player.isOnline()) {
+                playerGP.setSpectating(true,true);
             }
         });
     }
@@ -372,7 +371,7 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-        event.setRespawnLocation(gp.setSpectating(true, false));
+        event.setRespawnLocation(gp.setSpectating(true,false));
     }
 
     @EventHandler

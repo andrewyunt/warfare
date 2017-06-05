@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 public class ColonCommandFix implements Listener {
 
     @EventHandler
-    public void onPlayerColonCommand(PlayerCommandPreprocessEvent e){
+    public void onPlayerColonCommand(PlayerCommandPreprocessEvent e) {
         String message = e.getMessage().toLowerCase();
         if (message.startsWith("/minecraft:") || message.startsWith("bukkit:") || message.startsWith("/me")) {
             e.setCancelled(true);

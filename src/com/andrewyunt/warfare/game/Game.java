@@ -40,7 +40,7 @@ public class Game {
             this.description = description;
         }
 
-        public String getDisplay(){
+        public String getDisplay() {
             return color + description;
         }
     }

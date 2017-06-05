@@ -19,12 +19,12 @@ public class SignManager {
 
     public SignManager() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
-            for(SignDisplay.Type type: SignDisplay.Type.values()){
+            for (SignDisplay.Type type: SignDisplay.Type.values()) {
                 String id = type.getId();
                 Map<Integer, Map.Entry<Object, Integer>> map = Warfare.getInstance().getStorageManager()
 						.getTopFiveColumn("Players", "name", id);
                 Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
-                    for(SignDisplay signDisplay: signs.stream().filter(sign -> sign.getType() == type).collect(Collectors.toSet())){
+                    for (SignDisplay signDisplay: signs.stream().filter(sign -> sign.getType() == type).collect(Collectors.toSet())) {
                         signDisplay.refresh(map);
                     }
                 });
@@ -36,7 +36,7 @@ public class SignManager {
 		SignDisplay sign = new SignDisplay(loc, type, place);
 		signs.add(sign);
 
-		if(!load) {
+		if (!load) {
 			Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> Warfare.getInstance().getStorageManager().saveSign(sign));
 		}
 	}

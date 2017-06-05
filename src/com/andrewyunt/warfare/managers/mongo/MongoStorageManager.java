@@ -53,6 +53,7 @@ public class MongoStorageManager extends StorageManager{
     private boolean hasInserted = false;
     private ObjectId serverId;
 
+    @Override
     public boolean connect() {
         ConfigurationSection config = warfare.getConfig().getConfigurationSection("mongo");
         String address = config.getString("address");
@@ -80,11 +81,12 @@ public class MongoStorageManager extends StorageManager{
         return true;
     }
 
-    
+    @Override
     public void disconnect() {
         mongoClient.close();
     }
 
+    @Override
     public void updateDB() {
         playerCollection = mongoDatabase.getCollection("players");
         serverCollection = mongoDatabase.getCollection("gameservers");
@@ -94,10 +96,11 @@ public class MongoStorageManager extends StorageManager{
         partyServersCollection = mongoDatabase.getCollection("partyservers");
 
         if (StaticConfiguration.LOBBY) {
-            Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> getPartyServers());
+            Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), this::getPartyServers);
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void savePlayer(GamePlayer player) {
         Document document = new Document();
@@ -144,6 +147,7 @@ public class MongoStorageManager extends StorageManager{
         playerCollection.insertOne(document);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void loadPlayer(GamePlayer player) {
         Document document = playerCollection.find(new Document("_id", player.getUUID())).first();
@@ -203,6 +207,7 @@ public class MongoStorageManager extends StorageManager{
         player.setLoaded(true);
     }
 
+    @Override
     public List<Server> getServers() {
         List<Server> serverList = new ArrayList<>();
         for (Document document: serverCollection.find()) {
@@ -217,6 +222,7 @@ public class MongoStorageManager extends StorageManager{
         return serverList;
     }
 
+    @Override
     public void updateServerStatus() {
         if (hasInserted) {
             //Better saving method
@@ -243,7 +249,8 @@ public class MongoStorageManager extends StorageManager{
             hasInserted = true;
         }
     }
-    
+
+    @Override
     public void saveParty(Party party) {
         for (UUID member : party.getMembers()) {
             if (Bukkit.getPlayer(member) != null) {
@@ -260,6 +267,7 @@ public class MongoStorageManager extends StorageManager{
         partyCollection.insertOne(document);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Party loadParty(UUID leaderUUID) {
         Document document = partyCollection.find(new Document("_id", leaderUUID)).first();
@@ -274,6 +282,7 @@ public class MongoStorageManager extends StorageManager{
         return party;
     }
 
+    @Override
     public void setPartyServer(Party party, String server) {
         Document document = new Document();
         document.put("serverid", StaticConfiguration.SERVER_NAME);
@@ -282,6 +291,7 @@ public class MongoStorageManager extends StorageManager{
         partyServersCollection.insertOne(document);
     }
 
+    @Override
     public void getPartyServers() {
         Document query = new Document();
         Document projection = new Document();
@@ -310,6 +320,7 @@ public class MongoStorageManager extends StorageManager{
         }
     }
 
+    @Override
     public void saveSign(SignDisplay signDisplay) {
         Document document = new Document();
         document.put("server", StaticConfiguration.SERVER_NAME);
@@ -338,23 +349,26 @@ public class MongoStorageManager extends StorageManager{
                 serialized.getDouble("z")
         );
     }
-    
+
+    @Override
     public void deleteSign(SignDisplay signDisplay) {
         Document document = new Document();
         document.put("server", StaticConfiguration.SERVER_NAME);
         document.put("location", serializeLocation(signDisplay.getLocation()));
         signCollection.deleteMany(document);
     }
-    
+
+    @Override
     public void loadSigns() {
-        for(Document document: signCollection.find(new Document("server", StaticConfiguration.SERVER_NAME))){
+        for (Document document: signCollection.find(new Document("server", StaticConfiguration.SERVER_NAME))) {
             Location location = deserializeLocation(document.get("location", Document.class));
             SignDisplay.Type type = SignDisplay.Type.valueOf(document.getString("type"));
             int place = document.getInteger("place");
             warfare.getSignManager().createSign(location, type, place, true);
         }
     }
-    
+
+    @Override
     public void saveMap() {
         Document document = new Document();
         Game game = warfare.getGame();
@@ -387,6 +401,7 @@ public class MongoStorageManager extends StorageManager{
         arenaCollection.insertOne(document);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void loadMap() {
         Game game = Warfare.getInstance().getGame();
@@ -421,7 +436,8 @@ public class MongoStorageManager extends StorageManager{
             );
         }
     }
-    
+
+    @Override
     public Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
         Document projection = new Document();
         projection.put(select, true);

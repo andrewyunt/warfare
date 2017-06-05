@@ -107,8 +107,6 @@ public class PlayerPowerupListener implements Listener {
             gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
 
             Utils.playBloodEffect(damaged, 10);
-
-            return;
         }
     }
 
@@ -171,11 +169,10 @@ public class PlayerPowerupListener implements Listener {
             }
 
             double dmg = 1.5 + (shooterGP.getLevel(shooterGP.getSelectedPowerup()) * .5);
-            Damageable dmgPlayer = nearbyPlayer;
-            dmgPlayer.damage(0.00001D); // So the player will get the red damage
+            nearbyPlayer.damage(0.00001D); // So the player will get the red damage
 
-            if (dmgPlayer.getHealth() < dmg) {
-                dmgPlayer.setHealth(0D);
+            if (nearbyPlayer.getHealth() < dmg) {
+                nearbyPlayer.setHealth(0D);
                 return;
             } else {
                 nearbyPlayer.setHealth(nearbyPlayer.getHealth() - dmg);

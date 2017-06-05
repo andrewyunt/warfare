@@ -154,7 +154,7 @@ public class ShopMenu implements Listener {
 			for (Powerup powerup : Powerup.values()) {
 				ItemStack is = powerup.getDisplayItem().clone();
 
-				for(Enchantment enchantment : is.getEnchantments().keySet()) {
+				for (Enchantment enchantment : is.getEnchantments().keySet()) {
 					is.removeEnchantment(enchantment);
 				}
 

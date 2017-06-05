@@ -11,7 +11,7 @@ public class SetSpawnCommand implements CommandExecutor{
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("warfare.setspawn")) {
-            if(sender instanceof Player) {
+            if (sender instanceof Player) {
                 Player player = (Player) sender;
                 Location playerLoc = player.getLocation();
                 Location spawnLoc = player.getWorld().getSpawnLocation();

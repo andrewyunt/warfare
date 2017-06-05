@@ -7,31 +7,26 @@ public class SidebarEntry {
     public String suffix;
 
     public SidebarEntry(String name) {
-
         this.name = name;
     }
 
     public SidebarEntry(Object name) {
-
         this.name = String.valueOf(name);
     }
 
     public SidebarEntry(String prefix, String name, String suffix) {
-
         this.name = name;
         this.prefix = prefix;
         this.suffix = suffix;
     }
 
     public SidebarEntry(Object prefix, Object name, Object suffix) {
-
         this(name);
         this.prefix = String.valueOf(prefix);
         this.suffix = String.valueOf(suffix);
     }
 
     public boolean equals(Object o) {
-
         if (this == o) {
             return true;
         }
@@ -60,7 +55,6 @@ public class SidebarEntry {
     }
 
     public int hashCode() {
-
         int result = this.name != null ? this.name.hashCode() : 0;
         result = 31 * result + (this.prefix != null ? this.prefix.hashCode() : 0);
         result = 31 * result + (this.suffix != null ? this.suffix.hashCode() : 0);

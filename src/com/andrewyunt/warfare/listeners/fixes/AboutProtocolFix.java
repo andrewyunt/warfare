@@ -5,7 +5,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import org.bukkit.plugin.Plugin;
 
 public class AboutProtocolFix extends PacketAdapter {
 
@@ -19,7 +18,7 @@ public class AboutProtocolFix extends PacketAdapter {
         String tab = packetContainer.getStrings().read(0);
         tab = tab.toLowerCase();
 
-        if(tab.contains(":") || tab.startsWith("/minecraft:") || tab.startsWith("/bukkit:") || tab.startsWith("/about") || tab.startsWith("/ver") || tab.startsWith("/version")){
+        if (tab.contains(":") || tab.startsWith("/minecraft:") || tab.startsWith("/bukkit:") || tab.startsWith("/about") || tab.startsWith("/ver") || tab.startsWith("/version")) {
             event.setCancelled(true);
         }
     }

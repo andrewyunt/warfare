@@ -34,7 +34,7 @@ public enum HealthBoost implements Purchasable {
 		return new ItemStack(Material.GOLDEN_APPLE);
 	}
 
-
+	@Override
 	public PurchaseType getType() {
 		return PurchaseType.HEALTH_BOOST;
 	}

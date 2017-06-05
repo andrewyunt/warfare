@@ -62,7 +62,7 @@ public class PlayMenu implements Listener, InventoryHolder {
 
         List<ItemStack> toAdd = new ArrayList<>();
 
-        for (Server server: inventoryServers){
+        for (Server server: inventoryServers) {
             ItemStack itemStack = createServerItem(server);
             if (itemStack != null) {
                 toAdd.add(itemStack);
@@ -133,7 +133,7 @@ public class PlayMenu implements Listener, InventoryHolder {
 
             if (slot == QUICK_JOIN_SLOT) {
                 Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
-                for(Server server: quickJoinServers) {
+                for (Server server: quickJoinServers) {
                     int size = playerEntity.size();
                     int amount = size == 1 ? 1 : size + 2;
                     if (server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
@@ -167,13 +167,13 @@ public class PlayMenu implements Listener, InventoryHolder {
     }
 
     public abstract class PlayersEntity {
-        @Getter protected UUID player;
+        protected UUID player;
 
         public PlayersEntity(UUID player) {
             this.player = player;
         }
 
-        public Player getPlayer(){
+        public Player getPlayer() {
             return Bukkit.getPlayer(player);
         }
 

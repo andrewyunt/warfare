@@ -45,7 +45,7 @@ public abstract class StorageManager {
 
 	public abstract void updateServerStatus();
 
-	public void updateServerStatusAsync(){
+	public void updateServerStatusAsync() {
         if (Warfare.getInstance().isEnabled()) {
             Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), this::updateServerStatus);
         } else {

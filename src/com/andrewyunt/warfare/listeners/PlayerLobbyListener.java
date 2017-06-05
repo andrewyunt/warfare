@@ -114,14 +114,14 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onPlayerInteractHigh(PlayerInteractEvent event) {
-        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
 
@@ -137,14 +137,14 @@ public class PlayerLobbyListener extends PlayerListener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockDamageEvent event) {
-        if(event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
     }

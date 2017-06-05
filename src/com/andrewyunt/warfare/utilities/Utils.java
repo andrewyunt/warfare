@@ -27,27 +27,6 @@ public class Utils {
 
 		return list.stream().map(line -> color + line).collect(Collectors.toList());
 	}
-
-	/*public static ItemStack removeAttributes(ItemStack is) {
-		
-		net.minecraft.server.v1_7_R4.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-		NBTTagCompound tag;
-		
-		if (nmsStack == null)
-			return is;
-		
-		if (!nmsStack.hasTag()) {
-			tag = new NBTTagCompound();
-			nmsStack.setTag(tag);
-		} else
-			tag = nmsStack.getTag();
-		
-		NBTTagList am = new NBTTagList();
-		tag.set("AttributeModifiers", am);
-		nmsStack.setTag(tag);
-		
-		return CraftItemStack.asCraftMirror(nmsStack);
-	}*/
 	
 	public static void colorPlayerName(GamePlayer toColor, Collection<GamePlayer> toShowPlayers) {
 
@@ -130,7 +109,7 @@ public class Utils {
 	}
 
 	public static void sendPartyToServer(Player player, Party party, String serverName) {
-		for(String lobby: StaticConfiguration.LOBBY_SERVERS){
+		for (String lobby: StaticConfiguration.LOBBY_SERVERS) {
 			ByteArrayDataOutput out = ByteStreams.newDataOutput();
 			out.writeUTF("Forward");
 			out.writeUTF(lobby);

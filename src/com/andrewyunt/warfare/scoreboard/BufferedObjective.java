@@ -22,7 +22,6 @@ public class BufferedObjective {
     private DisplaySlot displaySlot;
 
     public BufferedObjective(final Scoreboard scoreboard) {
-
         this.previousLines = new HashSet<>();
         this.contents = (TIntObjectHashMap<SidebarEntry>) new TIntObjectHashMap();
         this.requiresUpdate = false;
@@ -32,7 +31,6 @@ public class BufferedObjective {
     }
 
     public void setTitle(final String title) {
-
         if (this.title == null || !this.title.equals(title)) {
             this.title = title;
             this.requiresUpdate = true;
@@ -40,13 +38,11 @@ public class BufferedObjective {
     }
 
     public void setDisplaySlot(final DisplaySlot slot) {
-
         this.displaySlot = slot;
         this.current.setDisplaySlot(slot);
     }
 
     public void setAllLines(final List<SidebarEntry> lines) {
-
         if (lines.size() != this.contents.size()) {
             this.contents.clear();
             if (lines.isEmpty()) {
@@ -62,7 +58,6 @@ public class BufferedObjective {
     }
 
     public void setLine(final int lineNumber, final SidebarEntry sidebarEntry) {
-
         final SidebarEntry value = this.contents.get(lineNumber);
         if (value == null || !value.equals(sidebarEntry)) {
             this.contents.put(lineNumber, sidebarEntry);
@@ -71,7 +66,6 @@ public class BufferedObjective {
     }
 
     public void flip() {
-
         if (!this.requiresUpdate) {
             return;
         }
@@ -127,7 +121,6 @@ public class BufferedObjective {
     }
 
     public void setVisible(final boolean value) {
-
         if (this.displaySlot != null && !value) {
             this.scoreboard.clearSlot(this.displaySlot);
             this.displaySlot = null;

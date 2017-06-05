@@ -23,7 +23,7 @@ public enum  PurchaseType {
         PURCHASE_MAP = builder.build();
     }
 
-    public Purchasable getPurchase(String name){
+    public Purchasable getPurchase(String name) {
         return PURCHASE_MAP.get(name);
     }
 }

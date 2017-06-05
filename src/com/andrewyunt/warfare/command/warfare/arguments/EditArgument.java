@@ -37,9 +37,7 @@ public class EditArgument extends CommandArgument {
 
             sender.sendMessage(ChatColor.YELLOW + "You have disabled edit mode for the arena.");
         } else {
-            if (game != null) {
-                game.setStage(Game.Stage.END);
-            }
+            game.setStage(Game.Stage.END);
 
             game.setEdit(true);
             sender.sendMessage(ChatColor.YELLOW + "You have enabled edit mode for the arena.");

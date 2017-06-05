@@ -132,7 +132,7 @@ public class SpectatorsInteractionsListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-		if(event.getDamager() instanceof Player) {
+		if (event.getDamager() instanceof Player) {
 
 			GamePlayer damagerGP = pm.getPlayer((Player) event.getDamager());
 

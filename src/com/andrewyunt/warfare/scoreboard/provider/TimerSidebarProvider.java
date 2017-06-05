@@ -20,22 +20,18 @@ public class TimerSidebarProvider implements SidebarProvider {
     protected static final String STRAIGHT_LINE = BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 13);
 
     private static String handleBardFormat(long millis, boolean trailingZero, boolean showMillis) {
-
         return ((showMillis ? trailingZero ? DateTimeFormats.REMAINING_SECONDS_TRAILING : DateTimeFormats.REMAINING_SECONDS : DateTimeFormats.SECONDS).get()).format(millis * 0.001D);
     }
 
     public String getTitle() {
-
         return ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare";
     }
 
     public String getColour(boolean b) {
-
         return b ? ChatColor.GREEN.toString() : ChatColor.RED.toString();
     }
 
     public List<SidebarEntry> getLines(Player player, long now) {
-
         List<SidebarEntry> lines = new ArrayList<>();
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
@@ -55,7 +51,7 @@ public class TimerSidebarProvider implements SidebarProvider {
             // Display player's coins
             lines.add(new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Coin Balance: ",ChatColor.GRAY + String.valueOf(gp.getCoins())));
 
-            if(gp.isLoaded()) {
+            if (gp.isLoaded()) {
                 lines.add(new SidebarEntry(" "));
                 // Display player's chosen class
                 lines.add(new SidebarEntry(ChatColor.GOLD + ChatColor.BOLD.toString() + "Selected Kit" + ChatColor.GRAY + ChatColor.BOLD.toString() + ":"));

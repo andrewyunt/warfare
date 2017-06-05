@@ -149,7 +149,7 @@ public class GameListener implements Listener {
     public void onEnd(EndEvent event) {
         Game game = Warfare.getInstance().getGame();
         Collection<GamePlayer> players = Warfare.getInstance().getPlayerManager().getPlayers();
-        GamePlayer winningPlayer = players.stream().filter(player -> player.isInGame()).iterator().next();
+        GamePlayer winningPlayer = players.stream().filter(GamePlayer::isInGame).iterator().next();
         final Side winningSide = winningPlayer.getSide();
 
         Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW + " has won the game!",
@@ -191,7 +191,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onRestart(RestartEvent event) {
-        if (!Warfare.getInstance().isEnabled()){
+        if (!Warfare.getInstance().isEnabled()) {
             return;
         }
 

@@ -19,7 +19,6 @@ public class PlayerBoard {
     @Getter private SidebarProvider defaultProvider;
 
     public PlayerBoard(final Player player) {
-
         this.sidebarVisible = false;
         this.removed = false;
         this.player = player;
@@ -29,7 +28,6 @@ public class PlayerBoard {
     }
 
     public void remove() {
-
         this.removed = true;
         if (this.scoreboard != null) {
             synchronized (this.scoreboard) {
@@ -44,13 +42,11 @@ public class PlayerBoard {
     }
 
     public void setSidebarVisible(final boolean visible) {
-
         this.sidebarVisible = visible;
         this.bufferedObjective.setDisplaySlot(visible ? DisplaySlot.SIDEBAR : null);
     }
 
     public void setDefaultSidebar(final SidebarProvider provider) {
-
         if (provider != null && provider.equals(this.defaultProvider)) {
             return;
         }
@@ -63,7 +59,6 @@ public class PlayerBoard {
     }
 
     protected void updateObjective(long now) {
-
         synchronized (this.scoreboard) {
             final SidebarProvider provider = this.defaultProvider;
             if (provider == null) {

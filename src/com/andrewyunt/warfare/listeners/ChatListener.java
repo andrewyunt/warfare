@@ -32,7 +32,7 @@ public class ChatListener implements Listener {
     private static final Pattern PATTERN = Pattern.compile("\\W");
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerChat(AsyncPlayerChatEvent e){
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
         e.setCancelled(true);
         Player player = e.getPlayer();
         BaseUser baseUser = BasePlugin.getPlugin().getUserManager().getUser(player.getUniqueId());

@@ -22,7 +22,7 @@ public class PotFixListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void onPlayerThrowPot(ProjectileLaunchEvent event) {
-        if(Bukkit.getPluginManager().isPluginEnabled("FastPot")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("FastPot")) {
             return;
         }
 
@@ -35,10 +35,10 @@ public class PotFixListener implements Listener {
 
         if ((!player.isDead()) && player.isSprinting() && (((CraftThrownPotion)potion).getHandle().motY < 0.3)) {
             for (PotionEffect potionEffect: potion.getEffects()) {
-                if (potionEffect.getType().equals(PotionEffectType.HEAL)){
-                    new BukkitRunnable(){
+                if (potionEffect.getType().equals(PotionEffectType.HEAL)) {
+                    new BukkitRunnable() {
                         public void run() {
-                            if(potion.isValid() && !player.isDead()) {
+                            if (potion.isValid() && !player.isDead()) {
                                 methodAccessor.invoke(((CraftThrownPotion)potion).getHandle(),new MovingObjectPosition(((CraftThrownPotion)potion).getHandle().shooter));
                             }
                         }

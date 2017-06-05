@@ -97,7 +97,7 @@ public class TeleporterMenu implements Listener {
             return;
         }
 		
-		if(is.getType() == Material.AIR) {
+		if (is.getType() == Material.AIR) {
             return;
         }
 		

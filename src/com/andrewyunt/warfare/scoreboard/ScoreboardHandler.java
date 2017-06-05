@@ -18,7 +18,6 @@ public class ScoreboardHandler implements Listener, Runnable {
     private final TimerSidebarProvider timerSidebarProvider;
 
     public ScoreboardHandler() {
-
         this.playerBoards = new HashMap<>();
         this.timerSidebarProvider = new TimerSidebarProvider();
 
@@ -32,28 +31,24 @@ public class ScoreboardHandler implements Listener, Runnable {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-
         Player player = event.getPlayer();
         setPlayerBoard(player.getUniqueId(), new PlayerBoard(player));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
-
         synchronized (this.playerBoards) {
             (this.playerBoards.remove(event.getPlayer().getUniqueId())).remove();
         }
     }
 
     public PlayerBoard getPlayerBoard(UUID uuid) {
-
         synchronized (this.playerBoards) {
             return this.playerBoards.get(uuid);
         }
     }
 
     public void setPlayerBoard(UUID uuid, PlayerBoard board) {
-
         synchronized (this.playerBoards) {
             this.playerBoards.put(uuid, board);
         }
@@ -62,7 +57,6 @@ public class ScoreboardHandler implements Listener, Runnable {
     }
 
     public void run() {
-
         long now = System.currentTimeMillis();
         synchronized (this.playerBoards) {
             for (PlayerBoard board : this.playerBoards.values()) {
@@ -78,7 +72,6 @@ public class ScoreboardHandler implements Listener, Runnable {
     }
 
     public void clearBoards() {
-
         synchronized (this.playerBoards) {
             Iterator<PlayerBoard> iterator = this.playerBoards.values().iterator();
             while (iterator.hasNext()) {
@@ -89,7 +82,6 @@ public class ScoreboardHandler implements Listener, Runnable {
     }
 
     public Map<UUID, PlayerBoard> getPlayerBoards() {
-
         return playerBoards;
     }
 }

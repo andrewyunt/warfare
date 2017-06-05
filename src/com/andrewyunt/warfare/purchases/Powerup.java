@@ -80,7 +80,7 @@ public enum Powerup implements Purchasable {
     }
 
     public int getPlayerLvlNeeded(int level) {
-        return (new ArrayList<Powerup>(Arrays.asList(values())).indexOf(this) * 4 + level + 1) * 5;
+        return (new ArrayList<>(Arrays.asList(values())).indexOf(this) * 4 + level + 1) * 5;
     }
 
     @Override
@@ -129,7 +129,7 @@ public enum Powerup implements Purchasable {
 
         if (this == MEDIC) {
 
-            double hearts = 4.0 + 1 * (level - 1);
+            double hearts = 4.0 + (level - 1);
 
             if (bp.getHealth() + hearts < bp.getMaxHealth()) {
                 bp.setHealth(bp.getHealth() + hearts);
@@ -169,7 +169,7 @@ public enum Powerup implements Purchasable {
 
             int count = 0;
 
-            for (Entity entity : bp.getNearbyEntities(3, 3, 3)){
+            for (Entity entity : bp.getNearbyEntities(3, 3, 3)) {
                 if (!(entity instanceof Player)) {
                     continue;
                 }
@@ -184,13 +184,12 @@ public enum Powerup implements Purchasable {
                 double dmg = 1.0 + 0.5 * (level - 1);
 
                 entityPlayer.getWorld().strikeLightningEffect(entityPlayer.getLocation());
-                Damageable dmgVictim = entityPlayer;
-                dmgVictim.damage(0.00001D); // So the player will get the red damage
+                entityPlayer.damage(0.00001D); // So the player will get the red damage
 
-                if (dmgVictim.getHealth() <= dmg) {
-                    dmgVictim.setHealth(0D);
+                if (entityPlayer.getHealth() <= dmg) {
+                    entityPlayer.setHealth(0D);
                 } else {
-                    dmgVictim.setHealth(dmgVictim.getHealth() - dmg);
+                    entityPlayer.setHealth(entityPlayer.getHealth() - dmg);
                 }
 
                 count++;

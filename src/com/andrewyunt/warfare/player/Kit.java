@@ -1,7 +1,5 @@
-
 package com.andrewyunt.warfare.player;
 
-import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
