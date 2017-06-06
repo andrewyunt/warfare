@@ -27,8 +27,10 @@ public class PlayMenu implements Listener, InventoryHolder {
     @Getter private final Inventory inventory;
 
     private final int SIZE = 6 * 9;
-    private final int QUICK_JOIN_SLOT = 49;
-    private final ItemStack QUICK_JOIN_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join").lore(ChatColor.GRAY + "Click to join a game").build();
+    private final int QUICK_JOIN_SOLO_SLOT = 48;
+    private final int QUICK_JOIN_TEAMS_SLOT = 50;
+    private final ItemStack QUICK_JOIN_SOLO_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join Solo").lore(ChatColor.GRAY + "Click to join a solo game").build();
+    private final ItemStack QUICK_JOIN_TEAMS_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join Teams").lore(ChatColor.GRAY + "Click to join a teams game").build();
     private final ItemStack PANE = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).displayName(" ").build();
 
     private List<Server> inventoryServers = new ArrayList<>();
@@ -80,7 +82,8 @@ public class PlayMenu implements Listener, InventoryHolder {
             }
         }
 
-        itemStacks[QUICK_JOIN_SLOT] = QUICK_JOIN_ITEM.clone();
+        itemStacks[QUICK_JOIN_SOLO_SLOT] = QUICK_JOIN_SOLO_ITEM.clone();
+        itemStacks[QUICK_JOIN_TEAMS_SLOT] = QUICK_JOIN_TEAMS_ITEM.clone();
 
         return itemStacks;
     }
@@ -131,9 +134,12 @@ public class PlayMenu implements Listener, InventoryHolder {
                 }
             }
 
-            if (slot == QUICK_JOIN_SLOT) {
+            if (slot == QUICK_JOIN_SOLO_SLOT) {
                 Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
-                for (Server server: quickJoinServers) {
+                for (Server server : quickJoinServers) {
+                    if (server.getServerType() != Server.ServerType.SOLO) {
+                        continue;
+                    }
                     int size = playerEntity.size();
                     int amount = size == 1 ? 1 : size + 2;
                     if (server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
@@ -145,7 +151,25 @@ public class PlayMenu implements Listener, InventoryHolder {
                         return;
                     }
                 }
-                player.sendMessage(ChatColor.RED + "There are currently no available games");
+                player.sendMessage(ChatColor.RED + "There are currently no available solo games");
+            } else if (slot == QUICK_JOIN_TEAMS_SLOT) {
+                    Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
+                    for (Server server: quickJoinServers) {
+                        if (server.getServerType() != Server.ServerType.TEAMS) {
+                            continue;
+                        }
+                        int size = playerEntity.size();
+                        int amount = size == 1 ? 1 : size + 2;
+                        if (server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
+                            playerEntity.sendToServer(server.getName());
+                            if (playerEntity instanceof PartyPlayerEntity) {
+                                Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
+                            }
+                            server.setOnlinePlayers(server.getOnlinePlayers() + size);
+                            return;
+                        }
+                    }
+                    player.sendMessage(ChatColor.RED + "There are currently no available team games");
             } else {
                 int row = slot / 9;
                 int column = slot % 9;
