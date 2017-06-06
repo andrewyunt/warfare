@@ -75,25 +75,13 @@ public class LootTier {
                 new ItemStack(Material.ARROW, 64),
                 new ItemStack(Material.TNT, 16),
                 new ItemStack(Material.SNOW_BALL, 64),
-                DIAMOND_SWORD,
-                BOW_POWER,
-                DIAMOND_CHESTPLATE
-        };
-
-        @Getter
-        private ItemStack[] group2Items = new ItemStack[] {
                 new ItemStack(Material.ENDER_PEARL, 2),
-                new ItemStack(Material.ENDER_PEARL, 4)
-        };
-
-        @Getter
-        private ItemStack[] group3Items = new ItemStack[] {
+                new ItemStack(Material.ENDER_PEARL, 4),
                 new ItemStack(Material.GOLDEN_APPLE, 2),
                 new ItemStack(Material.GOLDEN_APPLE, 4),
-        };
-
-        @Getter
-        private ItemStack[] group4Items = new ItemStack[] {
+                DIAMOND_SWORD,
+                BOW_POWER,
+                DIAMOND_CHESTPLATE,
                 DIAMOND_BOOTS,
                 DIAMOND_BOOTS_FALLING
         };
@@ -121,31 +109,19 @@ public class LootTier {
         @Getter
         private ItemStack[] group2Items = new ItemStack[] {
                 new ItemStack(Material.WOOD, 64),
-                new ItemStack(Material.COBBLESTONE, 64)
+                new ItemStack(Material.COBBLESTONE, 64),
+                POTION_FIRE_RESISTANCE,
+                POTION_SPEED
         };
 
         @Getter
         private ItemStack[] group3Items = new ItemStack[] {
                 IRON_SWORD,
-                new ItemStack(Material.IRON_SWORD, 1)
-        };
-
-        @Getter
-        private ItemStack[] group4Items = new ItemStack[] {
+                new ItemStack(Material.IRON_SWORD, 1),
                 new ItemStack(Material.DIAMOND_CHESTPLATE, 1),
                 new ItemStack(Material.DIAMOND_BOOTS, 1),
-        };
-
-        @Getter
-        private ItemStack[] group5Items = new ItemStack[] {
                 new ItemStack(Material.WATER_BUCKET, 1),
                 new ItemStack(Material.LAVA_BUCKET, 1)
-        };
-
-        @Getter
-        private ItemStack[] group6Items = new ItemStack[] {
-                POTION_FIRE_RESISTANCE,
-                POTION_SPEED
         };
     }
 

@@ -50,16 +50,10 @@ public class LootChest {
 
 			if (tier instanceof LootTier.Tier1) {
 				groupArray.add(((LootTier.Tier1) tier).getGroup1Items());
-				groupArray.add(((LootTier.Tier1) tier).getGroup2Items());
-				groupArray.add(((LootTier.Tier1) tier).getGroup3Items());
-				groupArray.add(((LootTier.Tier1) tier).getGroup4Items());
 			} else if (tier instanceof LootTier.Tier2) {
 				groupArray.add(((LootTier.Tier2) tier).getGroup1Items());
 				groupArray.add(((LootTier.Tier2) tier).getGroup2Items());
 				groupArray.add(((LootTier.Tier2) tier).getGroup3Items());
-				groupArray.add(((LootTier.Tier2) tier).getGroup4Items());
-				groupArray.add(((LootTier.Tier2) tier).getGroup5Items());
-				groupArray.add(((LootTier.Tier2) tier).getGroup6Items());
 			} else if (tier instanceof LootTier.Tier3) {
 				groupArray.add(((LootTier.Tier3) tier).getGroup1Items());
 				groupArray.add(((LootTier.Tier3) tier).getGroup2Items());
