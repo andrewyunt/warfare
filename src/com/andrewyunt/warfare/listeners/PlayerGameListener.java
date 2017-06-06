@@ -73,6 +73,9 @@ public class PlayerGameListener extends PlayerListener {
         // Create GamePlayer object
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
+        // Add player to the game
+        Warfare.getInstance().getGame().addPlayer(gp);
+
         // Add powerups to player's purchases if they don't exist
         for (Powerup powerup : Powerup.values()) {
             if (!gp.getPurchases().containsKey(powerup)) {
