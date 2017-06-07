@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.ChatColor;
@@ -10,13 +9,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class AddCageArgument extends CommandArgument {
+public class SetTeamSpawnArgument extends CommandArgument {
 
-    public AddCageArgument() {
-        super("addcage", "Add a cage to the map");
+    public SetTeamSpawnArgument() {
+        super("setteamspawn", "Set a team's spawn");
 
         isPlayerOnly = true;
-        permission = "warfare.addcage";
+        permission = "warfare.setteamspawn";
     }
 
     @Override
@@ -28,13 +27,13 @@ public class AddCageArgument extends CommandArgument {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Game game = Warfare.getInstance().getGame();
 
-        if (game.isTeams()) {
-            sender.sendMessage(ChatColor.RED + "You cannot add cages to a teams game.");
+        if (!game.isTeams()) {
+            sender.sendMessage(ChatColor.RED + "You cannot set team spawns in a solo game.");
             return false;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: /warfare addcage [name]");
+            sender.sendMessage(ChatColor.RED + "Usage: /warfare setteamspawn [team]");
             return false;
         }
 
@@ -44,17 +43,18 @@ public class AddCageArgument extends CommandArgument {
             return false;
         }
 
-        if (game.getCage(args[1]) != null) {
-            sender.sendMessage(ChatColor.RED + "A cage with that name already exists.");
+        Location loc = ((Player) sender).getLocation();
+
+        try {
+            game.getTeamSpawns().put(Integer.valueOf(args[1]), loc);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ChatColor.RED + "You must enter a team number, either 1 or 2.");
             return false;
         }
 
-        Location loc = ((Player) sender).getLocation();
-
-        game.getCages().add(new Cage(args[1], loc));
         Warfare.getInstance().getStorageManager().saveMap();
 
-        sender.sendMessage(String.format(ChatColor.YELLOW + "You created the cage " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "in" + ChatColor.GOLD + " %s.",
+        sender.sendMessage(String.format(ChatColor.YELLOW + "Set the spawn for team " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "in" + ChatColor.GOLD + " %s.",
                 args[1],
                 String.format("X:%s Y:%s Z:%s world: %s",
                         String.valueOf(loc.getBlockX()),

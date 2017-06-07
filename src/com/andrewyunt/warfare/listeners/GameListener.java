@@ -38,6 +38,13 @@ public class GameListener implements Listener {
         // Set player's mode to survival
         player.setGameMode(GameMode.SURVIVAL);
 
+        // Set the player's lives
+        if (game.isTeams()) {
+            gamePlayer.setLives(3);
+        } else {
+            gamePlayer.setLives(1);
+        }
+
         // Call hotbar update event
         Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
 

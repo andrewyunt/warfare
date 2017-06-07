@@ -68,7 +68,7 @@ public class LootChest {
 			List<ItemStack> groupList = new LinkedList<>(Arrays.asList(groupArray.iterator().next()));
 
 			// The number of items a player should receive from the randomly chosen group
-			int random = new Random().nextInt(4 - 3 + 1) + 4;
+			int random = -new Random().nextInt(4 - 3 + 1) + 4;
 
 			while (groupList.size() > random) {
 				groupList.remove(groupList.size() - 1);

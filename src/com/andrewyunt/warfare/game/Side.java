@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class Side {
 
-    private final int sideNum;
+    @Getter private final int sideNum;
 
     @Getter @Setter private String name;
 
@@ -30,10 +30,5 @@ public class Side {
         toRemove.forEach(players::remove);
 
         return players;
-    }
-
-    public Set<Cage> getAvailableCages() {
-        return Warfare.getInstance().getGame().getAvailableCages().stream().filter(cage -> cage.getSideNum() == sideNum)
-                .collect(Collectors.toSet());
     }
 }

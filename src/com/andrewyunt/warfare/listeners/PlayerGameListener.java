@@ -112,26 +112,26 @@ public class PlayerGameListener extends PlayerListener {
         Location spawnAt;
 
         if (game.isTeams()) {
-            Side mostCages = null;
+            Side leastPlayers = null;
             for (Side side : game.getSides()) {
-                if (mostCages == null) {
-                    mostCages = side;
-                } else if (side.getAvailableCages().size() > mostCages.getAvailableCages().size()) {
-                    mostCages = side;
+                if (leastPlayers == null) {
+                    leastPlayers = side;
+                } else if (side.getPlayers().size() < leastPlayers.getPlayers().size()) {
+                    leastPlayers = side;
                 }
             }
 
-            if (mostCages.getPlayers().size() == 0) {
-                mostCages.setName(player.getDisplayName());
+            if (leastPlayers.getPlayers().size() == 0) {
+                leastPlayers.setName(player.getDisplayName());
             }
 
-            gamePlayer.setSide(mostCages);
-
-            spawnAt = mostCages.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+            gamePlayer.setSide(leastPlayers);
 
             if (game.getAvailableCages().size() == 0) {
                 game.setStage(Game.Stage.COUNTDOWN);
             }
+
+            spawnAt = game.getTeamSpawns().get(leastPlayers.getSideNum());
         } else {
             gamePlayer.setSide(new Side(0, player.getDisplayName()));
 
@@ -275,25 +275,38 @@ public class PlayerGameListener extends PlayerListener {
         event.setDroppedExp(0);
 
         Player player = event.getEntity();
-        GamePlayer playerGP = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
-        if (!playerGP.isInGame()) {
+        if (!gp.isInGame()) {
             return;
         }
 
-        playerGP.setDeaths(playerGP.getDeaths() + 1);
-        Warfare.getInstance().getGame().removePlayer(playerGP);
+        gp.setLives(gp.getLives() - 1);
 
-        GamePlayer lastDamager = playerGP.getLastDamager();
+        if (gp.getLives() == 0) {
+            Warfare.getInstance().getGame().removePlayer(gp);
 
-        if (lastDamager == null || lastDamager == playerGP || !lastDamager.isInGame()) {
+            Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
+                if (player.isOnline()) {
+                    gp.setSpectating(true,true);
+                }
+            });
+        } else if (Warfare.getInstance().getGame().isTeams()) {
+            player.teleport(Warfare.getInstance().getGame().getTeamSpawns().get(gp.getSide().getSideNum()));
+        }
+
+        gp.setDeaths(gp.getDeaths() + 1);
+
+        // Give last damager coins and kills
+        GamePlayer lastDamager = gp.getLastDamager();
+
+        if (lastDamager == null || lastDamager == gp || !lastDamager.isInGame()) {
             return;
         }
 
         lastDamager.addKill();
 
         int killCoins = 30;
-
         List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(lastDamager.getBukkitPlayer()));
 
         if (groups.contains("Platinum")) {
@@ -317,12 +330,6 @@ public class PlayerGameListener extends PlayerListener {
         lastDamager.getBukkitPlayer().sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
-
-        Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
-            if (player.isOnline()) {
-                playerGP.setSpectating(true,true);
-            }
-        });
     }
 
     @EventHandler

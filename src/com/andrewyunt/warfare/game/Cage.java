@@ -17,15 +17,13 @@ public class Cage {
 	
 	@Getter private String name;
 	@Getter private GamePlayer player;
-	@Getter private int sideNum;
 
 	@Getter private final Location location;
 	private final Set<Block> blocks = new HashSet<>();
 	
-	public Cage(String name, Location location, int sideNum) {
+	public Cage(String name, Location location) {
 		this.name = name;
 		this.location = location;
-		this.sideNum = sideNum;
 		
 		World world = location.getWorld();
 		double X = location.getX();

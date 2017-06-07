@@ -27,6 +27,7 @@ public class GamePlayer {
 	@Getter private Kit selectedKit;
 	@Getter private Powerup selectedPowerup;
 	@Getter @Setter Side side;
+	@Getter @Setter int lives;
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;

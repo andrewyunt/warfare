@@ -24,9 +24,10 @@ public class WarfareCommand extends ArgumentExecutor {
 		addArgument(new SetBoostArgument());
 
 		if (!StaticConfiguration.LOBBY) {
+			addArgument(new AddChestArgument());
 			addArgument(new AddCageArgument());
 			addArgument(new RemoveCageArgument());
-			addArgument(new AddChestArgument());
+			addArgument(new SetTeamSpawnArgument());
 			addArgument(new SetMapLocationArgument());
 			addArgument(new ToggleTeamsArgument());
 			addArgument(new EditArgument());

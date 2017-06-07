@@ -10,7 +10,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,6 +50,7 @@ public class Game {
 
 	@Getter @Setter private Set<LootChest> lootChests = new HashSet<>();
 	@Getter @Setter private Set<Cage> cages = new HashSet<>();
+	@Getter @Setter private Map<Integer, Location> teamSpawns = new HashMap<>();
 	@Getter private boolean teams;
 	@Getter @Setter private boolean edit;
 	@Getter @Setter private Location mapLocation;
