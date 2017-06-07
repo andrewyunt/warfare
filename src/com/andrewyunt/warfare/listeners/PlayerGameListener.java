@@ -112,29 +112,12 @@ public class PlayerGameListener extends PlayerListener {
         Location spawnAt;
 
         if (game.isTeams()) {
-            Side leastPlayers = null;
-            for (Side side : game.getSides()) {
-                if (leastPlayers == null) {
-                    leastPlayers = side;
-                } else if (side.getPlayers().size() < leastPlayers.getPlayers().size()) {
-                    leastPlayers = side;
-                }
+            if (game.getStage() == Game.Stage.WAITING) {
+                spawnAt = game.getWaitingLocation();
+            } else {
+                spawnAt = game.getTeamSpawns().get(gamePlayer.getSide());
             }
-
-            if (leastPlayers.getPlayers().size() == 0) {
-                leastPlayers.setName(player.getDisplayName());
-            }
-
-            gamePlayer.setSide(leastPlayers);
-
-            if (game.getAvailableCages().size() == 0) {
-                game.setStage(Game.Stage.COUNTDOWN);
-            }
-
-            spawnAt = game.getTeamSpawns().get(leastPlayers.getSideNum());
         } else {
-            gamePlayer.setSide(new Side(0, player.getDisplayName()));
-
             spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
 
             if (game.getAvailableCages().size() <= 2) {

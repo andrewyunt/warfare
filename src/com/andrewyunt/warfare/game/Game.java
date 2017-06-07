@@ -53,7 +53,7 @@ public class Game {
 	@Getter @Setter private Map<Integer, Location> teamSpawns = new HashMap<>();
 	@Getter private boolean teams;
 	@Getter @Setter private boolean edit;
-	@Getter @Setter private Location mapLocation;
+	@Getter @Setter private Location mapLocation, waitingLocation;
 	@Getter private short countdownTime = 10, gameTime;
 	@Getter private Stage stage = Stage.WAITING;
 

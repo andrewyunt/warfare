@@ -377,6 +377,9 @@ public class MongoStorageManager extends StorageManager{
         if (game.getMapLocation() != null) {
             document.put("mapLocation", serializeLocation(game.getMapLocation()));
         }
+        if (game.getWaitingLocation() != null) {
+            document.put("waitingLocation", serializeLocation(game.getWaitingLocation()));
+        }
         document.put("teamSpawns", game.getTeamSpawns().entrySet().stream().map(entry -> {
             Document purchase = new Document();
             purchase.put("team", entry.getKey());
@@ -414,6 +417,10 @@ public class MongoStorageManager extends StorageManager{
         if (document != null) {
             if (document.containsKey("teams")) {
                 game.setTeams(document.getBoolean("teams"));
+            }
+            Document waitingLocation = document.get("waitingLocation", Document.class);
+            if (waitingLocation != null) {
+                game.setMapLocation(deserializeLocation(waitingLocation));
             }
             Document mapLocation = document.get("mapLocation", Document.class);
             if (mapLocation != null) {

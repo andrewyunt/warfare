@@ -48,6 +48,35 @@ public class GameListener implements Listener {
         // Call hotbar update event
         Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
 
+        // Set player's side
+        if (game.isTeams()) {
+            Side leastPlayers = null;
+            for (Side side : game.getSides()) {
+                if (leastPlayers == null) {
+                    leastPlayers = side;
+                } else if (side.getPlayers().size() < leastPlayers.getPlayers().size()) {
+                    leastPlayers = side;
+                }
+            }
+
+            if (leastPlayers.getPlayers().size() == 0) {
+                leastPlayers.setName(player.getDisplayName());
+            }
+
+            gamePlayer.setSide(leastPlayers);
+
+            //TODO: add command to set game size for team games
+            if (game.getPlayers().size() == 50) {
+                game.setStage(Game.Stage.COUNTDOWN);
+            }
+        } else {
+            gamePlayer.setSide(new Side(0, player.getDisplayName()));
+
+            if (game.getAvailableCages().size() <= 2) {
+                game.setStage(Game.Stage.COUNTDOWN);
+            }
+        }
+
         // Send the join message to the players
         Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                 String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", player.getDisplayName(),
@@ -101,13 +130,20 @@ public class GameListener implements Listener {
             }
         }
 
-        // Destroy cages
-        for (Cage cage : game.getCages()) {
-            cage.destroy();
+        // Destroy cages if the game is solo
+        if (!game.isTeams()) {
+            for (Cage cage : game.getCages()) {
+                cage.destroy();
+            }
         }
 
         for (GamePlayer player : game.getPlayers()) {
             Player bp = player.getBukkitPlayer();
+
+            // Teleport player to team spawn location if the game is teams
+            if (game.isTeams()) {
+                bp.teleport(game.getTeamSpawns().get(player.getSide().getSideNum()));
+            }
 
             // Update player's name color
             Utils.colorPlayerName(player, Warfare.getInstance().getGame().getPlayers());

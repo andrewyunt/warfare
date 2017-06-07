@@ -28,6 +28,7 @@ public class WarfareCommand extends ArgumentExecutor {
 			addArgument(new AddCageArgument());
 			addArgument(new RemoveCageArgument());
 			addArgument(new SetTeamSpawnArgument());
+			addArgument(new SetWaitingLocationArgument());
 			addArgument(new SetMapLocationArgument());
 			addArgument(new ToggleTeamsArgument());
 			addArgument(new EditArgument());

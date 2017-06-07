@@ -8,13 +8,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SetMapLocationArgument extends CommandArgument {
+public class SetWaitingLocationArgument extends CommandArgument {
 
-    public SetMapLocationArgument() {
-        super("setmaplocation", "Sets map spawn location");
+    public SetWaitingLocationArgument() {
+        super("setwaitinglocation", "Sets the waiting location for the map");
 
         isPlayerOnly = true;
-        permission = "warfare.setmaplocation";
+        permission = "warfare.waitinglocation";
     }
 
     @Override
@@ -31,16 +31,21 @@ public class SetMapLocationArgument extends CommandArgument {
             return false;
         }
 
+        if (!game.isTeams()) {
+            sender.sendMessage(ChatColor.RED + "You cannot set the waiting location in a solo game.");
+            return false;
+        }
+
         if (!game.isEdit()) {
             sender.sendMessage(ChatColor.RED + "You must set the map to edit mode before using that command");
             sender.sendMessage(ChatColor.RED + "Usage: /warfare edit");
             return false;
         }
 
-        game.setMapLocation(((Player) sender).getLocation());
+        game.setWaitingLocation(((Player) sender).getLocation());
         Warfare.getInstance().getStorageManager().saveMap();
 
-        sender.sendMessage(ChatColor.YELLOW + "Set the map location successfully.");
+        sender.sendMessage(ChatColor.YELLOW + "Set the waiting location successfully.");
 
         return true;
     }
