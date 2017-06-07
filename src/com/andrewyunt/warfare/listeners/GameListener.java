@@ -65,8 +65,7 @@ public class GameListener implements Listener {
 
             gamePlayer.setSide(leastPlayers);
 
-            //TODO: add command to set game size for team games
-            if (game.getPlayers().size() == 50) {
+            if (game.getPlayers().size() == game.getTeamSize()) {
                 game.setStage(Game.Stage.COUNTDOWN);
             }
         } else {

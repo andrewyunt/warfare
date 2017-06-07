@@ -54,6 +54,7 @@ public class Game {
 	@Getter private boolean teams;
 	@Getter @Setter private boolean edit;
 	@Getter @Setter private Location mapLocation, waitingLocation;
+	@Getter @Setter private int teamSize;
 	@Getter private short countdownTime = 10, gameTime;
 	@Getter private Stage stage = Stage.WAITING;
 

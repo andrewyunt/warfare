@@ -374,6 +374,7 @@ public class MongoStorageManager extends StorageManager{
         Game game = warfare.getGame();
         document.put("name", StaticConfiguration.MAP_NAME);
         document.put("teams", game.isTeams());
+        document.put("teamSize", game.getTeamSize());
         if (game.getMapLocation() != null) {
             document.put("mapLocation", serializeLocation(game.getMapLocation()));
         }
@@ -417,6 +418,9 @@ public class MongoStorageManager extends StorageManager{
         if (document != null) {
             if (document.containsKey("teams")) {
                 game.setTeams(document.getBoolean("teams"));
+            }
+            if (document.containsKey("teamSize")) {
+                game.setTeamSize(game.getTeamSize());
             }
             Document waitingLocation = document.get("waitingLocation", Document.class);
             if (waitingLocation != null) {
