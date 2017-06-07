@@ -473,8 +473,11 @@ public class PlayerGameListener extends PlayerListener {
         if (gamePlayer.isSpectating()) {
             Location playerLoc = event.getPlayer().getLocation();
             Location centerLoc = Warfare.getInstance().getGame().getMapLocation();
-            if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 300 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 300) {
-                event.getPlayer().teleport(centerLoc);
+
+            if (playerLoc != null && centerLoc != null) {
+                if (Math.abs(centerLoc.getX() - playerLoc.getX()) > 300 || Math.abs(centerLoc.getZ() - playerLoc.getZ()) > 300) {
+                    event.getPlayer().teleport(centerLoc);
+                }
             }
         }
     }
