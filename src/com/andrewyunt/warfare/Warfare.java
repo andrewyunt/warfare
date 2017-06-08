@@ -161,11 +161,9 @@ public class Warfare extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (!getConfig().getBoolean("is-lobby")) {
-			if (!StaticConfiguration.LOBBY) {
-			    if (game.getStage() != Game.Stage.RESTART) {
-                    game.setStage(Game.Stage.RESTART);
-                }
+		if (!StaticConfiguration.LOBBY) {
+			if (game.getStage() != Game.Stage.RESTART) {
+				game.setStage(Game.Stage.RESTART);
 			}
 		}
 

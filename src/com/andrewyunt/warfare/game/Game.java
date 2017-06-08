@@ -126,6 +126,8 @@ public class Game {
 	public void setStage(Stage stage) {
 		this.stage = stage;
 
+		Warfare.getInstance().getStorageManager().updateServerStatusAsync();
+
 		Bukkit.getServer().getPluginManager().callEvent(new StageChangeEvent(stage));
 	}
 

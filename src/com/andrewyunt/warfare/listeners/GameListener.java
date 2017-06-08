@@ -99,8 +99,6 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onStageChange(StageChangeEvent event) {
-        Warfare.getInstance().getStorageManager().updateServerStatusAsync();
-
         Game game = Warfare.getInstance().getGame();
 
         switch (game.getStage()) {

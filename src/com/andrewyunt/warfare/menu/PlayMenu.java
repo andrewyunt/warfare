@@ -40,7 +40,7 @@ public class PlayMenu implements Listener, InventoryHolder {
         inventory = Bukkit.createInventory(this, SIZE, ChatColor.YELLOW + "Join Game");
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
             List<Server> serverList = Warfare.getInstance().getStorageManager().getServers();
-            inventoryServers = new ArrayList<>(serverList);
+            inventoryServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.WAITING || server.getGameStage() == Game.Stage.COUNTDOWN).collect(Collectors.toList());
             inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) - server.getOnlinePlayers()));
             quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING)
                     .collect(Collectors.toList());
