@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class SetTeamSizeArgument extends CommandArgument {
 
     public SetTeamSizeArgument() {
-        super("setteamspawn", "Set the team size");
+        super("setteamsize", "Set the team size");
 
         isPlayerOnly = true;
         permission = "warfare.setteamsize";

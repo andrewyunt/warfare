@@ -7,13 +7,11 @@ import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
+import com.andrewyunt.warfare.player.events.SpectateEvent;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.utilities.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -74,7 +72,15 @@ public class PlayerGameListener extends PlayerListener {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         // Add player to the game
-        Warfare.getInstance().getGame().addPlayer(gp);
+        Game game = Warfare.getInstance().getGame();
+
+        if (game.getStage() == Game.Stage.WAITING || (game.getStage() == Game.Stage.COUNTDOWN && game.getAvailableCages().size() > 0 && !game.isTeams())) {
+            Warfare.getInstance().getGame().addPlayer(gp);
+        } else {
+            gp.setSpectating(true);
+
+            player.teleport(game.getMapLocation());
+        }
 
         // Add powerups to player's purchases if they don't exist
         for (Powerup powerup : Powerup.values()) {
@@ -108,20 +114,25 @@ public class PlayerGameListener extends PlayerListener {
     public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
+
+        if (gamePlayer.isSpectating()) {
+            return;
+        }
+
         Game game = Warfare.getInstance().getGame();
         Location spawnAt;
 
-        if (game.isTeams()) {
-            if (game.getStage() == Game.Stage.WAITING) {
-                spawnAt = game.getWaitingLocation();
-            } else {
-                spawnAt = game.getTeamSpawns().get(gamePlayer.getSide());
-            }
+        if (gamePlayer.isSpectating()) {
+            spawnAt = game.getMapLocation();
         } else {
-            spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
-
-            if (game.getAvailableCages().size() <= 2) {
-                game.setStage(Game.Stage.COUNTDOWN);
+            if (game.isTeams()) {
+                if (game.getStage() == Game.Stage.WAITING) {
+                    spawnAt = game.getWaitingLocation();
+                } else {
+                    spawnAt = game.getTeamSpawns().get(gamePlayer.getSide());
+                }
+            } else {
+                spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
             }
         }
 
@@ -255,8 +266,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onPlayerDeath(PlayerDeathEvent event) {
-        event.setDroppedExp(0);
-
         Player player = event.getEntity();
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
@@ -264,16 +273,14 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
+        player.spigot().respawn();
+
+        event.setDroppedExp(0);
         gp.setLives(gp.getLives() - 1);
 
         if (gp.getLives() == 0) {
             Warfare.getInstance().getGame().removePlayer(gp);
-
-            Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
-                if (player.isOnline()) {
-                    gp.setSpectating(true,true);
-                }
-            });
+            gp.setSpectating(true);
         } else if (Warfare.getInstance().getGame().isTeams()) {
             player.teleport(Warfare.getInstance().getGame().getTeamSpawns().get(gp.getSide().getSideNum()));
         }
@@ -355,16 +362,28 @@ public class PlayerGameListener extends PlayerListener {
         event.setDeathMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
 
-    @EventHandler
-    private void onPlayerRespawn(PlayerRespawnEvent event) {
-        Game game = Warfare.getInstance().getGame();
 
-        if (game == null || game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) {
-            return;
+    private void onSpectate(SpectateEvent event) {
+        Player player = event.getGamePlayer().getBukkitPlayer();
+        player.setGameMode(GameMode.CREATIVE);
+        player.setFireTicks(0);
+
+        for (Player other: Bukkit.getOnlinePlayers()) {
+            if (other != player) {
+                GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(other);
+                if (gamePlayer.isSpectating()) {
+                    other.showPlayer(player);
+                    player.showPlayer(other);
+                } else {
+                    other.hidePlayer(player);
+                    player.showPlayer(other);
+                }
+            }
         }
+        player.spigot().setCollidesWithEntities(false);
+        player.spigot().setViewDistance(4);
 
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-        event.setRespawnLocation(gp.setSpectating(true,false));
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(event.getGamePlayer()));
     }
 
     @EventHandler
@@ -455,13 +474,15 @@ public class PlayerGameListener extends PlayerListener {
 
             if (item != null && item.getType() == Material.MUSHROOM_SOUP) {
                 Player player = event.getPlayer();
-                if (player.getHealth() + 6 > player.getMaxHealth()) {
-                    player.setHealth(player.getMaxHealth());
-                } else {
-                    event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
-                }
+                if (player.getHealth() < player.getMaxHealth()) {
+                    if (player.getHealth() + 6 > player.getMaxHealth()) {
+                        player.setHealth(player.getMaxHealth());
+                    } else {
+                        event.getPlayer().setHealth(event.getPlayer().getHealth() + 6L);
+                    }
 
-                item.setType(Material.BOWL);
+                    item.setType(Material.BOWL);
+                }
             }
         }
     }

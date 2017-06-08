@@ -24,35 +24,36 @@ import com.andrewyunt.warfare.player.GamePlayer;
 public class Utils {
 	
 	public static List<String> colorizeList(List<String> list, ChatColor color) {
-
 		return list.stream().map(line -> color + line).collect(Collectors.toList());
 	}
 	
 	public static void colorPlayerName(GamePlayer toColor, Collection<GamePlayer> toShowPlayers) {
-
 		for (GamePlayer toShow : toShowPlayers) {
 			if (!toShow.isInGame()) {
                 continue;
             }
 
-			if (toShow == toColor) {
-                continue;
-            }
-
 			Scoreboard scoreboard = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(toShow.getBukkitPlayer().getUniqueId()).getScoreboard();
-			Team team = scoreboard.getTeam("enemies");
 
-			if (team == null) {
-				team = scoreboard.registerNewTeam("enemies");
-				team.setPrefix(ChatColor.RED.toString());
+			if (toShow.getSide() == toColor.getSide()) {
+				Team allies = scoreboard.getTeam("allies");
+				if (allies == null) {
+					allies = scoreboard.registerNewTeam("allies");
+					allies.setPrefix(ChatColor.GREEN.toString());
+				}
+				allies.addPlayer(toColor.getBukkitPlayer());
+            } else {
+				Team enemies = scoreboard.getTeam("enemies");
+				if (enemies == null) {
+					enemies = scoreboard.registerNewTeam("enemies");
+					enemies.setPrefix(ChatColor.RED.toString());
+				}
+				enemies.addPlayer(toColor.getBukkitPlayer());
 			}
-
-			team.addPlayer(toColor.getBukkitPlayer());
 		}
 	}
 	
 	public static int getHighestEntry(ConfigurationSection section) {
-		
 		int highest = 0;
 		
 		if (section == null) {
@@ -77,7 +78,6 @@ public class Utils {
 	}
 	
 	public static String getNumberSuffix(int num) {
-		
 		num = num % 100;
 		
 		if (num >= 11 && num <= 13) {
@@ -97,7 +97,6 @@ public class Utils {
 	}
 	
 	public static String formatMessage(String message) {
-		
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
@@ -131,7 +130,6 @@ public class Utils {
 	 * 		the angle of the rotation in degrees
 	 */
 	public static void rotateYAxis(Vector vector, double angleD) {
-
 		vector = vector.clone();
 
 		// Validate.notNull(vector);
@@ -150,7 +148,6 @@ public class Utils {
 	}
 
 	public static List<org.bukkit.entity.Entity> getNearbyEntities(Location loc, int distance) {
-
 		return loc.getWorld().getEntities().stream()
 				.filter(e -> loc.distanceSquared(e.getLocation()) <= distance * distance).collect(Collectors.toList());
 	}
@@ -169,7 +166,6 @@ public class Utils {
 	 * 		The radius from damagedPlayer the effect will be played in.
 	 */
 	public static void playBloodEffect(Player damagedPlayer, int bloodRadius) {
-
 		GamePlayer damagedGP = Warfare.getInstance().getPlayerManager().getPlayer(damagedPlayer.getName());
 
 		if (!damagedGP.isInGame()) {

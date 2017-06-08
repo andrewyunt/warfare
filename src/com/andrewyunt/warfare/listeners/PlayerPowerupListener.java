@@ -39,6 +39,10 @@ public class PlayerPowerupListener implements Listener {
         Player player = event.getPlayer();
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getName());
 
+        if (gp.getSelectedPowerup() == null) {
+            return;
+        }
+
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
 
             if (!gp.isInGame()) {
@@ -104,7 +108,7 @@ public class PlayerPowerupListener implements Listener {
                 return;
             }
 
-            gpDamager.addEnergy(gpDamager.getSelectedPowerup().getEnergyPerClick());
+            gpDamager.setEnergy(gpDamager.getEnergy() + gpDamager.getSelectedPowerup().getEnergyPerClick());
 
             Utils.playBloodEffect(damaged, 10);
         }

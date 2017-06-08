@@ -643,7 +643,7 @@ public class PlayerPerkListener implements Listener {
         }
 
         if (damager.getHealth() > damager.getMaxHealth() - 1.0) {
-            damager.setHealth(40.0);
+            damager.setHealth(damager.getMaxHealth());
         } else {
             damager.setHealth(damager.getHealth() + 1.0);
         }

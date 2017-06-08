@@ -384,7 +384,7 @@ public class MongoStorageManager extends StorageManager{
         document.put("teamSpawns", game.getTeamSpawns().entrySet().stream().map(entry -> {
             Document purchase = new Document();
             purchase.put("team", entry.getKey());
-            purchase.put("location", entry.getValue());
+            purchase.put("location", serializeLocation(entry.getValue()));
             return purchase;
         }).collect(Collectors.toList()));
         document.put("cages", game.getCages()
@@ -430,19 +430,24 @@ public class MongoStorageManager extends StorageManager{
             if (mapLocation != null) {
                 game.setMapLocation(deserializeLocation(mapLocation));
             }
-            ((List<Document>) document.get("teamSpawns", List.class)).forEach(spawn -> {
-                int team = spawn.getInteger("team");
-                Location location = deserializeLocation(spawn.get("location", Document.class));
-                game.getTeamSpawns().put(team, location);
-            });
+            List<Document> teamSpawns = ((List<Document>) document.get("teamSpawns", List.class));
+            if (teamSpawns != null) {
+                teamSpawns.forEach(spawn -> {
+                    int team = spawn.getInteger("team");
+                    Location location = deserializeLocation(spawn.get("location", Document.class));
+                    game.getTeamSpawns().put(team, location);
+                });
+            }
             List<Document> cages = document.get("cages", List.class);
-            game.setCages(cages.stream()
-                    .map(cage -> {
-                        String name = cage.getString("name");
-                        Document location = cage.get("location", Document.class);
-                        return new Cage(name, deserializeLocation(location));
-                    }).collect(Collectors.toSet())
-            );
+            if (cages != null) {
+                game.setCages(cages.stream()
+                        .map(cage -> {
+                            String name = cage.getString("name");
+                            Document location = cage.get("location", Document.class);
+                            return new Cage(name, deserializeLocation(location));
+                        }).collect(Collectors.toSet())
+                );
+            }
             List<Document> chests = document.get("chests", List.class);
             game.setLootChests(chests.stream()
                     .map(chest -> {

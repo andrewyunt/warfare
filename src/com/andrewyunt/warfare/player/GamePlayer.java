@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Side;
+import com.andrewyunt.warfare.player.events.SpectateEvent;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
@@ -103,10 +104,6 @@ public class GamePlayer {
 		}
 	}
 
-	public void addEnergy(int energy) {
-		setEnergy(this.energy + energy);
-	}
-
 	public void setEnergy(int energy) {
 	    this.energy = energy;
 
@@ -151,52 +148,12 @@ public class GamePlayer {
 		}
 	}
 
-	public Location setSpectating(boolean spectating, boolean respawn) {
+	public void setSpectating(boolean spectating) {
 		this.spectating = spectating;
 
-		if (respawn) {
-		    getBukkitPlayer().spigot().respawn();
-        }
 		if (spectating) {
-            Player player = getBukkitPlayer();
-            player.setGameMode(GameMode.CREATIVE);
-            player.setFireTicks(0);
-
-            for (Player other: Bukkit.getOnlinePlayers()) {
-                if (other != player) {
-                    GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(other);
-                    if (gamePlayer.isSpectating()) {
-                        other.showPlayer(player);
-                        player.showPlayer(other);
-                    }
-                    else{
-                        other.hidePlayer(player);
-                        player.showPlayer(other);
-                    }
-                }
-            }
-            player.spigot().setCollidesWithEntities(false);
-            player.spigot().setViewDistance(4);
-
-			Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(this));
-
-			Location loc = Warfare.getInstance().getGame().getMapLocation();
-			Chunk chunk = loc.getChunk();
-			
-			if (!chunk.isLoaded()) {
-                chunk.load();
-            }
-			
-			loc.setY(loc.getY() + 1);
-			
-			if (respawn) {
-                return loc;
-            } else {
-                getBukkitPlayer().teleport(loc, TeleportCause.COMMAND);
-            }
+			Bukkit.getServer().getPluginManager().callEvent(new SpectateEvent(this));
 		}
-		
-		return null;
 	}
 
 	public int getLevel(Purchasable purchasable) {

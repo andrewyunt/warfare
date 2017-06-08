@@ -25,7 +25,7 @@ public class EPCAdapter extends PacketAdapter{
                 if (gamePlayer.isInGame()) {
                     Powerup powerup = gamePlayer.getSelectedPowerup();
                     if (powerup != null && powerup != Powerup.MARKSMAN) {
-                        gamePlayer.addEnergy(powerup.getEnergyPerClick());
+                        gamePlayer.setEnergy(gamePlayer.getEnergy() + powerup.getEnergyPerClick());
                     }
                 }
             }
