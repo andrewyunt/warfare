@@ -90,7 +90,7 @@ public class ChatListener implements Listener {
             }
         }
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        String msg = gamePlayer.isSpectating() ? ChatColor.GRAY + "[Spectator Chat] " : "" + prefix + message;
+        String msg = gamePlayer.isSpectating() ? ChatColor.GRAY + "[Spectator Chat] " + prefix + message : prefix + message;
         if (gamePlayer.isSpectating()) {
             Iterator<Player> iterator = e.getRecipients().iterator();
             while (iterator.hasNext()) {
