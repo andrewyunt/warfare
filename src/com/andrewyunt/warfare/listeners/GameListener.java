@@ -77,9 +77,11 @@ public class GameListener implements Listener {
         }
 
         // Send the join message to the players
-        Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                String.format("&6%s &ehas joined &7(&6%s&7/&6%s&7)!", player.getDisplayName(),
-                        game.getPlayers().size(), game.getCages().size())));
+        Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', String.format(
+                "&6%s &ehas joined &7(&6%s&7/&6%s&7)!",
+                player.getDisplayName(),
+                game.getPlayers().size(),
+                game.isTeams() ? game.getTeamSize() * 2 : game.getCages().size())));
     }
 
     @EventHandler

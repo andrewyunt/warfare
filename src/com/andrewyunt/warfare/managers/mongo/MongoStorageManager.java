@@ -424,7 +424,7 @@ public class MongoStorageManager extends StorageManager{
             }
             Document waitingLocation = document.get("waitingLocation", Document.class);
             if (waitingLocation != null) {
-                game.setMapLocation(deserializeLocation(waitingLocation));
+                game.setWaitingLocation(deserializeLocation(waitingLocation));
             }
             Document mapLocation = document.get("mapLocation", Document.class);
             if (mapLocation != null) {

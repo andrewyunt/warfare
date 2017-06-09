@@ -20,7 +20,8 @@ public class TimerSidebarProvider implements SidebarProvider {
     protected static final String STRAIGHT_LINE = BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 13);
 
     private static String handleBardFormat(long millis, boolean trailingZero, boolean showMillis) {
-        return ((showMillis ? trailingZero ? DateTimeFormats.REMAINING_SECONDS_TRAILING : DateTimeFormats.REMAINING_SECONDS : DateTimeFormats.SECONDS).get()).format(millis * 0.001D);
+        return ((showMillis ? trailingZero ? DateTimeFormats.REMAINING_SECONDS_TRAILING : DateTimeFormats.REMAINING_SECONDS
+                : DateTimeFormats.SECONDS).get()).format(millis * 0.001D);
     }
 
     public String getTitle() {
@@ -64,7 +65,8 @@ public class TimerSidebarProvider implements SidebarProvider {
 
             if (stage == Game.Stage.WAITING || stage == Game.Stage.COUNTDOWN) {
                 // Display players
-                lines.add(new SidebarEntry(ChatColor.YELLOW, "Players: " + ChatColor.GRAY, game.getPlayers().size() + "/" + game.getCages().size()));
+                lines.add(new SidebarEntry(ChatColor.YELLOW, "Players: " + ChatColor.GRAY, game.getPlayers().size() + "/"
+                        + (game.isTeams() ? game.getTeamSize() * 2 : game.getCages().size())));
 
                 lines.add(new SidebarEntry(ChatColor.RESET + "  "));
 

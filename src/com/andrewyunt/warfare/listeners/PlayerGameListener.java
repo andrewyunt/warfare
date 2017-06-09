@@ -129,14 +129,16 @@ public class PlayerGameListener extends PlayerListener {
                 if (game.getStage() == Game.Stage.WAITING) {
                     spawnAt = game.getWaitingLocation();
                 } else {
-                    spawnAt = game.getTeamSpawns().get(gamePlayer.getSide());
+                    spawnAt = game.getTeamSpawns().get(gamePlayer.getSide().getSideNum());
                 }
             } else {
                 spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
             }
         }
 
-        event.setSpawnLocation(spawnAt);
+        if (spawnAt != null) {
+            event.setSpawnLocation(spawnAt);
+        }
     }
 
     @EventHandler
