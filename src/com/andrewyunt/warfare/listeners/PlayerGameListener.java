@@ -3,7 +3,6 @@ package com.andrewyunt.warfare.listeners;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Game;
-import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
@@ -39,7 +38,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -121,6 +119,7 @@ public class PlayerGameListener extends PlayerListener {
 
         Game game = Warfare.getInstance().getGame();
         Location spawnAt;
+        boolean rotate = false;
 
         if (gamePlayer.isSpectating()) {
             spawnAt = game.getMapLocation();
@@ -130,10 +129,24 @@ public class PlayerGameListener extends PlayerListener {
                     spawnAt = game.getWaitingLocation();
                 } else {
                     spawnAt = game.getTeamSpawns().get(gamePlayer.getSide().getSideNum());
+                    rotate = true;
                 }
             } else {
                 spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+                rotate = true;
             }
+        }
+
+        if (rotate) {
+            spawnAt.setX(spawnAt.getBlockX() + 0.5);
+            spawnAt.setY(spawnAt.getBlockY() + 1);
+            spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
+
+            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
+            vector.setY(0.5);
+
+            spawnAt.setDirection(vector);
+            spawnAt.setPitch(0);
         }
 
         if (spawnAt != null) {
@@ -196,7 +209,7 @@ public class PlayerGameListener extends PlayerListener {
     @Override
     protected boolean handleHotbarClick(Player player, String itemName) {
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        if (gp.isCaged()) {
+        if (Warfare.getInstance().getGame().getStage() == Game.Stage.WAITING) {
             if (itemName.equals(Utils.formatMessage(StaticConfiguration.CAGE_KIT_SELECTOR_TITLE))) {
                 Warfare.getInstance().getKitSelectorMenu().open(gp);
                 return true;
@@ -249,21 +262,17 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
-        cancelCageInteractions(event, event.getPlayer());
+        cancelWaitingInteractions(event);
     }
 
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {
-        cancelCageInteractions(event, event.getPlayer());
+        cancelWaitingInteractions(event);
     }
 
     @EventHandler
     private void onPlayerDropItem(PlayerDropItemEvent event) {
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
-
-        if (gp.isCaged()) {
-            event.setCancelled(true);
-        }
+        cancelWaitingInteractions(event);
     }
 
     @EventHandler
@@ -364,7 +373,7 @@ public class PlayerGameListener extends PlayerListener {
         event.setDeathMessage(ChatColor.translateAlternateColorCodes('&', msg));
     }
 
-
+    @EventHandler
     private void onSpectate(SpectateEvent event) {
         Player player = event.getGamePlayer().getBukkitPlayer();
         player.setGameMode(GameMode.CREATIVE);
@@ -509,15 +518,13 @@ public class PlayerGameListener extends PlayerListener {
     private void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getInventory().getType() == InventoryType.CHEST) {
             if (!event.getInventory().getTitle().contains("Kit Selector") && !event.getInventory().getTitle().contains("Powerup Selector")) {
-                cancelCageInteractions(event, (Player) event.getPlayer());
+                cancelWaitingInteractions(event);
             }
         }
     }
 
-    private void cancelCageInteractions(Cancellable cancellable, Player player) {
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-
-        if (gp.isCaged()) {
+    private void cancelWaitingInteractions(Cancellable cancellable) {
+        if (Warfare.getInstance().getGame().getStage() == Game.Stage.WAITING) {
             cancellable.setCancelled(true);
         }
     }

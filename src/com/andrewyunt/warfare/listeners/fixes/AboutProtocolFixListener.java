@@ -6,9 +6,9 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 
-public class AboutProtocolFix extends PacketAdapter {
+public class AboutProtocolFixListener extends PacketAdapter {
 
-    public AboutProtocolFix() {
+    public AboutProtocolFixListener() {
         super(Warfare.getInstance(), PacketType.Play.Client.TAB_COMPLETE);
     }
 

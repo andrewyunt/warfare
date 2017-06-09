@@ -31,7 +31,7 @@ public class PowerupSelectorMenu implements Listener {
         Inventory inv = Bukkit.createInventory(null, 27, ChatColor.YELLOW
                 + ChatColor.BOLD.toString() + "Powerup Selector");
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             inv.setItem(i, glassPane);
         }
 
@@ -51,7 +51,7 @@ public class PowerupSelectorMenu implements Listener {
             slot++;
         }
 
-        for (int i = 18; i < 27; i++) {
+        for (int i = 17; i < 27; i++) {
             inv.setItem(i, glassPane);
         }
 

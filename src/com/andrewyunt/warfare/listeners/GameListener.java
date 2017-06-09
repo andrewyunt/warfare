@@ -90,7 +90,9 @@ public class GameListener implements Listener {
         Game game = Warfare.getInstance().getGame();
 
         if (game.getStage() == Game.Stage.WAITING) {
-            gamePlayer.getCage().setPlayer(null);
+            if (gamePlayer.isCaged()) {
+                gamePlayer.getCage().setPlayer(null);
+            }
 
             Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                     String.format("&6%s &ehas left the game!", gamePlayer.getBukkitPlayer().getDisplayName())));

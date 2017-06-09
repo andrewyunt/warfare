@@ -22,10 +22,7 @@ import com.andrewyunt.warfare.configuration.ServerConfiguration;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.listeners.*;
-import com.andrewyunt.warfare.listeners.fixes.ColonCommandFix;
-import com.andrewyunt.warfare.listeners.fixes.InfinityArrowFixListener;
-import com.andrewyunt.warfare.listeners.fixes.PotFixListener;
-import com.andrewyunt.warfare.listeners.fixes.WeatherFixListener;
+import com.andrewyunt.warfare.listeners.fixes.*;
 import com.andrewyunt.warfare.managers.PartyManager;
 import com.andrewyunt.warfare.managers.PlayerManager;
 import com.andrewyunt.warfare.managers.SignManager;
@@ -109,8 +106,9 @@ public class Warfare extends JavaPlugin {
 		pm.registerEvents(powerupSelectorMenu, this);
 		pm.registerEvents(scoreboardHandler, this);
 
-        pm.registerEvents(new ColonCommandFix(), this);
+        pm.registerEvents(new ColonCommandFixListener(), this);
         pm.registerEvents(new WeatherFixListener(), this);
+        pm.registerEvents(new DecayFixListener(), this);
         pm.registerEvents(new ChatListener(), this);
 		
 		if (StaticConfiguration.LOBBY) {
