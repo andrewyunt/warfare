@@ -21,7 +21,7 @@ public class SignManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
             for (SignDisplay.Type type: SignDisplay.Type.values()) {
                 String id = type.getId();
-                Map<Integer, Map.Entry<Object, Integer>> map = Warfare.getInstance().getStorageManager()
+                Map<Integer, Map.Entry<Object, Double>> map = Warfare.getInstance().getStorageManager()
 						.getTopFiveColumn("Players", "name", id);
                 Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> {
                     for (SignDisplay signDisplay: signs.stream().filter(sign -> sign.getType() == type).collect(Collectors.toSet())) {

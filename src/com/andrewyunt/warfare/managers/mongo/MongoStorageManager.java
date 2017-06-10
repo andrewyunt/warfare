@@ -460,18 +460,18 @@ public class MongoStorageManager extends StorageManager{
     }
 
     @Override
-    public Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy) {
+    public Map<Integer, Map.Entry<Object, Double>> getTopFiveColumn(String tableName, String select, String orderBy) {
         Document projection = new Document();
         projection.put(select, true);
         projection.put(orderBy, true);
-        Map<Integer, Map.Entry<Object, Integer>> topFiveMap = new HashMap<>();
+        Map<Integer, Map.Entry<Object, Double>> topFiveMap = new HashMap<>();
         int place = 1;
         for (Document document: playerCollection.find()
                 .sort(new Document(orderBy, -1))
                 .limit(5)
                 .projection(projection)) {
             Object selectField = document.get(select);
-            Integer orderField = document.getInteger(orderBy);
+            Double orderField = document.getDouble(orderBy);
             topFiveMap.put(place, new AbstractMap.SimpleEntry<>(selectField, orderField));
             place++;
         }

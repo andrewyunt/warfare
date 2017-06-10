@@ -72,5 +72,5 @@ public abstract class StorageManager {
     public abstract void loadMap();
 
 	@Deprecated
-	public abstract Map<Integer, Map.Entry<Object, Integer>> getTopFiveColumn(String tableName, String select, String orderBy);
+	public abstract Map<Integer, Map.Entry<Object, Double>> getTopFiveColumn(String tableName, String select, String orderBy);
 }

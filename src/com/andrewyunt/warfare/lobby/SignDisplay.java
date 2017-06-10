@@ -57,9 +57,9 @@ public class SignDisplay {
 		}
 	}
 	
-	public void refresh(Map<Integer, Entry<Object, Integer>> topPlayers) {
+	public void refresh(Map<Integer, Entry<Object, Double>> topPlayers) {
 		if (bukkitSign != null) {
-			Entry<Object, Integer> entry = topPlayers.get(place);
+			Entry<Object, Double> entry = topPlayers.get(place);
 			try {
 				bukkitSign.setLine(0, ChatColor.GOLD + "[" + place + "]");
 				bukkitSign.setLine(1, (String) entry.getKey());
