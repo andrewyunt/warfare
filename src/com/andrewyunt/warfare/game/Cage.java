@@ -61,13 +61,6 @@ public class Cage {
 		if (player == null) {
             return null;
         }
-		
-		// Teleport the player to the location;
-		Chunk chunk = location.getChunk();
-		
-		if (!chunk.isLoaded()) {
-            chunk.load();
-        }
 
 		return location;
 	}

@@ -15,6 +15,7 @@ import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -143,7 +144,19 @@ public class GameListener implements Listener {
 
             // Teleport player to team spawn location if the game is teams
             if (game.isTeams()) {
-                bp.teleport(game.getTeamSpawns().get(player.getSide().getSideNum()));
+                Location loc = game.getTeamSpawns().get(player.getSide().getSideNum());
+
+                loc.setX(loc.getBlockX() + 0.5);
+                loc.setY(loc.getBlockY() + 1);
+                loc.setZ(loc.getBlockZ() + 0.5);
+
+                org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(loc.toVector()).normalize();
+                vector.setY(0.5);
+
+                loc.setDirection(vector);
+                loc.setPitch(0);
+
+                bp.teleport(loc);
             }
 
             // Update player's name color

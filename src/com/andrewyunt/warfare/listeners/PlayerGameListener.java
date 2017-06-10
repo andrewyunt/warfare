@@ -137,19 +137,27 @@ public class PlayerGameListener extends PlayerListener {
             }
         }
 
-        if (rotate) {
-            spawnAt.setX(spawnAt.getBlockX() + 0.5);
-            spawnAt.setY(spawnAt.getBlockY() + 1);
-            spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
-
-            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
-            vector.setY(0.5);
-
-            spawnAt.setDirection(vector);
-            spawnAt.setPitch(0);
-        }
-
         if (spawnAt != null) {
+            spawnAt = spawnAt.clone();
+
+            if (rotate) {
+                spawnAt.setX(spawnAt.getBlockX() + 0.5);
+                spawnAt.setY(spawnAt.getBlockY() + 1);
+                spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
+
+                org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
+                vector.setY(0.5);
+
+                spawnAt.setDirection(vector);
+                spawnAt.setPitch(0);
+            }
+
+            Chunk chunk = spawnAt.getChunk();
+
+            if (!chunk.isLoaded()) {
+                chunk.load();
+            }
+
             event.setSpawnLocation(spawnAt);
         }
     }
