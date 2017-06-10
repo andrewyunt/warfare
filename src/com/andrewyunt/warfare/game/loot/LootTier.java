@@ -48,7 +48,7 @@ public class LootTier {
         PotionMeta frMeta = (PotionMeta) POTION_FIRE_RESISTANCE.getItemMeta();
         PotionEffect frEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 9600, 1, false);
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.RESET + "Fire Resistance 2" + ChatColor.RED + "\u2764");
+        lore.add(ChatColor.RESET + "Fire Resistance 2");
         frMeta.setLore(lore);
         frMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Fire Resistance Potion");
         frMeta.setMainEffect(PotionEffectType.FIRE_RESISTANCE);
@@ -56,9 +56,9 @@ public class LootTier {
         POTION_FIRE_RESISTANCE.setItemMeta(frMeta);
 
         PotionMeta speedPotionMeta = (PotionMeta) POTION_SPEED.getItemMeta();
-        PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1, 2, false);
+        PotionEffect speedEffect = new PotionEffect(PotionEffectType.SPEED, 1800, 2, false);
         lore = new ArrayList<>();
-        lore.add(ChatColor.RESET + "SPEED 2" + ChatColor.RED + "\u2764");
+        lore.add(ChatColor.RESET + "SPEED 2");
         speedPotionMeta.setLore(lore);
         speedPotionMeta.setDisplayName(ChatColor.RESET + "" + ChatColor.DARK_RED + "Speed Potion");
         speedPotionMeta.setMainEffect(PotionEffectType.SPEED);
