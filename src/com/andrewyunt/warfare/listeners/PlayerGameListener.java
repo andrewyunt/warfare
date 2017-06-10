@@ -74,10 +74,14 @@ public class PlayerGameListener extends PlayerListener {
 
         if (game.getStage() == Game.Stage.WAITING || (game.getStage() == Game.Stage.COUNTDOWN && game.getAvailableCages().size() > 0 && !game.isTeams())) {
             Warfare.getInstance().getGame().addPlayer(gp);
+
+            if (game.isTeams()) {
+                player.teleport(game.getWaitingLocation());
+            }
         } else {
             gp.setSpectating(true);
-
             player.teleport(game.getMapLocation());
+            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
         }
 
         // Add powerups to player's purchases if they don't exist
@@ -123,6 +127,8 @@ public class PlayerGameListener extends PlayerListener {
 
         if (gamePlayer.isSpectating()) {
             spawnAt = game.getMapLocation();
+
+            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
         } else {
             if (game.isTeams()) {
                 if (game.getStage() == Game.Stage.WAITING) {
@@ -401,8 +407,6 @@ public class PlayerGameListener extends PlayerListener {
         }
         player.spigot().setCollidesWithEntities(false);
         player.spigot().setViewDistance(4);
-
-        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(event.getGamePlayer()));
     }
 
     @EventHandler
