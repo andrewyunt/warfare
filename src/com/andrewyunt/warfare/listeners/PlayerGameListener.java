@@ -254,6 +254,11 @@ public class PlayerGameListener extends PlayerListener {
                 return;
             }
 
+            if (Warfare.getInstance().getGame().getStage() == Game.Stage.WAITING) {
+                event.setCancelled(true);
+                return;
+            }
+
             if (damagedGP.getSide() == damagerGP.getSide()) {
                 event.setCancelled(true);
                 return;
@@ -570,7 +575,7 @@ public class PlayerGameListener extends PlayerListener {
     }
 
     private void cancelWaitingInteractions(Cancellable cancellable) {
-        if (Warfare.getInstance().getGame().getStage() == Game.Stage.WAITING) {
+        if (Warfare.getInstance().getGame().getStage() == Game.Stage.WAITING || Warfare.getInstance().getGame().getStage() == Game.Stage.COUNTDOWN) {
             cancellable.setCancelled(true);
         }
     }

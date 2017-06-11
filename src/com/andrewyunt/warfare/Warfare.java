@@ -128,7 +128,9 @@ public class Warfare extends JavaPlugin {
 
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> storageManager.updateServerStatusAsync(), 600);
-			
+
+			getCommand("spawn").setExecutor(new SpawnCommand());
+
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new GameListener(), this);
 			pm.registerEvents(new EntityListener(), this);
@@ -147,7 +149,6 @@ public class Warfare extends JavaPlugin {
 		getCommand("lobby").setExecutor(new LobbyCommand());
 		getCommand("bloodtoggle").setExecutor(new BloodToggleCommand());
 		getCommand("setspawn").setExecutor(new SetSpawnCommand());
-		getCommand("spawn").setExecutor(new SpawnCommand());
 		getCommand("coins").setExecutor(new CoinsCommand());
 		getCommand("stats").setExecutor(new StatsCommand());
 
