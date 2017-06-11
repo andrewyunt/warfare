@@ -9,6 +9,7 @@ import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashMap;
@@ -133,10 +134,6 @@ public class Game {
 
 	public void fillChests() {
 		for (LootChest lootChest : lootChests) {
-			if (lootChest.getLocation().getBlock().getType() != Material.CHEST) {
-				continue;
-			}
-
 			lootChest.fill();
 		}
 	}

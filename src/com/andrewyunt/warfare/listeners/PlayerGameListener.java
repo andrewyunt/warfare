@@ -2,6 +2,7 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
@@ -108,6 +109,16 @@ public class PlayerGameListener extends PlayerListener {
     }
 
     @EventHandler
+    public void onPlayerJoinCage(PlayerJoinEvent event){
+        Player player = event.getPlayer();
+        GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
+        Cage cage = gamePlayer.getCage();
+        if(cage != null){
+            player.teleport(cage.getLocation());
+        }
+    }
+
+    @EventHandler
     public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
@@ -129,7 +140,7 @@ public class PlayerGameListener extends PlayerListener {
             spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
 
             spawnAt.setX(spawnAt.getBlockX() + 0.5);
-            spawnAt.setY(spawnAt.getBlockY() + 0.5);
+            spawnAt.setY(spawnAt.getBlockY() + 1);
             spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
 
             org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
