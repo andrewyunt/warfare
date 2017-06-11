@@ -471,7 +471,7 @@ public class MongoStorageManager extends StorageManager{
                 .limit(5)
                 .projection(projection)) {
             Object selectField = document.get(select);
-            Double orderField = document.getDouble(orderBy);
+            Double orderField = document.get(orderBy, Number.class).doubleValue();
             topFiveMap.put(place, new AbstractMap.SimpleEntry<>(selectField, orderField));
             place++;
         }

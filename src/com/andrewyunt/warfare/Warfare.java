@@ -32,6 +32,8 @@ import com.andrewyunt.warfare.menu.*;
 import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
+import com.faithfulmc.framework.BasePlugin;
+import com.faithfulmc.framework.server.FaithfulServer;
 import com.faithfulmc.framework.server.ServerSettings;
 import lombok.Getter;
 import lombok.Setter;
@@ -155,6 +157,10 @@ public class Warfare extends JavaPlugin {
 		ServerSettings.SAVE_ENTRIES = false;
 		ServerSettings.setName(StaticConfiguration.SERVER_NAME);
 		ServerSettings.ACCEPTING_NEW = false;
+
+		Bukkit.getScheduler().runTask(this, () -> {
+            BasePlugin.getPlugin().setFaithfulServer(new FaithfulServer(BasePlugin.getPlugin()));
+        });
 	}
 
 	@Override
