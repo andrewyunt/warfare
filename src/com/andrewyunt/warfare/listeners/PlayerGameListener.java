@@ -35,6 +35,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
@@ -72,16 +73,10 @@ public class PlayerGameListener extends PlayerListener {
         // Add player to the game
         Game game = Warfare.getInstance().getGame();
 
-        if (game.getStage() == Game.Stage.WAITING || (game.getStage() == Game.Stage.COUNTDOWN && game.getAvailableCages().size() > 0 && !game.isTeams())) {
+        if (game.getStage() == Game.Stage.WAITING) {
             Warfare.getInstance().getGame().addPlayer(gp);
-
-            if (game.isTeams()) {
-                player.teleport(game.getWaitingLocation());
-            }
-        } else {
-            gp.setSpectating(true);
-            player.teleport(game.getMapLocation());
-            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
+        } else if (game.getStage() == Game.Stage.COUNTDOWN && game.getAvailableCages().size() > 0 && !game.isTeams()) {
+            Warfare.getInstance().getGame().addPlayer(gp);
         }
 
         // Add powerups to player's purchases if they don't exist
@@ -116,47 +111,31 @@ public class PlayerGameListener extends PlayerListener {
     public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
-
-        if (gamePlayer.isSpectating()) {
-            return;
-        }
-
         Game game = Warfare.getInstance().getGame();
         Location spawnAt;
-        boolean rotate = false;
 
-        if (gamePlayer.isSpectating()) {
-            spawnAt = game.getMapLocation();
-
-            Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
-        } else {
-            if (game.isTeams()) {
-                if (game.getStage() == Game.Stage.WAITING) {
-                    spawnAt = game.getWaitingLocation();
-                } else {
-                    spawnAt = game.getTeamSpawns().get(gamePlayer.getSide().getSideNum());
-                    rotate = true;
-                }
+        if (game.isTeams()) {
+            if (game.getStage() == Game.Stage.WAITING) {
+                spawnAt = game.getWaitingLocation();
             } else {
-                spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
-                rotate = true;
+                spawnAt = game.getMapLocation();
             }
+        } else {
+            spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
+
+            spawnAt.setX(spawnAt.getBlockX() + 0.5);
+            spawnAt.setY(spawnAt.getBlockY() + 1);
+            spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
+
+            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
+            vector.setY(0.5);
+
+            spawnAt.setDirection(vector);
+            spawnAt.setPitch(0);
         }
 
         if (spawnAt != null) {
             spawnAt = spawnAt.clone();
-
-            if (rotate) {
-                spawnAt.setX(spawnAt.getBlockX() + 0.5);
-                spawnAt.setY(spawnAt.getBlockY() + 1);
-                spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
-
-                org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();
-                vector.setY(0.5);
-
-                spawnAt.setDirection(vector);
-                spawnAt.setPitch(0);
-            }
 
             Chunk chunk = spawnAt.getChunk();
 
@@ -166,6 +145,42 @@ public class PlayerGameListener extends PlayerListener {
 
             event.setSpawnLocation(spawnAt);
         }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+        Game game = Warfare.getInstance().getGame();
+        Location respawnAt;
+
+        if (gp.isSpectating()) {
+            respawnAt = game.getMapLocation();
+            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp)), 1L);
+        } else {
+            respawnAt = game.getTeamSpawns().get(gp.getSide().getSideNum());
+
+            respawnAt.setX(respawnAt.getBlockX() + 0.5);
+            respawnAt.setY(respawnAt.getBlockY() + 1);
+            respawnAt.setZ(respawnAt.getBlockZ() + 0.5);
+
+            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(respawnAt.toVector()).normalize();
+            vector.setY(0.5);
+
+            respawnAt.setDirection(vector);
+            respawnAt.setPitch(0);
+        }
+
+        respawnAt = respawnAt.clone();
+
+        Chunk chunk = respawnAt.getChunk();
+
+        if (!chunk.isLoaded()) {
+            chunk.load();
+        }
+
+        event.setRespawnLocation(respawnAt);
     }
 
     @EventHandler
@@ -298,19 +313,23 @@ public class PlayerGameListener extends PlayerListener {
             return;
         }
 
-        player.spigot().respawn();
+        for (ItemStack is : event.getDrops()) {
+            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), is);
+        }
 
+        event.getDrops().clear();
         event.setDroppedExp(0);
+
         gp.setLives(gp.getLives() - 1);
 
         if (gp.getLives() == 0) {
             Warfare.getInstance().getGame().removePlayer(gp);
             gp.setSpectating(true);
-        } else if (Warfare.getInstance().getGame().isTeams()) {
-            player.teleport(Warfare.getInstance().getGame().getTeamSpawns().get(gp.getSide().getSideNum()));
         }
 
         gp.setDeaths(gp.getDeaths() + 1);
+
+        player.spigot().respawn();
 
         // Give last damager coins and kills
         GamePlayer lastDamager = gp.getLastDamager();
