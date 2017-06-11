@@ -61,15 +61,6 @@ public class Game {
 
 	@Getter private final Set<GamePlayer> players = new HashSet<>();
 	@Getter private final Set<Side> sides = new HashSet<>();
-	
-	public Game() {
-		BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
-			if (mapLocation != null) {
-				mapLocation.getWorld().setTime(6000);
-			}
-		}, 20L, 0L);
-	}
 
 	public void setTeams(boolean teams) {
 		this.teams = teams;
