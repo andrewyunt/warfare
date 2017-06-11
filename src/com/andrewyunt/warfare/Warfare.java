@@ -158,6 +158,20 @@ public class Warfare extends JavaPlugin {
 			}
 		}
 
+		for(World world: Bukkit.getWorlds()){
+		    world.setAutoSave(false);
+		    world.setAmbientSpawnLimit(0);
+		    world.setAnimalSpawnLimit(0);
+		    world.setMonsterSpawnLimit(0);
+		    world.setWaterAnimalSpawnLimit(0);
+		    world.setKeepSpawnInMemory(StaticConfiguration.LOBBY);
+		    world.setPVP(!StaticConfiguration.LOBBY);
+		    world.setTicksPerAnimalSpawns(100000);
+            world.setTicksPerMonsterSpawns(100000);
+            world.setTime(0);
+            world.setGameRuleValue("doDaylightCycle", "false");
+        }
+
 		ServerSettings.SAVE_ENTRIES = false;
 		ServerSettings.setName(StaticConfiguration.SERVER_NAME);
 		ServerSettings.ACCEPTING_NEW = false;
