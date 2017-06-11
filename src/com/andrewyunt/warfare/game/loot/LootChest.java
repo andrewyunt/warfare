@@ -39,10 +39,19 @@ public class LootChest {
 		// Add a random item from guaranteed groups for each tier
 		if (tier instanceof LootTier.Tier3) {
 			lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup1Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup1Items()));
 			lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup2Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup3Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup5Items()));
 		} else if (tier instanceof LootTier.Tier2) {
             lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup1Items()));
-        }
+			lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup1Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup4Items()));
+        } else if (tier instanceof LootTier.Tier2) {
+			lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup1Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup1Items()));
+			lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup5Items()));
+		}
 
         // Give players items from two randomly chosen groups in the chest tier
 		for (int i = 1; i < 3; i++) {
@@ -50,10 +59,15 @@ public class LootChest {
 
 			if (tier instanceof LootTier.Tier1) {
 				groupArray.add(((LootTier.Tier1) tier).getGroup1Items());
+				groupArray.add(((LootTier.Tier1) tier).getGroup2Items());
+				groupArray.add(((LootTier.Tier1) tier).getGroup3Items());
+				groupArray.add(((LootTier.Tier1) tier).getGroup4Items());
+				groupArray.add(((LootTier.Tier1) tier).getGroup5Items());
 			} else if (tier instanceof LootTier.Tier2) {
 				groupArray.add(((LootTier.Tier2) tier).getGroup1Items());
 				groupArray.add(((LootTier.Tier2) tier).getGroup2Items());
 				groupArray.add(((LootTier.Tier2) tier).getGroup3Items());
+				groupArray.add(((LootTier.Tier2) tier).getGroup4Items());
 			} else if (tier instanceof LootTier.Tier3) {
 				groupArray.add(((LootTier.Tier3) tier).getGroup1Items());
 				groupArray.add(((LootTier.Tier3) tier).getGroup2Items());
