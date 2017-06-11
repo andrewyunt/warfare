@@ -241,7 +241,7 @@ public class MongoStorageManager extends StorageManager{
             document.put("gameStage", warfare.getGame().getStage().name());
             document.put("mapName", StaticConfiguration.MAP_NAME);
             document.put("onlinePlayers", warfare.getGame().getPlayers().size());
-            document.put("maxPlayers", warfare.getGame().getCages().size());
+            document.put("maxPlayers", warfare.getGame().isTeams() ? warfare.getGame().getTeamSize() * 2 : warfare.getGame().getCages().size());
             //Delete old server objects
             serverCollection.deleteMany(new Document("name", StaticConfiguration.SERVER_NAME));
             //Insert server object with correct ObjectId
