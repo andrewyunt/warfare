@@ -117,6 +117,8 @@ public class Warfare extends JavaPlugin {
 		if (StaticConfiguration.LOBBY) {
 			storageManager.loadSigns();
 
+			getCommand("spawn").setExecutor(new SpawnCommand());
+
 			pm.registerEvents(shopMenu, this);
 			pm.registerEvents(playMenu, this);
 			pm.registerEvents(new PlayerLobbyListener(), this);
@@ -128,8 +130,6 @@ public class Warfare extends JavaPlugin {
 
 			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
 			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> storageManager.updateServerStatusAsync(), 600);
-
-			getCommand("spawn").setExecutor(new SpawnCommand());
 
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new GameListener(), this);
