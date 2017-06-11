@@ -5,9 +5,11 @@ import com.andrewyunt.warfare.game.events.AddPlayerEvent;
 import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
 import com.andrewyunt.warfare.game.events.StageChangeEvent;
 import com.andrewyunt.warfare.game.loot.LootChest;
+import com.andrewyunt.warfare.managers.mongo.MongoStorageManager;
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -16,6 +18,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +62,9 @@ public class Game {
 	@Getter @Setter private int teamSize = 25;
 	@Getter private short countdownTime = 10, gameTime;
 	@Getter private Stage stage = Stage.WAITING;
+	@Getter @Setter private int games = 0;
+	@Getter private final int maxGames = 10 + ThreadLocalRandom.current().nextInt(5);
+	@Getter private final long startupTime = System.currentTimeMillis();
 
 	@Getter private final Set<GamePlayer> players = new HashSet<>();
 	@Getter private final Set<Side> sides = new HashSet<>();
@@ -166,4 +173,24 @@ public class Game {
 			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
 	}
+
+    public boolean needsRestart(){
+	    return games >= maxGames || System.currentTimeMillis() - startupTime > TimeUnit.DAYS.toMillis(7);
+    }
+
+	public void resetGame(){
+        MongoStorageManager mongoStorageManager = (MongoStorageManager) Warfare.getInstance().getStorageManager();
+        mongoStorageManager.setHasInserted(false);
+        mongoStorageManager.setServerId(new ObjectId());
+        games++;
+        for(Cage cage: cages){
+            cage.setPlayer(null);
+            cage.setBlocks();
+        }
+        players.clear();
+        countdownTime = 0;
+        gameTime = 0;
+        edit = false;
+        setStage(Stage.WAITING);
+    }
 }

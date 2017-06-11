@@ -25,6 +25,8 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
@@ -50,8 +52,8 @@ public class MongoStorageManager extends StorageManager{
     private MongoCollection<Document> arenaCollection;
     private MongoCollection<Document> partyServersCollection;
 
-    private boolean hasInserted = false;
-    private ObjectId serverId;
+    @Getter @Setter private boolean hasInserted = false;
+    @Getter @Setter private ObjectId serverId;
 
     @Override
     public boolean connect() {

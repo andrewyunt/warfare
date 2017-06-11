@@ -284,6 +284,11 @@ public class GameListener implements Listener {
         }
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
+        if(Warfare.getInstance().getGame().needsRestart()) {
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
+        }
+        else{
+            scheduler.runTask(Warfare.getInstance(), Warfare.getInstance().getGame()::resetGame);
+        }
     }
 }
