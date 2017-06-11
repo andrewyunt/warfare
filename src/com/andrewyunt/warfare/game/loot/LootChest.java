@@ -87,7 +87,7 @@ public class LootChest {
 				List<ItemStack> groupList = new LinkedList<>(Arrays.asList(groupArray.iterator().next()));
 
 				// The number of items a player should receive from the randomly chosen group
-				int random = -new Random().nextInt(4 - 3 + 1) + 4;
+				int random = -ThreadLocalRandom.current().nextInt(4 - 3 + 1) + 4;
 
 				while (groupList.size() > random) {
 					groupList.remove(groupList.size() - 1);
@@ -96,18 +96,16 @@ public class LootChest {
 				lootItems.addAll(groupList);
 			}
 
+			List<Integer> slots = new ArrayList<>();
+			for(int i = 0; i < inv.getSize(); i ++){
+			    slots.add(i);
+            }
+            Collections.shuffle(slots);
+
 			// Randomize item arrangement in chest inventory
 			for (ItemStack is : lootItems) {
-				int randomSlot;
-
-				do {
-					randomSlot = ThreadLocalRandom.current().nextInt(2, inv.getSize() + 1) - 1;
-
-					if (inv.getItem(randomSlot) == null) {
-						inv.setItem(randomSlot, is.clone());
-						break;
-					}
-				} while (inv.firstEmpty() != -1);
+				int randomSlot = slots.remove(0);
+				inv.setItem(randomSlot, is);
 			}
 
 			// Update chest
