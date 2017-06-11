@@ -67,6 +67,7 @@ public class Warfare extends JavaPlugin {
 	@Getter private TeleporterMenu teleporterMenu;
 	@Getter private ScoreboardHandler scoreboardHandler;
 	@Getter @Setter private Game game;
+	@Getter private boolean isProtocoLib;
 	
 	@Override
 	public void onEnable() {
@@ -78,7 +79,13 @@ public class Warfare extends JavaPlugin {
 
 		instance = this;
 
-		ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter());
+		if(getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+		    isProtocoLib = true;
+            ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter());
+        }
+        else{
+		    isProtocoLib = false;
+        }
 
 		storageManager = new MongoStorageManager();
 		playerManager = new PlayerManager();
@@ -191,7 +198,9 @@ public class Warfare extends JavaPlugin {
 
 		storageManager.disconnect();
 
-		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+        if(isProtocoLib) {
+            ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+        }
 	}
 
 	private void setupPermissions() {
