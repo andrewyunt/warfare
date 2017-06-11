@@ -6,6 +6,7 @@ import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.utilities.Utils;
+import com.faithfulmc.util.BukkitUtils;
 import com.faithfulmc.util.ItemBuilder;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -26,13 +27,14 @@ public class PlayMenu implements Listener, InventoryHolder {
 
     @Getter private final Inventory inventory;
 
-    private final int SIZE = 6 * 9;
-    private final int QUICK_JOIN_SOLO_SLOT = 48;
-    private final int QUICK_JOIN_TEAMS_SLOT = 50;
+    private final int SIZE = 5 * 9;
+    private final int QUICK_JOIN_SOLO_SLOT = 39;
+    private final int QUICK_JOIN_TEAMS_SLOT = 41;
     private final ItemStack QUICK_JOIN_SOLO_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join Solo").lore(ChatColor.GRAY + "Click to join a solo game").build();
     private final ItemStack QUICK_JOIN_TEAMS_ITEM = new ItemBuilder(Material.IRON_SWORD).displayName(ChatColor.GOLD + "Quick Join Teams").lore(ChatColor.GRAY + "Click to join a teams game").build();
     private final ItemStack PANE = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).displayName(" ").build();
 
+    private Map<Integer, Server> serversBySlot = new HashMap<>();
     private List<Server> inventoryServers = new ArrayList<>();
     private List<Server> quickJoinServers = new ArrayList<>();
 
@@ -40,9 +42,9 @@ public class PlayMenu implements Listener, InventoryHolder {
         inventory = Bukkit.createInventory(this, SIZE, ChatColor.YELLOW + "Join Game");
         Bukkit.getScheduler().runTaskTimerAsynchronously(Warfare.getInstance(), () -> {
             List<Server> serverList = Warfare.getInstance().getStorageManager().getServers();
-            inventoryServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.WAITING || server.getGameStage() == Game.Stage.COUNTDOWN).collect(Collectors.toList());
+            inventoryServers = new ArrayList<>(serverList).stream().filter(server -> server.getMaxPlayers() > 0 && server.getGameStage() == Game.Stage.WAITING || server.getGameStage() == Game.Stage.COUNTDOWN).collect(Collectors.toList());
             inventoryServers.sort(Comparator.comparingInt(server -> (server.getGameStage().getOrder() * 1000) - server.getOnlinePlayers()));
-            quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING)
+            quickJoinServers = new ArrayList<>(serverList).stream().filter(server -> server.getMaxPlayers() > 0 &&  server.getGameStage() == Game.Stage.COUNTDOWN || server.getGameStage() == Game.Stage.WAITING)
                     .collect(Collectors.toList());
             quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) - server.getOnlinePlayers()));
             Bukkit.getScheduler().runTask(Warfare.getInstance(), () -> inventory.setContents(getContents()));
@@ -51,6 +53,7 @@ public class PlayMenu implements Listener, InventoryHolder {
 
     public ItemStack[] getContents() {
         ItemStack[] itemStacks = new ItemStack[SIZE];
+        /*
         for (int i = 0; i < 9; i++) {
             itemStacks[i] = PANE.clone();
         }
@@ -61,24 +64,18 @@ public class PlayMenu implements Listener, InventoryHolder {
         for (int i = 45; i < 54; i++) {
             itemStacks[i] = PANE.clone();
         }
+        */
 
-        List<ItemStack> toAdd = new ArrayList<>();
 
+        serversBySlot.clear();
+
+        int i = 0;
         for (Server server: inventoryServers) {
             ItemStack itemStack = createServerItem(server);
-            if (itemStack != null) {
-                toAdd.add(itemStack);
-            }
-        }
-
-        for (int i = 0; i < 45; i++) {
-            ItemStack is = itemStacks[i];
-            if (is == null || is.getType() == Material.AIR) {
-                try {
-                    itemStacks[i] = toAdd.remove(0);
-                } catch (IndexOutOfBoundsException e) {
-                    break;
-                }
+            if(itemStack != null){
+                itemStacks[i] = itemStack;
+                serversBySlot.put(i, server);
+                i++;
             }
         }
 
@@ -92,14 +89,14 @@ public class PlayMenu implements Listener, InventoryHolder {
         Server.ServerType serverType = server.getServerType();
         if ((serverType == Server.ServerType.TEAMS || serverType == Server.ServerType.SOLO) && server.getGameStage().ordinal() < Game.Stage.END.ordinal()) {
             return new ItemBuilder(Material.STAINED_GLASS_PANE, 1, server.getGameStage().getDyeColor().getData())
-                    .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + server.getName())
+                    .displayName(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 30))
                     .lore(
-                            "",
-                            ChatColor.GOLD + "Players: " + ChatColor.GRAY + " " + server.getOnlinePlayers() + "/" + server.getMaxPlayers(),
-                            ChatColor.GOLD + "Server Type: " + ChatColor.GRAY + " " + (serverType == Server.ServerType.TEAMS ? "Teams" : "Solo"),
-                            ChatColor.GOLD + "Map Name: " + ChatColor.GRAY + " " + server.getMapName(),
-                            ChatColor.GOLD + "Stage: " + ChatColor.GRAY + server.getGameStage().getDisplay(),
-                            ""
+                            ChatColor.GOLD + "  Server: " + ChatColor.GRAY + server.getName(),
+                            ChatColor.GOLD + "  Players: " + ChatColor.WHITE + " (" + server.getOnlinePlayers() + "/" + server.getMaxPlayers() + ")",
+                            ChatColor.GOLD + "  Server Type: " + ChatColor.GRAY + " " + (serverType == Server.ServerType.TEAMS ? "Teams" : "Solo"),
+                            ChatColor.GOLD + "  Map Name: " + ChatColor.GRAY + " " + server.getMapName(),
+                            ChatColor.GOLD + "  Stage: " + ChatColor.GRAY + server.getGameStage().getDisplay(),
+                            ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() + BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 30)
                     )
                     .build();
         }
@@ -171,20 +168,13 @@ public class PlayMenu implements Listener, InventoryHolder {
                     }
                     player.sendMessage(ChatColor.RED + "There are currently no available team games");
             } else {
-                int row = slot / 9;
-                int column = slot % 9;
-                if (row > 0 && row < 5) {
-                    if (column > 0 && column < 8) {
-                        int serverID = (row - 1) * 7 + column - 1;
-                        Server server = serverID < inventoryServers.size() ? inventoryServers.get(serverID) : null;
-                        if (server != null) {
-                            playerEntity.sendToServer(server.getName());
-                            if (playerEntity instanceof PartyPlayerEntity) {
-                                Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
-                            }
-                            Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
-                        }
+                Server server = serversBySlot.get(slot);
+                if (server != null) {
+                    playerEntity.sendToServer(server.getName());
+                    if (playerEntity instanceof PartyPlayerEntity) {
+                        Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
                     }
+                    Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
                 }
             }
         }
