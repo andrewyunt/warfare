@@ -46,6 +46,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public class Warfare extends JavaPlugin {
 
@@ -124,7 +125,9 @@ public class Warfare extends JavaPlugin {
 
 			game = new Game();
 			storageManager.loadMap();
-			storageManager.updateServerStatusAsync();
+
+			BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> storageManager.updateServerStatusAsync(), 600);
 			
 			pm.registerEvents(teleporterMenu, this);
 			pm.registerEvents(new GameListener(), this);
