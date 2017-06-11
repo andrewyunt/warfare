@@ -219,6 +219,10 @@ public class GameListener implements Listener {
             winner.setPoints(winner.getPoints() + 30);
             winner.setWins(winner.getWins() + 1);
 
+            if (!winner.getBukkitPlayer().isOnline()) {
+                continue;
+            }
+
             winner.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
                     "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
                     String.valueOf(winCoins)));
