@@ -51,8 +51,7 @@ public class PlayerGameListener extends PlayerListener {
 
         if (Warfare.getInstance().getGame().isEdit()) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The map is currently in edit mode.");
-        } else if ((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && game.getCages().size() != 0
-                && game.getAvailableCages().size() <= 0) {
+        } else if ((game.getStage() == Game.Stage.WAITING || game.getStage() == Game.Stage.COUNTDOWN) && (game.getCages().size() != 0 && game.getAvailableCages().isEmpty())) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Server is currently full");
         } else if (game.getStage() == Game.Stage.RESTART) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "The warfare server server is currently restarting");
