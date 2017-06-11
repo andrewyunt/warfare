@@ -114,6 +114,11 @@ public class PlayerGameListener extends PlayerListener {
         Game game = Warfare.getInstance().getGame();
         Location spawnAt;
 
+        if (game.getStage() != Game.Stage.WAITING && (game.getStage() != Game.Stage.COUNTDOWN && !game.isTeams())) {
+            gamePlayer.setSpectating(true);
+            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer)), 1L);
+        }
         if (game.isTeams()) {
             if (game.getStage() == Game.Stage.WAITING) {
                 spawnAt = game.getWaitingLocation();
@@ -145,42 +150,6 @@ public class PlayerGameListener extends PlayerListener {
 
             event.setSpawnLocation(spawnAt);
         }
-    }
-
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-        Game game = Warfare.getInstance().getGame();
-        Location respawnAt;
-
-        if (gp.isSpectating()) {
-            respawnAt = game.getMapLocation();
-            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp)), 1L);
-        } else {
-            respawnAt = game.getTeamSpawns().get(gp.getSide().getSideNum());
-
-            respawnAt.setX(respawnAt.getBlockX() + 0.5);
-            respawnAt.setY(respawnAt.getBlockY() + 1);
-            respawnAt.setZ(respawnAt.getBlockZ() + 0.5);
-
-            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(respawnAt.toVector()).normalize();
-            vector.setY(0.5);
-
-            respawnAt.setDirection(vector);
-            respawnAt.setPitch(0);
-        }
-
-        respawnAt = respawnAt.clone();
-
-        Chunk chunk = respawnAt.getChunk();
-
-        if (!chunk.isLoaded()) {
-            chunk.load();
-        }
-
-        event.setRespawnLocation(respawnAt);
     }
 
     @EventHandler
@@ -404,6 +373,42 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         event.setDeathMessage(ChatColor.translateAlternateColorCodes('&', msg));
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
+        Game game = Warfare.getInstance().getGame();
+        Location respawnAt;
+
+        if (gp.isSpectating()) {
+            respawnAt = game.getMapLocation();
+            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp)), 1L);
+        } else {
+            respawnAt = game.getTeamSpawns().get(gp.getSide().getSideNum());
+
+            respawnAt.setX(respawnAt.getBlockX() + 0.5);
+            respawnAt.setY(respawnAt.getBlockY() + 1);
+            respawnAt.setZ(respawnAt.getBlockZ() + 0.5);
+
+            org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(respawnAt.toVector()).normalize();
+            vector.setY(0.5);
+
+            respawnAt.setDirection(vector);
+            respawnAt.setPitch(0);
+        }
+
+        respawnAt = respawnAt.clone();
+
+        Chunk chunk = respawnAt.getChunk();
+
+        if (!chunk.isLoaded()) {
+            chunk.load();
+        }
+
+        event.setRespawnLocation(respawnAt);
     }
 
     @EventHandler
