@@ -62,9 +62,6 @@ public class Game {
 	@Getter @Setter private int teamSize = 25;
 	@Getter private short countdownTime = 10, gameTime;
 	@Getter private Stage stage = Stage.WAITING;
-	@Getter @Setter private int games = 0;
-	@Getter private final int maxGames = 10 + ThreadLocalRandom.current().nextInt(5);
-	@Getter private final long startupTime = System.currentTimeMillis();
 
 	@Getter private final Set<GamePlayer> players = new HashSet<>();
 	@Getter private final Set<Side> sides = new HashSet<>();
@@ -173,24 +170,4 @@ public class Game {
 			Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + ChatColor.BOLD.toString() + "All chests have been refilled");
 		}
 	}
-
-    public boolean needsRestart(){
-	    return games >= maxGames || System.currentTimeMillis() - startupTime > TimeUnit.DAYS.toMillis(7);
-    }
-
-	public void resetGame(){
-        MongoStorageManager mongoStorageManager = (MongoStorageManager) Warfare.getInstance().getStorageManager();
-        mongoStorageManager.setHasInserted(false);
-        mongoStorageManager.setServerId(new ObjectId());
-        games++;
-        for(Cage cage: cages){
-            cage.setPlayer(null);
-            cage.setBlocks();
-        }
-        players.clear();
-        countdownTime = 0;
-        gameTime = 0;
-        edit = false;
-        setStage(Stage.WAITING);
-    }
 }

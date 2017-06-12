@@ -11,11 +11,12 @@ import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Purchasable;
+import com.andrewyunt.warfare.utilities.FileUtils;
 import com.andrewyunt.warfare.utilities.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import net.minecraft.server.v1_8_R3.DedicatedServer;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
+import net.minecraft.server.v1_8_R3.Packet;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,6 +24,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -252,15 +255,17 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onRestart(RestartEvent event) {
-        if (!Warfare.getInstance().isEnabled()) {
+        Warfare warfare = Warfare.getInstance();
+
+        if (!warfare.isEnabled()) {
             return;
         }
 
-        for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
+        for (GamePlayer player : warfare.getPlayerManager().getPlayers()) {
             Player bukkitPlayer = player.getBukkitPlayer();
             if (bukkitPlayer != null) {
-                if (!Warfare.getInstance().getGame().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
-                    Party party = Warfare.getInstance().getPartyManager().getParty(player.getUUID());
+                if (!warfare.getGame().isEdit() || !bukkitPlayer.hasPermission("warfare.edit")) {
+                    Party party = warfare.getPartyManager().getParty(player.getUUID());
                     if (party == null) {
                         Utils.sendPlayerToServer(player.getBukkitPlayer(), StaticConfiguration.getNextLobby());
                     } else {
@@ -279,16 +284,32 @@ public class GameListener implements Listener {
             }
         }
 
-        if (Warfare.getInstance().getGame().isEdit()) {
+        if (warfare.getGame().isEdit()) {
             return;
         }
 
-        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-        if(Warfare.getInstance().getGame().needsRestart()) {
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getServer().shutdown(), 100L);
-        }
-        else{
-            scheduler.runTask(Warfare.getInstance(), Warfare.getInstance().getGame()::resetGame);
+        BukkitScheduler scheduler = warfare.getServer().getScheduler();
+        if (warfare.needsRestart()) {
+            scheduler.scheduleSyncDelayedTask(warfare, () -> warfare.getServer().shutdown(), 100L);
+        } else {
+            // Unload and delete the old world
+            warfare.getServer().unloadWorld(warfare.getGame().getMapLocation().getWorld(), false);
+            String worldName = ((DedicatedServer) MinecraftServer.getServer()).propertyManager.getString("level-name", "world");
+            FileUtils.deleteDir(new File(worldName));
+
+            // Copy in and load the new world
+            try {
+                FileUtils.copy(new File(worldName + "-Copy"), new File("temp/" + worldName + "-Copy"));
+                new File("temp/" + worldName + "-Copy").renameTo(new File("temp/" + worldName));
+                FileUtils.copy(new File ("temp/" + worldName), new File(worldName));
+                FileUtils.deleteDir(new File("temp"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            WorldCreator worldCreator = new WorldCreator(worldName);
+            warfare.getServer().createWorld(worldCreator);
+            warfare.setGame(new Game());
+            warfare.getStorageManager().loadMap();
         }
     }
 }

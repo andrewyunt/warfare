@@ -48,6 +48,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
 public class Warfare extends JavaPlugin {
 
 	@Getter private static Warfare instance;
@@ -68,6 +71,10 @@ public class Warfare extends JavaPlugin {
 	@Getter private ScoreboardHandler scoreboardHandler;
 	@Getter @Setter private Game game;
 	@Getter private boolean isProtocoLib;
+	@Getter @Setter private int games = 0;
+
+	@Getter private final int maxGames = 10 + ThreadLocalRandom.current().nextInt(5);
+	@Getter private final long startupTime = System.currentTimeMillis();
 	
 	@Override
 	public void onEnable() {
@@ -222,5 +229,9 @@ public class Warfare extends JavaPlugin {
 		if (economyProvider != null) {
 			economy = economyProvider.getProvider();
 		}
+	}
+
+	public boolean needsRestart() {
+		return games >= maxGames || System.currentTimeMillis() - startupTime > TimeUnit.DAYS.toMillis(7);
 	}
 }
