@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.HashMap;
@@ -65,6 +66,8 @@ public class Game {
 
 	@Getter private final Set<GamePlayer> players = new HashSet<>();
 	@Getter private final Set<Side> sides = new HashSet<>();
+	@Getter private final Map<Location, BlockState> brokenBlocks = new HashMap<>();
+	@Getter private final Set<Block> placedBlocks = new HashSet<>();
 
 	public void setTeams(boolean teams) {
 		this.teams = teams;

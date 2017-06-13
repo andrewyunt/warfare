@@ -11,22 +11,27 @@ import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Purchasable;
-import com.andrewyunt.warfare.utilities.FileUtils;
 import com.andrewyunt.warfare.utilities.Utils;
-import net.minecraft.server.v1_8_R3.DedicatedServer;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
-import net.minecraft.server.v1_8_R3.Packet;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -292,24 +297,75 @@ public class GameListener implements Listener {
         if (warfare.needsRestart()) {
             scheduler.scheduleSyncDelayedTask(warfare, () -> warfare.getServer().shutdown(), 100L);
         } else {
-            // Unload and delete the old world
-            warfare.getServer().unloadWorld(warfare.getGame().getMapLocation().getWorld(), false);
-            String worldName = ((DedicatedServer) MinecraftServer.getServer()).propertyManager.getString("level-name", "world");
-            FileUtils.deleteDir(new File(worldName));
-
-            // Copy in and load the new world
-            try {
-                FileUtils.copy(new File(worldName + "-Copy"), new File("temp/" + worldName + "-Copy"));
-                new File("temp/" + worldName + "-Copy").renameTo(new File("temp/" + worldName));
-                FileUtils.copy(new File ("temp/" + worldName), new File(worldName));
-                FileUtils.deleteDir(new File("temp"));
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (Block block : warfare.getInstance().getGame().getPlacedBlocks()) {
+                block.setType(Material.AIR);
             }
-            WorldCreator worldCreator = new WorldCreator(worldName);
-            warfare.getServer().createWorld(worldCreator);
-            warfare.setGame(new Game());
+
+            for (Map.Entry<Location, BlockState> entry : warfare.getInstance().getGame().getBrokenBlocks().entrySet()) {
+                Location brokenLocation = entry.getKey();
+                BlockState brokenState = entry.getValue();
+                Block block = brokenLocation.getWorld().getBlockAt(brokenLocation);
+                block.setType(entry.getValue().getType());
+                block.setData(brokenState.getRawData());
+                block.getState().setData(brokenState.getData());
+                if (brokenState instanceof Chest && block.getState() instanceof Chest) {
+                    Chest brokenChest = (Chest) brokenState;
+                    Chest placedChest = (Chest) block.getState();
+                    for (ItemStack is : brokenChest.getBlockInventory().getContents()) {
+                        if (is != null) {
+                            placedChest.getBlockInventory().addItem(is);
+                        }
+                    }
+                    placedChest.update();
+                }
+            }
+
+            Warfare.getInstance().getPlayerManager().getPlayers().clear();
+
+            warfare.getInstance().setGame(new Game());
             warfare.getStorageManager().loadMap();
+        }
+    }
+
+    // Block place and block damage listeners
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockBreak(BlockBreakEvent event) {
+        checkBroken(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        checkBroken(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockExplode(EntityExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            checkBroken(event, block);
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockPlace (BlockPlaceEvent event) {
+        checkPlaced(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockFromTo(BlockFromToEvent event) {
+        checkPlaced(event, event.getBlock());
+    }
+
+    private void checkBroken(Cancellable cancellable, Block block) {
+        if (!cancellable.isCancelled()) {
+            if (!Warfare.getInstance().getGame().getPlacedBlocks().contains(block)) {
+                Warfare.getInstance().getGame().getBrokenBlocks().put(block.getLocation(), block.getState());
+            }
+        }
+    }
+
+    private void checkPlaced(Cancellable cancellable, Block block) {
+        if (!cancellable.isCancelled()) {
+            Warfare.getInstance().getGame().getPlacedBlocks().add(block);
         }
     }
 }

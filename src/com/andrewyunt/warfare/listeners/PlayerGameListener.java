@@ -306,14 +306,15 @@ public class PlayerGameListener extends PlayerListener {
 
         gp.setLives(gp.getLives() - 1);
 
+        BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+        scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> player.spigot().respawn(), 20L);
+
         if (gp.getLives() == 0) {
-            Warfare.getInstance().getGame().removePlayer(gp);
             gp.setSpectating(true);
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Warfare.getInstance().getGame().removePlayer(gp), 100L);
         }
 
         gp.setDeaths(gp.getDeaths() + 1);
-
-        player.spigot().respawn();
 
         // Give last damager coins and kills
         GamePlayer lastDamager = gp.getLastDamager();
