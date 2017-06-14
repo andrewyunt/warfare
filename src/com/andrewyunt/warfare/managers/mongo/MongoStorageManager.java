@@ -188,22 +188,23 @@ public class MongoStorageManager extends StorageManager{
                 player.getBoosters().add(new Booster(level, expiry));
             });
         } else {
-            List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(player.getBukkitPlayer()));
+            List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(player.getBukkitPlayer()))
+                    .stream().map(String::toLowerCase).collect(Collectors.toList());
 
-            if (groups.contains("Platinum")) {
-                player.setCoins(1250);
-            } else if (groups.contains("Sapphire")) {
-                player.setCoins(2500);
-            }  else if (groups.contains("Ruby")) {
-                player.setCoins(3750);
-            } else if (groups.contains("Emerald")) {
-                player.setCoins(5000);
-            } else if (groups.contains("Diamond")) {
-                player.setCoins(6250);
-            } else if (groups.contains("Gold")) {
-                player.setCoins(7500);
-            } else if (groups.contains("Iron")) {
+            if (groups.contains("platinum")) {
                 player.setCoins(10000);
+            } else if (groups.contains("sapphire")) {
+                player.setCoins(7500);
+            }  else if (groups.contains("ruby")) {
+                player.setCoins(6250);
+            } else if (groups.contains("emerald")) {
+                player.setCoins(5000);
+            } else if (groups.contains("diamond")) {
+                player.setCoins(3750);
+            } else if (groups.contains("gold")) {
+                player.setCoins(2500);
+            } else if (groups.contains("iron")) {
+                player.setCoins(1250);
             }
         }
         player.setLoaded(true);

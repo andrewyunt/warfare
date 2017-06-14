@@ -42,6 +42,7 @@ import org.bukkit.scoreboard.Objective;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerGameListener extends PlayerListener {
 
@@ -331,21 +332,22 @@ public class PlayerGameListener extends PlayerListener {
         lastDamager.addKill();
 
         int killCoins = 30;
-        List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(lastDamager.getBukkitPlayer()));
+        List<String> groups = Arrays.asList(Warfare.getPermission().getPlayerGroups(lastDamager.getBukkitPlayer()))
+                .stream().map(String::toLowerCase).collect(Collectors.toList());
 
-        if (groups.contains("Platinum")) {
+        if (groups.contains("platinum")) {
             killCoins = 100;
-        } else if (groups.contains("Sapphire")) {
+        } else if (groups.contains("sapphire")) {
             killCoins = 90;
-        }  else if (groups.contains("Ruby")) {
+        }  else if (groups.contains("ruby")) {
             killCoins = 80;
-        } else if (groups.contains("Emerald")) {
+        } else if (groups.contains("emerald")) {
             killCoins = 70;
-        } else if (groups.contains("Diamond")) {
+        } else if (groups.contains("diamond")) {
             killCoins = 60;
-        } else if (groups.contains("Gold")) {
+        } else if (groups.contains("gold")) {
             killCoins = 50;
-        } else if (groups.contains("Iron")) {
+        } else if (groups.contains("iron")) {
             killCoins = 40;
         }
 
