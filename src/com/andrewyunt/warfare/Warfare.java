@@ -73,7 +73,7 @@ public class Warfare extends JavaPlugin {
 	@Getter private boolean isProtocoLib;
 	@Getter @Setter private int games = 0;
 
-	@Getter private final int maxGames = 10 + ThreadLocalRandom.current().nextInt(5);
+	@Getter private final int maxGames = 24 + ThreadLocalRandom.current().nextInt(20);
 	@Getter private final long startupTime = System.currentTimeMillis();
 	
 	@Override

@@ -361,7 +361,6 @@ public class GameListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
-        Bukkit.broadcastMessage(event.getBlock().getType().toString());
         checkPlaced(event, event.getBlock());
     }
 

@@ -159,6 +159,11 @@ public class PlayerGameListener extends PlayerListener {
             }
 
             event.setSpawnLocation(spawnAt);
+
+            final Location finalSpawnAt = spawnAt;
+
+            BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> player.teleport(finalSpawnAt), 5L);
         }
     }
 
