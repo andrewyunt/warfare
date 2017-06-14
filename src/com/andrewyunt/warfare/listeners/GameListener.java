@@ -23,11 +23,10 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 import java.util.Collection;
@@ -346,13 +345,44 @@ public class GameListener implements Listener {
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
-    public void onBlockPlace (BlockPlaceEvent event) {
+    public void onBlockBurn(BlockBurnEvent event) {
+        checkBroken(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockFade(BlockFadeEvent event) {
+        checkBroken(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        checkBroken(event, event.getBlockClicked());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Bukkit.broadcastMessage(event.getBlock().getType().toString());
         checkPlaced(event, event.getBlock());
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onBlockFromTo(BlockFromToEvent event) {
+        checkPlaced(event, event.getToBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockFormEvent(BlockFormEvent event) {
         checkPlaced(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onBlockSpread(BlockSpreadEvent event) {
+        checkPlaced(event, event.getBlock());
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        checkPlaced(event, event.getBlockClicked().getRelative(event.getBlockFace()));
     }
 
     private void checkBroken(Cancellable cancellable, Block block) {
