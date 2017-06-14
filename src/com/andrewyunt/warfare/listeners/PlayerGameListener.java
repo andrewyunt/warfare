@@ -126,11 +126,13 @@ public class PlayerGameListener extends PlayerListener {
         Location spawnAt;
 
         if (game.getStage() != Game.Stage.WAITING && (game.getStage() != Game.Stage.COUNTDOWN && !game.isTeams())) {
-            gamePlayer.setSpectating(true);
+            spawnAt = Warfare.getInstance().getGame().getMapLocation();
             BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer)), 1L);
-        }
-        if (game.isTeams()) {
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> {
+                gamePlayer.setSpectating(true);
+                Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gamePlayer));
+            }, 1L);
+        } else if (game.isTeams()) {
             if (game.getStage() == Game.Stage.WAITING) {
                 spawnAt = game.getWaitingLocation();
             } else {
@@ -436,6 +438,7 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onSpectate(SpectateEvent event) {
+        Bukkit.broadcastMessage("test 1");
         Player player = event.getGamePlayer().getBukkitPlayer();
         player.setGameMode(GameMode.CREATIVE);
         player.setFireTicks(0);

@@ -235,7 +235,6 @@ public class GameListener implements Listener {
                     String.valueOf(winCoins)));
         }
 
-
         Set<GamePlayer> losers = Warfare.getInstance().getPlayerManager().getPlayers().stream()
                 .filter(player -> player.getSide() != winningSide).collect(Collectors.toSet());
 
@@ -320,6 +319,7 @@ public class GameListener implements Listener {
             }
 
             Warfare.getInstance().getPlayerManager().getPlayers().clear();
+            Bukkit.getScheduler().cancelTasks(Warfare.getInstance());
 
             warfare.getInstance().setGame(new Game());
             warfare.getStorageManager().loadMap();
