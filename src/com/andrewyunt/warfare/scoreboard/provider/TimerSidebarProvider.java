@@ -43,6 +43,9 @@ public class TimerSidebarProvider implements SidebarProvider {
             // Display player's level
             lines.add(new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + "Level: ", ChatColor.GRAY + String.valueOf(gp.getLevel())));
 
+            // Display coins needed for next level
+            lines.add(new SidebarEntry(ChatColor.GOLD + "  » ", ChatColor.YELLOW + "Next level: ", ChatColor.GRAY + String.valueOf(gp.getPoints() % 150) + " points"));
+
             // Display player's wins
             lines.add(new SidebarEntry(ChatColor.GOLD + "  » ",ChatColor.YELLOW + "Total Wins: ", ChatColor.GRAY + String.valueOf(gp.getWins())));
 
@@ -108,6 +111,14 @@ public class TimerSidebarProvider implements SidebarProvider {
                 lines.add(new SidebarEntry(ChatColor.RESET + "  " + ChatColor.RESET));
 
                 lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Killstreak: ", ChatColor.GRAY.toString() + gp.getKillStreak()));
+
+                lines.add(new SidebarEntry("     " + ChatColor.RESET));
+
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Coins: " + ChatColor.GRAY, String.valueOf(gp.getCoins())));
+
+                lines.add(new SidebarEntry(ChatColor.YELLOW.toString(), "Level: " + ChatColor.GRAY, String.valueOf(gp.getLevel())));
+
+                lines.add(new SidebarEntry(ChatColor.YELLOW + "Next level: ", ChatColor.GRAY + String.valueOf(gp.getPoints() % 150), " points"));
             }
         }
 
