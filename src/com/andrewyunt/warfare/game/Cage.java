@@ -1,15 +1,16 @@
 package com.andrewyunt.warfare.game;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.minecraft.server.v1_8_R3.BlockStainedGlass;
+import net.minecraft.server.v1_8_R3.BlockStainedGlassPane;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.Wool;
 
 public class Cage {
 	
@@ -53,9 +54,14 @@ public class Cage {
 		setBlocks();
 	}
 
-	public void setBlocks(){
+	public void setBlocks() {
+		int durability = new Random().nextInt(13) + 1;
+		List<DyeColor> colors = Arrays.asList(DyeColor.values());
+		Collections.shuffle(colors);
+		DyeColor color = colors.iterator().next();
 		for (Block block : blocks) {
-			block.setType(Material.GLASS);
+			block.setType(Material.STAINED_GLASS);
+			block.setData(color.getData());
 		}
 	}
 

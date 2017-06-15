@@ -313,6 +313,7 @@ public class PlayerGameListener extends PlayerListener {
         event.setDroppedExp(0);
 
         gp.setLives(gp.getLives() - 1);
+        gp.setKillStreak(0);
 
         BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> player.spigot().respawn(), 20L);
@@ -354,7 +355,7 @@ public class PlayerGameListener extends PlayerListener {
         }
 
         lastDamager.setCoins(lastDamager.getCoins() + killCoins * lastDamager.getBoost());
-        lastDamager.setPoints(lastDamager.getPoints() + 5);
+        lastDamager.addPoints(lastDamager.getPoints() + 5);
         lastDamager.getBukkitPlayer().sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");

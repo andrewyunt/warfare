@@ -18,6 +18,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -28,11 +29,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitScheduler;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameListener implements Listener {
@@ -42,6 +42,8 @@ public class GameListener implements Listener {
         GamePlayer gamePlayer = event.getGamePlayer();
         Player player = gamePlayer.getBukkitPlayer();
         Game game = Warfare.getInstance().getGame();
+
+        gamePlayer.setHasPlayed(true);
 
         // Set player's mode to survival
         player.setGameMode(GameMode.SURVIVAL);
@@ -216,14 +218,11 @@ public class GameListener implements Listener {
         GamePlayer winningPlayer = players.stream().filter(GamePlayer::isInGame).iterator().next();
         final Side winningSide = winningPlayer.getSide();
 
-        Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW + " has won the game!",
-                game.isTeams() ? winningSide.getName() + ChatColor.YELLOW + "'s side" : winningSide.getName()));
-
         for (GamePlayer winner : winningSide.getPlayers()) {
             int winCoins = 1000 * winner.getBoost();
 
             winner.setCoins(winner.getCoins() + winCoins);
-            winner.setPoints(winner.getPoints() + 30);
+            winner.addPoints(winner.getPoints() + 30);
             winner.setWins(winner.getWins() + 1);
 
             if (!winner.getBukkitPlayer().isOnline()) {
@@ -246,7 +245,42 @@ public class GameListener implements Listener {
             player.setGamesPlayed(player.getGamesPlayed() + 1);
         }
 
-        Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "Thanks for playing!");
+        Bukkit.broadcastMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() +
+                "-----------------------------------------------------");
+        Bukkit.broadcastMessage("");
+        Bukkit.getServer().broadcastMessage(String.format(ChatColor.GOLD + ChatColor.BOLD.toString() + "%s" +
+                        ChatColor.YELLOW + ChatColor.BOLD.toString() + " has won the game!",
+                game.isTeams() ? winningSide.getName() + "'s side" : winningSide.getName()));
+        for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
+            if (player.isHasPlayed()) {
+                player.getBukkitPlayer().sendMessage(String.format(ChatColor.YELLOW + "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " points, " +
+                                ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins, and " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " kills total.",
+                        String.valueOf(player.getGamePoints()),
+                        String.valueOf(player.getGameCoins()),
+                        String.valueOf(player.getGameKills())));
+                Bukkit.broadcastMessage("");
+            }
+        }
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Thanks for playing!");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() +
+                "-----------------------------------------------------");
+
+        for (int i = 0; i < new Random().nextInt(30) + 20; i++) {
+            Location randomLoc = Warfare.getInstance().getGame().getMapLocation().clone();
+            randomLoc.setX(randomLoc.getX() + Math.random() * 50 * 2 - 50);
+            randomLoc.setZ(randomLoc.getZ() + Math.random() * 50 * 2 - 50);
+            randomLoc.setY(randomLoc.getY() + (Math.random() * 5 - 1));
+
+            Firework firework = (Firework) randomLoc.getWorld().spawnEntity(randomLoc, EntityType.FIREWORK);
+            FireworkMeta fireworkMeta = firework.getFireworkMeta();
+            FireworkEffect effect = FireworkEffect.builder().withColor(
+                    Arrays.asList(Color.fromRGB((int) Math.random() * 256, (int) Math.random() * 256, (int) Math.random() * 256)))
+                    .with(Arrays.asList(FireworkEffect.Type.values()).iterator().next()).build();
+            fireworkMeta.addEffect(effect);
+            fireworkMeta.setPower(0);
+            firework.setFireworkMeta(fireworkMeta);
+        }
 
         if (Warfare.getInstance().isEnabled()) {
             BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();

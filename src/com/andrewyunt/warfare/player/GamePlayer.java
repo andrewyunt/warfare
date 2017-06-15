@@ -20,14 +20,14 @@ public class GamePlayer {
 	@Getter private String name;
 	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
 	@Getter @Setter private Set<Booster> boosters = new HashSet<>();
-	@Getter private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, killStreak, deaths, energy;
+	@Getter private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, deaths, energy, gameKills, gamePoints, gameCoins;
 	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
 	@Getter private boolean spectating, sentActivate;
 	@Getter @Setter private GamePlayer lastDamager;
 	@Getter private Kit selectedKit;
 	@Getter private Powerup selectedPowerup;
 	@Getter @Setter Side side;
-	@Getter @Setter int lives;
+	@Getter @Setter int lives, killStreak;
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;
@@ -41,11 +41,21 @@ public class GamePlayer {
 		return (int) Math.floor(points / 150);
 	}
 
+	public void addPoints(int points) {
+		gamePoints = gamePoints + points;
+		setPoints(this.points + points);
+	}
+
 	public void setPoints(int points) {
 		if (!Objects.equals(points, this.points)) {
 			this.points = points;
 			update();
 		}
+	}
+
+	public void addCoins(int coins) {
+		this.coins = this.coins + coins;
+		setCoins(this.coins + coins);
 	}
 
 	public void setCoins(int coins) {
@@ -84,7 +94,8 @@ public class GamePlayer {
 	}
 
 	public void addKill() {
-		this.killStreak = killStreak + 1;
+		killStreak++;
+		gameKills++;
 		
 		setKills(kills + 1);
 	}
