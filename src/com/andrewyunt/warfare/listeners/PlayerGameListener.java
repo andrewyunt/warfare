@@ -439,7 +439,6 @@ public class PlayerGameListener extends PlayerListener {
 
     @EventHandler
     private void onSpectate(SpectateEvent event) {
-        Bukkit.broadcastMessage("test 1");
         Player player = event.getGamePlayer().getBukkitPlayer();
         player.setGameMode(GameMode.CREATIVE);
         player.setFireTicks(0);

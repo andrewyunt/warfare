@@ -2,10 +2,13 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
+import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.lobby.*;
+import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.managers.SignManager;
 import com.andrewyunt.warfare.menu.ShopMenu;
 import com.andrewyunt.warfare.player.GamePlayer;
-import com.andrewyunt.warfare.lobby.SignDisplay;
+import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
@@ -22,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerLobbyListener extends PlayerListener {
 
@@ -75,11 +80,17 @@ public class PlayerLobbyListener extends PlayerListener {
         shop.setItemMeta(shopMeta);
         inv.setItem(StaticConfiguration.LOBBY_SHOP_SLOT - 1, shop);
 
-        ItemStack play = new ItemStack(Material.COMPASS, 1);
-        ItemMeta playMeta = play.getItemMeta();
-        playMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE));
-        play.setItemMeta(playMeta);
-        inv.setItem(StaticConfiguration.LOBBY_PLAY_SLOT - 1, play);
+        ItemStack joinSolo = new ItemStack(Material.IRON_SWORD, 1);
+        ItemMeta joinSoloMeta = joinSolo.getItemMeta();
+        joinSoloMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_JOIN_SOLO_TITLE));
+        joinSolo.setItemMeta(joinSoloMeta);
+        inv.setItem(StaticConfiguration.LOBBY_JOIN_SOLO_SLOT - 1, joinSolo);
+
+        ItemStack joinTeams = new ItemStack(Material.DIAMOND_SWORD, 1);
+        ItemMeta joinTeamsMeta = joinTeams.getItemMeta();
+        joinTeamsMeta.setDisplayName(Utils.formatMessage(StaticConfiguration.LOBBY_JOIN_TEAMS_TITLE));
+        joinTeams.setItemMeta(joinTeamsMeta);
+        inv.setItem(StaticConfiguration.LOBBY_JOIN_TEAMS_SLOT - 1, joinTeams);
 
         ItemStack classSelector = new ItemStack(Material.ENDER_CHEST, 1);
         ItemMeta classSelectorMeta = classSelector.getItemMeta();
@@ -99,8 +110,11 @@ public class PlayerLobbyListener extends PlayerListener {
         } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_KIT_SELECTOR_TITLE))) {
             Warfare.getInstance().getKitSelectorMenu().open(gp);
             return true;
-        } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_PLAY_TITLE))) {
-            Warfare.getInstance().getPlayMenu().open(gp);
+        } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_JOIN_SOLO_TITLE))) {
+            quickJoin(player, Server.ServerType.valueOf("SOLO"));
+            return true;
+        } else if (itemName.equals(Utils.formatMessage(StaticConfiguration.LOBBY_JOIN_TEAMS_TITLE))) {
+            quickJoin(player, Server.ServerType.valueOf("TEAMS"));
             return true;
         }
 
@@ -215,5 +229,91 @@ public class PlayerLobbyListener extends PlayerListener {
                 type,
                 place,
                 false);
+    }
+
+    public abstract class PlayersEntity {
+        protected UUID player;
+
+        public PlayersEntity(UUID player) {
+            this.player = player;
+        }
+
+        public Player getPlayer() {
+            return Bukkit.getPlayer(player);
+        }
+
+        public abstract void sendToServer(String servername);
+        public abstract int size();
+    }
+
+    public class SinglePlayerEntity extends PlayersEntity {
+        public SinglePlayerEntity(UUID player) {
+            super(player);
+        }
+
+        public int size() {
+            return 1;
+        }
+
+        public void sendToServer(String servername) {
+            Utils.sendPlayerToServer(Bukkit.getPlayer(player), servername);
+        }
+    }
+
+    public class PartyPlayerEntity extends PlayersEntity {
+        public PartyPlayerEntity(UUID partyLeader) {
+            super(partyLeader);
+        }
+
+        public boolean hasFailed() {
+            return Bukkit.getPlayer(player) == null || Warfare.getInstance().getPartyManager().getParty(player) == null;
+        }
+
+        public int size() {
+            return Warfare.getInstance().getPartyManager().getParty(player).getMembers().size();
+        }
+
+        public void sendToServer(String servername) {
+            Utils.sendPartyToServer(Bukkit.getPlayer(player), Warfare.getInstance().getPartyManager().getParty(player), servername);
+        }
+    }
+
+    private void quickJoin(Player player, Server.ServerType serverType) {
+
+        PlayersEntity playerEntity;
+        Party party = Warfare.getInstance().getPartyManager().getParty(player.getUniqueId());
+        if (party == null) {
+            playerEntity = new SinglePlayerEntity(player.getUniqueId());
+        } else {
+            if (Objects.equals(party.getLeader(), player.getUniqueId())) {
+                playerEntity = new PartyPlayerEntity(player.getUniqueId());
+            } else {
+                player.sendMessage(ChatColor.RED + "You must be the party leader to do this");
+                Bukkit.getScheduler().runTask(Warfare.getInstance(), player::closeInventory);
+                return;
+            }
+        }
+
+        List<com.andrewyunt.warfare.lobby.Server> quickJoinServers = new ArrayList<>(Warfare.getInstance().getStorageManager()
+                .getServers()).stream().filter(server -> server.getMaxPlayers() > 0 && server.getGameStage() == Game.Stage.COUNTDOWN
+                || server.getGameStage() == Game.Stage.WAITING).collect(Collectors.toList());
+        quickJoinServers.sort(Comparator.comparingInt(server -> (server.getGameStage().ordinal() * 1000) - server.getOnlinePlayers()));
+
+        for (com.andrewyunt.warfare.lobby.Server server: quickJoinServers) {
+            if (server.getServerType() == serverType) {
+                int size = playerEntity.size();
+                int amount = size == 1 ? 1 : size + 2;
+                if (server.getOnlinePlayers() + amount <= server.getMaxPlayers()) {
+                    playerEntity.sendToServer(server.getName());
+                    if (playerEntity instanceof PartyPlayerEntity) {
+                        Warfare.getInstance().getStorageManager().setPartyServer(party, server.getName());
+                    }
+                    server.setOnlinePlayers(server.getOnlinePlayers() + size);
+                    return;
+                }
+            }
+        }
+
+        player.sendMessage(ChatColor.RED + "There are currently no available " + serverType.toString().toLowerCase() + "  games");
     }
 }

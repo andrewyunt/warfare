@@ -44,30 +44,8 @@ public class StaticConfiguration {
     public static int LOBBY_SHOP_SLOT = config.getInt("hotbar-items.lobby-items.shop.slot");
     public static String LOBBY_KIT_SELECTOR_TITLE = config.getString("hotbar-items.lobby-items.kit-selector.title");
     public static int LOBBY_KIT_SELECTOR_SLOT = config.getInt("hotbar-items.lobby-items.kit-selector.slot");
-    public static String LOBBY_PLAY_TITLE = config.getString("hotbar-items.lobby-items.play.title");
-    public static int LOBBY_PLAY_SLOT = config.getInt("hotbar-items.lobby-items.play.slot");
-
-    /*
-    // ultimate descriptions
-    public static List<String> DESCRIPTION_HEAL = config.getStringList("description-HEAL");
-    public static List<String> DESCRIPTION_WRATH = config.getStringList("description-WRATH");
-    public static List<String> DESCRIPTION_HELLS_SPAWNING = config.getStringList("description-HELLS_SPAWNING");
-    public static List<String> DESCRIPTION_LEAP = config.getStringList("description-LEAP");
-    public static List<String> DESCRIPTION_SONIC = config.getStringList("description-SONIC");
-    public static List<String> DESCRIPTION_WITHERING = config.getStringList("description-WITHERING");
-    public static List<String> DESCRIPTION_FLAMING_FEET = config.getStringList("description-FLAMING_FEET");
-
-    // skill descriptions
-    public static List<String> DESCRIPTION_RESISTANCE = config.getStringList("description-RESISTANCE");
-    public static List<String> DESCRIPTION_JUGGERNAUT = config.getStringList("description-JUGGERNAUT");
-    public static List<String> DESCRIPTION_CONSUMPTION = config.getStringList("description-CONSUMPTION");
-    public static List<String> DESCRIPTION_HEAD_START = config.getStringList("description-HEAD_START");
-    public static List<String> DESCRIPTION_GUARD = config.getStringList("description-GUARD");
-    public static List<String> DESCRIPTION_FLAME = config.getStringList("description-FLAME");
-
-    // health boost descriptions
-    public static List<String> DESCRIPTION_HEALTH_BOOST_I = config.getStringList("description-HEALTH_BOOST_I");
-    public static List<String> DESCRIPTION_HEALTH_BOOST_II = config.getStringList("description-HEALTH_BOOST_II");
-    public static List<String> DESCRIPTION_HEALTH_BOOST_III = config.getStringList("description-HEALTH_BOOST_III");
-    */
+    public static String LOBBY_JOIN_SOLO_TITLE = config.getString("hotbar-items.lobby-items.join-solo.title");
+    public static int LOBBY_JOIN_SOLO_SLOT = config.getInt("hotbar-items.lobby-items.join-solo.slot");
+    public static String LOBBY_JOIN_TEAMS_TITLE = config.getString("hotbar-items.lobby-items.join-teams.title");
+    public static int LOBBY_JOIN_TEAMS_SLOT = config.getInt("hotbar-items.lobby-items.join-teams.slot");
 }

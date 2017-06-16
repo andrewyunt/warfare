@@ -64,7 +64,6 @@ public class Warfare extends JavaPlugin {
 	@Getter private PartyManager partyManager;
 	@Getter private ServerConfiguration serverConfiguration;
 	@Getter private ShopMenu shopMenu;
-	@Getter private PlayMenu playMenu;
 	@Getter private KitSelectorMenu kitSelectorMenu;
 	@Getter private PowerupSelectorMenu powerupSelectorMenu;
 	@Getter private TeleporterMenu teleporterMenu;
@@ -100,7 +99,6 @@ public class Warfare extends JavaPlugin {
 		partyManager = new PartyManager();
 		serverConfiguration = new ServerConfiguration();
 		shopMenu = new ShopMenu();
-		playMenu = new PlayMenu();
 		kitSelectorMenu = new KitSelectorMenu();
 		powerupSelectorMenu = new PowerupSelectorMenu();
 		teleporterMenu = new TeleporterMenu();
@@ -134,7 +132,6 @@ public class Warfare extends JavaPlugin {
 			getCommand("spawn").setExecutor(new SpawnCommand());
 
 			pm.registerEvents(shopMenu, this);
-			pm.registerEvents(playMenu, this);
 			pm.registerEvents(new PlayerLobbyListener(), this);
 		} else {
 			serverConfiguration.saveDefaultConfig();

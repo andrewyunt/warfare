@@ -16,14 +16,17 @@ lobby-servers:
 hotbar-items:
   lobby-items:
     shop:
-      slot: 3
+      slot: 1
       title: "&a&lShop &7(Right Click)"
+    join-solo:
+      slot: 4
+      title: "&c&lQuick Join Solo &7(Right Click)"
+    join-teams:
+      slot: 6
+      title: "&3&lQuick Join Teams &7(Right Click)"
     kit-selector:
-      slot: 7
+      slot: 9
       title: "&b&lKit Selector &7(Right Click)"
-    play:
-      slot: 5
-      title: "&6&lJoin Game &7(Right Click)"
   spectator-items:
     teleporter:
       slot: 1

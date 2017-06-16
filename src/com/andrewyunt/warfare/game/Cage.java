@@ -4,13 +4,8 @@ import java.util.*;
 
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
-import net.minecraft.server.v1_8_R3.BlockStainedGlass;
-import net.minecraft.server.v1_8_R3.BlockStainedGlassPane;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Colorable;
-import org.bukkit.material.Wool;
 
 public class Cage {
 	
