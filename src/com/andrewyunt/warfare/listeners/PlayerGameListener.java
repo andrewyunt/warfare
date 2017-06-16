@@ -142,7 +142,7 @@ public class PlayerGameListener extends PlayerListener {
             spawnAt = game.getAvailableCages().iterator().next().setPlayer(gamePlayer);
 
             spawnAt.setX(spawnAt.getBlockX() + 0.5);
-            spawnAt.setY(spawnAt.getBlockY() + 1);
+            spawnAt.setY(spawnAt.getBlockY() + 2);
             spawnAt.setZ(spawnAt.getBlockZ() + 0.5);
 
             org.bukkit.util.Vector vector = Warfare.getInstance().getGame().getMapLocation().toVector().subtract(spawnAt.toVector()).normalize();

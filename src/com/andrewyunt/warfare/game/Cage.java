@@ -71,7 +71,7 @@ public class Cage {
             return null;
         }
 
-		return location;
+		return location.clone();
 	}
 	
 	public boolean hasPlayer() {
