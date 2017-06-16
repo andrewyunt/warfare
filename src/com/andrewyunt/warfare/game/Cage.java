@@ -18,7 +18,11 @@ public class Cage {
 	public Cage(String name, Location location) {
 		this.name = name;
 		this.location = location;
-		
+
+		this.location.setX(Math.floor(location.getX()) + 0.5);
+		this.location.setY(Math.ceil(location.getY()));
+		this.location.setZ(Math.floor(location.getZ()) + 0.5);
+
 		World world = location.getWorld();
 		double X = location.getX();
 		double Y = location.getY();
