@@ -2,9 +2,11 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Transaction;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,26 +32,26 @@ public class RemoveCoinsArgument extends CommandArgument {
             return false;
         }
 
-        Player coinsPlayer = Bukkit.getServer().getPlayer(args[1]);
-        GamePlayer coinsGP = Warfare.getInstance().getPlayerManager().getPlayer(coinsPlayer.getName());
+        Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
+            OfflinePlayer coinsPlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
+            int coins;
 
-        int coins;
+            try {
+                coins = Integer.valueOf(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Usage: /warfare removecoins [player] [amount]");
+                return;
+            }
 
-        try {
-            coins = Integer.valueOf(args[2]);
-        } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: /warfare removecoins [player] [amount]");
-            return false;
-        }
+            String transactionMessage = ChatColor.YELLOW + String.format("%s " + ChatColor.YELLOW + "took away " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "of your coins.",
+                    ((Player) sender).getDisplayName(),
+                    String.valueOf(coins));
+            Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(coinsPlayer.getUniqueId(), transactionMessage, - coins, 0));
 
-        coinsGP.setCoins(coinsGP.getCoins() - coins);
-
-        coinsGP.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format("%s " + ChatColor.YELLOW + "took away " + ChatColor.GOLD + "%s " + ChatColor.YELLOW + "of your coins.",
-                ((Player) sender).getDisplayName(),
-                String.valueOf(coins)));
-        sender.sendMessage(ChatColor.YELLOW + String.format("You took " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins from " + ChatColor.GOLD + "%s.",
-                String.valueOf(coins),
-                coinsGP.getBukkitPlayer().getDisplayName()));
+            sender.sendMessage(ChatColor.YELLOW + String.format("You took " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins from " + ChatColor.GOLD + "%s.",
+                    String.valueOf(coins),
+                    coinsPlayer.getName()));
+        });
 
         return true;
     }

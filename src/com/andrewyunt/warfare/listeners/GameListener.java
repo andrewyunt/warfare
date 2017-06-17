@@ -8,6 +8,7 @@ import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.game.events.*;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.player.Transaction;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Purchasable;
@@ -221,17 +222,17 @@ public class GameListener implements Listener {
         for (GamePlayer winner : winningSide.getPlayers()) {
             int winCoins = 1000 * winner.getBoost();
 
-            winner.setCoins(winner.getCoins() + winCoins);
-            winner.addPoints(winner.getPoints() + 30);
+            String transactionMessage = String.format("You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW
+                    + " coins and " + ChatColor.GOLD + "30" + ChatColor.YELLOW + " points for winning the game.",
+                    String.valueOf(winCoins));
+            Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(winner.getUUID(),
+                    transactionMessage, winCoins, 30));
+            
             winner.setWins(winner.getWins() + 1);
 
             if (!winner.getBukkitPlayer().isOnline()) {
                 continue;
             }
-
-            winner.getBukkitPlayer().sendMessage(ChatColor.YELLOW + String.format(
-                    "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins for winning the game.",
-                    String.valueOf(winCoins)));
         }
 
         Set<GamePlayer> losers = Warfare.getInstance().getPlayerManager().getPlayers().stream()

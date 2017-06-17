@@ -30,25 +30,20 @@ import java.util.stream.Collectors;
 
 public class PlayerLobbyListener extends PlayerListener {
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-
-        event.setJoinMessage(null);
-
-        Player player = event.getPlayer();
+    @Override
+    protected void playerJoin(GamePlayer player) {
+        Player bp = player.getBukkitPlayer();
 
         // Send welcome message
-        player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+        bp.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
                 + "-----------------------------------------------------");
-        player.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
-        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: " + ChatColor.GRAY + "ts.faithfulmc.com");
-        player.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: " + ChatColor.GRAY + "www.faithfulmc.com");
-        player.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
+        bp.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
+        bp.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: " + ChatColor.GRAY + "ts.faithfulmc.com");
+        bp.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: " + ChatColor.GRAY + "www.faithfulmc.com");
+        bp.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
                 + "-----------------------------------------------------");
 
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player.getUniqueId());
-
-        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(gp));
+        Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(player));
     }
 
     @EventHandler
@@ -59,13 +54,9 @@ public class PlayerLobbyListener extends PlayerListener {
                 spawnLocation.getY(), spawnLocation.getZ() + 0.5, 90, 0));
     }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-
-        event.setQuitMessage(null);
-
-        Player player = event.getPlayer();
-        Warfare.getInstance().getPlayerManager().deletePlayer(Warfare.getInstance().getPlayerManager().getPlayer(player));
+    @Override
+    protected void playerQuit(GamePlayer player) {
+        Warfare.getInstance().getPlayerManager().deletePlayer(player);
     }
 
     @EventHandler

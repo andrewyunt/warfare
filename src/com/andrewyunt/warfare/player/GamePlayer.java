@@ -41,21 +41,11 @@ public class GamePlayer {
 		return (int) Math.floor(points / 150);
 	}
 
-	public void addPoints(int points) {
-		gamePoints = gamePoints + points;
-		setPoints(this.points + points);
-	}
-
 	public void setPoints(int points) {
 		if (!Objects.equals(points, this.points)) {
 			this.points = points;
 			update();
 		}
-	}
-
-	public void addCoins(int coins) {
-		this.coins = this.coins + coins;
-		setCoins(this.coins + coins);
 	}
 
 	public void setCoins(int coins) {

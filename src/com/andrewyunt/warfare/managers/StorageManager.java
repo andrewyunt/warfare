@@ -5,6 +5,7 @@ import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.player.Transaction;
 import org.bukkit.Bukkit;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,10 @@ public abstract class StorageManager {
 
     public abstract void loadMap();
 
-	@Deprecated
+    public abstract void savePendingTransaction(Transaction transaction);
+
+    public abstract void resolvePendingTransactions(GamePlayer player);
+
+    @Deprecated
 	public abstract Map<Integer, Map.Entry<Object, Double>> getTopFiveColumn(String tableName, String select, String orderBy);
 }

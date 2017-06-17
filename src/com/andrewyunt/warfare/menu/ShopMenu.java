@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Transaction;
 import com.andrewyunt.warfare.purchases.HealthBoost;
 import com.andrewyunt.warfare.purchases.Perk;
 import com.andrewyunt.warfare.purchases.Powerup;
@@ -280,12 +281,12 @@ public class ShopMenu implements Listener {
 				return;
 			}
 
-			gp.setCoins(gp.getCoins() - purchasable.getPrice(level));
+			String transactionMessage = String.format(ChatColor.YELLOW + "You purchased " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " for "
+					+ ChatColor.GOLD + "%s coins" + ChatColor.YELLOW + ".", name, purchasable.getPrice(level));
+			Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(player.getUniqueId(), transactionMessage, - purchasable.getPrice(level), 0));
+
 			gp.getPurchases().put(purchasable, level);
 			gp.update();
-			
-			player.sendMessage(String.format(ChatColor.YELLOW + "You purchased " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " for "
-					+ ChatColor.GOLD + "%s coins" + ChatColor.YELLOW + ".", name, purchasable.getPrice(level)));
 			
 			open(type, gp);
 		}

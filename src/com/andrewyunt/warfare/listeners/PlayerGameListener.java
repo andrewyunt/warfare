@@ -7,6 +7,7 @@ import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
+import com.andrewyunt.warfare.player.Transaction;
 import com.andrewyunt.warfare.player.events.SpectateEvent;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
 import com.andrewyunt.warfare.purchases.Powerup;
@@ -59,53 +60,26 @@ public class PlayerGameListener extends PlayerListener {
         }
     }
 
-    @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent event) {
-        event.setJoinMessage(null);
-
-        Player player = event.getPlayer();
-
+    @Override
+    protected void playerJoin(GamePlayer player) {
         // Update server status
         Warfare.getInstance().getStorageManager().updateServerStatusAsync();
-
-        // Create GamePlayer object
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
 
         // Add player to the game
         Game game = Warfare.getInstance().getGame();
 
         if (game.getStage() == Game.Stage.WAITING) {
-            Warfare.getInstance().getGame().addPlayer(gp);
+            Warfare.getInstance().getGame().addPlayer(player);
         } else if (game.getStage() == Game.Stage.COUNTDOWN && game.getAvailableCages().size() > 0 && !game.isTeams()) {
-            Warfare.getInstance().getGame().addPlayer(gp);
-        }
-
-        // Add powerups to player's purchases if they don't exist
-        for (Powerup powerup : Powerup.values()) {
-            if (!gp.getPurchases().containsKey(powerup)) {
-                gp.getPurchases().put(powerup, -1);
-            }
+            Warfare.getInstance().getGame().addPlayer(player);
         }
 
         // Register health objective for game servers
         if (!StaticConfiguration.LOBBY) {
-			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(gp.getUUID()).getScoreboard()
+			Objective healthObjective = Warfare.getInstance().getScoreboardHandler().getPlayerBoard(player.getUUID()).getScoreboard()
 					.registerNewObjective(ChatColor.RED + "❤", "health");
 			healthObjective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 		}
-
-		// Check player's boosters periodically
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Warfare.getInstance(), () -> {
-            Set<Booster> toRemove = new HashSet<>();
-            for (Booster booster : gp.getBoosters()) {
-                if (LocalDateTime.now().isAfter(booster.getExpiry())) {
-                    toRemove.add(booster);
-                }
-            }
-            for (Booster booster : toRemove) {
-                gp.getBoosters().remove(booster);
-            }
-        }, 1200L, 0L);
     }
 
     @EventHandler
@@ -170,14 +144,9 @@ public class PlayerGameListener extends PlayerListener {
         }
     }
 
-    @EventHandler
-    private void onPlayerQuit(PlayerQuitEvent event) {
-        event.setQuitMessage(null);
-
-        Player player = event.getPlayer();
-        GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(player);
-
-        Warfare.getInstance().getGame().removePlayer(gp);
+    @Override
+    protected void playerQuit(GamePlayer player) {
+        Warfare.getInstance().getGame().removePlayer(player);
         Warfare.getInstance().getStorageManager().updateServerStatusAsync();
     }
 
@@ -354,11 +323,11 @@ public class PlayerGameListener extends PlayerListener {
             killCoins = 40;
         }
 
-        lastDamager.setCoins(lastDamager.getCoins() + killCoins * lastDamager.getBoost());
-        lastDamager.addPoints(lastDamager.getPoints() + 5);
-        lastDamager.getBukkitPlayer().sendMessage(ChatColor.YELLOW + "You received " + ChatColor.GOLD
+        String transactionMessage = ChatColor.YELLOW + "You received " + ChatColor.GOLD
                 + ChatColor.BOLD.toString() + killCoins + ChatColor.YELLOW + " coins and " + ChatColor.GOLD
-                + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points");
+                + ChatColor.BOLD.toString() + 5 + ChatColor.YELLOW + " points";
+        Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(lastDamager.getUUID(),
+                transactionMessage, killCoins * lastDamager.getBoost(), 5));
     }
 
     @EventHandler

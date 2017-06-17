@@ -8,18 +8,13 @@ import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.managers.StorageManager;
-import com.andrewyunt.warfare.player.Booster;
-import com.andrewyunt.warfare.player.GamePlayer;
-import com.andrewyunt.warfare.player.Kit;
-import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.player.*;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.purchases.PurchaseType;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.mongodb.CursorType;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -30,6 +25,7 @@ import lombok.Setter;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -51,6 +47,7 @@ public class MongoStorageManager extends StorageManager{
     private MongoCollection<Document> signCollection;
     private MongoCollection<Document> arenaCollection;
     private MongoCollection<Document> partyServersCollection;
+    private MongoCollection<Document> pendingTransactionsCollection;
 
     @Getter @Setter private boolean hasInserted = false;
     @Getter @Setter private ObjectId serverId;
@@ -96,6 +93,7 @@ public class MongoStorageManager extends StorageManager{
         signCollection = mongoDatabase.getCollection("signs");
         arenaCollection = mongoDatabase.getCollection("arenas");
         partyServersCollection = mongoDatabase.getCollection("partyservers");
+        pendingTransactionsCollection = mongoDatabase.getCollection("pendingtransactions");
 
         if (StaticConfiguration.LOBBY) {
             Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), this::getPartyServers);
@@ -459,6 +457,38 @@ public class MongoStorageManager extends StorageManager{
                 return new LootChest(deserializeLocation(location), (byte) tier);
                     }).collect(Collectors.toSet())
             );
+        }
+    }
+
+    @Override
+    public void savePendingTransaction(Transaction transaction) {
+        Document document = new Document();
+        document.put("player", transaction.getUUID());
+        document.put("message", transaction.getMessage());
+        document.put("coins", transaction.getCoins());
+        document.put("points", transaction.getPoints());
+        //TODO: Better saving method
+        pendingTransactionsCollection.insertOne(document);
+    }
+
+    @Override
+    public void resolvePendingTransactions(GamePlayer player) {
+        Document query = new Document("player", player.getUUID());
+        Document projection = new Document();
+        MongoCursor<Document> cursor = pendingTransactionsCollection.find(query).projection(projection)
+                .cursorType(CursorType.NonTailable).iterator();
+
+        try {
+            while (cursor.hasNext()) {
+                Document document = cursor.next();
+                player.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', document.getString("message")));
+                player.setCoins(player.getCoins() + document.getInteger("coins"));
+                player.setPoints(player.getPoints() + document.getInteger("points"));
+
+                pendingTransactionsCollection.deleteOne(document);
+            }
+        } catch (IllegalStateException ex) {
+            warfare.getLogger().log(Level.INFO, "Cursor Thread closing ");
         }
     }
 

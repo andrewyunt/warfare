@@ -2,9 +2,11 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Transaction;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,28 +32,28 @@ public class SetLevelArgument extends CommandArgument {
             return false;
         }
 
-        Player targetPlayer = Bukkit.getServer().getPlayer(args[1]);
-        GamePlayer targetGP = Warfare.getInstance().getPlayerManager().getPlayer(targetPlayer);
+        Bukkit.getScheduler().runTaskAsynchronously(Warfare.getInstance(), () -> {
+            OfflinePlayer targetPlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
+            int level;
 
-        int level;
+            try {
+                level = Integer.valueOf(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Usage: /warfare setlevel [player] [amount]");
+                return;
+            }
 
-        try {
-            level = Integer.valueOf(args[2]);
-        } catch (NumberFormatException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: /warfare setlevel [player] [amount]");
-            return false;
-        }
+            String transactionMessage = String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW
+                            + " set your level to " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + ".",
+                    ((Player) sender).getDisplayName(),
+                    String.valueOf(level));
+            Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(targetPlayer.getUniqueId(), transactionMessage, 0, level * 150));
 
-        targetGP.setPoints(level * 150);
-
-        targetGP.getBukkitPlayer().sendMessage(String.format(ChatColor.GOLD + "%s" + ChatColor.YELLOW
-                        + " set your level to " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + ".",
-                ((Player) sender).getDisplayName(),
-                String.valueOf(level)));
-        sender.sendMessage(ChatColor.YELLOW + String.format("You set " + ChatColor.GOLD + "%s's "
-                        + ChatColor.YELLOW + "level to " + ChatColor.GOLD + "%s.",
-                targetGP.getBukkitPlayer().getDisplayName(),
-                String.valueOf(level)));
+            sender.sendMessage(ChatColor.YELLOW + String.format("You set " + ChatColor.GOLD + "%s's "
+                            + ChatColor.YELLOW + "level to " + ChatColor.GOLD + "%s.",
+                    targetPlayer.getName(),
+                    String.valueOf(level)));
+        });
 
         return true;
     }
