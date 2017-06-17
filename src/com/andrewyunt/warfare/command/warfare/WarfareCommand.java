@@ -21,7 +21,7 @@ public class WarfareCommand extends ArgumentExecutor {
 		addArgument(new AddCoinsArgument());
 		addArgument(new RemoveCoinsArgument());
 		addArgument(new SetLevelArgument());
-		addArgument(new SetBoostArgument());
+		addArgument(new AddBoosterArgument());
 
 		if (!StaticConfiguration.LOBBY) {
 			addArgument(new AddChestArgument());
