@@ -57,6 +57,8 @@ public abstract class PlayerListener implements Listener {
                 warfare.getStorageManager().resolvePendingTransactions(gp), 0L, 20L);
 
         playerTasks.put(gp, new AbstractMap.SimpleEntry<>(boosterTask, pendingTransactionsTask));
+
+        playerJoin(gp);
     }
 
     @EventHandler
