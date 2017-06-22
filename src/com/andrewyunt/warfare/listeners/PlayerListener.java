@@ -62,7 +62,7 @@ public abstract class PlayerListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
