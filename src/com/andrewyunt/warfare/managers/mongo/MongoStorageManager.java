@@ -470,7 +470,6 @@ public class MongoStorageManager extends StorageManager{
             if (islands != null) {
                 game.setIslands(islands.stream()
                         .map(island -> {
-                            Bukkit.broadcastMessage("test");
                             String name = island.getString("name");
                             return new Island(name);
                         }).collect(Collectors.toSet())
