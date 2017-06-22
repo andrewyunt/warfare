@@ -2,6 +2,8 @@ package com.andrewyunt.warfare.game.loot;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.andrewyunt.warfare.Warfare;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -14,8 +16,9 @@ public class LootChest {
 
 	@Getter private Location location;
 	@Getter private LootTier tier;
+	@Getter private Island island;
 
-	public LootChest(Location location, byte tier) {
+	public LootChest(Location location, byte tier, Island island) {
 		this.location = location;
 
 		if (tier == 1) {
@@ -24,6 +27,12 @@ public class LootChest {
 			this.tier = new LootTier.Tier2();
 		} else if (tier == 3) {
 			this.tier = new LootTier.Tier3();
+		}
+
+		this.island = island;
+
+		if (island != null) {
+			island.addChest(this);
 		}
 	}
 	
@@ -36,26 +45,35 @@ public class LootChest {
 	public void fill() {
 		Block block = location.getBlock();
 		BlockState blockState = block.getState();
-		if(blockState instanceof Chest) {
+
+		if (blockState instanceof Chest) {
 			Chest chest = (Chest) blockState;
 			Inventory inv = chest.getBlockInventory();
 			List<ItemStack> lootItems = new ArrayList<>();
 
-			// Add a random item from guaranteed groups for each tier
+			// Add a random item from guaranteed groups for each tier and give island items
 			if (tier instanceof LootTier.Tier3) {
 				lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup1Items()));
 				lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup1Items()));
 				lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup2Items()));
 				lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup3Items()));
 				lootItems.add(getRandomLootItem(((LootTier.Tier3) tier).getGroup5Items()));
+
+				for (LootType type : island.getChestItems().get(this)) {
+					lootItems.add(((LootTier.Tier3) tier).getItem(type));
+				}
 			} else if (tier instanceof LootTier.Tier2) {
 				lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup1Items()));
-				lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup1Items()));
-				lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup4Items()));
-			} else if (tier instanceof LootTier.Tier2) {
+				lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup2Items()));
+				lootItems.add(getRandomLootItem(((LootTier.Tier2) tier).getGroup3Items()));
+
+				for (LootType type : island.getChestItems().get(this)) {
+					lootItems.add(((LootTier.Tier2) tier).getItem(type));
+				}
+			} else if (tier instanceof LootTier.Tier1) {
 				lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup1Items()));
-				lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup1Items()));
-				lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup5Items()));
+				lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup2Items()));
+				lootItems.add(getRandomLootItem(((LootTier.Tier1) tier).getGroup3Items()));
 			}
 
 			// Give players items from two randomly chosen groups in the chest tier
@@ -72,7 +90,6 @@ public class LootChest {
 					groupArray.add(((LootTier.Tier2) tier).getGroup1Items());
 					groupArray.add(((LootTier.Tier2) tier).getGroup2Items());
 					groupArray.add(((LootTier.Tier2) tier).getGroup3Items());
-					groupArray.add(((LootTier.Tier2) tier).getGroup4Items());
 				} else if (tier instanceof LootTier.Tier3) {
 					groupArray.add(((LootTier.Tier3) tier).getGroup1Items());
 					groupArray.add(((LootTier.Tier3) tier).getGroup2Items());
@@ -97,7 +114,7 @@ public class LootChest {
 			}
 
 			List<Integer> slots = new ArrayList<>();
-			for(int i = 0; i < inv.getSize(); i ++){
+			for (int i = 0; i < inv.getSize(); i ++){
 			    slots.add(i);
             }
             Collections.shuffle(slots);

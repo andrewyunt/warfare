@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.game.events.AddPlayerEvent;
 import com.andrewyunt.warfare.game.events.RemovePlayerEvent;
 import com.andrewyunt.warfare.game.events.StageChangeEvent;
+import com.andrewyunt.warfare.game.loot.Island;
 import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
@@ -50,6 +51,7 @@ public class Game {
         }
     }
 
+	@Getter @Setter private Set<Island> islands = new HashSet<>();
 	@Getter @Setter private Set<LootChest> lootChests = new HashSet<>();
 	@Getter @Setter private Set<Cage> cages = new HashSet<>();
 	@Getter @Setter private Map<Integer, Location> teamSpawns = new HashMap<>();
@@ -116,6 +118,18 @@ public class Game {
 		}
 
 		return cage;
+	}
+
+	public Island getIsland(String name) {
+		Island island = null;
+
+		for (Island itrIsland : islands) {
+			if (itrIsland.getName().equals(name)) {
+				island = itrIsland;
+			}
+		}
+
+		return island;
 	}
 	
 	public void setStage(Stage stage) {

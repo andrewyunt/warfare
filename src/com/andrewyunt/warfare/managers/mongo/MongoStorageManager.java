@@ -4,6 +4,7 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.game.loot.Island;
 import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
@@ -375,7 +376,9 @@ public class MongoStorageManager extends StorageManager{
         Game game = warfare.getGame();
         document.put("name", StaticConfiguration.MAP_NAME);
         document.put("teams", game.isTeams());
-        document.put("teamSize", game.getTeamSize());
+        if (game.isTeams()) {
+            document.put("teamSize", game.getTeamSize());
+        }
         if (game.getMapLocation() != null) {
             document.put("mapLocation", serializeLocation(game.getMapLocation()));
         }
@@ -397,12 +400,24 @@ public class MongoStorageManager extends StorageManager{
                     return cageDocument;
                 })
                 .collect(Collectors.toSet()));
+        document.put("islands", game.getIslands()
+                .stream()
+                .map(island -> {
+                    Document islandDocument = new Document();
+                    islandDocument.put("name", island.getName());
+                    return islandDocument;
+                })
+                .collect(Collectors.toSet())
+        );
         document.put("chests", game.getLootChests()
                 .stream()
                 .map(chest -> {
                     Document chestDocument = new Document();
                     chestDocument.put("tier", (int) chest.getTier().getNum());
                     chestDocument.put("location", serializeLocation(chest.getLocation()));
+                    if (chest.getIsland() != null) {
+                        chestDocument.put("island", chest.getIsland().getName());
+                    }
                     return chestDocument;
                 })
                 .collect(Collectors.toSet())
@@ -431,13 +446,15 @@ public class MongoStorageManager extends StorageManager{
             if (mapLocation != null) {
                 game.setMapLocation(deserializeLocation(mapLocation));
             }
-            List<Document> teamSpawns = ((List<Document>) document.get("teamSpawns", List.class));
-            if (teamSpawns != null) {
-                teamSpawns.forEach(spawn -> {
-                    int team = spawn.getInteger("team");
-                    Location location = deserializeLocation(spawn.get("location", Document.class));
-                    game.getTeamSpawns().put(team, location);
-                });
+            if (game.isTeams()) {
+                List<Document> teamSpawns = ((List<Document>) document.get("teamSpawns", List.class));
+                if (teamSpawns != null) {
+                    teamSpawns.forEach(spawn -> {
+                        int team = spawn.getInteger("team");
+                        Location location = deserializeLocation(spawn.get("location", Document.class));
+                        game.getTeamSpawns().put(team, location);
+                    });
+                }
             }
             List<Document> cages = document.get("cages", List.class);
             if (cages != null) {
@@ -449,14 +466,28 @@ public class MongoStorageManager extends StorageManager{
                         }).collect(Collectors.toSet())
                 );
             }
+            List<Document> islands = document.get("islands", List.class);
+            if (islands != null) {
+                game.setIslands(islands.stream()
+                        .map(island -> {
+                            Bukkit.broadcastMessage("test");
+                            String name = island.getString("name");
+                            return new Island(name);
+                        }).collect(Collectors.toSet())
+                );
+            }
             List<Document> chests = document.get("chests", List.class);
             game.setLootChests(chests.stream()
                     .map(chest -> {
                 int tier = chest.getInteger("tier");
                 Document location = chest.get("location", Document.class);
-                return new LootChest(deserializeLocation(location), (byte) tier);
+                String island = chest.getString("island");
+                return new LootChest(deserializeLocation(location), (byte) tier, game.getIsland(island));
                     }).collect(Collectors.toSet())
             );
+        }
+        for (Island island : game.getIslands()) {
+            island.randomizeItems();
         }
     }
 

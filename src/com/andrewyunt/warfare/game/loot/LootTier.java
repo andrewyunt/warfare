@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LootTier {
+public abstract class LootTier {
 
     public byte getNum() {
         if (this instanceof Tier1) {
@@ -110,22 +110,24 @@ public class LootTier {
     }
 
     public static class Tier2 extends LootTier {
-        @Getter
-        private ItemStack[] group1Items = new ItemStack[] {
-                new ItemStack(Material.IRON_HELMET, 1),
-                new ItemStack(Material.IRON_CHESTPLATE, 1),
-                new ItemStack(Material.IRON_LEGGINGS, 1),
-                new ItemStack(Material.IRON_BOOTS, 1),
-                new ItemStack(Material.DIAMOND_HELMET, 1),
-                new ItemStack(Material.DIAMOND_LEGGINGS, 1),
-                new ItemStack(Material.LEATHER_HELMET, 1),
-                new ItemStack(Material.LEATHER_CHESTPLATE, 1),
-                new ItemStack(Material.LEATHER_LEGGINGS, 1),
-                new ItemStack(Material.LEATHER_BOOTS, 1)
-        };
+        public ItemStack getItem(LootType type) {
+            double random = Math.random();
+
+            if (type == LootType.HELMET) {
+                return new ItemStack(random > .5 ? Material.IRON_HELMET : Material.CHAINMAIL_HELMET);
+            } else if (type == LootType.CHESTPLATE) {
+                return new ItemStack(random > .5 ? Material.IRON_CHESTPLATE : Material.CHAINMAIL_CHESTPLATE);
+            } else if (type == LootType.LEGGINGS) {
+                return new ItemStack(random > .5 ? Material.IRON_LEGGINGS : Material.CHAINMAIL_LEGGINGS);
+            } else if (type == LootType.BOOTS) {
+                return new ItemStack(random > .5 ? Material.IRON_BOOTS : Material.CHAINMAIL_BOOTS);
+            }
+
+            return null;
+        }
 
         @Getter
-        private ItemStack[] group2Items = new ItemStack[] {
+        private ItemStack[] group1Items = new ItemStack[] {
                 new ItemStack(Material.FISHING_ROD, 1),
                 new ItemStack(Material.SNOW_BALL, 16),
                 new ItemStack(Material.ENCHANTMENT_TABLE, 1),
@@ -136,13 +138,13 @@ public class LootTier {
         };
 
         @Getter
-        private ItemStack[] group3Items = new ItemStack[] {
+        private ItemStack[] group2Items = new ItemStack[] {
                 new ItemStack(Material.WOOD, 32),
                 new ItemStack(Material.COBBLESTONE, 64)
         };
 
         @Getter
-        private ItemStack[] group4Items = new ItemStack[] {
+        private ItemStack[] group3Items = new ItemStack[] {
                 new ItemStack(Material.IRON_SWORD, 1),
                 BOW,
                 POTION_FIRE_RESISTANCE,
@@ -151,20 +153,24 @@ public class LootTier {
     }
 
     public static class Tier3 extends LootTier {
-        @Getter
-        private ItemStack[] group1Items = new ItemStack[] {
-                new ItemStack(Material.IRON_HELMET, 1),
-                new ItemStack(Material.IRON_CHESTPLATE, 1),
-                new ItemStack(Material.IRON_LEGGINGS, 1),
-                new ItemStack(Material.IRON_BOOTS, 1),
-                new ItemStack(Material.LEATHER_HELMET, 1),
-                new ItemStack(Material.LEATHER_CHESTPLATE, 1),
-                new ItemStack(Material.LEATHER_LEGGINGS, 1),
-                new ItemStack(Material.LEATHER_BOOTS, 1)
-        };
+        public ItemStack getItem(LootType type) {
+            double random = Math.random();
+
+            if (type == LootType.HELMET) {
+                return new ItemStack(random > .4 ? Material.LEATHER_HELMET : Material.GOLD_HELMET);
+            } else if (type == LootType.CHESTPLATE) {
+                return new ItemStack(random > .4 ? Material.LEATHER_CHESTPLATE : Material.GOLD_CHESTPLATE);
+            } else if (type == LootType.LEGGINGS) {
+                return new ItemStack(random > .4 ? Material.LEATHER_LEGGINGS : Material.GOLD_LEGGINGS);
+            } else if (type == LootType.BOOTS) {
+                return new ItemStack(random > .4 ? Material.LEATHER_BOOTS : Material.GOLD_BOOTS);
+            }
+
+            return null;
+        }
 
         @Getter
-        private ItemStack[] group2Items = new ItemStack[] {
+        private ItemStack[] group1Items = new ItemStack[] {
                 new ItemStack(Material.WOOD, 16),
                 new ItemStack(Material.WOOD, 32),
                 new ItemStack(Material.COBBLESTONE, 16),
@@ -172,7 +178,7 @@ public class LootTier {
         };
 
         @Getter
-        private ItemStack[] group3Items = new ItemStack[] {
+        private ItemStack[] group2Items = new ItemStack[] {
                 new ItemStack(Material.WOOD_SWORD, 1),
                 new ItemStack(Material.STONE_SWORD, 1),
                 new ItemStack(Material.BOW, 1),
@@ -180,7 +186,7 @@ public class LootTier {
         };
 
         @Getter
-        private ItemStack[] group4Items = new ItemStack[] {
+        private ItemStack[] group3Items = new ItemStack[] {
                 new ItemStack(Material.IRON_PICKAXE, 1),
                 new ItemStack(Material.IRON_AXE, 1),
                 new ItemStack(Material.STONE_AXE, 1),
@@ -188,7 +194,7 @@ public class LootTier {
         };
 
         @Getter
-        private ItemStack[] group5Items = new ItemStack[] {
+        private ItemStack[] group4Items = new ItemStack[] {
                 new ItemStack(Material.COOKED_BEEF, 4),
                 new ItemStack(Material.COOKED_BEEF, 16),
                 new ItemStack(Material.BREAD, 4),
@@ -196,7 +202,7 @@ public class LootTier {
         };
 
         @Getter
-        private ItemStack[] group6Items = new ItemStack[] {
+        private ItemStack[] group5Items = new ItemStack[] {
                 new ItemStack(Material.WATER_BUCKET, 1),
                 new ItemStack(Material.LAVA_BUCKET, 1),
                 new ItemStack(Material.FLINT_AND_STEEL, 1),

@@ -2,8 +2,10 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.game.Game;
+import com.andrewyunt.warfare.game.loot.Island;
 import com.andrewyunt.warfare.game.loot.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,6 +13,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
+
+import java.util.Set;
 
 public class AddChestArgument extends CommandArgument {
 
@@ -56,8 +60,21 @@ public class AddChestArgument extends CommandArgument {
             return false;
         }
 
+        Island island = null;
+
         try {
-            game.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1])));
+            if (game.getIsland(args[2]) == null) {
+                island = new Island(args[2]);
+                game.getIslands().add(island);
+            } else {
+                island = game.getIsland(args[2]);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // do nothing
+        }
+
+        try {
+            game.getLootChests().add(new LootChest(block.getLocation(), Byte.valueOf(args[1]), island));
 
             sender.sendMessage(ChatColor.YELLOW + "Loot chest has been added successfully.");
         } catch (NumberFormatException e) {
