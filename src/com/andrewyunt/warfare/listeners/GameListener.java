@@ -222,7 +222,7 @@ public class GameListener implements Listener {
         for (GamePlayer winner : winningSide.getPlayers()) {
             int winCoins = 1000 * winner.getBoost();
 
-            String transactionMessage = String.format("You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW
+            String transactionMessage = String.format(ChatColor.YELLOW + "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW
                     + " coins and " + ChatColor.GOLD + "30" + ChatColor.YELLOW + " points for winning the game.",
                     String.valueOf(winCoins));
             Warfare.getInstance().getStorageManager().savePendingTransaction(new Transaction(winner.getUUID(),
