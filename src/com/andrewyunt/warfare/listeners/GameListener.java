@@ -6,6 +6,7 @@ import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.Side;
 import com.andrewyunt.warfare.game.events.*;
+import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Party;
 import com.andrewyunt.warfare.player.Transaction;
@@ -281,6 +282,15 @@ public class GameListener implements Listener {
             fireworkMeta.addEffect(effect);
             fireworkMeta.setPower(0);
             firework.setFireworkMeta(fireworkMeta);
+        }
+
+        for (LootChest chest : game.getLootChests()) {
+            BlockState state = chest.getLocation().getBlock().getState();
+
+            if (state instanceof Chest) {
+                ((Chest) state).getBlockInventory().clear();
+                state.update();
+            }
         }
 
         if (Warfare.getInstance().isEnabled()) {
