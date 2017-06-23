@@ -67,9 +67,13 @@ public abstract class PlayerListener implements Listener {
 
         GamePlayer gp = Warfare.getInstance().getPlayerManager().getPlayer(event.getPlayer());
 
-        Map.Entry<BukkitTask, BukkitTask> entry = playerTasks.get(gp);
-        Bukkit.getScheduler().cancelTask(entry.getKey().getTaskId());
-        Bukkit.getScheduler().cancelTask(entry.getKey().getTaskId());
+        try {
+            Map.Entry<BukkitTask, BukkitTask> entry = playerTasks.get(gp);
+            Bukkit.getScheduler().cancelTask(entry.getKey().getTaskId());
+            Bukkit.getScheduler().cancelTask(entry.getValue().getTaskId());
+        } catch (NullPointerException e) {
+            // do nothing
+        }
 
         playerQuit(gp);
     }

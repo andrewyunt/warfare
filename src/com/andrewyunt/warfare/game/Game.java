@@ -175,7 +175,7 @@ public class Game {
 	}
 
 	public void checkGameTime() {
-		if (gameTime == 900) {
+		if ((!teams && gameTime == 900) || (teams && gameTime == 1800)) {
 			setStage(Stage.END);
 			Bukkit.getServer().broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + "The game timer ran out.");
 		} else if (gameTime % 300 == 0) {
