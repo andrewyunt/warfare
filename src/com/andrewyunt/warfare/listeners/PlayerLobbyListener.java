@@ -305,6 +305,6 @@ public class PlayerLobbyListener extends PlayerListener {
             }
         }
 
-        player.sendMessage(ChatColor.RED + "There are currently no available " + serverType.toString().toLowerCase() + "  games");
+        player.sendMessage(ChatColor.RED + "There are currently no available " + serverType.toString().toLowerCase() + " games");
     }
 }
