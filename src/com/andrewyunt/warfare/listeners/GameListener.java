@@ -254,15 +254,17 @@ public class GameListener implements Listener {
                         ChatColor.YELLOW + ChatColor.BOLD.toString() + " has won the game!",
                 game.isTeams() ? winningSide.getName() + "'s side" : winningSide.getName()));
         for (GamePlayer player : Warfare.getInstance().getPlayerManager().getPlayers()) {
-            if (player.isHasPlayed()) {
-                player.getBukkitPlayer().sendMessage(String.format(ChatColor.YELLOW + "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " points, " +
-                                ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins, and " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " kills total.",
-                        String.valueOf(player.getGamePoints()),
-                        String.valueOf(player.getGameCoins()),
-                        String.valueOf(player.getGameKills())));
-                Bukkit.broadcastMessage("");
+            if (Bukkit.getServer().getOfflinePlayer(player.getUUID()).isOnline()) {
+                if (player.isHasPlayed()) {
+                    player.getBukkitPlayer().sendMessage(String.format(ChatColor.YELLOW + "You earned " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " points, " +
+                                    ChatColor.GOLD + "%s" + ChatColor.YELLOW + " coins, and " + ChatColor.GOLD + "%s" + ChatColor.YELLOW + " kills total.",
+                            String.valueOf(player.getGamePoints()),
+                            String.valueOf(player.getGameCoins()),
+                            String.valueOf(player.getGameKills())));
+                }
             }
         }
+        Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Thanks for playing!");
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString() +
@@ -295,7 +297,7 @@ public class GameListener implements Listener {
 
         if (Warfare.getInstance().isEnabled()) {
             BukkitScheduler scheduler = Warfare.getInstance().getServer().getScheduler();
-            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> game.setStage(Game.Stage.RESTART), 120L);
+            scheduler.scheduleSyncDelayedTask(Warfare.getInstance(), () -> game.setStage(Game.Stage.RESTART), 100L);
         } else {
             game.setStage(Game.Stage.RESTART);
         }
