@@ -7,16 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Getter
 public class Party {
 
-    @Getter @Setter private UUID leader;
-    @Getter @Setter private boolean open;
+    @Setter private UUID leader;
+    @Setter private boolean open;
 
-    @Getter private final Set<UUID> members = new HashSet<>();
-    @Getter private final Set<UUID> invites = new HashSet<>();
+    private final Set<UUID> members = new HashSet<>();
+    private final Set<UUID> invites = new HashSet<>();
 
     public Party(UUID leader) {
-
         this.leader = leader;
         members.add(leader);
     }

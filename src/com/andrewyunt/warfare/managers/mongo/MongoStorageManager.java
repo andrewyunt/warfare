@@ -15,7 +15,6 @@ import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.purchases.PurchaseType;
 import com.andrewyunt.warfare.utilities.Utils;
 import com.mongodb.*;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;

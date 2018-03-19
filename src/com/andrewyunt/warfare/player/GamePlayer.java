@@ -14,20 +14,21 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+@Getter
 public class GamePlayer {
 	
-	@Getter private UUID UUID;
-	@Getter private String name;
-	@Getter @Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
-	@Getter @Setter private Set<Booster> boosters = new HashSet<>();
-	@Getter private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, deaths, energy, gameKills, gamePoints, gameCoins;
-	@Getter @Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
-	@Getter private boolean spectating, sentActivate;
-	@Getter @Setter private GamePlayer lastDamager;
-	@Getter private Kit selectedKit;
-	@Getter private Powerup selectedPowerup;
-	@Getter @Setter Side side;
-	@Getter @Setter int lives, killStreak;
+	private UUID UUID;
+	private String name;
+	@Setter private Map<Purchasable, Integer> purchases = new HashMap<>();
+	@Setter private Set<Booster> boosters = new HashSet<>();
+	private int points, coins, earnedCoins, wins, losses, gamesPlayed, kills, deaths, energy, gameKills, gamePoints, gameCoins;
+	@Setter private boolean loaded, hasPlayed, hasFallen, hasBloodEffect, explosiveWeaknessCooldown;
+	private boolean spectating, sentActivate;
+	@Setter private GamePlayer lastDamager;
+	private Kit selectedKit;
+	private Powerup selectedPowerup;
+	@Setter Side side;
+	@Setter int lives, killStreak;
 	
 	public GamePlayer(UUID UUID) {
 		this.UUID = UUID;

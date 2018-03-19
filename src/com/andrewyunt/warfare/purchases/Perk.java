@@ -32,13 +32,11 @@ public enum Perk implements Purchasable {
 
     @Override
     public String getName() {
-
         return name;
     }
 
     @Override
     public int getPrice(int level) {
-
         return 15000;
     }
 

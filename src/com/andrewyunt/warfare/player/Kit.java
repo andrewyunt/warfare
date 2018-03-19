@@ -16,12 +16,10 @@ public enum Kit {
 	@Getter private final String name;
 	
 	Kit(String name) {
-		
 		this.name = name;
 	}
 	
 	public void giveItems(GamePlayer player) {
-		
 		PlayerInventory inv = player.getBukkitPlayer().getInventory();
 		
 		if (this == UHC) {

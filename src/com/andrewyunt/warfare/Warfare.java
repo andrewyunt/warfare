@@ -1,18 +1,3 @@
-/*
-* Unpublished Copyright (c) 2016 Andrew Yunt, All Rights Reserved.
- *
- * NOTICE: All information contained herein is, and remains the property of Andrew Yunt. The intellectual and technical concepts contained
- * herein are proprietary to Andrew Yunt and may be covered by U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained
- * from Andrew Yunt. Access to the source code contained herein is hereby forbidden to anyone except current Andrew Yunt and those who have executed
- * Confidentiality and Non-disclosure agreements explicitly covering such access.
- *
- * The copyright notice above does not evidence any actual or intended publication or disclosure of this source code, which includes
- * information that is confidential and/or proprietary, and is a trade secret, of COMPANY. ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC PERFORMANCE,
- * OR PUBLIC DISPLAY OF OR THROUGH USE OF THIS SOURCE CODE WITHOUT THE EXPRESS WRITTEN CONSENT OF ANDREW YUNT IS STRICTLY PROHIBITED, AND IN VIOLATION OF
- * APPLICABLE LAWS AND INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS
- * TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.
- */
 package com.andrewyunt.warfare;
 
 import com.andrewyunt.warfare.command.*;
@@ -51,6 +36,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+@Getter
 public class Warfare extends JavaPlugin {
 
 	@Getter private static Warfare instance;
@@ -58,38 +44,37 @@ public class Warfare extends JavaPlugin {
 	@Getter private static Economy economy = null;
 	@Getter private static Chat chat = null;
 
-	@Getter private StorageManager storageManager;
-	@Getter private PlayerManager playerManager;
-	@Getter private SignManager signManager;
-	@Getter private PartyManager partyManager;
-	@Getter private ServerConfiguration serverConfiguration;
-	@Getter private ShopMenu shopMenu;
-	@Getter private KitSelectorMenu kitSelectorMenu;
-	@Getter private PowerupSelectorMenu powerupSelectorMenu;
-	@Getter private TeleporterMenu teleporterMenu;
-	@Getter private ScoreboardHandler scoreboardHandler;
-	@Getter @Setter private Game game;
-	@Getter private boolean isProtocoLib;
-	@Getter @Setter private int games = 0;
+	private StorageManager storageManager;
+	private PlayerManager playerManager;
+	private SignManager signManager;
+	private PartyManager partyManager;
+	private ServerConfiguration serverConfiguration;
+	private ShopMenu shopMenu;
+	private KitSelectorMenu kitSelectorMenu;
+	private PowerupSelectorMenu powerupSelectorMenu;
+	private TeleporterMenu teleporterMenu;
+	private ScoreboardHandler scoreboardHandler;
+	@Setter private Game game;
+	private boolean isProtocoLib;
+	@Setter private int games = 0;
 
-	@Getter private final int maxGames = 24 + ThreadLocalRandom.current().nextInt(20);
-	@Getter private final long startupTime = System.currentTimeMillis();
+    private final int maxGames = 24 + ThreadLocalRandom.current().nextInt(20);
+	private final long startupTime = System.currentTimeMillis();
 	
 	@Override
 	public void onEnable() {
-	    Bukkit.getScheduler().runTask(this, () -> {
-            setupChat();
+		Bukkit.getScheduler().runTask(this, () -> {
+			setupChat();
             setupEconomy();
             setupPermissions();
         });
 
-		instance = this;
+	    instance = this;
 
-		if(getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
+	    if (getServer().getPluginManager().isPluginEnabled("ProtocolLib")) {
 		    isProtocoLib = true;
             ProtocolLibrary.getProtocolManager().addPacketListener(new EPCAdapter());
-        }
-        else{
+        } else {
 		    isProtocoLib = false;
         }
 
@@ -169,7 +154,7 @@ public class Warfare extends JavaPlugin {
 			}
 		}
 
-		for(World world: Bukkit.getWorlds()){
+		for (World world: Bukkit.getWorlds()) {
 		    world.setAutoSave(false);
 		    world.setAmbientSpawnLimit(0);
 		    world.setAnimalSpawnLimit(0);
@@ -187,9 +172,7 @@ public class Warfare extends JavaPlugin {
 		ServerSettings.setName(StaticConfiguration.SERVER_NAME);
 		ServerSettings.ACCEPTING_NEW = false;
 
-		Bukkit.getScheduler().runTask(this, () -> {
-            BasePlugin.getPlugin().setFaithfulServer(new FaithfulServer(BasePlugin.getPlugin()));
-        });
+		Bukkit.getScheduler().runTask(this, () -> BasePlugin.getPlugin().setFaithfulServer(new FaithfulServer(BasePlugin.getPlugin())));
 	}
 
 	@Override
@@ -202,7 +185,7 @@ public class Warfare extends JavaPlugin {
 
 		storageManager.disconnect();
 
-        if(isProtocoLib) {
+        if (isProtocoLib) {
             ProtocolLibrary.getProtocolManager().removePacketListeners(this);
         }
 	}

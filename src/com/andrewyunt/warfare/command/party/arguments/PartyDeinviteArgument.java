@@ -22,7 +22,7 @@ public class PartyDeinviteArgument extends CommandArgument {
     }
 
     @Override
-    public String getUsage(String s)  {
+    public String getUsage(String s) {
         return "/" + s + " " + getName() + " <name>";
     }
 

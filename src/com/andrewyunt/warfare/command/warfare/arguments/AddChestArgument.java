@@ -5,7 +5,6 @@ import com.andrewyunt.warfare.game.Game;
 import com.andrewyunt.warfare.game.loot.Island;
 import com.andrewyunt.warfare.game.loot.LootChest;
 import com.faithfulmc.util.command.CommandArgument;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,8 +12,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
-
-import java.util.Set;
 
 public class AddChestArgument extends CommandArgument {
 

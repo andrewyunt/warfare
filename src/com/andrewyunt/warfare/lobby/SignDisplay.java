@@ -15,21 +15,23 @@ import java.util.Map.Entry;
  * 
  * @author Andrew Yunt
  */
+@Getter
 public class SignDisplay {
 
-	@Getter private final Type type;
-	@Getter private final int place;
+	private final Type type;
+	private final int place;
 
-	@Getter private Location location;
-	@Getter private Sign bukkitSign;
-	
+	private Location location;
+	private Sign bukkitSign;
+
+	@Getter
 	public enum Type {
 		KILLS_LEADERBOARD("kills", "Kills"),
 		WINS_LEADERBOARD("wins", "Wins"),
 		KDR_LEADERBOARD("kdr", "KDR");
 
-		@Getter private final String id;
-		@Getter private final String display;
+        private final String id;
+		private final String display;
 
 		Type(String id, String display) {
 			this.id = id;

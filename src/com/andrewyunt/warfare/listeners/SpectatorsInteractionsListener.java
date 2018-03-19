@@ -60,7 +60,7 @@ public class SpectatorsInteractionsListener implements Listener {
 			boolean allowed = false; // If there are any actual players there, the event should not be over-wrote.
 
 			for (Player target : Bukkit.getServer().getOnlinePlayers()) {
-				if (target.getWorld().equals(ev.getBlock().getWorld()))  {
+				if (target.getWorld().equals(ev.getBlock().getWorld())) {
 					Location playerLocation = target.getLocation();
 
 					// If the player is at this location

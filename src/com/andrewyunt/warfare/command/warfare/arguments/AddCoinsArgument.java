@@ -1,7 +1,6 @@
 package com.andrewyunt.warfare.command.warfare.arguments;
 
 import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Transaction;
 import com.faithfulmc.util.command.CommandArgument;
 import org.bukkit.Bukkit;

@@ -3,10 +3,11 @@ package com.andrewyunt.warfare.player;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
+@Getter
 public class Booster {
 
-    @Getter private int level;
-    @Getter private LocalDateTime expiry;
+    private int level;
+    private LocalDateTime expiry;
 
     public Booster(int level, LocalDateTime expiry) {
         this.level = level;

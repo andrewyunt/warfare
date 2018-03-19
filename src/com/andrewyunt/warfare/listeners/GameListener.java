@@ -230,10 +230,6 @@ public class GameListener implements Listener {
                     transactionMessage, winCoins, 30));
             
             winner.setWins(winner.getWins() + 1);
-
-            if (!winner.getBukkitPlayer().isOnline()) {
-                continue;
-            }
         }
 
         Set<GamePlayer> losers = Warfare.getInstance().getPlayerManager().getPlayers().stream()
@@ -279,7 +275,7 @@ public class GameListener implements Listener {
             Firework firework = (Firework) randomLoc.getWorld().spawnEntity(randomLoc, EntityType.FIREWORK);
             FireworkMeta fireworkMeta = firework.getFireworkMeta();
             FireworkEffect effect = FireworkEffect.builder().withColor(
-                    Arrays.asList(Color.fromRGB((int) Math.random() * 256, (int) Math.random() * 256, (int) Math.random() * 256)))
+                    Collections.singletonList(Color.fromRGB((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256))))
                     .with(Arrays.asList(FireworkEffect.Type.values()).iterator().next()).build();
             fireworkMeta.addEffect(effect);
             fireworkMeta.setPower(0);

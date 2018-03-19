@@ -4,14 +4,15 @@ import com.andrewyunt.warfare.game.Game;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class Server {
 
-    @Getter private final String name;
-    @Getter private final ServerType serverType;
-    @Getter private final Game.Stage gameStage;
-    @Getter private final String mapName;
-    @Getter @Setter private int onlinePlayers;
-    @Getter private final int maxPlayers;
+    private final String name;
+    private final ServerType serverType;
+    private final Game.Stage gameStage;
+    private final String mapName;
+    @Setter private int onlinePlayers;
+    private final int maxPlayers;
 
     public Server(String name, ServerType serverType, Game.Stage gameStage, String mapName, int onlinePlayers, int maxPlayers) {
         this.name = name;

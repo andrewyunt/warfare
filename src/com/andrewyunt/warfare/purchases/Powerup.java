@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
  * @author Andrew Yunt
  */
 public enum Powerup implements Purchasable {
+
     MEDIC("Medic", 4),
     MARKSMAN("Marksman", 20),
     WIZARD("Wizard", 10),

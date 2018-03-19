@@ -7,12 +7,13 @@ import java.util.UUID;
 /**
  * Represents a transaction of either points of coins in a player's balance.
  */
+@Getter
 public class Transaction {
 
-    @Getter UUID UUID;
-    @Getter String message;
-    @Getter int coins;
-    @Getter int points;
+    private UUID UUID;
+    private String message;
+    private int coins;
+    private int points;
 
     /**
      * @param UUID the uuid of the player who the transaction is for

@@ -4,11 +4,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import com.andrewyunt.warfare.Warfare;
-import com.andrewyunt.warfare.menu.ShopMenu;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -104,7 +101,7 @@ public class LootChest {
 
 			// Randomize item arrangement in chest inventory
 			List<Integer> slots = new ArrayList<>();
-			for (int i = 0; i < inv.getSize(); i ++){
+			for (int i = 0; i < inv.getSize(); i ++) {
 			    slots.add(i);
             }
             Collections.shuffle(slots);

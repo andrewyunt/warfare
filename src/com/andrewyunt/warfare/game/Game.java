@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
  * 
  * @author Andrew Yunt
  */
+@Getter
 public class Game {
-	
+
+	@Getter
 	public enum Stage {
         COUNTDOWN(1, DyeColor.GREEN, ChatColor.GREEN, "Starting"),
         WAITING(0, DyeColor.YELLOW, ChatColor.YELLOW, "Waiting for players"),
@@ -34,10 +36,10 @@ public class Game {
 		END(3, DyeColor.RED, ChatColor.RED, "Game finished"),
 		RESTART(4, DyeColor.RED, ChatColor.RED, "Server restarting");
 
-        @Getter private final int order;
-		@Getter private final DyeColor dyeColor;
-		@Getter private final ChatColor color;
-		@Getter private final String description;
+        private final int order;
+		private final DyeColor dyeColor;
+		private final ChatColor color;
+		private final String description;
 
         Stage(int order, DyeColor dyeColor, ChatColor color, String description) {
             this.order = order;
@@ -51,21 +53,21 @@ public class Game {
         }
     }
 
-	@Getter @Setter private Set<Island> islands = new HashSet<>();
-	@Getter @Setter private Set<LootChest> lootChests = new HashSet<>();
-	@Getter @Setter private Set<Cage> cages = new HashSet<>();
-	@Getter @Setter private Map<Integer, Location> teamSpawns = new HashMap<>();
-	@Getter private boolean teams;
-	@Getter @Setter private boolean edit;
-	@Getter @Setter private Location mapLocation, waitingLocation;
-	@Getter @Setter private int teamSize = 25;
-	@Getter private short countdownTime = 10, gameTime;
-	@Getter private Stage stage = Stage.WAITING;
+	@Setter private Set<Island> islands = new HashSet<>();
+	@Setter private Set<LootChest> lootChests = new HashSet<>();
+	@Setter private Set<Cage> cages = new HashSet<>();
+	@Setter private Map<Integer, Location> teamSpawns = new HashMap<>();
+	private boolean teams;
+	@Setter private boolean edit;
+	@Setter private Location mapLocation, waitingLocation;
+	@Setter private int teamSize = 25;
+	private short countdownTime = 10, gameTime;
+	private Stage stage = Stage.WAITING;
 
-	@Getter private final Set<GamePlayer> players = new HashSet<>();
-	@Getter private final Set<Side> sides = new HashSet<>();
-	@Getter private final Map<Location, BlockState> brokenBlocks = new HashMap<>();
-	@Getter private final Set<Block> placedBlocks = new HashSet<>();
+	private final Set<GamePlayer> players = new HashSet<>();
+	private final Set<Side> sides = new HashSet<>();
+	private final Map<Location, BlockState> brokenBlocks = new HashMap<>();
+	private final Set<Block> placedBlocks = new HashSet<>();
 
 	public void setTeams(boolean teams) {
 		this.teams = teams;

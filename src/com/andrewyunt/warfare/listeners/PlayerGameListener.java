@@ -4,13 +4,11 @@ import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
-import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.player.Kit;
 import com.andrewyunt.warfare.player.Transaction;
 import com.andrewyunt.warfare.player.events.SpectateEvent;
 import com.andrewyunt.warfare.player.events.UpdateHotbarEvent;
-import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.utilities.Utils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,7 +39,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-import java.time.LocalDateTime;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,11 +81,11 @@ public class PlayerGameListener extends PlayerListener {
     }
 
     @EventHandler
-    public void onPlayerJoinCage(PlayerJoinEvent event){
+    public void onPlayerJoinCage(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = Warfare.getInstance().getPlayerManager().getPlayer(player);
         Cage cage = gamePlayer.getCage();
-        if(cage != null){
+        if (cage != null) {
             player.teleport(cage.getLocation());
         }
     }

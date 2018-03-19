@@ -8,11 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 public class Side {
 
-    @Getter private final int sideNum;
+    private final int sideNum;
 
-    @Getter @Setter private String name;
+    @Setter private String name;
 
     public Side (int sideNum, String name) {
         this.sideNum = sideNum;
