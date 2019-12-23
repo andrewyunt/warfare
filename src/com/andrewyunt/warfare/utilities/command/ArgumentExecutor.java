@@ -2,7 +2,11 @@ package com.andrewyunt.warfare.utilities.command;
 
 import com.andrewyunt.warfare.utilities.Utils;
 import com.google.common.collect.ImmutableList;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
