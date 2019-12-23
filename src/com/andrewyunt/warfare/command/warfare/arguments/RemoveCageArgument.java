@@ -3,7 +3,7 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.game.Cage;
 import com.andrewyunt.warfare.game.Game;
-import com.faithfulmc.util.command.CommandArgument;
+import com.andrewyunt.warfare.utilities.command.CommandArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -2,7 +2,7 @@ package com.andrewyunt.warfare.command.party.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.Party;
-import com.faithfulmc.util.command.CommandArgument;
+import com.andrewyunt.warfare.utilities.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PartyKickArgument extends CommandArgument{
+public class PartyKickArgument extends CommandArgument {
 
     public PartyKickArgument() {
         super("kick", "Kick a player from your party");

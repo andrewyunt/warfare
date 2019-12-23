@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
 import com.andrewyunt.warfare.player.Party;
+import com.google.common.base.Preconditions;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.ChatColor;
@@ -196,5 +197,17 @@ public class Utils {
 
 			player.playEffect(loc.add(0.0D, 0.8D, 0.0D), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
 		}
+	}
+
+	public static List<String> getCompletions(final String[] args, final List<String> input) {
+		return getCompletions(args, input, 80);
+	}
+
+	public static List<String> getCompletions(final String[] args, final List<String> input, final int limit) {
+		Preconditions.checkNotNull((Object) args);
+		Preconditions.checkArgument(args.length != 0);
+		final String argument = args[args.length - 1];
+		final String s;
+		return input.stream().filter(string -> string.regionMatches(true, 0, argument, 0, argument.length())).limit(limit).collect(Collectors.toList());
 	}
 }

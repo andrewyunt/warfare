@@ -1,7 +1,7 @@
 package com.andrewyunt.warfare.command.party;
 
 import com.andrewyunt.warfare.command.party.arguments.*;
-import com.faithfulmc.util.command.ArgumentExecutor;
+import com.andrewyunt.warfare.utilities.command.ArgumentExecutor;
 
 public class PartyCommand extends ArgumentExecutor {
 

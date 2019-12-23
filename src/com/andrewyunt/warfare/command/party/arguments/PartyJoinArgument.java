@@ -2,7 +2,7 @@ package com.andrewyunt.warfare.command.party.arguments;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.Party;
-import com.faithfulmc.util.command.CommandArgument;
+import com.andrewyunt.warfare.utilities.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

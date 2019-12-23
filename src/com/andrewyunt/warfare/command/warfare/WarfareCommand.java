@@ -2,10 +2,8 @@ package com.andrewyunt.warfare.command.warfare;
 
 import com.andrewyunt.warfare.command.warfare.arguments.*;
 import com.andrewyunt.warfare.configuration.StaticConfiguration;
-import com.faithfulmc.framework.BaseConstants;
-import com.faithfulmc.util.BukkitUtils;
-import com.faithfulmc.util.command.ArgumentExecutor;
-import com.faithfulmc.util.command.CommandArgument;
+import com.andrewyunt.warfare.utilities.command.ArgumentExecutor;
+import com.andrewyunt.warfare.utilities.command.CommandArgument;
 import net.md_5.bungee.api.chat.*;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
@@ -49,22 +47,21 @@ public class WarfareCommand extends ArgumentExecutor {
 		}
 
 		if (!hasPermission) {
-			sender.sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "FaithfulMC " + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW
-					+ ChatColor.RED + " You do not have permission to execute this command.");
+			sender.sendMessage(ChatColor.RED + " You do not have permission to execute this command.");
 			return false;
 		}
 
 		if (args.length < 1) {
-			sender.sendMessage(ChatColor.DARK_GRAY + BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 45));
-			sender.sendMessage(BaseConstants.GOLD + ChatColor.BOLD.toString() + WordUtils.capitalizeFully(command.getName()) + " Help");
+			sender.sendMessage(ChatColor.DARK_GRAY + "------------------------------");
+			sender.sendMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + WordUtils.capitalizeFully(command.getName()) + " Help");
 			for (final CommandArgument argument : this.arguments) {
 				final String permission = argument.getPermission();
 				if (permission == null || sender.hasPermission(permission)) {
 					ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, argument.getUsage(label));
 					HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent
-							.fromLegacyText(BaseConstants.YELLOW + "Click to run " + BaseConstants.GRAY + argument.getUsage(label)));
+							.fromLegacyText(ChatColor.YELLOW + "Click to run " + ChatColor.GRAY + argument.getUsage(label)));
 					BaseComponent[] components = new ComponentBuilder(argument.getUsage(command.getName()))
-							.color(BaseConstants.fromBukkit(BaseConstants.YELLOW)).event(clickEvent).event(hoverEvent)
+							.event(clickEvent).event(hoverEvent)
 							.append(" - " + argument.getDescription()).event(clickEvent).event(hoverEvent).create();
 					if (sender instanceof Player) {
 						((Player)sender).spigot().sendMessage(components);
@@ -73,7 +70,7 @@ public class WarfareCommand extends ArgumentExecutor {
 					}
 				}
 			}
-			sender.sendMessage(ChatColor.DARK_GRAY + BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 45));
+			sender.sendMessage(ChatColor.DARK_GRAY + "------------------------------");
 			return false;
 		}
 		final CommandArgument argument2 = this.getArgument(args[0]);

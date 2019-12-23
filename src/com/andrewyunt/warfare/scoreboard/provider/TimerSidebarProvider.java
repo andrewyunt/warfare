@@ -7,7 +7,6 @@ import com.andrewyunt.warfare.player.GamePlayer;
 import com.andrewyunt.warfare.scoreboard.SidebarEntry;
 import com.andrewyunt.warfare.scoreboard.SidebarProvider;
 import com.andrewyunt.warfare.utilities.DateTimeFormats;
-import com.faithfulmc.util.BukkitUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class TimerSidebarProvider implements SidebarProvider {
 
-    protected static final String STRAIGHT_LINE = BukkitUtils.STRAIGHT_LINE_DEFAULT.substring(0, 13);
+    protected static final String STRAIGHT_LINE = ChatColor.DARK_GRAY + "------------";
 
     private static String handleBardFormat(long millis, boolean trailingZero, boolean showMillis) {
         return ((showMillis ? trailingZero ? DateTimeFormats.REMAINING_SECONDS_TRAILING : DateTimeFormats.REMAINING_SECONDS

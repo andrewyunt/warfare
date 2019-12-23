@@ -2,7 +2,6 @@ package com.andrewyunt.warfare.command;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
-import com.faithfulmc.framework.BaseConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -31,13 +30,13 @@ public class StatsCommand implements CommandExecutor {
             String[] messages = new String[] {
                     ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + "-----------------------------",
                     ChatColor.GOLD + ChatColor.BOLD.toString() + targetPlayer.getDisplayName() + "'s Stats",
-                    ChatColor.YELLOW + " Kills " + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getKills(),
-                    ChatColor.YELLOW + " Deaths " + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getDeaths(),
-                    ChatColor.YELLOW + " KDR " + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getKills() / gp.getDeaths(),
-                    ChatColor.YELLOW + " Kills "  + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getKills(),
-                    ChatColor.YELLOW + " Wins "  + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getWins(),
-                    ChatColor.YELLOW + " Losses "  + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getLosses(),
-                    ChatColor.YELLOW + " Games Played "  + ChatColor.DARK_GRAY + BaseConstants.DOUBLEARROW + " " + ChatColor.GRAY + gp.getGamesPlayed(),
+                    ChatColor.YELLOW + " Kills " + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getKills(),
+                    ChatColor.YELLOW + " Deaths " + ChatColor.DARK_GRAY +  "» " + ChatColor.GRAY + gp.getDeaths(),
+                    ChatColor.YELLOW + " KDR " + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getKills() / gp.getDeaths(),
+                    ChatColor.YELLOW + " Kills "  + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getKills(),
+                    ChatColor.YELLOW + " Wins "  + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getWins(),
+                    ChatColor.YELLOW + " Losses "  + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getLosses(),
+                    ChatColor.YELLOW + " Games Played "  + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + gp.getGamesPlayed(),
                     ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString() + "-----------------------------"
             };
 

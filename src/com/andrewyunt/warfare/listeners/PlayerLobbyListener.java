@@ -33,16 +33,6 @@ public class PlayerLobbyListener extends PlayerListener {
     @Override
     protected void playerJoin(GamePlayer player) {
         Player bp = player.getBukkitPlayer();
-
-        // Send welcome message
-        bp.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
-                + "-----------------------------------------------------");
-        bp.sendMessage(ChatColor.YELLOW + "Welcome to " + ChatColor.GOLD + ChatColor.BOLD.toString() + "Warfare");
-        bp.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Teamspeak: " + ChatColor.GRAY + "ts.faithfulmc.com");
-        bp.sendMessage(ChatColor.GOLD + " * " + ChatColor.YELLOW + "Website: " + ChatColor.GRAY + "www.faithfulmc.com");
-        bp.sendMessage(ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH.toString()
-                + "-----------------------------------------------------");
-
         Bukkit.getServer().getPluginManager().callEvent(new UpdateHotbarEvent(player));
     }
 

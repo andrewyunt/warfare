@@ -3,7 +3,7 @@ package com.andrewyunt.warfare.command.warfare.arguments;
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.Booster;
 import com.andrewyunt.warfare.player.GamePlayer;
-import com.faithfulmc.util.command.CommandArgument;
+import com.andrewyunt.warfare.utilities.command.CommandArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

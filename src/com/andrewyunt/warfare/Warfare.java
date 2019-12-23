@@ -17,9 +17,6 @@ import com.andrewyunt.warfare.menu.*;
 import com.andrewyunt.warfare.protocol.EPCAdapter;
 import com.andrewyunt.warfare.scoreboard.ScoreboardHandler;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.faithfulmc.framework.BasePlugin;
-import com.faithfulmc.framework.server.FaithfulServer;
-import com.faithfulmc.framework.server.ServerSettings;
 import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.chat.Chat;
@@ -155,24 +152,18 @@ public class Warfare extends JavaPlugin {
 		}
 
 		for (World world: Bukkit.getWorlds()) {
-		    world.setAutoSave(false);
-		    world.setAmbientSpawnLimit(0);
-		    world.setAnimalSpawnLimit(0);
-		    world.setMonsterSpawnLimit(0);
-		    world.setWaterAnimalSpawnLimit(0);
-		    world.setKeepSpawnInMemory(StaticConfiguration.LOBBY);
-		    world.setPVP(!StaticConfiguration.LOBBY);
-		    world.setTicksPerAnimalSpawns(100000);
-            world.setTicksPerMonsterSpawns(100000);
-            world.setTime(0);
-            world.setGameRuleValue("doDaylightCycle", "false");
-        }
-
-		ServerSettings.SAVE_ENTRIES = false;
-		ServerSettings.setName(StaticConfiguration.SERVER_NAME);
-		ServerSettings.ACCEPTING_NEW = false;
-
-		Bukkit.getScheduler().runTask(this, () -> BasePlugin.getPlugin().setFaithfulServer(new FaithfulServer(BasePlugin.getPlugin())));
+			world.setAutoSave(false);
+			world.setAmbientSpawnLimit(0);
+			world.setAnimalSpawnLimit(0);
+			world.setMonsterSpawnLimit(0);
+			world.setWaterAnimalSpawnLimit(0);
+			world.setKeepSpawnInMemory(StaticConfiguration.LOBBY);
+			world.setPVP(!StaticConfiguration.LOBBY);
+			world.setTicksPerAnimalSpawns(100000);
+			world.setTicksPerMonsterSpawns(100000);
+			world.setTime(0);
+			world.setGameRuleValue("doDaylightCycle", "false");
+		}
 	}
 
 	@Override

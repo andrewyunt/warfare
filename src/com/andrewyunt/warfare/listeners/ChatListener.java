@@ -2,8 +2,6 @@ package com.andrewyunt.warfare.listeners;
 
 import com.andrewyunt.warfare.Warfare;
 import com.andrewyunt.warfare.player.GamePlayer;
-import com.faithfulmc.framework.BasePlugin;
-import com.faithfulmc.framework.user.BaseUser;
 import com.google.common.collect.HashMultimap;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
@@ -35,10 +33,6 @@ public class ChatListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         e.setCancelled(true);
         Player player = e.getPlayer();
-        BaseUser baseUser = BasePlugin.getPlugin().getUserManager().getUser(player.getUniqueId());
-        if (baseUser.isInStaffChat() && player.hasPermission("base.command.staffchat")) {
-            return;
-        }
         String message = e.getMessage();
         String lastMessage = (String) this.messageHistory.get(player.getUniqueId());
         String cleanedMessage = PATTERN.matcher(message).replaceAll("");
