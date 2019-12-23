@@ -9,12 +9,19 @@ import com.andrewyunt.warfare.game.loot.LootChest;
 import com.andrewyunt.warfare.lobby.Server;
 import com.andrewyunt.warfare.lobby.SignDisplay;
 import com.andrewyunt.warfare.managers.StorageManager;
-import com.andrewyunt.warfare.player.*;
+import com.andrewyunt.warfare.player.Booster;
+import com.andrewyunt.warfare.player.GamePlayer;
+import com.andrewyunt.warfare.player.Kit;
+import com.andrewyunt.warfare.player.Party;
+import com.andrewyunt.warfare.player.Transaction;
 import com.andrewyunt.warfare.purchases.Powerup;
 import com.andrewyunt.warfare.purchases.Purchasable;
 import com.andrewyunt.warfare.purchases.PurchaseType;
 import com.andrewyunt.warfare.utilities.Utils;
-import com.mongodb.*;
+import com.mongodb.CursorType;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -30,9 +37,16 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
+import java.util.AbstractMap;
 
 public class MongoStorageManager extends StorageManager{
 
