@@ -1,6 +1,13 @@
 package com.andrewyunt.warfare.command.party;
 
-import com.andrewyunt.warfare.command.party.arguments.*;
+import com.andrewyunt.warfare.command.party.arguments.PartyJoinArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyKickArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyLeaveArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyOpenArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyDeinviteArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyInviteArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyDisbandArgument;
+import com.andrewyunt.warfare.command.party.arguments.PartyCreateArgument;
 import com.andrewyunt.warfare.utilities.command.ArgumentExecutor;
 
 public class PartyCommand extends ArgumentExecutor {
