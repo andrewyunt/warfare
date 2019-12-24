@@ -1,7 +1,14 @@
 package com.andrewyunt.warfare.game.loot;
 
 import lombok.Getter;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * Used to represent a group of chests on an island. Only use islands to group tier 2 and 3
