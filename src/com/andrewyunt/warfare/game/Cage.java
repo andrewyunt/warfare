@@ -1,11 +1,19 @@
 package com.andrewyunt.warfare.game;
 
-import java.util.*;
-
 import com.andrewyunt.warfare.player.GamePlayer;
 import lombok.Getter;
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 public class Cage {
 	
